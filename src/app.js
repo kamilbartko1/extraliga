@@ -2,7 +2,18 @@
 import DataPreview from "./pages/DataPreview";
 
 
-
+renderDataPreview("datapreview-container", [
+  {
+    name: "Tímy",
+    columns: ["ID", "Meno"],
+    rows: [[1, "Boston Bruins"], [2, "Toronto Maple Leafs"]]
+  },
+  {
+    name: "Hráči",
+    columns: ["Meno", "Góly"],
+    rows: [["Connor McDavid", 3], ["Auston Matthews", 2]]
+  }
+]);
 
 let teamRatings = {};
 let playerRatings = {};
@@ -284,4 +295,27 @@ function displayMantingal() {
 // === Štart ===
 window.addEventListener("DOMContentLoaded", () => {
   fetchMatches();
+
+  ;
+
+renderDataPreview("datapreview-container", [
+    {
+      name: "Tímy",
+      columns: ["ID", "Meno"],
+      rows: [
+        [1, "Boston Bruins"],
+        [2, "Toronto Maple Leafs"],
+        [3, "New York Rangers"]
+      ]
+    },
+    {
+      name: "Hráči",
+      columns: ["Meno", "Góly", "Asistencie"],
+      rows: [
+        ["Connor McDavid", 3, 2],
+        ["Auston Matthews", 2, 1],
+        ["Leon Draisaitl", 1, 3]
+      ]
+    }
+  ]);
 });
