@@ -1,4 +1,8 @@
 // public/app.js
+import DataPreview from "./pages/DataPreview";
+
+
+
 
 let teamRatings = {};
 let playerRatings = {};
