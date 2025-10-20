@@ -216,7 +216,8 @@ export default async function handler(req, res) {
       await kvSet(state);
       return res.status(200).json({ ok: true, settled: scored });
     }
-
+ // fallback
+ 
     // fallback
     return res.status(405).json({ ok: false, error: "Unsupported method/action" });
   } catch (err) {
