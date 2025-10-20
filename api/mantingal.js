@@ -1,19 +1,22 @@
-// /api/mantingal.js
+/// /api/mantingal.js
 import fs from "fs/promises";
 import path from "path";
 
-const USE_UPSTASH = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+const USE_UPSTASH = !!(
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+);
 const KV_KEY = "mantingal_state_v1";
 const DATA_FILE = path.join(process.cwd(), "data", "mantingal.json");
 
 // ========== Pomocné funkcie ==========
 
-// 🔹 načítaj dáta
+// 🔹 načítaj dáta (Upstash alebo lokálny JSON)
 async function loadState() {
   if (USE_UPSTASH) {
-    const res = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/${KV_KEY}`, {
-      headers: { Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` },
-    });
+    const res = await fetch(
+      `${process.env.UPSTASH_REDIS_REST_URL}/get/${KV_KEY}`,
+      { headers: { Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` } }
+    );
     const data = await res.json();
     return data.result ? JSON.parse(data.result) : { players: {}, history: [] };
   } else {
@@ -45,7 +48,12 @@ async function saveState(state) {
 
 // 🔹 získať TOP10 hráčov podľa ratingu
 async function getTop10Players() {
-  const resp = await fetch(`${process.env.VERCEL_URL || "https://nhlpro.sk"}/api/matches`);
+  // použijeme rovnakú URL logiku ako nižšie
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "https://nhlpro.sk";
+
+  const resp = await fetch(`${baseUrl}/api/matches`);
   const data = await resp.json();
   const players = data.playerRatings || {};
   const sorted = Object.entries(players)
@@ -70,12 +78,22 @@ async function getState() {
   // ✅ Ak ešte nemáme hráčov, inicializuj z Top10 podľa ratingu
   if (!state.players || Object.keys(state.players).length === 0) {
     console.log("⚙️ Prvá inicializácia Mantingalu – načítavam TOP10 z /api/matches...");
-    try {
-      const resp = await fetch(`${process.env.VERCEL_URL || "https://nhlpro.sk"}/api/matches`);
-      const data = await resp.json();
-      const players = data.playerRatings || {};
 
-      const top10 = Object.entries(players)
+    try {
+      // 🔧 správna URL fungujúca lokálne aj na Verceli
+      const baseUrl = process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "https://nhlpro.sk";
+
+      const resp = await fetch(`${baseUrl}/api/matches`);
+      const data = await resp.json();
+
+      if (!data.playerRatings || Object.keys(data.playerRatings).length === 0) {
+        console.warn("⚠️ Neboli nájdené playerRatings v /api/matches");
+        return { ok: true, state };
+      }
+
+      const top10 = Object.entries(data.playerRatings)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
         .map(([name]) => name);
@@ -87,7 +105,7 @@ async function getState() {
           profit: 0,
           lastResult: null,
           streak: 0,
-          activeToday: true
+          activeToday: true,
         };
       }
 
