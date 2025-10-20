@@ -1,6 +1,7 @@
 // /api/mantingal.js
 import fs from "fs/promises";
 import path from "path";
+import matchesHandler from "./matches.js"; // 🔹 priamy import tvojej /api/matches logiky
 
 const USE_UPSTASH =
   !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
@@ -43,28 +44,34 @@ async function saveState(state) {
   }
 }
 
-function getBaseUrl() {
-  return process.env.VERCEL_URL
-    ? process.env.VERCEL_URL.startsWith("http")
-      ? process.env.VERCEL_URL
-      : `https://${process.env.VERCEL_URL}`
-    : "https://extraliga-pearl.vercel.app/";
-}
-
+// 🔹 načítanie reálnych playerRatings priamo z matches.js
 async function getTop10Players() {
-  const resp = await fetch(`${getBaseUrl()}/api/matches`);
-  const data = await resp.json();
+  const mockReq = { query: {} };
+  const mockRes = {
+    _data: null,
+    status(code) {
+      this._status = code;
+      return this;
+    },
+    json(data) {
+      this._data = data;
+    },
+  };
+
+  await matchesHandler(mockReq, mockRes);
+  const data = mockRes._data || {};
   const players = data.playerRatings || {};
+
   const top10 = Object.entries(players)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)
     .map(([name]) => name);
 
-  console.log("🎯 Top 10 hráčov:", top10);
+  console.log("🎯 Top10 hráčov:", top10);
   return top10;
 }
 
-// 🔹 simulácia výsledku (dočasne)
+// 🔹 zatiaľ simulácia výsledku (neskôr boxscore)
 async function playerScored(name) {
   return Math.random() < 0.2;
 }
@@ -76,7 +83,7 @@ async function getState() {
   const state = await loadState();
 
   if (!state.players || Object.keys(state.players).length === 0) {
-    console.log("⚙️ Prvá inicializácia Mantingalu...");
+    console.log("⚙️ Inicializujem Mantingal z reálnych ratingov...");
     const top10 = await getTop10Players();
 
     state.players = {};
@@ -91,7 +98,7 @@ async function getState() {
     }
 
     await saveState(state);
-    console.log(`✅ Inicializovaných ${top10.length} hráčov`);
+    console.log(`✅ Inicializovaných ${top10.length} hráčov pre Mantingal`);
   }
 
   return { ok: true, state };
@@ -124,7 +131,6 @@ async function doUpdate() {
 
   state.history = state.history || [];
   state.history.push({ date: new Date().toISOString().slice(0, 10), profit: dailyProfit });
-
   await saveState(state);
   return { ok: true, message: "Update hotový", dailyProfit };
 }
@@ -134,7 +140,6 @@ async function doReset() {
   const state = await loadState();
   const top10 = await getTop10Players();
 
-  // všetkých deaktivuj
   Object.values(state.players).forEach((p) => (p.activeToday = false));
 
   for (const name of top10) {
