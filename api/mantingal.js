@@ -1,7 +1,7 @@
 // /api/mantingal.js
 import fs from "fs/promises";
 import path from "path";
-import matchesHandler from "./matches.js"; // 🔹 priamy import tvojej /api/matches logiky
+import matchesHandler from "./matches.js"; // 🔹 priame použitie tvojej funkcie
 
 const USE_UPSTASH =
   !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
@@ -23,7 +23,8 @@ async function loadState() {
       const file = await fs.readFile(DATA_FILE, "utf8");
       return JSON.parse(file);
     }
-  } catch {
+  } catch (err) {
+    console.log("⚠️ loadState fallback:", err.message);
     return { players: {}, history: [] };
   }
 }
@@ -46,8 +47,8 @@ async function saveState(state) {
 
 // 🔹 načítanie reálnych playerRatings priamo z matches.js
 async function getTop10Players() {
-  const mockReq = { query: {} };
-  const mockRes = {
+  const req = { query: {} };
+  const res = {
     _data: null,
     status(code) {
       this._status = code;
@@ -58,8 +59,8 @@ async function getTop10Players() {
     },
   };
 
-  await matchesHandler(mockReq, mockRes);
-  const data = mockRes._data || {};
+  await matchesHandler(req, res);
+  const data = res._data || {};
   const players = data.playerRatings || {};
 
   const top10 = Object.entries(players)
@@ -67,11 +68,11 @@ async function getTop10Players() {
     .slice(0, 10)
     .map(([name]) => name);
 
-  console.log("🎯 Top10 hráčov:", top10);
+  console.log("🎯 Top10 hráčov z matches:", top10);
   return top10;
 }
 
-// 🔹 zatiaľ simulácia výsledku (neskôr boxscore)
+// 🔹 simulácia výsledku (neskôr boxscore)
 async function playerScored(name) {
   return Math.random() < 0.2;
 }
@@ -82,9 +83,15 @@ async function playerScored(name) {
 async function getState() {
   const state = await loadState();
 
+  // Ak nie sú žiadni hráči → načítaj z matches
   if (!state.players || Object.keys(state.players).length === 0) {
     console.log("⚙️ Inicializujem Mantingal z reálnych ratingov...");
     const top10 = await getTop10Players();
+
+    if (top10.length === 0) {
+      console.log("❌ Žiadni hráči v /api/matches!");
+      return { ok: false, error: "Žiadni hráči v matches" };
+    }
 
     state.players = {};
     for (const name of top10) {
@@ -99,6 +106,8 @@ async function getState() {
 
     await saveState(state);
     console.log(`✅ Inicializovaných ${top10.length} hráčov pre Mantingal`);
+  } else {
+    console.log(`ℹ️ Mantingal už má ${Object.keys(state.players).length} hráčov`);
   }
 
   return { ok: true, state };
