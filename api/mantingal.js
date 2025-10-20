@@ -1,227 +1,148 @@
 // /api/mantingal.js
-// Serverless Mantingal: state | reset (12:00) | update (10:00)
-
-const USE_UPSTASH = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
-const KV_KEY = "mantingal_state_v1";
-
-// Fallback: lokálny súbor pre dev (Vercel FS je read-only medzi requestami)
 import fs from "fs/promises";
 import path from "path";
 
-async function kvGet() {
+const USE_UPSTASH = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+const KV_KEY = "mantingal_state_v1";
+const DATA_FILE = path.join(process.cwd(), "data", "mantingal.json");
+
+// ========== Pomocné funkcie ==========
+
+// 🔹 načítaj dáta
+async function loadState() {
   if (USE_UPSTASH) {
-    const resp = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/${KV_KEY}`, {
+    const res = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/${KV_KEY}`, {
       headers: { Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` },
-      cache: "no-store",
     });
-    const json = await resp.json();
-    if (json.result) {
-      try { return JSON.parse(json.result); } catch { return {}; }
-    }
-    return {};
+    const data = await res.json();
+    return data.result ? JSON.parse(data.result) : { players: {}, history: [] };
   } else {
     try {
-      const p = path.join(process.cwd(), "data", "mantingal.json");
-      const raw = await fs.readFile(p, "utf8");
-      return JSON.parse(raw);
+      const file = await fs.readFile(DATA_FILE, "utf8");
+      return JSON.parse(file);
     } catch {
-      return {};
+      return { players: {}, history: [] };
     }
   }
 }
 
-async function kvSet(obj) {
+// 🔹 ulož dáta
+async function saveState(state) {
+  const data = JSON.stringify(state, null, 2);
   if (USE_UPSTASH) {
-    await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/${KV_KEY}/${encodeURIComponent(JSON.stringify(obj))}`, {
+    await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/${KV_KEY}`, {
       method: "POST",
-      headers: { Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` },
+      headers: {
+        Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: data,
     });
   } else {
-    const dir = path.join(process.cwd(), "data");
-    const p = path.join(dir, "mantingal.json");
-    await fs.mkdir(dir, { recursive: true });
-    await fs.writeFile(p, JSON.stringify(obj, null, 2), "utf8");
+    await fs.writeFile(DATA_FILE, data);
   }
 }
 
-// Helpers
-function sortedTopNFromRatings(playerRatings = {}, n = 10) {
-  return Object.entries(playerRatings)
+// 🔹 získať TOP10 hráčov podľa ratingu
+async function getTop10Players() {
+  const resp = await fetch(`${process.env.VERCEL_URL || "https://nhlpro.sk"}/api/matches`);
+  const data = await resp.json();
+  const players = data.playerRatings || {};
+  const sorted = Object.entries(players)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, n)
+    .slice(0, 10)
     .map(([name]) => name);
+  return sorted;
 }
 
-function normalizeName(s) {
-  return String(s || "").trim();
+// 🔹 simulácia zistenia, či hráč dal gól (tu neskôr fetch z boxscore)
+async function playerScored(name) {
+  // Toto zatiaľ len simuluje 20 % šancu výhry, aby sme videli funkciu
+  return Math.random() < 0.2;
 }
 
-function profitOnWin(stake, odds = 2.2) {
-  // čistý zisk = stake * (odds - 1)
-  return +(stake * (odds - 1)).toFixed(2);
+// ========== Hlavné akcie ==========
+
+// 🟢 Stav (GET)
+async function getState() {
+  const state = await loadState();
+  return { ok: true, state };
 }
 
-// NHL helpers
-function teamNameFromBox(boxTeam) {
-  // ex: { placeName.default: 'Buffalo', commonName.default: 'Sabres' }
-  const place = boxTeam?.placeName?.default || "";
-  const common = boxTeam?.commonName?.default || "";
-  return `${place} ${common}`.trim();
-}
+// 🔵 Update (10:00)
+async function doUpdate() {
+  const state = await loadState();
+  const players = state.players || {};
+  let dailyProfit = 0;
 
-function collectSkatersFromSide(side) {
-  // side.forwards/defense/goalies
-  const list = [];
-  ["forwards", "defense"].forEach(group => {
-    (side?.[group] || []).forEach(p => {
-      const name = p?.name?.default || "";
-      const goals = p?.goals ?? 0;
-      list.push({ name, goals });
-    });
+  for (const [name, p] of Object.entries(players)) {
+    if (!p.activeToday) continue;
+    const scored = await playerScored(name);
+    if (scored) {
+      const winProfit = p.stake * 1.2;
+      p.profit += winProfit;
+      p.lastResult = "win";
+      p.stake = 1;
+      p.streak = 0;
+      dailyProfit += winProfit;
+    } else {
+      p.profit -= p.stake;
+      p.lastResult = "loss";
+      p.streak = (p.streak || 0) + 1;
+      p.stake *= 2;
+      dailyProfit -= p.stake;
+    }
+  }
+
+  state.history = state.history || [];
+  state.history.push({
+    date: new Date().toISOString().slice(0, 10),
+    profit: dailyProfit,
   });
-  return list;
+
+  await saveState(state);
+  return { ok: true, message: "Update hotový", dailyProfit };
 }
 
-async function fetchBoxscore(gameId) {
-  const url = `https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`;
-  const r = await fetch(url, { cache: "no-store" });
-  if (!r.ok) throw new Error(`Boxscore ${gameId} status ${r.status}`);
-  return r.json();
+// 🟣 Reset (12:00)
+async function doReset() {
+  const state = await loadState();
+  const top10 = await getTop10Players();
+
+  // Najprv všetkých hráčov deaktivuj
+  Object.values(state.players).forEach((p) => (p.activeToday = false));
+
+  for (const name of top10) {
+    if (!state.players[name]) {
+      state.players[name] = {
+        stake: 1,
+        profit: 0,
+        lastResult: null,
+        streak: 0,
+        activeToday: true,
+      };
+    } else {
+      const p = state.players[name];
+      p.activeToday = true;
+      // ak včera prehral, stake zostáva ×2; ak vyhral, reset na 1
+      p.stake = p.lastResult === "win" ? 1 : p.stake;
+    }
+  }
+
+  await saveState(state);
+  return { ok: true, message: "Reset hotový", active: top10 };
 }
 
-// ————————————————————————————————————————————————————————
-
+// ========== Handler pre všetky akcie ==========
 export default async function handler(req, res) {
+  const action = req.query.action || req.body?.action || "state";
   try {
-    const { action } = req.query || {};
-    if (req.method === "GET" && action === "state") {
-      const state = await kvGet();
-      return res.status(200).json({ ok: true, state });
-    }
-
-    if (req.method === "POST" && action === "reset") {
-      // 12:00 – zober TOP10 z /api/matches a nastav stake na dnes
-      const origin = req.headers["x-forwarded-proto"]
-        ? `${req.headers["x-forwarded-proto"]}://${req.headers.host}`
-        : req.headers.origin || "";
-
-      const resp = await fetch(`${origin}/api/matches`, { cache: "no-store" });
-      if (!resp.ok) throw new Error(`/api/matches failed: ${resp.status}`);
-      const data = await resp.json();
-      const ratings = data.playerRatings || {};
-
-      const top10 = sortedTopNFromRatings(ratings, 10);
-
-      const state = (await kvGet()) || {};
-      state.players = state.players || {}; // map by player name
-
-      top10.forEach(name => {
-        const key = normalizeName(name);
-        const rec = state.players[key] || { stake: 1, streak: 0, lastResult: "new", profit: 0 };
-        // pre dnešnú stávku: ak včera win -> 1, ak loss -> dvojnásobok
-        if (rec.lastResult === "loss") {
-          rec.stake = Math.max(1, rec.stake * 2);
-        } else {
-          rec.stake = 1;
-        }
-        // označ hráča ako aktívny pre dnešok
-        rec.activeToday = true;
-        state.players[key] = rec;
-      });
-
-      // nepoužitých (mimo dnešnej TOP10) len odznačíme activeToday
-      Object.keys(state.players).forEach(k => {
-        if (!top10.includes(k)) state.players[k].activeToday = false;
-      });
-
-      await kvSet(state);
-      return res.status(200).json({ ok: true, top10 });
-    }
-
-    if (req.method === "POST" && action === "update") {
-      // 10:00 – skontroluj zápasy od včerajšej 10:00 do dnešnej 10:00 a vyhodnoť
-      // zober zoznam odohraných zápasov z /api/matches
-      const origin = req.headers["x-forwarded-proto"]
-        ? `${req.headers["x-forwarded-proto"]}://${req.headers.host}`
-        : req.headers.origin || "";
-
-      const r = await fetch(`${origin}/api/matches`, { cache: "no-store" });
-      if (!r.ok) throw new Error(`/api/matches failed: ${r.status}`);
-      const mdata = await r.json();
-      const matches = Array.isArray(mdata.matches) ? mdata.matches : [];
-
-      // vyber včera->dnes (UTC) a len CLOSED
-      const now = new Date();
-      const end = now;
-      const start = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-
-      const inWindow = matches.filter(m => {
-        const st = (m.status || m.sport_event_status?.status || "").toLowerCase();
-        const t = new Date(m.start_time || m.sport_event?.start_time || m.date);
-        return st === "closed" && t >= start && t <= end && m.id;
-      });
-
-      // načítaj stav mantingalu
-      const state = (await kvGet()) || {};
-      state.players = state.players || {};
-      const playerNames = Object.keys(state.players);
-
-      // indexovaná pomocná mapa výsledkov hráčov za 24h = či dal gól
-      const scored = Object.fromEntries(playerNames.map(p => [p, false]));
-
-      // cez všetky boxscores za okno
-      await Promise.all(
-        inWindow.map(async g => {
-          try {
-            const box = await fetchBoxscore(g.id);
-            const awayPlayers = collectSkatersFromSide(box.playerByGameStats?.awayTeam || {});
-            const homePlayers = collectSkatersFromSide(box.playerByGameStats?.homeTeam || {});
-            const all = [...homePlayers, ...awayPlayers];
-
-            playerNames.forEach(pn => {
-              const found = all.find(p => normalizeName(p.name) === pn && (p.goals || 0) > 0);
-              if (found) scored[pn] = true;
-            });
-          } catch (e) {
-            // boxscore mohol zlyhať – nepadáme kvôli jednému zápasu
-            console.warn(`Boxscore ${g.id} error:`, e.message);
-          }
-        })
-      );
-
-      // vyhodnotenie
-      const ODDS = 2.2;
-      playerNames.forEach(pn => {
-        const rec = state.players[pn];
-        if (!rec) return;
-
-        // len ak včera hral (niektoré dni nemusí)
-        // heuristika: ak nenájdeme v boxscore, nič nemeníme
-        if (scored[pn] === true) {
-          // WIN
-          rec.profit = +(rec.profit + profitOnWin(rec.stake, ODDS)).toFixed(2);
-          rec.lastResult = "win";
-          rec.streak = 0;
-          rec.stake = 1; // reset na zajtra
-        } else if (scored[pn] === false) {
-          // LOSS
-          rec.profit = +(rec.profit - rec.stake).toFixed(2);
-          rec.lastResult = "loss";
-          rec.streak = (rec.streak || 0) + 1;
-          rec.stake = Math.max(1, rec.stake * 2); // zajtra dvojnásobok
-        }
-        state.players[pn] = rec;
-      });
-
-      await kvSet(state);
-      return res.status(200).json({ ok: true, settled: scored });
-    }
- // fallback
- 
-    // fallback
-    return res.status(405).json({ ok: false, error: "Unsupported method/action" });
+    if (action === "state") return res.status(200).json(await getState());
+    if (action === "update") return res.status(200).json(await doUpdate());
+    if (action === "reset") return res.status(200).json(await doReset());
+    return res.status(400).json({ error: "Neznáma akcia" });
   } catch (err) {
-    console.error("Mantingal API error:", err);
-    return res.status(500).json({ ok: false, error: err.message });
+    console.error("❌ Mantingal chyba:", err);
+    return res.status(500).json({ error: err.message });
   }
 }
