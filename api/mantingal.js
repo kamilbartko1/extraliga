@@ -66,6 +66,38 @@ async function playerScored(name) {
 // 🟢 Stav (GET)
 async function getState() {
   const state = await loadState();
+
+  // ✅ Ak ešte nemáme hráčov, inicializuj z Top10 podľa ratingu
+  if (!state.players || Object.keys(state.players).length === 0) {
+    console.log("⚙️ Prvá inicializácia Mantingalu – načítavam TOP10 z /api/matches...");
+    try {
+      const resp = await fetch(`${process.env.VERCEL_URL || "https://nhlpro.sk"}/api/matches`);
+      const data = await resp.json();
+      const players = data.playerRatings || {};
+
+      const top10 = Object.entries(players)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+        .map(([name]) => name);
+
+      state.players = {};
+      for (const name of top10) {
+        state.players[name] = {
+          stake: 1,
+          profit: 0,
+          lastResult: null,
+          streak: 0,
+          activeToday: true
+        };
+      }
+
+      await saveState(state);
+      console.log(`✅ Inicializovaných ${top10.length} hráčov pre Mantingal`);
+    } catch (err) {
+      console.error("❌ Chyba pri inicializácii Mantingalu:", err);
+    }
+  }
+
   return { ok: true, state };
 }
 
@@ -77,7 +109,10 @@ async function doUpdate() {
 
   for (const [name, p] of Object.entries(players)) {
     if (!p.activeToday) continue;
+
+    // 🔹 Simulácia výsledku (neskôr nahradíme reálnym boxscore)
     const scored = await playerScored(name);
+
     if (scored) {
       const winProfit = p.stake * 1.2;
       p.profit += winProfit;
@@ -85,15 +120,18 @@ async function doUpdate() {
       p.stake = 1;
       p.streak = 0;
       dailyProfit += winProfit;
+      console.log(`✅ ${name} vyhral (${winProfit.toFixed(2)} €)`);
     } else {
       p.profit -= p.stake;
       p.lastResult = "loss";
       p.streak = (p.streak || 0) + 1;
       p.stake *= 2;
       dailyProfit -= p.stake;
+      console.log(`❌ ${name} prehral, ďalší stake: ${p.stake} €`);
     }
   }
 
+  // 🔹 Uloženie denného zisku do histórie
   state.history = state.history || [];
   state.history.push({
     date: new Date().toISOString().slice(0, 10),
@@ -101,6 +139,7 @@ async function doUpdate() {
   });
 
   await saveState(state);
+
   return { ok: true, message: "Update hotový", dailyProfit };
 }
 
