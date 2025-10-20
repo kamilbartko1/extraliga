@@ -48,7 +48,7 @@ function getBaseUrl() {
     ? process.env.VERCEL_URL.startsWith("http")
       ? process.env.VERCEL_URL
       : `https://${process.env.VERCEL_URL}`
-    : "https://nhlpro.sk";
+    : "https://extraliga-pearl.vercel.app/";
 }
 
 async function getTop10Players() {
