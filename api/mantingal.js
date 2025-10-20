@@ -2,9 +2,8 @@
 import fs from "fs/promises";
 import path from "path";
 
-const USE_UPSTASH = !!(
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
-);
+const USE_UPSTASH =
+  !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
 const KV_KEY = "mantingal_state_v1";
 const DATA_FILE = path.join(process.cwd(), "data", "mantingal.json");
 
@@ -44,27 +43,28 @@ async function saveState(state) {
   }
 }
 
-// 🔹 vždy vytvorí platnú URL
 function getBaseUrl() {
   return process.env.VERCEL_URL
-    ? (process.env.VERCEL_URL.startsWith("http")
-        ? process.env.VERCEL_URL
-        : `https://${process.env.VERCEL_URL}`)
+    ? process.env.VERCEL_URL.startsWith("http")
+      ? process.env.VERCEL_URL
+      : `https://${process.env.VERCEL_URL}`
     : "https://nhlpro.sk";
 }
 
-// 🔹 načíta Top 10 hráčov podľa ratingu
 async function getTop10Players() {
   const resp = await fetch(`${getBaseUrl()}/api/matches`);
   const data = await resp.json();
   const players = data.playerRatings || {};
-  return Object.entries(players)
+  const top10 = Object.entries(players)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)
     .map(([name]) => name);
+
+  console.log("🎯 Top 10 hráčov:", top10);
+  return top10;
 }
 
-// 🔹 zatiaľ len simulácia výsledku
+// 🔹 simulácia výsledku (dočasne)
 async function playerScored(name) {
   return Math.random() < 0.2;
 }
@@ -75,9 +75,8 @@ async function playerScored(name) {
 async function getState() {
   const state = await loadState();
 
-  // inicializácia len ak ešte nie sú hráči
   if (!state.players || Object.keys(state.players).length === 0) {
-    console.log("⚙️ Inicializujem Mantingal z reálnych playerRatings...");
+    console.log("⚙️ Prvá inicializácia Mantingalu...");
     const top10 = await getTop10Players();
 
     state.players = {};
@@ -92,7 +91,7 @@ async function getState() {
     }
 
     await saveState(state);
-    console.log(`✅ Inicializovaných ${top10.length} hráčov pre Mantingal`);
+    console.log(`✅ Inicializovaných ${top10.length} hráčov`);
   }
 
   return { ok: true, state };
@@ -101,9 +100,73 @@ async function getState() {
 // 🔵 Update (10:00)
 async function doUpdate() {
   const state = await loadState();
-  const players = state.players || {};
   let dailyProfit = 0;
 
-  for (const [name, p] of Object.entries(players)) {
+  for (const [name, p] of Object.entries(state.players || {})) {
     if (!p.activeToday) continue;
-    const
+    const scored = await playerScored(name);
+
+    if (scored) {
+      const win = p.stake * 1.2;
+      p.profit += win;
+      p.lastResult = "win";
+      p.stake = 1;
+      p.streak = 0;
+      dailyProfit += win;
+    } else {
+      p.profit -= p.stake;
+      p.lastResult = "loss";
+      p.streak = (p.streak || 0) + 1;
+      p.stake *= 2;
+      dailyProfit -= p.stake;
+    }
+  }
+
+  state.history = state.history || [];
+  state.history.push({ date: new Date().toISOString().slice(0, 10), profit: dailyProfit });
+
+  await saveState(state);
+  return { ok: true, message: "Update hotový", dailyProfit };
+}
+
+// 🟣 Reset (12:00)
+async function doReset() {
+  const state = await loadState();
+  const top10 = await getTop10Players();
+
+  // všetkých deaktivuj
+  Object.values(state.players).forEach((p) => (p.activeToday = false));
+
+  for (const name of top10) {
+    if (!state.players[name]) {
+      state.players[name] = {
+        stake: 1,
+        profit: 0,
+        lastResult: null,
+        streak: 0,
+        activeToday: true,
+      };
+    } else {
+      const p = state.players[name];
+      p.activeToday = true;
+      if (p.lastResult === "win") p.stake = 1;
+    }
+  }
+
+  await saveState(state);
+  return { ok: true, message: "Reset hotový", active: top10 };
+}
+
+// ========== HANDLER ==========
+export default async function handler(req, res) {
+  const action = req.query.action || req.body?.action || "state";
+  try {
+    if (action === "state") return res.status(200).json(await getState());
+    if (action === "update") return res.status(200).json(await doUpdate());
+    if (action === "reset") return res.status(200).json(await doReset());
+    return res.status(400).json({ error: "Neznáma akcia" });
+  } catch (err) {
+    console.error("❌ Mantingal chyba:", err);
+    return res.status(500).json({ error: err.message });
+  }
+}
