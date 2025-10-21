@@ -2462,6 +2462,67 @@ nav button:hover::after {
   letter-spacing: 0.2px;
 }
 
+/* === VYLEPŠENÝ DESKTOP ŠTÝL PRE TABUĽKU STRATÉGIÍ === */
+@media (min-width: 1024px) {
+  #strategies-section {
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    text-align: center;
+  }
+
+  #strategies-section h2 {
+    font-size: 1.6rem;
+    color: #00eaff;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+    margin-bottom: 1.5rem;
+  }
+
+  #strategies-section table {
+    width: 95%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  #strategies-section th {
+    font-size: 15px;
+    font-weight: 600;
+    color: #4fefff;
+    text-shadow: 0 0 3px rgba(0, 255, 255, 0.3);
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+  }
+
+  #strategies-section td {
+    font-size: 15px;
+    color: #e7faff;
+    text-shadow: none;
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.08);
+  }
+
+  #strategies-section td:nth-child(2) {
+    text-align: center;
+  }
+
+  #strategies-section tr {
+    line-height: 1.6;
+  }
+
+  #strategies-section tr:nth-child(even) {
+    background-color: rgba(0, 255, 255, 0.02);
+  }
+
+  #strategies-section tr:hover {
+    background-color: rgba(0, 255, 255, 0.05);
+    transition: 0.2s ease;
+  }
+
+  /* viac priestoru medzi tabuľkou a textom hore */
+  #strategies-section p {
+    margin-bottom: 1.2rem;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
