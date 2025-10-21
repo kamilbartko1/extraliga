@@ -1214,6 +1214,41 @@ nav button:hover::after {
   }
 }
 
+/* --- Mobilné zlepšenia čitateľnosti --- */
+@media (max-width: 768px) {
+  /* menšie a čitateľnejšie názvy tímov */
+  table td {
+    font-size: 13px;           /* zmenšené písmo */
+    white-space: nowrap;       /* zabráni zalomeniu názvu */
+    text-overflow: ellipsis;   /* ak by sa nezmestil, zobrazí „…“ */
+    overflow: hidden;          /* skryje pretečený text */
+  }
+
+  /* menej žiarivé nadpisy (DOMÁCI, HOSTIA, SKÓRE...) */
+  table th {
+    font-size: 12px;
+    text-shadow: 0 0 4px rgba(0,255,255,0.5); /* jemnejší tieň */
+    letter-spacing: 1px;
+  }
+
+  /* hlavičky sekcií ako “VÝSLEDKY”, “TIPOVACIE STRATÉGIE” */
+  h2 {
+    font-size: 18px;
+    text-shadow: 0 0 6px rgba(0,255,255,0.4); /* menej kontrastný */
+  }
+
+  /* prispôsobenie tabuľky - menšie okraje */
+  table {
+    width: 100%;
+    border-spacing: 0;
+  }
+
+  /* odstráni horizontálne posúvanie */
+  .section {
+    overflow-x: hidden;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
