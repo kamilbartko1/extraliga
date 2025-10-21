@@ -1,8 +1,7 @@
 // /api/strategies.js
-const BET_AMOUNT = 10; // 10 € na zápas
-const ODDS = 1.9;      // kurz 1.9
+const BET_AMOUNT = 10;
+const ODDS = 1.9;
 
-// Z boxscore vytiahni všetkých korčuliarov (forwards + defense) z oboch tímov
 function collectSkaters(box) {
   const home = box?.playerByGameStats?.homeTeam || {};
   const away = box?.playerByGameStats?.awayTeam || {};
@@ -14,24 +13,43 @@ function collectSkaters(box) {
     ...(Array.isArray(away.forwards) ? away.forwards : []),
     ...(Array.isArray(away.defense) ? away.defense : []),
   ];
-  return [...homeSkaters, ...awaySkaters];
+  return [
+    ...homeSkaters.map(p => ({ ...p, team: home.teamName?.default || "Home" })),
+    ...awaySkaters.map(p => ({ ...p, team: away.teamName?.default || "Away" })),
+  ];
 }
 
-// Podmienka: či niekto dal aspoň 2 góly
-function hasTwoGoals(box) {
-  const skaters = collectSkaters(box);
-  return skaters.some(p => Number(p?.goals ?? p?.stats?.goals ?? 0) >= 2);
+function playersWithTwoGoals(box) {
+  return collectSkaters(box)
+    .filter(p => Number(p?.goals ?? p?.stats?.goals ?? 0) >= 2)
+    .map(p => ({
+      name: `${p.firstName?.default || ""} ${p.lastName?.default || ""}`.trim(),
+      goals: Number(p?.goals ?? p?.stats?.goals ?? 0),
+      assists: Number(p?.assists ?? p?.stats?.assists ?? 0),
+      plusMinus: Number(p?.plusMinus ?? p?.stats?.plusMinus ?? 0),
+      shots: Number(p?.shots ?? p?.stats?.shots ?? 0),
+      team: p.team || "",
+    }));
 }
 
 export default async function handler(req, res) {
   try {
-    // 1) Načítaj všetky odohrané zápasy z tvojho backendu (pevná doména, spoľahlivé)
-    const baseUrl = "https://nhlpro.sk";
-    const matchesResp = await fetch(`${baseUrl}/api/matches`, { cache: "no-store" });
-    if (!matchesResp.ok) {
-      throw new Error(`Nepodarilo sa načítať /api/matches (${matchesResp.status})`);
+    const { id } = req.query;
+
+    // === 🔹 1) Ak je zadaný ?id=, vráť detail pre jeden zápas ===
+    if (id) {
+      const boxUrl = `https://api-web.nhle.com/v1/gamecenter/${id}/boxscore`;
+      const boxResp = await fetch(boxUrl, { cache: "no-store" });
+      if (!boxResp.ok) throw new Error(`Boxscore ${id} nedostupné (${boxResp.status})`);
+      const box = await boxResp.json();
+      const players = playersWithTwoGoals(box);
+      return res.status(200).json({ ok: true, id, players });
     }
 
+    // === 🔹 2) Inak – vráť výpočty pre všetky zápasy ===
+    const baseUrl = "https://nhlpro.sk";
+    const matchesResp = await fetch(`${baseUrl}/api/matches`, { cache: "no-store" });
+    if (!matchesResp.ok) throw new Error(`Nepodarilo sa načítať /api/matches`);
     const matchesData = await matchesResp.json();
     const matches = Array.isArray(matchesData.matches) ? matchesData.matches : [];
 
@@ -39,10 +57,8 @@ export default async function handler(req, res) {
     let totalBet = 0;
     let totalProfit = 0;
 
-    // 2) Prejdi iba odohrané zápasy
     for (const m of matches) {
       if (m.status !== "closed") continue;
-
       totalBet += BET_AMOUNT;
       const gameId = m.id;
       let success = false;
@@ -50,21 +66,17 @@ export default async function handler(req, res) {
       try {
         const boxUrl = `https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`;
         const boxResp = await fetch(boxUrl, { cache: "no-store" });
-        if (!boxResp.ok) throw new Error(`Boxscore ${gameId} nedostupné (${boxResp.status})`);
+        if (!boxResp.ok) throw new Error(`Boxscore ${gameId} nedostupné`);
         const box = await boxResp.json();
-
-        success = hasTwoGoals(box);
+        success = playersWithTwoGoals(box).length > 0;
       } catch (e) {
-        // ak boxscore nevieme načítať, počítaj to ako NEúspech (konzervatívne)
         console.warn(`⚠️ Zápas ${gameId}: ${e.message}`);
         success = false;
       }
 
-      // 3) Výpočet zisku pre tento zápas
       const profitNum = success ? BET_AMOUNT * (ODDS - 1) : -BET_AMOUNT;
       totalProfit += profitNum;
 
-      // 4) Ulož riadok do výsledkov (profit nechávame ako číslo)
       results.push({
         id: gameId,
         date: m.date,
@@ -76,7 +88,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // 5) Odpoveď
     res.status(200).json({
       ok: true,
       totalBet,
