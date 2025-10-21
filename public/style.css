@@ -1039,6 +1039,34 @@ nav button:hover::after {
   text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
 }
 
+/* ===== Vodoznak "Powered by AI-Logic" ===== */
+.ai-watermark {
+  position: absolute;
+  top: 12px;
+  right: 25px;
+  font-family: "Poppins", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: rgba(0, 255, 255, 0.35);
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 4px rgba(0, 255, 255, 0.4);
+  user-select: none;
+  pointer-events: none; /* nech sa nedá kliknúť */
+  transition: opacity 0.4s ease-in-out;
+}
+
+.ai-watermark span {
+  font-family: "Orbitron", sans-serif; /* futuristický font pre AI-Logic */
+  color: rgba(0, 255, 255, 0.55);
+  font-weight: 600;
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.7);
+}
+
+/* jemný efekt po prechode myšou na header */
+header:hover .ai-watermark {
+  opacity: 0.85;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
