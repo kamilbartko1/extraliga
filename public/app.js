@@ -173,7 +173,11 @@ async function fetchMatches() {
       home_score: m.sport_event_status.home_score,
       away_score: m.sport_event_status.away_score,
       status: m.sport_event_status.status,
-      date: new Date(m.sport_event.start_time).toISOString().slice(0, 10)
+      const localDate = new Date(m.sport_event.start_time).toLocaleString("sk-SK", {
+  timeZone: "Europe/Bratislava"
+});
+const formatted = new Date(localDate).toISOString().slice(0, 10);
+date: formatted
     }));
 
     simplified.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -212,7 +216,13 @@ function displayMatches(matches) {
 
  days.forEach((day) => {
   const roundRow = document.createElement("tr");
-  roundRow.innerHTML = `<td colspan="4"><b>${day}</b></td>`;
+  const dateObj = new Date(day);
+const formattedDate = dateObj.toLocaleDateString("sk-SK", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric"
+});
+roundRow.innerHTML = `<td colspan="4"><b>${formattedDate}</b></td>`;
   tableBody.appendChild(roundRow);
 
     grouped[day].forEach(match => {
