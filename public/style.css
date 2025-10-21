@@ -1042,29 +1042,38 @@ nav button:hover::after {
 /* ===== Vodoznak "Powered by AI-Logic" ===== */
 .ai-watermark {
   position: absolute;
-  top: 12px;
-  right: 25px;
+  top: 8px;
+  right: 14px;
   font-family: "Poppins", sans-serif;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
   color: rgba(0, 255, 255, 0.35);
-  letter-spacing: 1px;
-  text-shadow: 1px 1px 4px rgba(0, 255, 255, 0.4);
+  text-shadow: 0 0 4px rgba(0, 255, 255, 0.4);
+  letter-spacing: 0.5px;
   user-select: none;
-  pointer-events: none; /* nech sa nedá kliknúť */
-  transition: opacity 0.4s ease-in-out;
+  pointer-events: none;
 }
 
+/* Zvýraznenie slova AI-Logic */
 .ai-watermark span {
-  font-family: "Orbitron", sans-serif; /* futuristický font pre AI-Logic */
+  font-family: "Orbitron", sans-serif;
   color: rgba(0, 255, 255, 0.55);
-  font-weight: 600;
   text-shadow: 0 0 6px rgba(0, 255, 255, 0.7);
 }
 
-/* jemný efekt po prechode myšou na header */
-header:hover .ai-watermark {
-  opacity: 0.85;
+/* 🔹 Optimalizácia pre mobilné zariadenia */
+@media (max-width: 768px) {
+  .ai-watermark {
+    top: 4px;
+    right: 10px;
+    font-size: 0.75rem;
+    opacity: 0.6;
+  }
+
+  .ai-watermark span {
+    font-size: 0.8rem;
+    text-shadow: 0 0 3px rgba(0, 255, 255, 0.5);
+  }
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
