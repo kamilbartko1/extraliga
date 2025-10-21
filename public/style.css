@@ -1288,6 +1288,51 @@ nav button:hover::after {
   }
 }
 
+/* === Optimalizácia tabuliek pre mobil === */
+@media (max-width: 768px) {
+  table {
+    width: 100%;
+    table-layout: auto; /* prispôsobí šírku obsahu */
+    border-spacing: 0;
+  }
+
+  table th, table td {
+    font-size: 12px;          /* menšie písmo */
+    font-weight: 400;         /* tenké písmo */
+    white-space: nowrap;      /* nezalomí text na viac riadkov */
+    overflow: hidden;
+    text-overflow: ellipsis;  /* ak by bolo extrémne dlhé slovo, skráti ho tromi bodkami */
+    text-shadow: none;        /* odstránený tieň */
+    padding: 6px 4px;
+  }
+
+  table th {
+    font-size: 11px;
+    font-weight: 600;
+    text-shadow: 0 0 2px rgba(0, 255, 255, 0.3); /* jemné svetlo, čitateľné */
+  }
+
+  /* dátumový riadok (21. 10. 2025) – nech má priestor */
+  table tr td[colspan="4"] {
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    padding: 8px 0;
+  }
+
+  /* sekčný nadpis – menší pre mobil */
+  h2 {
+    font-size: 17px;
+    text-shadow: 0 0 4px rgba(0, 255, 255, 0.4);
+    margin-bottom: 10px;
+  }
+
+  /* kontajner sekcie – nech nepovoľuje horizontálny scroll */
+  .section {
+    overflow-x: hidden;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
