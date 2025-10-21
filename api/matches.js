@@ -93,32 +93,25 @@ export default async function handler(req, res) {
                 const box = await r.json();
 
                 const homeSkaters = extractSkaters(box?.playerByGameStats?.homeTeam || {});
-                const awaySkaters = extractSkaters(box?.playerByGameStats?.awayTeam || {});
-                const allSkaters = [...homeSkaters, ...awaySkaters];
+const awaySkaters = extractSkaters(box?.playerByGameStats?.awayTeam || {});
+const allSkaters = [...homeSkaters, ...awaySkaters];
 
-                for (const p of allSkaters) {
-                  const name = pickPlayerName(p);
+// získaj názvy tímov
+const homeTeamName = box?.homeTeam?.name?.default || box?.homeTeam?.name || box?.homeTeam?.abbrev || "Neznámy tím";
+const awayTeamName = box?.awayTeam?.name?.default || box?.awayTeam?.name || box?.awayTeam?.abbrev || "Neznámy tím";
 
-                // 🔹 pridaj rozpoznanie tímu (domáci / hosťujúci)
-                const teamName =
-                  homeSkaters.includes(p)
-                    ? box?.homeTeam?.name?.default || "Neznámy tím"
-                    : awaySkaters.includes(p)
-                    ? box?.awayTeam?.name?.default || "Neznámy tím"
-                    : "Neznámy tím";
+for (const p of allSkaters) {
+  const name = pickPlayerName(p);
+  const teamAbbrev = p.teamAbbrev || (homeSkaters.includes(p) ? box?.homeTeam?.abbrev : box?.awayTeam?.abbrev);
+  const teamFullName = teamAbbrev === box?.homeTeam?.abbrev ? homeTeamName : awayTeamName;
+  const fullDisplayName = `${name} (${teamFullName})`;
 
-                // 🔹 ulož hráča spolu s tímom a ratingom
-                if (!playerRatings[name]) {
-                  playerRatings[name] = {
-                    rating: START_PLAYER_RATING,
-                    team: teamName
-                  };
-                }
+  if (!playerRatings[fullDisplayName]) playerRatings[fullDisplayName] = START_PLAYER_RATING;
+  const goals = Number(p.goals || 0);
+  const assists = Number(p.assists || 0);
+  playerRatings[fullDisplayName] += goals * GOAL_POINTS + assists * ASSIST_POINTS;
+}
 
-                const goals = Number(p.goals || 0);
-                const assists = Number(p.assists || 0);
-                playerRatings[name].rating += goals * GOAL_POINTS + assists * ASSIST_POINTS;
-              }
 
               } catch {}
             });
