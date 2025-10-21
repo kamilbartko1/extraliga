@@ -2182,6 +2182,101 @@ nav button:hover::after {
   }
 }
 
+/* ======= TIPOVACIE STRATÉGIE – FINÁLNA ÚPRAVA ======= */
+@media (max-width: 768px) {
+  #strategies-section table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: inherit;
+  }
+
+  #strategies-section th,
+  #strategies-section td {
+    padding: 6px 4px;
+    font-size: 14px; /* rovnaké ako pri výsledkoch */
+    line-height: 1.4;
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* Stĺpce */
+  #strategies-section th:nth-child(1),
+  #strategies-section td:nth-child(1) {
+    width: 23%;
+    text-align: left;
+    color: #6fe2ff;
+  }
+
+  #strategies-section th:nth-child(2),
+  #strategies-section td:nth-child(2) {
+    width: 35%;
+    text-align: left;
+    white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    font-weight: 500;
+  }
+
+  #strategies-section th:nth-child(3),
+  #strategies-section td:nth-child(3) {
+    width: 12%;
+  }
+
+  #strategies-section th:nth-child(4),
+  #strategies-section td:nth-child(4) {
+    width: 15%;
+  }
+
+  #strategies-section th:nth-child(5),
+  #strategies-section td:nth-child(5) {
+    width: 15%;
+    text-align: right;
+    font-weight: 600;
+  }
+
+  /* Hlavička – nech sa nič neprekrýva */
+  #strategies-section th {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: #2bd0ff;
+    padding: 8px 4px;
+    white-space: nowrap;
+  }
+
+  /* Zarovnanie a rozostupy riadkov */
+  #strategies-section tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  #strategies-section td {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  /* Farby výhier/prehier */
+  #strategies-section td:last-child {
+    color: #fff;
+  }
+  #strategies-section td:last-child:has([style*="red"]) {
+    color: #ff5050;
+  }
+  #strategies-section td:last-child:has([style*="green"]) {
+    color: #00ff88;
+  }
+
+  /* Ak je obrazovka veľmi úzka (napr. iPhone SE) */
+  @media (max-width: 380px) {
+    #strategies-section th,
+    #strategies-section td {
+      font-size: 12.5px;
+      padding: 5px 3px;
+    }
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
