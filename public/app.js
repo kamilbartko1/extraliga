@@ -283,27 +283,39 @@ async function displayStrategies() {
 
   wrap.innerHTML = `
     <h2>Tipovacie stratégie</h2>
-    <p>💡 Model: 10 € na to, že v zápase niekto dá aspoň 2 góly (kurz 1.9)</p>
-    <p>Načítavam výsledky...</p>
+    <p>💡 Test: vsádzame 10 € na to, že v zápase niekto dá aspoň 2 góly. Kurz = 1.9.</p>
+    <p>Prebieha výpočet ziskovosti...</p>
   `;
 
   try {
-    const resp = await fetch("/api/strategies");
-    const data = await resp.json();
-    if (!data.ok) throw new Error(data.error || "Neznáma chyba");
+    const resp = await fetch("/api/strategies", { cache: "no-store" });
+
+    // bezpečný parse — ak by server vrátil HTML chybu
+    let data;
+    try {
+      data = await resp.json();
+    } catch {
+      const txt = await resp.text();
+      throw new Error("Očakával som JSON, prišlo: " + txt.slice(0, 120));
+    }
+
+    if (!data.ok) throw new Error(data.error || "Chyba výpočtu");
 
     const { totalBet, totalProfit, results } = data;
 
+    // Header so sumárom
     wrap.innerHTML = `
       <h2>Tipovacie stratégie</h2>
+      <p><b>Model:</b> 10 € na „hráč dá 2+ góly“ (kurz 1.9)</p>
       <p><b>Počet zápasov:</b> ${results.length} |
-         <b>Vsadené:</b> ${Number(totalBet).toFixed(2)} € |
-         <b>Výsledok:</b> 
-         <span style="color:${totalProfit >= 0 ? "limegreen" : "red"}">
-           ${totalProfit.toFixed(2)} €
-         </span></p>
+         <b>Vsadené spolu:</b> ${Number(totalBet).toFixed(2)} € |
+         <b>Výsledok:</b> <span style="color:${Number(totalProfit) >= 0 ? "limegreen" : "red"}">
+           ${Number(totalProfit).toFixed(2)} €
+         </span>
+      </p>
     `;
 
+    // Tabuľka výsledkov
     const table = document.createElement("table");
     table.innerHTML = `
       <thead>
@@ -316,67 +328,24 @@ async function displayStrategies() {
         </tr>
       </thead>
       <tbody>
-        ${results
-          .map(
-            (r, i) => `
-            <tr data-game="${r.id}">
+        ${
+          results.map(r => `
+            <tr>
               <td>${r.date}</td>
-              <td class="game-link" style="color:${r.result === "Výhra" ? "#00ccff" : "inherit"};cursor:${r.result === "Výhra" ? "pointer" : "default"};">
-                ${r.home} – ${r.away}
-              </td>
+              <td>${r.home} – ${r.away}</td>
               <td>${r.twoGoals}</td>
               <td>${r.result}</td>
-              <td style="color:${r.profit >= 0 ? "limegreen" : "red"}">${r.profit.toFixed(2)}</td>
+              <td style="color:${Number(r.profit) >= 0 ? "limegreen" : "red"}">
+                ${Number(r.profit).toFixed(2)}
+              </td>
             </tr>
-          `
-          )
-          .join("")}
+          `).join("")
+        }
       </tbody>
     `;
     wrap.appendChild(table);
-
-    // 🟢 Po kliknutí na výherný zápas zobraz detail hráča s 2+ gólmi
-    table.querySelectorAll(".game-link").forEach((cell) => {
-      cell.addEventListener("click", async () => {
-        const tr = cell.closest("tr");
-        const gameId = tr.getAttribute("data-game");
-        const next = tr.nextElementSibling;
-
-        // ak už máme otvorené okno pod týmto riadkom → zavri
-        if (next && next.classList.contains("detail-row")) {
-          next.remove();
-          return;
-        }
-
-        // načítaj dáta
-        const resp = await fetch(`/api/strategies?id=${gameId}`);
-        const box = await resp.json();
-        if (!box.ok || !box.players?.length) {
-          const errRow = document.createElement("tr");
-          errRow.className = "detail-row";
-          errRow.innerHTML = `<td colspan="5">❌ Žiadny hráč s 2+ gólmi</td>`;
-          tr.after(errRow);
-          return;
-        }
-
-        const playersHTML = box.players
-          .map(
-            (p) => `
-          <div class="player-detail">
-            <b>${p.name}</b> (${p.team}) – ${p.goals}G ${p.assists}A | +/- ${p.plusMinus} | strely: ${p.shots}
-          </div>
-        `
-          )
-          .join("");
-
-        const row = document.createElement("tr");
-        row.className = "detail-row";
-        row.innerHTML = `<td colspan="5" style="background:#111;">${playersHTML}</td>`;
-        tr.after(row);
-      });
-    });
   } catch (err) {
-    wrap.innerHTML += `<p style="color:red">❌ Chyba: ${err.message}</p>`;
+    wrap.innerHTML += `<p>❌ Chyba: ${err.message}</p>`;
   }
 }
 
