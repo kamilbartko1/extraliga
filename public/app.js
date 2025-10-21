@@ -392,6 +392,15 @@ document.getElementById("mobileSelect")?.addEventListener("change", (e) => {
 
 // === Štart ===
 window.addEventListener("DOMContentLoaded", () => {
+  // načítaj zápasy a predikcie
   fetchMatches();
   displayPredictions();
+
+  // zobraz úvodnú sekciu (Výsledky)
+  showSection("matches-section");
+
+  // vyber „Výsledky“ ako aktívnu položku v mobile
+  const select = document.getElementById("mobileSelect");
+  if (select) select.value = "matches";
 });
+
