@@ -2025,6 +2025,71 @@ nav button:hover::after {
   }
 }
 
+/* === Mobilná úprava vzhľadu výsledkov === */
+@media (max-width: 768px) {
+  /* Dátumové bloky – tenšie a kompaktnejšie */
+  .day-row td {
+    font-size: 13px;
+    text-align: center;
+    padding: 5px 0;
+    background: linear-gradient(90deg, rgba(0,255,255,0.05), rgba(0,255,255,0.1));
+    border-radius: 4px;
+    color: #32e0ff;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  /* Riadky zápasov – o niečo vyššie a čitateľnejšie */
+  #matches tbody tr {
+    border-bottom: 1px solid rgba(0,255,255,0.05);
+    background: linear-gradient(90deg, rgba(0,255,255,0.02), rgba(0,255,255,0.03));
+    transition: background 0.2s ease;
+  }
+
+  #matches tbody tr:hover {
+    background: linear-gradient(90deg, rgba(0,255,255,0.08), rgba(0,255,255,0.1));
+  }
+
+  #matches tbody td {
+    font-size: 13px;
+    padding: 10px 6px; /* vyšší riadok */
+    line-height: 1.3;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  /* názvy tímov – mierne viac miesta a plynule zarovnanie */
+  #matches tbody td:nth-child(1),
+  #matches tbody td:nth-child(2) {
+    font-size: 12.5px;
+    white-space: normal;
+    word-break: keep-all;
+    text-align: left;
+    padding-left: 8px;
+  }
+
+  #matches tbody td:nth-child(3) {
+    width: 15%;
+    text-align: center;
+  }
+
+  #matches tbody td:nth-child(4) {
+    width: 12%;
+    text-align: center;
+  }
+
+  /* jemné oddelenie medzi zápasmi */
+  #matches tbody tr + tr td {
+    border-top: 1px solid rgba(0,255,255,0.07);
+  }
+
+  /* väčší kontrast pre prehľadnosť */
+  #matches {
+    border-radius: 6px;
+    overflow: hidden;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
