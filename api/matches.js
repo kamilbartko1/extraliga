@@ -93,26 +93,16 @@ export default async function handler(req, res) {
                 const box = await r.json();
 
                 const homeSkaters = extractSkaters(box?.playerByGameStats?.homeTeam || {});
-const awaySkaters = extractSkaters(box?.playerByGameStats?.awayTeam || {});
-const allSkaters = [...homeSkaters, ...awaySkaters];
+                const awaySkaters = extractSkaters(box?.playerByGameStats?.awayTeam || {});
+                const allSkaters = [...homeSkaters, ...awaySkaters];
 
-// získaj názvy tímov
-const homeTeamName = box?.homeTeam?.name?.default || box?.homeTeam?.name || box?.homeTeam?.abbrev || "Neznámy tím";
-const awayTeamName = box?.awayTeam?.name?.default || box?.awayTeam?.name || box?.awayTeam?.abbrev || "Neznámy tím";
-
-for (const p of allSkaters) {
-  const name = pickPlayerName(p);
-  const teamAbbrev = p.teamAbbrev || (homeSkaters.includes(p) ? box?.homeTeam?.abbrev : box?.awayTeam?.abbrev);
-  const teamFullName = teamAbbrev === box?.homeTeam?.abbrev ? homeTeamName : awayTeamName;
-  const fullDisplayName = `${name} (${teamFullName})`;
-
-  if (!playerRatings[fullDisplayName]) playerRatings[fullDisplayName] = START_PLAYER_RATING;
-  const goals = Number(p.goals || 0);
-  const assists = Number(p.assists || 0);
-  playerRatings[fullDisplayName] += goals * GOAL_POINTS + assists * ASSIST_POINTS;
-}
-
-
+                for (const p of allSkaters) {
+                  const name = pickPlayerName(p);
+                  if (!playerRatings[name]) playerRatings[name] = START_PLAYER_RATING;
+                  const goals = Number(p.goals || 0);
+                  const assists = Number(p.assists || 0);
+                  playerRatings[name] += goals * GOAL_POINTS + assists * ASSIST_POINTS;
+                }
               } catch {}
             });
           }
@@ -138,12 +128,12 @@ for (const p of allSkaters) {
 
     // ---- nový krok: vyber TOP 50 hráčov podľa ratingu ----
     const topPlayers = Object.entries(playerRatings)
-  .sort((a, b) => b[1].rating - a[1].rating)
-  .slice(0, 50)
-  .reduce((acc, [name, info]) => {
-    acc[name] = info;
-    return acc;
-  }, {});
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 50)
+      .reduce((acc, [name, rating]) => {
+        acc[name] = rating;
+        return acc;
+      }, {});
 
     console.log(
       `✅ Zápasy: ${allMatches.length} | Tímy: ${Object.keys(teamRatings).length} | TOP hráči: ${Object.keys(topPlayers).length}`
