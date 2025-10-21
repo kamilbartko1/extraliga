@@ -2372,6 +2372,39 @@ nav button:hover::after {
   margin-bottom: 10px;
 }
 
+/* === ČISTEJŠÍ TEXT PRE ZÁPASY === */
+#strategies-section td:nth-child(2) {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  font-weight: 500;
+  color: #e6faff;
+  text-shadow: 0 0 2px rgba(0, 255, 255, 0.4);
+  white-space: normal;
+  line-height: 1.2;
+  letter-spacing: 0.3px;
+}
+
+/* rovnaký font pre nadpisy stĺpcov */
+#strategies-section th {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  font-weight: 600;
+  text-shadow: 0 0 3px rgba(0, 255, 255, 0.5);
+}
+
+/* celé tabuľky – menej rozmazaný text */
+#strategies-section td,
+#strategies-section th {
+  color: #dff9ff;
+  text-shadow: 0 0 2px rgba(0, 255, 255, 0.3);
+}
+
+/* nadpis TIPOVACIE STRATÉGIE – jednotný vzhľad */
+#strategies-section h2 {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  color: #00e6ff;
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.6);
+  letter-spacing: 0.5px;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
