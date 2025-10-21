@@ -1564,6 +1564,78 @@ nav button:hover::after {
   html, body { overflow-x: hidden; }
 }
 
+/* === Final mobilný layout tabuliek (vysledky, strategie) === */
+@media (max-width: 768px) {
+  #matches table,
+  #strategiesTable {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+
+  #matches thead th,
+  #strategiesTable thead th {
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-shadow: 0 0 2px rgba(0,255,255,0.25);
+    letter-spacing: 0.5px;
+  }
+
+  #matches tbody td,
+  #strategiesTable tbody td {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 4px;
+    line-height: 1.2;
+    text-shadow: none;
+  }
+
+  /* ===== Rozloženie stĺpcov pre výsledky ===== */
+  #matches tbody td:nth-child(1) { 
+    width: 40%; 
+    text-align: right; 
+    padding-right: 6px;
+  } /* domáci */
+
+  #matches tbody td:nth-child(2) { 
+    width: 40%; 
+    text-align: left; 
+    padding-left: 6px;
+  } /* hostia */
+
+  #matches tbody td:nth-child(3) { 
+    width: 12%; 
+    text-align: right; 
+    padding-right: 4px;
+  } /* skóre */
+
+  #matches tbody td:nth-child(4) { 
+    width: 8%; 
+    text-align: right;
+    padding-right: 2px;
+  } /* status */
+
+  /* === aby názvy tímov sedeli vedľa seba a nelámali sa uprostred === */
+  #matches tbody td:nth-child(1),
+  #matches tbody td:nth-child(2) {
+    white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: normal;
+  }
+
+  /* Dátumový riadok */
+  .day-row, .round-row {
+    font-size: 13px !important;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  html, body {
+    overflow-x: hidden;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
