@@ -40,7 +40,6 @@ async function saveState(state) {
         body,
       });
     } else {
-      // Vercel FS je read-only; ak to zlyhá, nevadí – odpoveď už hráčov obsahuje.
       await fs.writeFile(DATA_FILE, body);
     }
   } catch (e) {
@@ -48,8 +47,8 @@ async function saveState(state) {
   }
 }
 
+// ---------- rating helper ----------
 async function getTop10PlayersFromMatches() {
-  // Priamo tvoja produkčná URL s funkčným playerRatings
   const resp = await fetch("https://nhlpro.sk/api/matches", { cache: "no-store" });
   if (!resp.ok) throw new Error(`matches fetch failed: ${resp.status}`);
   const data = await resp.json();
@@ -61,26 +60,17 @@ async function getTop10PlayersFromMatches() {
   return top10;
 }
 
-// dočasná simulácia – neskôr nahradíš boxscore checkom
-async function playerScored() {
-  return Math.random() < 0.2;
-}
-
 // ---------- actions ----------
 async function getState() {
-  // 1) načítaj existujúci stav
   let state = await loadState();
 
-  // 2) Ak chýbajú hráči → vždy si zober Top10 z ratingu (z tvojho /api/matches)
   if (!state.players || Object.keys(state.players).length === 0) {
     const top10 = await getTop10PlayersFromMatches();
 
-    // Ak by náhodou neboli hráči v matches, vráť prázdno (frontend to ošetrí)
     if (!top10.length) {
       return { ok: true, state: { players: {}, history: [] } };
     }
 
-    // 3) Postav hráčov pre Mantingal
     const players = {};
     for (const name of top10) {
       players[name] = {
@@ -92,54 +82,136 @@ async function getState() {
       };
     }
 
-    // 4) Ulož “best-effort” (ak sa nepodarí, nevadí) a hlavne VRÁŤ ICH V ODPOVEDI
     state = { players, history: [] };
     await saveState(state);
     return { ok: true, state };
   }
 
-  // 5) Ak hráči už sú, normálne ich vráť
   return { ok: true, state };
 }
 
+// ---------- UPDATE – reálne výsledky z boxscore ----------
 async function doUpdate() {
   const state = await loadState();
   const players = state.players || {};
   let dailyProfit = 0;
 
+  const FIXED_ODDS = 2.2;
+
+  // dátumy – posledných 24h
+  const now = new Date();
+  const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const formatDate = (d) => d.toISOString().slice(0, 10);
+  const dates = [formatDate(yesterday), formatDate(now)];
+
+  const recentGames = [];
+  for (const day of dates) {
+    try {
+      const resp = await fetch(`https://api-web.nhle.com/v1/score/${day}`);
+      if (!resp.ok) continue;
+      const data = await resp.json();
+      const games = Array.isArray(data.games) ? data.games : [];
+      for (const g of games) {
+        const state = String(g.gameState || "").toUpperCase();
+        if (["FINAL", "OFF"].includes(state)) {
+          recentGames.push(g);
+        }
+      }
+    } catch (err) {
+      console.warn("⚠️ Chyba pri fetchnutí zápasov:", err.message);
+    }
+  }
+
+  console.log(`📅 Načítaných ${recentGames.length} zápasov za posledných 24h`);
+
+  // všetky hráčske dáta z boxscore
+  const recentStats = {};
+
+  for (const game of recentGames) {
+    try {
+      const r = await fetch(`https://api-web.nhle.com/v1/gamecenter/${game.id}/boxscore`);
+      if (!r.ok) continue;
+      const box = await r.json();
+
+      const extractPlayers = (team) => [
+        ...(team?.forwards || []),
+        ...(team?.defense || []),
+      ];
+
+      const skaters = [
+        ...extractPlayers(box?.playerByGameStats?.homeTeam),
+        ...extractPlayers(box?.playerByGameStats?.awayTeam),
+      ];
+
+      for (const p of skaters) {
+        const name =
+          p.name?.default ||
+          [p.firstName?.default, p.lastName?.default].filter(Boolean).join(" ");
+        if (!name) continue;
+
+        const goals = Number(p.goals || 0);
+        const assists = Number(p.assists || 0);
+
+        if (!recentStats[name]) {
+          recentStats[name] = { goals: 0, assists: 0, games: 0 };
+        }
+        recentStats[name].goals += goals;
+        recentStats[name].assists += assists;
+        recentStats[name].games += 1;
+      }
+    } catch (err) {
+      console.warn(`⚠️ Chyba pri boxscore zápasu ${game.id}:`, err.message);
+    }
+  }
+
+  console.log(`📊 Načítaných ${Object.keys(recentStats).length} hráčov zo zápasov`);
+
+  // vyhodnotenie
   for (const [name, p] of Object.entries(players)) {
     if (!p.activeToday) continue;
-    const scored = await playerScored(name);
-    if (scored) {
-      const win = p.stake * 1.2;
-      p.profit += win;
+
+    const stats = recentStats[name];
+    if (!stats) {
+      console.log(`⏸️ ${name} nehral – bez zmeny`);
+      continue;
+    }
+
+    if (stats.goals > 0) {
+      const winProfit = p.stake * (FIXED_ODDS - 1);
+      p.profit += winProfit;
       p.lastResult = "win";
       p.stake = 1;
       p.streak = 0;
-      dailyProfit += win;
+      dailyProfit += winProfit;
+      console.log(`✅ ${name} dal gól (${winProfit.toFixed(2)} €)`);
     } else {
       p.profit -= p.stake;
       p.lastResult = "loss";
       p.streak = (p.streak || 0) + 1;
       p.stake *= 2;
       dailyProfit -= p.stake;
+      console.log(`❌ ${name} nevsietil, ďalší stake: ${p.stake} €`);
     }
   }
 
+  // uloženie histórie
   state.history = state.history || [];
-  state.history.push({ date: new Date().toISOString().slice(0, 10), profit: dailyProfit });
+  state.history.push({
+    date: new Date().toISOString().slice(0, 10),
+    profit: Number(dailyProfit.toFixed(2)),
+  });
+
   await saveState(state);
   return { ok: true, message: "Update hotový", dailyProfit };
 }
 
+// ---------- RESET ----------
 async function doReset() {
   const state = await loadState();
   const top10 = await getTop10PlayersFromMatches();
 
-  // deaktivuj starých
   Object.values(state.players || {}).forEach((p) => (p.activeToday = false));
 
-  // aktivuj nových
   for (const name of top10) {
     if (!state.players) state.players = {};
     if (!state.players[name]) {
