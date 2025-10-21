@@ -1396,6 +1396,62 @@ nav button:hover::after {
   }
 }
 
+/* === Oprava pre mobil: zobraz celé názvy tímov === */
+@media (max-width: 768px) {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  table th, table td {
+    font-size: 12px;
+    font-weight: 400;
+    padding: 5px 3px;
+    white-space: nowrap;
+    overflow: visible !important; /* ← zobrazí celý text */
+    text-overflow: unset !important; /* ← žiadne „…“ */
+    text-shadow: none;
+    vertical-align: middle;
+  }
+
+  table td:nth-child(1),
+  table td:nth-child(2) {
+    width: 35%;
+  }
+
+  table td:nth-child(3) {
+    width: 20%;
+    text-align: center;
+  }
+
+  table td:nth-child(4) {
+    width: 10%;
+    text-align: center;
+  }
+
+  table th {
+    font-size: 11px;
+    font-weight: 600;
+    text-shadow: 0 0 2px rgba(0, 255, 255, 0.2);
+  }
+
+  /* Hlavička stĺpcov (DOMÁCI / HOSTIA / SKÓRE / STATUS) */
+  table thead th {
+    white-space: nowrap;
+    text-overflow: clip;
+  }
+
+  h2 {
+    font-size: 17px;
+    text-shadow: 0 0 3px rgba(0, 255, 255, 0.3);
+  }
+
+  body, .section {
+    overflow-x: hidden;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
