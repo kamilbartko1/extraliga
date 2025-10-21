@@ -988,40 +988,6 @@ nav button:hover::after {
   font-weight: 600;
 }
 
-/* 💡 Sekcia Tipovacie stratégie */
-#strategies-section {
-  background: rgba(0, 15, 30, 0.85);
-  border: 1px solid rgba(0, 234, 255, 0.2);
-  border-radius: 12px;
-  padding: 1.2rem;
-  color: #eaf9ff;
-  line-height: 1.6;
-}
-
-#strategies-section h2 {
-  text-align: center;
-  font-size: 1.8rem;
-  color: #ffd400;
-  text-shadow: 0 0 8px rgba(255, 212, 0, 0.5);
-  margin-bottom: 1rem;
-}
-
-#strategies-section ul {
-  margin-left: 1.2rem;
-  list-style-type: "🏒 ";
-}
-
-#strategies-section li {
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-}
-
-#strategies-section p {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  color: #b8e9ff;
-}
-
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
