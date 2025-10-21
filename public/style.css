@@ -2572,6 +2572,42 @@ nav button:hover::after {
   }
 }
 
+/* === Úprava hlavičky v sekcii Tipovacie stratégie === */
+#strategies-section h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+#strategies-section p {
+  display: block;
+  text-align: left;
+  width: 90%;
+  max-width: 600px;
+  margin: 0.4rem auto;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+  font-size: 1rem;
+  color: #dffcff;
+  line-height: 1.4;
+}
+
+#strategies-section p strong {
+  color: #00ffff;
+  font-weight: 600;
+}
+
+#strategies-section p:last-of-type {
+  border-bottom: none;
+}
+
+/* Väčšie písmo pre desktop */
+@media (min-width: 1024px) {
+  #strategies-section p {
+    font-size: 1.05rem;
+    margin-left: 3rem;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
