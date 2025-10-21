@@ -1249,6 +1249,45 @@ nav button:hover::after {
   }
 }
 
+/* === Mobilné zobrazenie – oprava tabuliek tímov === */
+@media (max-width: 768px) {
+  /* bunky v tabuľkách */
+  table td {
+    font-size: 13px;       /* menšie písmo */
+    font-weight: 400;      /* nie tučné */
+    white-space: normal;   /* umožní zalomenie, ale celé slovo */
+    text-overflow: clip;   /* žiadne skratky */
+    overflow: visible;     /* zobrazí celý text */
+    text-shadow: none;     /* odstráni svietiaci tieň */
+    line-height: 1.4;
+  }
+
+  /* názvy stĺpcov DOMÁCI / HOSTIA / SKÓRE / STATUS */
+  table th {
+    font-size: 12px;
+    font-weight: 600;
+    text-shadow: 0 0 3px rgba(0,255,255,0.3); /* jemný efekt, nie oslepujúci */
+  }
+
+  /* zmenšený a čitateľný názov sekcie (napr. VÝSLEDKY, TIPOVACIE STRATÉGIE) */
+  h2 {
+    font-size: 18px;
+    text-shadow: 0 0 4px rgba(0,255,255,0.4);
+    margin-bottom: 10px;
+  }
+
+  /* aby sa všetko vošlo na obrazovku */
+  table {
+    table-layout: fixed;
+    width: 100%;
+    border-spacing: 0;
+  }
+
+  .section {
+    overflow-x: hidden;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
