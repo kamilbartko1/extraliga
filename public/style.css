@@ -2090,6 +2090,66 @@ nav button:hover::after {
   }
 }
 
+/* === MOBILNÉ ÚPRAVY PRE TABUĽKU VÝSLEDKOV === */
+@media (max-width: 768px) {
+  /* Kompaktnejšie bloky dátumu */
+  .day-row td {
+    font-size: 13px;
+    padding: 5px 0;
+    background: linear-gradient(90deg, rgba(0,255,255,0.05), rgba(0,255,255,0.1));
+    border-radius: 4px;
+    color: #28d7ff;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  /* Riadky zápasov – viac priestoru vertikálne */
+  #matches tbody td {
+    font-size: 13px;
+    padding: 9px 4px;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  /* Domáci / hostia – menšie písmo, bez zalomenia */
+  #matches tbody td:nth-child(1),
+  #matches tbody td:nth-child(2) {
+    white-space: nowrap;
+    text-align: left;
+    font-size: 12.5px;
+    padding-left: 6px;
+  }
+
+  /* Skóre a status zarovnané viac doprava */
+  #matches tbody td:nth-child(3) {
+    width: 15%;
+    text-align: right;
+    padding-right: 10px;
+  }
+
+  #matches tbody td:nth-child(4) {
+    width: 12%;
+    text-align: right;
+    padding-right: 10px;
+  }
+
+  /* Medzery medzi zápasmi – jemný prechod */
+  #matches tbody tr {
+    border-bottom: 1px solid rgba(0,255,255,0.08);
+    background: linear-gradient(90deg, rgba(0,255,255,0.02), rgba(0,255,255,0.04));
+  }
+
+  #matches tbody tr:hover {
+    background: linear-gradient(90deg, rgba(0,255,255,0.1), rgba(0,255,255,0.12));
+  }
+
+  /* Menšie bloky pre dátum, viac priestoru pre zápasy */
+  #matches .day-row td {
+    padding: 4px 0;
+    margin-bottom: 3px;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
