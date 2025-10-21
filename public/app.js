@@ -173,11 +173,7 @@ async function fetchMatches() {
       home_score: m.sport_event_status.home_score,
       away_score: m.sport_event_status.away_score,
       status: m.sport_event_status.status,
-      const localDate = new Date(m.sport_event.start_time).toLocaleString("sk-SK", {
-  timeZone: "Europe/Bratislava"
-});
-const formatted = new Date(localDate).toISOString().slice(0, 10);
-date: formatted
+      date: new Date(m.sport_event.start_time).toISOString().slice(0, 10)
     }));
 
     simplified.sort((a, b) => new Date(b.date) - new Date(a.date));
