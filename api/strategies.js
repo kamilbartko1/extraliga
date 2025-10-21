@@ -13,10 +13,9 @@ function hasTwoGoals(boxscore) {
 export default async function handler(req, res) {
   try {
     // --- 1. Načítaj odohrané zápasy z /api/matches
-    const base =
-      process.env.VERCEL_URL && !process.env.VERCEL_URL.startsWith("http")
-        ? `https://${process.env.VERCEL_URL}`
-        : "https://nhlpro.sk";
+    const base = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "https://nhlpro.sk";
 
     const matchesResp = await fetch(`${base}/api/matches`, { cache: "no-store" });
     if (!matchesResp.ok) throw new Error("Nepodarilo sa načítať /api/matches");
