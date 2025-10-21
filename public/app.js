@@ -276,6 +276,23 @@ function displayMantingal() {
   `;
 }
 
+// === Tipovacie stratégie ===
+function displayStrategies() {
+  const wrap = document.getElementById("strategies-section");
+  if (!wrap) return;
+  wrap.innerHTML = `
+    <h2>Tipovacie stratégie</h2>
+    <table>
+      <tr><th>Názov stratégie</th><th>Popis</th></tr>
+      <tr><td>Martingale</td><td>Po každej prehre zdvojnásobíš stávku, kým nevyhráš.</td></tr>
+      <tr><td>Fibonacci</td><td>Stávky podľa postupnosti 1, 1, 2, 3, 5, 8... zvyšuješ po prehre.</td></tr>
+      <tr><td>Flat betting</td><td>Stávkuješ stále rovnakú sumu bez ohľadu na predošlé výsledky.</td></tr>
+      <tr><td>Value betting</td><td>Tipuješ iba tam, kde je kurz vyšší než pravdepodobnosť podľa tvojho modelu.</td></tr>
+    </table>
+    <p>💡 V budúcnosti sa tu zobrazia aj simulácie a porovnania stratégií v reálnom čase.</p>
+  `;
+}
+
 // === Predikcie – Kurzy bookmakerov ===
 async function displayPredictions() {
   const container = document.getElementById("predictions-section");
@@ -385,4 +402,5 @@ async function displayMantingal() {
 window.addEventListener("DOMContentLoaded", () => {
   fetchMatches();
   displayPredictions(); // 🔹 pridaj túto funkciu
+  displayStrategies(); 
 });
