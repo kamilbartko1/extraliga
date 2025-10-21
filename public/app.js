@@ -258,16 +258,16 @@ function displayPlayerRatings() {
     return;
   }
 
-  // 🔹 zoradenie podľa ratingu
-  const sorted = Object.entries(playerRatings).sort((a, b) => b[1].rating - a[1].rating);
-  tableBody.innerHTML = "";
+  // Zoradíme hráčov podľa ratingu (od najlepšieho)
+  const sorted = Object.entries(playerRatings).sort((a, b) => b[1] - a[1]);
 
-  // 🔹 výpis: meno hráča + tím
-  sorted.forEach(([name, info], index) => {
+  tableBody.innerHTML = ""; // vyčisti tabuľku
+
+  sorted.forEach(([player, rating], index) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${index + 1}. ${name} <span style="color:#6cf;">(${info.team})</span></td>
-      <td>${info.rating}</td>
+      <td>${index + 1}. ${player}</td>
+      <td>${rating}</td>
     `;
     tableBody.appendChild(row);
   });
