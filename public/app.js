@@ -9,8 +9,8 @@ const ODDS = 2.5;
 const API_BASE = "";
 
 // === Nastavenie dátumov pre sezónu 2025/26 ===
-const START_DATE = "2025-10-08";
-const TODAY = new Date().toISOString().slice(0, 10);
+const START_DATE = "2025-10-08"; // prvé zápasy novej sezóny
+const TODAY = new Date().toISOString().slice(0, 10); // dnešný dátum
 
 // === Pomocné funkcie ===
 const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
@@ -69,7 +69,68 @@ function normalizeNhlGame(game, day) {
   };
 }
 
-// === Hlavné načítanie zápasov z backendu ===
+// === Fetch schedule od 8.10.2025 do dnes ===
+async function fetchNhlSchedule() {
+  const games = [];
+  for (const day of dateRange(START_DATE, TODAY)) {
+    try {
+      const url = `https://api-web.nhle.com/v1/schedule/${day}`;
+      const resp = await fetch(url);
+      if (!resp.ok) continue;
+      const data = await resp.json();
+      const groups = Array.isArray(data.gameWeek) ? data.gameWeek : [];
+      groups.forEach(g => {
+        const dayGames = Array.isArray(g.games) ? g.games : [];
+        dayGames.forEach(game => {
+          if (["FINAL", "OFF"].includes(String(game.gameState || "").toUpperCase())) {
+            games.push(normalizeNhlGame(game, day));
+          }
+        });
+      });
+      console.log(`✅ ${day} – načítané ${games.length} zápasov`);
+    } catch (e) {
+      console.warn(`⚠️ Chyba pri dni ${day}: ${e.message}`);
+    }
+  }
+  console.log(`🔹 Spolu odohraných zápasov: ${games.length}`);
+  return games;
+}
+
+// === Výpočet ratingov tímov ===
+function computeTeamRatings(matches) {
+  const START_RATING = 1500;
+  const GOAL_POINTS = 10;
+  const WIN_POINTS = 10;
+  const LOSS_POINTS = -10;
+
+  const ratings = {};
+  const ensure = (team) => { if (ratings[team] == null) ratings[team] = START_RATING; };
+
+  matches.forEach(m => {
+    const home = m.sport_event.competitors[0].name;
+    const away = m.sport_event.competitors[1].name;
+    const hs = m.sport_event_status.home_score ?? 0;
+    const as = m.sport_event_status.away_score ?? 0;
+
+    ensure(home); ensure(away);
+
+    ratings[home] += hs * GOAL_POINTS - as * GOAL_POINTS;
+    ratings[away] += as * GOAL_POINTS - hs * GOAL_POINTS;
+
+    if (hs > as) {
+      ratings[home] += WIN_POINTS;
+      ratings[away] += LOSS_POINTS;
+    } else if (as > hs) {
+      ratings[away] += WIN_POINTS;
+      ratings[home] += LOSS_POINTS;
+    }
+  });
+
+  return ratings;
+}
+
+// === Hlavné načítanie ===
+// ========================= API načítanie =========================
 async function fetchMatches() {
   try {
     const response = await fetch(`${API_BASE}/api/matches`);
@@ -77,10 +138,14 @@ async function fetchMatches() {
 
     console.log("✅ Dáta z backendu:", data);
 
+    // NHL formát – očakávame pole data.matches
     const matches = Array.isArray(data.matches) ? data.matches : [];
 
-    if (matches.length === 0) console.warn("⚠️ Žiadne zápasy v data.matches");
+    if (matches.length === 0) {
+      console.warn("⚠️ Žiadne zápasy v data.matches");
+    }
 
+    // pre transformáciu do pôvodného tvaru
     const normalized = matches.map((g) => ({
       id: g.id,
       date: g.date,
@@ -98,8 +163,9 @@ async function fetchMatches() {
       }
     }));
 
-    allMatches = normalized;
+    allMatches = normalized; // pre Mantingal
 
+    // pre tabuľku zápasov
     const simplified = normalized.map((m) => ({
       id: m.id,
       home_team: m.sport_event.competitors[0].name,
@@ -186,16 +252,94 @@ function displayPlayerRatings() {
     return;
   }
 
+  // Zoradíme hráčov podľa ratingu (od najlepšieho)
   const sorted = Object.entries(playerRatings).sort((a, b) => b[1] - a[1]);
-  tableBody.innerHTML = "";
+
+  tableBody.innerHTML = ""; // vyčisti tabuľku
+
   sorted.forEach(([player, rating], index) => {
     const row = document.createElement("tr");
-    row.innerHTML = `<td>${index + 1}. ${player}</td><td>${rating}</td>`;
+    row.innerHTML = `
+      <td>${index + 1}. ${player}</td>
+      <td>${rating}</td>
+    `;
     tableBody.appendChild(row);
   });
 }
 
-// === Mantingal ===
+// === Mantingal placeholder ===
+function displayMantingal() {
+  const wrap = document.getElementById("mantingal-container");
+  if (!wrap) return;
+  wrap.innerHTML = `
+    <table><tr><td>Mantingal sa zapne po pripojení hráčskych štatistík (boxscore).</td></tr></table>
+  `;
+}
+
+// === Predikcie – Kurzy bookmakerov ===
+async function displayPredictions() {
+  const container = document.getElementById("predictions-section");
+  if (!container) return;
+
+  container.innerHTML = `
+    <h2>Predikcie – Kurzy bookmakerov</h2>
+    <p>Načítavam aktuálne kurzy...</p>
+  `;
+
+  try {
+    const resp = await fetch("/api/predictions");
+    const data = await resp.json();
+
+    if (!data.games?.length) {
+      container.innerHTML = "<p>Žiadne dostupné kurzy</p>";
+      return;
+    }
+
+    const list = document.createElement("div");
+    list.className = "odds-blocks";
+
+    data.games.forEach(game => {
+      const home = game.homeTeam || "-";
+      const away = game.awayTeam || "-";
+      const homeLogo = game.homeLogo || "";
+      const awayLogo = game.awayLogo || "";
+      const homeOdds = game.homeOdds ?? "-";
+      const awayOdds = game.awayOdds ?? "-";
+
+      const match = document.createElement("div");
+      match.className = "odds-match";
+      match.innerHTML = `
+        <div class="match-header">
+          <img src="${homeLogo}" alt="${home}" class="team-logo">
+          <span class="team-name">${home}</span>
+          <span class="vs">–</span>
+          <span class="team-name">${away}</span>
+          <img src="${awayLogo}" alt="${away}" class="team-logo">
+        </div>
+
+        <div class="odds-row">
+          <div class="odds-cell"><b>1</b><br>${homeOdds}</div>
+          <div class="odds-cell"><b>2</b><br>${awayOdds}</div>
+        </div>
+      `;
+      list.appendChild(match);
+    });
+
+    container.innerHTML = `<h2>Predikcie – Kurzy bookmakerov</h2>`;
+    container.appendChild(list);
+
+  } catch (err) {
+    console.error("❌ Chyba pri načítaní predikcií:", err);
+    container.innerHTML = `<p>Chyba pri načítaní kurzov: ${err.message}</p>`;
+  }
+}
+
+// 🔁 Načítaj predikcie, keď sa otvorí sekcia
+document
+  .querySelector("button[onclick*='predictions-section']")
+  ?.addEventListener("click", displayPredictions);
+
+ // === Mantingal sekcia ===
 async function displayMantingal() {
   const container = document.getElementById("mantingal-container");
   if (!container) return;
@@ -237,100 +381,8 @@ async function displayMantingal() {
   }
 }
 
-// === Predikcie ===
-async function displayPredictions() {
-  const container = document.getElementById("predictions-section");
-  if (!container) return;
-
-  container.innerHTML = `<h2>Predikcie – Kurzy bookmakerov</h2><p>Načítavam aktuálne kurzy...</p>`;
-
-  try {
-    const resp = await fetch("/api/predictions");
-    const data = await resp.json();
-
-    if (!data.games?.length) {
-      container.innerHTML = "<p>Žiadne dostupné kurzy</p>";
-      return;
-    }
-
-    const list = document.createElement("div");
-    list.className = "odds-blocks";
-
-    data.games.forEach(game => {
-      const home = game.homeTeam || "-";
-      const away = game.awayTeam || "-";
-      const homeLogo = game.homeLogo || "";
-      const awayLogo = game.awayLogo || "";
-      const homeOdds = game.homeOdds ?? "-";
-      const awayOdds = game.awayOdds ?? "-";
-
-      const match = document.createElement("div");
-      match.className = "odds-match";
-      match.innerHTML = `
-        <div class="match-header">
-          <img src="${homeLogo}" alt="${home}" class="team-logo">
-          <span class="team-name">${home}</span>
-          <span class="vs">–</span>
-          <span class="team-name">${away}</span>
-          <img src="${awayLogo}" alt="${away}" class="team-logo">
-        </div>
-        <div class="odds-row">
-          <div class="odds-cell"><b>1</b><br>${homeOdds}</div>
-          <div class="odds-cell"><b>2</b><br>${awayOdds}</div>
-        </div>
-      `;
-      list.appendChild(match);
-    });
-
-    container.innerHTML = `<h2>Predikcie – Kurzy bookmakerov</h2>`;
-    container.appendChild(list);
-
-  } catch (err) {
-    console.error("❌ Chyba pri načítaní predikcií:", err);
-    container.innerHTML = `<p>Chyba pri načítaní kurzov: ${err.message}</p>`;
-  }
-}
-
-// === NOVÁ SEKCIA – Tipovacie stratégie ===
-function displayStrategies() {
-  const container = document.getElementById("strategies-section");
-  if (!container) return;
-  container.innerHTML = `
-    <h2>Tipovacie stratégie</h2>
-    <ul>
-      <li><b>Martingale:</b> zdvojnásobíš stávku po prehre, kým nevyhráš.</li>
-      <li><b>Fibonacci:</b> stávky podľa postupnosti 1, 1, 2, 3, 5, 8…</li>
-      <li><b>Flat betting:</b> rovnaká výška stávky bez ohľadu na výsledky.</li>
-      <li><b>Value betting:</b> tipovanie len na kurzy, kde máš matematickú výhodu.</li>
-    </ul>
-    <p>💡 Neskôr tu pridáme simulácie, tabuľky a prepojenie s Mantingalom.</p>
-  `;
-}
-
-// === Prepínanie sekcií (PC + mobil) ===
-function showSection(id) {
-  document.querySelectorAll(".section").forEach(sec => (sec.style.display = "none"));
-  document.getElementById(id)?.style.display = "block";
-
-  if (id === "mantingal-container") displayMantingal();
-  if (id === "predictions-section") displayPredictions();
-  if (id === "strategies-section") displayStrategies(); // 🔹 pridané
-}
-
-document.getElementById("mobileSelect")?.addEventListener("change", (e) => {
-  const val = e.target.value;
-  document.querySelectorAll(".section").forEach(sec => sec.style.display = "none");
-
-  if (val === "matches") document.getElementById("matches-section").style.display = "block";
-  if (val === "teams") document.getElementById("teams-section").style.display = "block";
-  if (val === "players") document.getElementById("players-section").style.display = "block";
-  if (val === "mantingal") document.getElementById("mantingal-container").style.display = "block";
-  if (val === "predictions") document.getElementById("predictions-section").style.display = "block";
-  if (val === "strategies") document.getElementById("strategies-section").style.display = "block"; // 🔹 pridané
-});
-
 // === Štart ===
 window.addEventListener("DOMContentLoaded", () => {
   fetchMatches();
-  displayPredictions();
+  displayPredictions(); // 🔹 pridaj túto funkciu
 });
