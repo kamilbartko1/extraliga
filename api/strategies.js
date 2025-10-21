@@ -21,7 +21,6 @@ const BASE_URL = process.env.VERCEL_URL
   : "https://nhlpro.sk";
 
 const matchesResp = await fetch(`${BASE_URL}/api/matches`);
-
     const matchesData = await matchesResp.json();
     const matches = matchesData.matches || [];
 
