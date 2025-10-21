@@ -988,6 +988,24 @@ nav button:hover::after {
   font-weight: 600;
 }
 
+/* --- Jednotný štýl nadpisov pre všetky sekcie --- */
+.section h2 {
+  text-align: center;
+  color: #00ffff; /* tyrkysová */
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 10px 0 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* voliteľne, ak chceš presne ako "Výsledky" */
+#teamRatings-section h2,
+#playerRatings-section h2 {
+  text-align: center;
+  color: #00ffff;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
