@@ -24,6 +24,7 @@
   <button onclick="showSection('players-section')">Rating hráčov</button>
   <button onclick="showSection('mantingal-container')">Mantingal</button>
   <button onclick="showSection('predictions-section')">Predikcie</button>
+  <button onclick="showSection('strategies-section')">Tipovacie stratégie</button>
 </nav>
     
     <!-- 📱 mobilné menu -->
@@ -34,6 +35,7 @@
             <option value="players">Rating hráčov</option>
             <option value="mantingal">Mantingal</option>
             <option value="predictions">Predikcie</option>
+            <option value="strategies">Tipovacie stratégie</option>
         </select>
     </div>
 
@@ -66,6 +68,18 @@
                 </thead>
                 <tbody></tbody>
             </table>
+        </div>
+        <!-- 💡 TIPOVACIE STRATÉGIE -->
+        <div class="section" id="strategies-section" style="display:none;">
+        <h2>Tipovacie stratégie</h2>
+        <p>V tejto sekcii budeš mať prehľad o rôznych stratégiách tipovania – od jednoduchých až po pokročilé systémy ako Martingale, Fibonacci či Value Betting.</p>
+        <ul>
+            <li><b>Martingale stratégia:</b> zdvojnásobuje stávku po každej prehre, až kým nepríde výhra.</li>
+            <li><b>Fibonacci stratégia:</b> používa číselnú postupnosť 1-1-2-3-5-8… na riadenie stávok.</li>
+            <li><b>Value betting:</b> tipovanie len vtedy, keď kurz ponúka matematickú hodnotu (value).</li>
+            <li><b>Flat betting:</b> rovnaká výška stávky pri každom tipe bez ohľadu na výsledky.</li>
+        </ul>
+        <p>💡 Neskôr sem môžeme pridať kalkulačky, tabuľky ziskovosti alebo prepojenie s tvojimi dátami z Mantingalu.</p>
         </div>
 
         <!-- 🧑‍🚀 Rating hráčov + Mantingal (PC) -->
