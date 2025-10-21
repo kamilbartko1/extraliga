@@ -281,6 +281,7 @@ async function displayStrategies() {
   const wrap = document.getElementById("strategies-section");
   if (!wrap) return;
 
+  // 🟢 Úvodný text ostane navždy hore
   wrap.innerHTML = `
     <h2>Tipovacie stratégie</h2>
     <p>💡 Model: 10 € na to, že v zápase niekto dá aspoň 2 góly (kurz 1.9)</p>
@@ -290,93 +291,80 @@ async function displayStrategies() {
   try {
     const resp = await fetch("/api/strategies");
     const data = await resp.json();
-    if (!data.ok) throw new Error(data.error || "Neznáma chyba");
+    if (!data.ok) throw new Error(data.error || "Chyba načítania");
 
     const { totalBet, totalProfit, results } = data;
 
+    // 🟢 Text o modeli nechávame a len pridávame ďalší obsah
+    const summary = `
+      <p><b>Počet zápasov:</b> ${results.length} |
+      <b>Vsadené:</b> ${totalBet.toFixed(2)} € |
+      <b>Výsledok:</b> ${totalProfit.toFixed(2)} €</p>
+    `;
+
+    const table = `
+      <table class="strategies-table">
+        <thead>
+          <tr>
+            <th>Dátum</th>
+            <th>Zápas</th>
+            <th>2+ góly</th>
+            <th>Výsledok</th>
+            <th>Zisk (€)</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${results
+            .map(
+              (r) => `
+            <tr class="${r.success ? "win-row" : ""}" data-id="${r.id}">
+              <td>${r.date}</td>
+              <td>${r.home} – ${r.away}</td>
+              <td>${r.success ? "✅ Áno" : "❌ Nie"}</td>
+              <td>${r.success ? "Výhra" : "Prehra"}</td>
+              <td>${r.profit}</td>
+            </tr>
+            ${
+              r.success && r.scorers?.length
+                ? `
+              <tr class="detail-row hidden" id="detail-${r.id}">
+                <td colspan="5">
+                  ${r.scorers
+                    .map(
+                      (p) => `
+                    <div>
+                      <b>${p.name}</b> (${p.team}) – ${p.goals}G ${p.assists}A | +/- ${p.plusMinus} | strely: ${p.shots}
+                    </div>`
+                    )
+                    .join("")}
+                </td>
+              </tr>`
+                : ""
+            }
+          `
+            )
+            .join("")}
+        </tbody>
+      </table>
+    `;
+
     wrap.innerHTML = `
       <h2>Tipovacie stratégie</h2>
-      <p><b>Počet zápasov:</b> ${results.length} |
-         <b>Vsadené:</b> ${Number(totalBet).toFixed(2)} € |
-         <b>Výsledok:</b> 
-         <span style="color:${totalProfit >= 0 ? "limegreen" : "red"}">
-           ${totalProfit.toFixed(2)} €
-         </span></p>
+      <p>💡 Model: 10 € na to, že v zápase niekto dá aspoň 2 góly (kurz 1.9)</p>
+      ${summary}
+      ${table}
     `;
 
-    const table = document.createElement("table");
-    table.innerHTML = `
-      <thead>
-        <tr>
-          <th>Dátum</th>
-          <th>Zápas</th>
-          <th>2+ góly</th>
-          <th>Výsledok</th>
-          <th>Zisk (€)</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${results
-          .map(
-            (r, i) => `
-            <tr data-game="${r.id}">
-              <td>${r.date}</td>
-              <td class="game-link" style="color:${r.result === "Výhra" ? "#00ccff" : "inherit"};cursor:${r.result === "Výhra" ? "pointer" : "default"};">
-                ${r.home} – ${r.away}
-              </td>
-              <td>${r.twoGoals}</td>
-              <td>${r.result}</td>
-              <td style="color:${r.profit >= 0 ? "limegreen" : "red"}">${r.profit.toFixed(2)}</td>
-            </tr>
-          `
-          )
-          .join("")}
-      </tbody>
-    `;
-    wrap.appendChild(table);
-
-    // 🟢 Po kliknutí na výherný zápas zobraz detail hráča s 2+ gólmi
-    table.querySelectorAll(".game-link").forEach((cell) => {
-      cell.addEventListener("click", async () => {
-        const tr = cell.closest("tr");
-        const gameId = tr.getAttribute("data-game");
-        const next = tr.nextElementSibling;
-
-        // ak už máme otvorené okno pod týmto riadkom → zavri
-        if (next && next.classList.contains("detail-row")) {
-          next.remove();
-          return;
-        }
-
-        // načítaj dáta
-        const resp = await fetch(`/api/strategies?id=${gameId}`);
-        const box = await resp.json();
-        if (!box.ok || !box.players?.length) {
-          const errRow = document.createElement("tr");
-          errRow.className = "detail-row";
-          errRow.innerHTML = `<td colspan="5">❌ Žiadny hráč s 2+ gólmi</td>`;
-          tr.after(errRow);
-          return;
-        }
-
-        const playersHTML = box.players
-          .map(
-            (p) => `
-          <div class="player-detail">
-            <b>${p.name}</b> (${p.team}) – ${p.goals}G ${p.assists}A | +/- ${p.plusMinus} | strely: ${p.shots}
-          </div>
-        `
-          )
-          .join("");
-
-        const row = document.createElement("tr");
-        row.className = "detail-row";
-        row.innerHTML = `<td colspan="5" style="background:#111;">${playersHTML}</td>`;
-        tr.after(row);
+    // 🟢 Kliknutie na výherné zápasy pre rozbalenie detailov
+    wrap.querySelectorAll(".win-row").forEach((row) => {
+      row.addEventListener("click", () => {
+        const id = row.dataset.id;
+        const detail = document.getElementById(`detail-${id}`);
+        if (detail) detail.classList.toggle("hidden");
       });
     });
   } catch (err) {
-    wrap.innerHTML += `<p style="color:red">❌ Chyba: ${err.message}</p>`;
+    wrap.innerHTML += `<p>❌ Chyba: ${err.message}</p>`;
   }
 }
 
