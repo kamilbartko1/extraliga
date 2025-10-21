@@ -2405,6 +2405,63 @@ nav button:hover::after {
   letter-spacing: 0.5px;
 }
 
+/* === ZJEDNOTENÝ FONT A KONTRAST PRE STRATÉGIE === */
+#strategies-section {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+}
+
+#strategies-section h2 {
+  color: #00e6ff;
+  text-shadow: 0 0 4px rgba(0, 255, 255, 0.4);
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+#strategies-section table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#strategies-section th {
+  font-size: 13px;
+  font-weight: 600;
+  color: #5ff6ff;
+  text-shadow: 0 0 2px rgba(0, 255, 255, 0.3);
+  padding: 6px 4px;
+  text-align: center;
+}
+
+#strategies-section td {
+  font-size: 13px;
+  font-weight: 500;
+  color: #e8fbff;
+  text-shadow: none;
+  padding: 6px 4px;
+  text-align: center;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.08);
+}
+
+/* názvy zápasov vľavo, aby sa čítali prirodzene */
+#strategies-section td:nth-child(2) {
+  text-align: left;
+}
+
+/* lepšie rozostupy riadkov */
+#strategies-section tr {
+  line-height: 1.25;
+}
+
+/* vizuálny oddiel medzi riadkami */
+#strategies-section tr:not(:last-child) {
+  border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+/* menší tieň a viac priestoru medzi stĺpcami */
+#strategies-section td,
+#strategies-section th {
+  letter-spacing: 0.2px;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
