@@ -15,7 +15,13 @@ function hasTwoGoals(boxscore) {
 
 export default async function handler(req, res) {
   try {
-    const matchesResp = await fetch(`${process.env.VERCEL_URL || "https://nhlpro.sk"}/api/matches`);
+    // 🔹 Oprava URL – garantujeme https://
+const BASE_URL = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "https://nhlpro.sk";
+
+const matchesResp = await fetch(`${BASE_URL}/api/matches`);
+
     const matchesData = await matchesResp.json();
     const matches = matchesData.matches || [];
 
