@@ -2541,6 +2541,37 @@ nav button:hover::after {
   }
 }
 
+/* === BLOK ŠTATISTÍK V TIPOVACÍCH STRATÉGIÁCH – POD SEBOU === */
+#strategies-section p {
+  display: block;
+  text-align: left;
+  margin: 0.5rem auto;
+  padding: 0.3rem 0;
+  width: 90%;
+  max-width: 600px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+  font-size: 1rem;
+  color: #dffcff;
+  line-height: 1.5;
+}
+
+#strategies-section p strong {
+  color: #00ffff;
+  font-weight: 600;
+}
+
+#strategies-section p:last-of-type {
+  border-bottom: none;
+}
+
+/* Desktop vzhľad */
+@media (min-width: 1024px) {
+  #strategies-section p {
+    margin-left: 3rem;
+    font-size: 1.05rem;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
