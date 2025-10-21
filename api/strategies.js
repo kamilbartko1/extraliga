@@ -1,4 +1,3 @@
-// /api/strategies.js
 const BET_AMOUNT = 10;
 const ODDS = 1.9;
 
