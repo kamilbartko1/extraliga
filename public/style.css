@@ -1076,41 +1076,38 @@ nav button:hover::after {
   }
 }
 
-/* ===== RESPONSIVE TABUĽKY PRE MOBIL ===== */
+/* === Lepšie zobrazenie tabuliek na mobiloch (bez posúvania) === */
 @media (max-width: 768px) {
   table {
-    display: block;
     width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
+    border-collapse: collapse;
+    table-layout: fixed; /* 👈 dôležité – všetky stĺpce sa zmenšia rovnomerne */
   }
 
   th, td {
-    padding: 6px 10px;
-    font-size: 0.9em;
-  }
-
-  /* Hlavné nadpisy sekcií – aby sa zmestili pekne do mobilu */
-  h2 {
-    font-size: 1.3em;
+    font-size: 0.75rem; /* 👈 menšie písmo */
+    padding: 4px 6px;
     text-align: center;
+    word-wrap: break-word;
   }
 
-  /* Aby písmo v riadkoch (napr. hráči, tímy) zostalo čitateľné */
-  table td:first-child {
+  /* Nadpisy sekcií (napr. VÝSLEDKY, RATING TÍMOV...) */
+  h2 {
+    font-size: 1.1rem;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  /* Tímové a hráčske mená mierne menšie, ale čitateľné */
+  table td:first-child,
+  table td:nth-child(2) {
     font-weight: 600;
+    font-size: 0.8rem;
   }
-}
 
-/* ===== Vodoznak "Powered by AI-Logic" – korekcia pre mobil ===== */
-@media (max-width: 768px) {
-  .ai-watermark {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    font-size: 10px;
-    opacity: 0.8;
+  /* Ak by text presahoval, zalom ho */
+  td {
+    white-space: normal;
   }
 }
 
