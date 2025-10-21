@@ -2,50 +2,41 @@
 const BET_AMOUNT = 10;
 const ODDS = 1.9;
 
-/**
- * Získaj všetkých hráčov (útočníkov a obrancov) z boxscore dát
- */
 function collectSkaters(box) {
   const home = box?.playerByGameStats?.homeTeam || {};
   const away = box?.playerByGameStats?.awayTeam || {};
-
-  const getPlayers = (teamObj, side) => {
-    const forwards = Array.isArray(teamObj.forwards) ? teamObj.forwards : [];
-    const defense = Array.isArray(teamObj.defense) ? teamObj.defense : [];
-
-    return [...forwards, ...defense].map((p) => {
-      const player = p.player || {};
-      const stats = p.stats || {};
-      return {
-        id: player.id,
-        name: `${player.firstName?.default || ""} ${player.lastName?.default || ""}`.trim(),
-        team: teamObj.teamName?.default || side,
-        goals: Number(stats.goals ?? 0),
-        assists: Number(stats.assists ?? 0),
-        plusMinus: Number(stats.plusMinus ?? 0),
-        shots: Number(stats.shots ?? 0),
-      };
-    });
-  };
-
+  const homeSkaters = [
+    ...(Array.isArray(home.forwards) ? home.forwards : []),
+    ...(Array.isArray(home.defense) ? home.defense : []),
+  ];
+  const awaySkaters = [
+    ...(Array.isArray(away.forwards) ? away.forwards : []),
+    ...(Array.isArray(away.defense) ? away.defense : []),
+  ];
   return [
-    ...getPlayers(home, "Home"),
-    ...getPlayers(away, "Away"),
+    ...homeSkaters.map(p => ({ ...p, team: home.teamName?.default || "Home" })),
+    ...awaySkaters.map(p => ({ ...p, team: away.teamName?.default || "Away" })),
   ];
 }
 
-/**
- * Vyfiltruj hráčov, ktorí dali 2 a viac gólov
- */
 function playersWithTwoGoals(box) {
-  return collectSkaters(box).filter((p) => p.goals >= 2);
+  return collectSkaters(box)
+    .filter(p => Number(p?.goals ?? p?.stats?.goals ?? 0) >= 2)
+    .map(p => ({
+      name: `${p.firstName?.default || ""} ${p.lastName?.default || ""}`.trim(),
+      goals: Number(p?.goals ?? p?.stats?.goals ?? 0),
+      assists: Number(p?.assists ?? p?.stats?.assists ?? 0),
+      plusMinus: Number(p?.plusMinus ?? p?.stats?.plusMinus ?? 0),
+      shots: Number(p?.shots ?? p?.stats?.shots ?? 0),
+      team: p.team || "",
+    }));
 }
 
 export default async function handler(req, res) {
   try {
     const { id } = req.query;
 
-    // 🔹 Ak je zadaný ?id=, vráť detail pre jeden zápas
+    // === 🔹 1) Ak je zadaný ?id=, vráť detail pre jeden zápas ===
     if (id) {
       const boxUrl = `https://api-web.nhle.com/v1/gamecenter/${id}/boxscore`;
       const boxResp = await fetch(boxUrl, { cache: "no-store" });
@@ -55,7 +46,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, id, players });
     }
 
-    // 🔹 Inak sprav výpočet pre všetky zápasy
+    // === 🔹 2) Inak – vráť výpočty pre všetky zápasy ===
     const baseUrl = "https://nhlpro.sk";
     const matchesResp = await fetch(`${baseUrl}/api/matches`, { cache: "no-store" });
     if (!matchesResp.ok) throw new Error(`Nepodarilo sa načítať /api/matches`);
