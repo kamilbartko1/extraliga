@@ -1497,6 +1497,73 @@ nav button:hover::after {
   }
 }
 
+/* === Fix tabuliek pre mobily (VÝSLEDKY aj STRATÉGIE) === */
+@media (max-width: 768px) {
+  /* pevné rozloženie stĺpcov a žiadny horizontálny scroll */
+  #matches table,
+  #strategiesTable,
+  .section table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+
+  /* hlavička – menšia, nezalamovať */
+  #matches thead th,
+  #strategiesTable thead th,
+  .section table thead th {
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 2px rgba(0,255,255,.25);
+  }
+
+  /* bunky – menšie písmo, žiadne agresívne tieňe */
+  #matches tbody td,
+  #strategiesTable tbody td,
+  .section table tbody td {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.25;
+    padding: 8px 6px;
+    text-shadow: none;
+    overflow: hidden;
+  }
+
+  /* rozdelenie stĺpcov v “VÝSLEDKY”: domáci / hostia / skóre / status */
+  #matches tbody td:nth-child(1) { width: 42%; } /* domáci */
+  #matches tbody td:nth-child(2) { width: 38%; } /* hostia */
+  #matches tbody td:nth-child(3) { width: 12%; text-align:center; } /* skóre */
+  #matches tbody td:nth-child(4) { width: 8%;  text-align:center; } /* status */
+
+  /* rozdelenie stĺpcov v tabuľke stratégií (ak používaš 5 stĺpcov) */
+  #strategiesTable tbody td:nth-child(1) { width: 22%; } /* dátum */
+  #strategiesTable tbody td:nth-child(2) { width: 44%; } /* zápas */
+  #strategiesTable tbody td:nth-child(3) { width: 12%; text-align:center; } /* 2+ góly */
+  #strategiesTable tbody td:nth-child(4) { width: 12%; text-align:center; } /* výsledok */
+  #strategiesTable tbody td:nth-child(5) { width: 10%; text-align:right;  } /* zisk */
+
+  /* ====== KĽÚČOVÉ: správanie názvov tímov ====== */
+  /* jednoslovné nikdy nelám – viacslovné môžu na MEDZERE */
+  #matches tbody td:nth-child(1),
+  #matches tbody td:nth-child(2),
+  #strategiesTable tbody td:nth-child(2) {
+    white-space: normal;         /* umožní zalomenie na medzere */
+    overflow-wrap: normal;       /* neláma uprostred slova */
+    word-break: keep-all;        /* drž spolu jednoslovné názvy */
+  }
+
+  /* dátumový pás – nech sa text nezalamuje do dvoch riadkov */
+  .day-row, .round-row, .date-row {
+    white-space: nowrap;
+    font-size: 13px !important;
+  }
+
+  /* pre istotu – žiadny horizontálny scroll tela */
+  html, body { overflow-x: hidden; }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
