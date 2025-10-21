@@ -1860,6 +1860,88 @@ nav button:hover::after {
   }
 }
 
+/* === Mobilná úprava výsledkov – fix názvov tímov a zarovnania === */
+@media (max-width: 768px) {
+  #matches table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  #matches thead th {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 4px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  #matches tbody td {
+    font-size: 13px;
+    padding: 6px 6px;
+    line-height: 1.3;
+    white-space: normal;
+    word-break: normal;
+    overflow: visible;
+  }
+
+  /* viac miesta pre názvy tímov */
+  #matches tbody td:nth-child(1),
+  #matches tbody td:nth-child(2) {
+    width: 33%;
+  }
+
+  /* zarovnanie a rozloženie */
+  #matches tbody td:nth-child(1) {
+    text-align: right;
+    padding-right: 8px;
+  }
+
+  #matches tbody td:nth-child(2) {
+    text-align: left;
+    padding-left: 8px;
+  }
+
+  #matches tbody td:nth-child(3) {
+    width: 18%;
+    text-align: center;
+  }
+
+  #matches tbody td:nth-child(4) {
+    width: 10%;
+    text-align: center;
+  }
+
+  /* fix zlievania textu pri dlhých názvoch */
+  #matches td {
+    word-break: keep-all;
+    white-space: nowrap;
+  }
+
+  /* dvojslovné názvy tímov sa môžu zalomiť pod seba */
+  #matches td:has(span) span {
+    display: inline-block;
+    white-space: normal;
+    word-break: keep-all;
+  }
+
+  /* menšie medzery medzi riadkami */
+  #matches tbody tr:not(.day-row) {
+    border-bottom: 1px solid rgba(0,255,255,0.15);
+  }
+
+  .day-row td {
+    font-size: 13px;
+    text-align: center;
+    padding: 8px 0;
+  }
+
+  /* zabráni horizontálnemu posunu */
+  html, body {
+    overflow-x: hidden;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
