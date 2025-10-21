@@ -1452,6 +1452,51 @@ nav button:hover::after {
   }
 }
 
+/* === MOBILNÁ OPRAVA PRE TABUĽKU ZÁPASOV === */
+@media (max-width: 768px) {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  table th, table td {
+    font-size: 12px; /* menšie, ale stále čitateľné */
+    font-weight: 400;
+    padding: 5px 4px;
+    text-shadow: none;
+    line-height: 1.2;
+    word-break: keep-all;      /* nezlomí jednoslovné */
+    white-space: normal;       /* ale dovolí viacslovné pod seba */
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  /* DOMÁCI / HOSTIA menšie a čitateľnejšie */
+  table th {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 2px;
+    text-shadow: 0 0 2px rgba(0, 255, 255, 0.25);
+  }
+
+  /* Stĺpce rozložené rozumne */
+  table td:nth-child(1) { width: 38%; } /* domáci */
+  table td:nth-child(2) { width: 38%; } /* hostia */
+  table td:nth-child(3) { width: 14%; text-align: center; } /* skóre */
+  table td:nth-child(4) { width: 10%; text-align: center; } /* status */
+
+  /* Nadpis (napr. VÝSLEDKY) */
+  h2 {
+    font-size: 16px;
+    text-shadow: 0 0 3px rgba(0, 255, 255, 0.3);
+  }
+
+  body, .section {
+    overflow-x: hidden;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
