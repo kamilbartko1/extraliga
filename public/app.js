@@ -313,8 +313,8 @@ async function displayStrategies() {
     wrap.innerHTML = `
       <h2>Tipovacie stratégie</h2>
       <p><b>Model:</b> 10 € na „hráč dá 2+ góly“ (kurz 1.9)</p>
-      <p><b>Počet zápasov:</b> ${results.length} |</p>
-      <p><b>Vsadené spolu:</b> ${Number(totalBet).toFixed(2)} € |</p>
+      <p><b>Počet zápasov:</b> ${results.length} </p>
+      <p><b>Vsadené spolu:</b> ${Number(totalBet).toFixed(2)} € </p>
       <p><b>Výsledok:</b> <span style="color:${Number(totalProfit) >= 0 ? "limegreen" : "red"}">
            ${Number(totalProfit).toFixed(2)} €
          </span>
