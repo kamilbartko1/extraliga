@@ -328,9 +328,9 @@ async function displayStrategies() {
         <tr>
           <th>Dátum</th>
           <th>Zápas</th>
-          <th>2+ góly</th>
-          <th>Výsledok</th>
-          <th>Zisk (€)</th>
+          <th>2+</th>
+          <th>Výsl.</th>
+          <th>Zisk</th>
         </tr>
       </thead>
       <tbody>
