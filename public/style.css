@@ -1006,6 +1006,39 @@ nav button:hover::after {
   color: #00ffff;
 }
 
+/* ===== Vylepšenie vzhľadu tabuliek Ratingov a Výsledkov ===== */
+
+/* Tímové a hráčske ratingy */
+#teamRatings td,
+#playerRatings td {
+  font-size: 1.05rem;          /* jemne väčšie písmo */
+  font-family: "Poppins", sans-serif;  /* moderný font, elegantný a čitateľný */
+  font-weight: 500;
+  color: #e6faff;              /* jemne tyrkysová farba ako pri nadpisoch */
+  text-shadow: 1px 1px 3px rgba(0, 255, 255, 0.4); /* svetlý tieň */
+  letter-spacing: 0.3px;
+}
+
+/* Názvy tímov vo Výsledkoch */
+#matches td {
+  font-size: 1.05rem;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  color: #ffffff;
+  text-shadow: 1px 1px 2px rgba(0, 255, 255, 0.3);
+}
+
+/* Hlavičky tabuliek (napr. TÍM, RATING, HOSTIA, SKÓRE...) */
+#matches th,
+#teamRatings th,
+#playerRatings th {
+  font-size: 1.1rem;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  color: #00ffff;
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
