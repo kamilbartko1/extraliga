@@ -2277,6 +2277,101 @@ nav button:hover::after {
   }
 }
 
+/* === TIPOVACIE STRATÉGIE (opravené zarovnanie a medzery) === */
+
+#strategies-section table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  word-wrap: break-word;
+  font-size: 14px;
+}
+
+#strategies-section th,
+#strategies-section td {
+  padding: 8px 6px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+#strategies-section th {
+  color: #18ffff;
+  text-shadow: 0 0 4px #0ff;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(0,255,255,0.2);
+}
+
+/* menší tieň nadpisov, lepšie čitateľné */
+#strategies-section th {
+  text-shadow: 0 0 3px rgba(0,255,255,0.6);
+}
+
+/* názvy zápasov – aby sa celé zmestili */
+#strategies-section td:nth-child(2) {
+  text-align: left;
+  padding-left: 10px;
+  white-space: normal;
+  line-height: 1.2;
+}
+
+/* dátum – zúžený stĺpec */
+#strategies-section td:first-child,
+#strategies-section th:first-child {
+  width: 85px;
+}
+
+/* 2+ (góly) stĺpec zúžený, bez zalomenia */
+#strategies-section th:nth-child(3),
+#strategies-section td:nth-child(3) {
+  width: 45px;
+}
+
+/* výsledok a zisk */
+#strategies-section th:nth-child(4),
+#strategies-section th:nth-child(5),
+#strategies-section td:nth-child(4),
+#strategies-section td:nth-child(5) {
+  width: 70px;
+}
+
+/* farby výhier a prehier */
+#strategies-section td:last-child {
+  font-weight: 600;
+}
+#strategies-section td:last-child:has(span.win) {
+  color: #00ff99;
+}
+#strategies-section td:last-child:has(span.loss) {
+  color: #ff4444;
+}
+
+/* medzery medzi riadkami pre lepší prehľad */
+#strategies-section tr {
+  border-bottom: 1px solid rgba(0,255,255,0.07);
+}
+
+/* === RESPONSÍVNE PRE MOBILY === */
+@media (max-width: 768px) {
+  #strategies-section table {
+    font-size: 13px;
+  }
+  #strategies-section th,
+  #strategies-section td {
+    padding: 6px 4px;
+  }
+  #strategies-section td:nth-child(2) {
+    font-size: 13px;
+  }
+}
+
+/* === NADPIS "TIPOVACIE STRATÉGIE" === */
+#strategies-section h2 {
+  font-size: 20px;
+  text-align: center;
+  text-shadow: 0 0 6px #00e6ff;
+  margin-bottom: 10px;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
