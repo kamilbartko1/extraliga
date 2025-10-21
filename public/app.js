@@ -277,20 +277,55 @@ function displayMantingal() {
 }
 
 // === Tipovacie stratégie ===
-function displayStrategies() {
+async function displayStrategies() {
   const wrap = document.getElementById("strategies-section");
   if (!wrap) return;
+
   wrap.innerHTML = `
     <h2>Tipovacie stratégie</h2>
-    <table>
-      <tr><th>Názov stratégie</th><th>Popis</th></tr>
-      <tr><td>Martingale</td><td>Po každej prehre zdvojnásobíš stávku, kým nevyhráš.</td></tr>
-      <tr><td>Fibonacci</td><td>Stávky podľa postupnosti 1, 1, 2, 3, 5, 8... zvyšuješ po prehre.</td></tr>
-      <tr><td>Flat betting</td><td>Stávkuješ stále rovnakú sumu bez ohľadu na predošlé výsledky.</td></tr>
-      <tr><td>Value betting</td><td>Tipuješ iba tam, kde je kurz vyšší než pravdepodobnosť podľa tvojho modelu.</td></tr>
-    </table>
-    <p>💡 V budúcnosti sa tu zobrazia aj simulácie a porovnania stratégií v reálnom čase.</p>
+    <p>💡 Test: vsádzame 10 € na to, že v zápase niekto dá aspoň 2 góly. Kurz = 1.9.</p>
+    <p>Prebieha výpočet ziskovosti...</p>
   `;
+
+  try {
+    const resp = await fetch("/api/strategies");
+    const data = await resp.json();
+
+    if (!data.ok) {
+      wrap.innerHTML += `<p>❌ Chyba: ${data.error}</p>`;
+      return;
+    }
+
+    const { totalBet, totalProfit, results } = data;
+
+    wrap.innerHTML = `
+      <h2>Tipovacie stratégie</h2>
+      <p><b>Model:</b> 10 € na „hráč dá 2+ góly“ (kurz 1.9)</p>
+      <p><b>Počet zápasov:</b> ${results.length} | <b>Vsadené spolu:</b> ${totalBet.toFixed(2)} € | <b>Výsledok:</b> <span style="color:${totalProfit >= 0 ? "limegreen" : "red"}">${totalProfit.toFixed(2)} €</span></p>
+    `;
+
+    const table = document.createElement("table");
+    table.innerHTML = `
+      <thead>
+        <tr><th>Dátum</th><th>Zápas</th><th>2+ góly</th><th>Zisk (€)</th></tr>
+      </thead>
+      <tbody>
+        ${results
+          .map(r => `
+            <tr>
+              <td>${r.date}</td>
+              <td>${r.home} – ${r.away}</td>
+              <td>${r.result}</td>
+              <td style="color:${r.profit >= 0 ? "limegreen" : "red"}">${r.profit.toFixed(2)}</td>
+            </tr>
+          `)
+          .join("")}
+      </tbody>
+    `;
+    wrap.appendChild(table);
+  } catch (e) {
+    wrap.innerHTML += `<p>❌ Chyba: ${e.message}</p>`;
+  }
 }
 
 // === Predikcie – Kurzy bookmakerov ===
