@@ -98,11 +98,28 @@ export default async function handler(req, res) {
 
                 for (const p of allSkaters) {
                   const name = pickPlayerName(p);
-                  if (!playerRatings[name]) playerRatings[name] = START_PLAYER_RATING;
-                  const goals = Number(p.goals || 0);
-                  const assists = Number(p.assists || 0);
-                  playerRatings[name] += goals * GOAL_POINTS + assists * ASSIST_POINTS;
+
+                // 🔹 pridaj rozpoznanie tímu (domáci / hosťujúci)
+                const teamName =
+                  homeSkaters.includes(p)
+                    ? box?.homeTeam?.name?.default || "Neznámy tím"
+                    : awaySkaters.includes(p)
+                    ? box?.awayTeam?.name?.default || "Neznámy tím"
+                    : "Neznámy tím";
+
+                // 🔹 ulož hráča spolu s tímom a ratingom
+                if (!playerRatings[name]) {
+                  playerRatings[name] = {
+                    rating: START_PLAYER_RATING,
+                    team: teamName
+                  };
                 }
+
+                const goals = Number(p.goals || 0);
+                const assists = Number(p.assists || 0);
+                playerRatings[name].rating += goals * GOAL_POINTS + assists * ASSIST_POINTS;
+              }
+
               } catch {}
             });
           }
@@ -128,12 +145,12 @@ export default async function handler(req, res) {
 
     // ---- nový krok: vyber TOP 50 hráčov podľa ratingu ----
     const topPlayers = Object.entries(playerRatings)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 50)
-      .reduce((acc, [name, rating]) => {
-        acc[name] = rating;
-        return acc;
-      }, {});
+  .sort((a, b) => b[1].rating - a[1].rating)
+  .slice(0, 50)
+  .reduce((acc, [name, info]) => {
+    acc[name] = info;
+    return acc;
+  }, {});
 
     console.log(
       `✅ Zápasy: ${allMatches.length} | Tímy: ${Object.keys(teamRatings).length} | TOP hráči: ${Object.keys(topPlayers).length}`
