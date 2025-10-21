@@ -1146,6 +1146,74 @@ nav button:hover::after {
   }
 }
 
+/* === Optimalizácia pre mobily – kompaktný vzhľad === */
+@media (max-width: 768px) {
+  /* Všetky sekcie */
+  body {
+    font-size: 0.9rem;
+  }
+
+  /* Nadpisy sekcií (VÝSLEDKY, RATING TÍMOV...) */
+  h2 {
+    font-size: 1rem;
+    margin: 8px 0;
+    letter-spacing: 1px;
+    text-align: center;
+    color: #00eaff;
+    text-shadow: 0 0 6px #00eaff;
+  }
+
+  /* Tabuľky */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  th, td {
+    font-size: 0.7rem;
+    padding: 3px 4px;
+    text-align: center;
+    word-wrap: break-word;
+  }
+
+  th {
+    color: #00eaff;
+    text-shadow: 0 0 4px #00eaff;
+    font-weight: 700;
+  }
+
+  td {
+    color: #eafcff;
+    text-shadow: 0 0 2px #00aaff;
+  }
+
+  /* Tímy */
+  table td:first-child,
+  table td:nth-child(2) {
+    font-weight: 600;
+    font-size: 0.75rem;
+  }
+
+  /* Dátum (napr. 21.10.2025) */
+  tr td[colspan="4"] b {
+    display: block;
+    text-align: center;
+    color: #00d4ff;
+    text-shadow: 0 0 6px #00d4ff;
+    font-size: 0.85rem;
+    margin: 4px 0;
+  }
+
+  /* Header vodoznak */
+  .ai-watermark {
+    font-size: 0.75rem;
+    opacity: 0.85;
+    top: 4px;
+    right: 10px;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
