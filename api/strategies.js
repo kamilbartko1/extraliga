@@ -1,60 +1,70 @@
 // /api/strategies.js
-const BET_AMOUNT = 10; // na každý zápas vsadíme 10 €
-const ODDS = 1.9; // kurz 1.9
+const BET_AMOUNT = 10; // 10 € na zápas
+const ODDS = 1.9;      // kurz 1.9
 
-// Pomocná funkcia – skontroluje, či niekto dal 2+ góly
-function hasTwoGoals(boxscore) {
-  const players = [
-    ...(boxscore?.homeTeam?.skaters || []),
-    ...(boxscore?.awayTeam?.skaters || []),
+// Z boxscore vytiahni všetkých korčuliarov (forwards + defense) z oboch tímov
+function collectSkaters(box) {
+  const home = box?.playerByGameStats?.homeTeam || {};
+  const away = box?.playerByGameStats?.awayTeam || {};
+  const homeSkaters = [
+    ...(Array.isArray(home.forwards) ? home.forwards : []),
+    ...(Array.isArray(home.defense) ? home.defense : []),
   ];
-  return players.some((p) => (p?.stats?.goals || 0) >= 2);
+  const awaySkaters = [
+    ...(Array.isArray(away.forwards) ? away.forwards : []),
+    ...(Array.isArray(away.defense) ? away.defense : []),
+  ];
+  return [...homeSkaters, ...awaySkaters];
+}
+
+// Podmienka: či niekto dal aspoň 2 góly
+function hasTwoGoals(box) {
+  const skaters = collectSkaters(box);
+  return skaters.some(p => Number(p?.goals ?? p?.stats?.goals ?? 0) >= 2);
 }
 
 export default async function handler(req, res) {
   try {
-    // 🔹 1. Načítaj všetky odohrané zápasy z tvojho backendu
-    const baseUrl = "https://nhlpro.sk"; // priamo tvoja doména (spoľahlivé riešenie)
-    console.log("🔗 Fetchujem zápasy z:", `${baseUrl}/api/matches`);
-
+    // 1) Načítaj všetky odohrané zápasy z tvojho backendu (pevná doména, spoľahlivé)
+    const baseUrl = "https://nhlpro.sk";
     const matchesResp = await fetch(`${baseUrl}/api/matches`, { cache: "no-store" });
     if (!matchesResp.ok) {
-      throw new Error(`Nepodarilo sa načítať zápasy (${matchesResp.status})`);
+      throw new Error(`Nepodarilo sa načítať /api/matches (${matchesResp.status})`);
     }
 
     const matchesData = await matchesResp.json();
-    const matches = matchesData.matches || [];
+    const matches = Array.isArray(matchesData.matches) ? matchesData.matches : [];
 
     const results = [];
     let totalBet = 0;
     let totalProfit = 0;
 
-    // 🔹 2. Prejdi všetky odohrané zápasy
+    // 2) Prejdi iba odohrané zápasy
     for (const m of matches) {
-      if (m.status !== "closed") continue; // iba odohrané zápasy
+      if (m.status !== "closed") continue;
 
+      totalBet += BET_AMOUNT;
       const gameId = m.id;
       let success = false;
 
       try {
-        // Načítaj boxscore pre každý zápas
-        const url = `https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`;
-        const boxResp = await fetch(url);
-        if (!boxResp.ok) throw new Error(`Boxscore ${gameId} nedostupné`);
-        const boxData = await boxResp.json();
+        const boxUrl = `https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`;
+        const boxResp = await fetch(boxUrl, { cache: "no-store" });
+        if (!boxResp.ok) throw new Error(`Boxscore ${gameId} nedostupné (${boxResp.status})`);
+        const box = await boxResp.json();
 
-        // Skontroluj, či niekto dal aspoň 2 góly
-        success = hasTwoGoals(boxData);
-      } catch (err) {
-        console.warn(`⚠️ Zápas ${gameId}: ${err.message}`);
+        success = hasTwoGoals(box);
+      } catch (e) {
+        // ak boxscore nevieme načítať, počítaj to ako NEúspech (konzervatívne)
+        console.warn(`⚠️ Zápas ${gameId}: ${e.message}`);
+        success = false;
       }
 
-      // 🔹 3. Výpočet zisku
-      totalBet += BET_AMOUNT;
-      const profit = success ? BET_AMOUNT * (ODDS - 1) : -BET_AMOUNT;
-      totalProfit += profit;
+      // 3) Výpočet zisku pre tento zápas
+      const profitNum = success ? BET_AMOUNT * (ODDS - 1) : -BET_AMOUNT;
+      totalProfit += profitNum;
 
-      // 🔹 4. Ulož výsledok pre tabuľku
+      // 4) Ulož riadok do výsledkov (profit nechávame ako číslo)
       results.push({
         id: gameId,
         date: m.date,
@@ -62,11 +72,11 @@ export default async function handler(req, res) {
         away: m.away_team,
         twoGoals: success ? "✅ Áno" : "❌ Nie",
         result: success ? "Výhra" : "Prehra",
-        profit: profit.toFixed(2),
+        profit: Number(profitNum.toFixed(2)),
       });
     }
 
-    // 🔹 5. Vráť sumár aj detaily
+    // 5) Odpoveď
     res.status(200).json({
       ok: true,
       totalBet,
@@ -74,7 +84,7 @@ export default async function handler(req, res) {
       results,
     });
   } catch (err) {
-    console.error("❌ Chyba /api/strategies:", err);
+    console.error("❌ /api/strategies:", err);
     res.status(500).json({ ok: false, error: err.message });
   }
 }
