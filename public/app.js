@@ -210,10 +210,10 @@ function displayMatches(matches) {
 
   const days = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
 
-  days.forEach((day, i) => {
-    const roundRow = document.createElement("tr");
-    roundRow.innerHTML = `<td colspan="4"><b>${i + 1}. deň (${day})</b></td>`;
-    tableBody.appendChild(roundRow);
+ days.forEach((day) => {
+  const roundRow = document.createElement("tr");
+  roundRow.innerHTML = `<td colspan="4"><b>${day}</b></td>`;
+  tableBody.appendChild(roundRow);
 
     grouped[day].forEach(match => {
       const row = document.createElement("tr");
