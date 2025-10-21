@@ -1111,6 +1111,41 @@ nav button:hover::after {
   }
 }
 
+/* === Lepšie zobrazenie tabuliek na mobiloch (bez posúvania) === */
+@media (max-width: 768px) {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* 👈 dôležité – všetky stĺpce sa zmenšia rovnomerne */
+  }
+
+  th, td {
+    font-size: 0.75rem; /* 👈 menšie písmo */
+    padding: 4px 6px;
+    text-align: center;
+    word-wrap: break-word;
+  }
+
+  /* Nadpisy sekcií (napr. VÝSLEDKY, RATING TÍMOV...) */
+  h2 {
+    font-size: 1.1rem;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  /* Tímové a hráčske mená mierne menšie, ale čitateľné */
+  table td:first-child,
+  table td:nth-child(2) {
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+
+  /* Ak by text presahoval, zalom ho */
+  td {
+    white-space: normal;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
