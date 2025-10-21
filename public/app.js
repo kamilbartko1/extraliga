@@ -288,43 +288,64 @@ async function displayStrategies() {
   `;
 
   try {
-    const resp = await fetch("/api/strategies");
-    const data = await resp.json();
+    const resp = await fetch("/api/strategies", { cache: "no-store" });
 
-    if (!data.ok) {
-      wrap.innerHTML += `<p>❌ Chyba: ${data.error}</p>`;
-      return;
+    // bezpečný parse — ak by server vrátil HTML chybu
+    let data;
+    try {
+      data = await resp.json();
+    } catch {
+      const txt = await resp.text();
+      throw new Error("Očakával som JSON, prišlo: " + txt.slice(0, 120));
     }
+
+    if (!data.ok) throw new Error(data.error || "Chyba výpočtu");
 
     const { totalBet, totalProfit, results } = data;
 
+    // Header so sumárom
     wrap.innerHTML = `
       <h2>Tipovacie stratégie</h2>
       <p><b>Model:</b> 10 € na „hráč dá 2+ góly“ (kurz 1.9)</p>
-      <p><b>Počet zápasov:</b> ${results.length} | <b>Vsadené spolu:</b> ${totalBet.toFixed(2)} € | <b>Výsledok:</b> <span style="color:${totalProfit >= 0 ? "limegreen" : "red"}">${totalProfit.toFixed(2)} €</span></p>
+      <p><b>Počet zápasov:</b> ${results.length} |
+         <b>Vsadené spolu:</b> ${Number(totalBet).toFixed(2)} € |
+         <b>Výsledok:</b> <span style="color:${Number(totalProfit) >= 0 ? "limegreen" : "red"}">
+           ${Number(totalProfit).toFixed(2)} €
+         </span>
+      </p>
     `;
 
+    // Tabuľka výsledkov
     const table = document.createElement("table");
     table.innerHTML = `
       <thead>
-        <tr><th>Dátum</th><th>Zápas</th><th>2+ góly</th><th>Zisk (€)</th></tr>
+        <tr>
+          <th>Dátum</th>
+          <th>Zápas</th>
+          <th>2+ góly</th>
+          <th>Výsledok</th>
+          <th>Zisk (€)</th>
+        </tr>
       </thead>
       <tbody>
-        ${results
-          .map(r => `
+        ${
+          results.map(r => `
             <tr>
               <td>${r.date}</td>
               <td>${r.home} – ${r.away}</td>
+              <td>${r.twoGoals}</td>
               <td>${r.result}</td>
-              <td style="color:${r.profit >= 0 ? "limegreen" : "red"}">${r.profit.toFixed(2)}</td>
+              <td style="color:${Number(r.profit) >= 0 ? "limegreen" : "red"}">
+                ${Number(r.profit).toFixed(2)}
+              </td>
             </tr>
-          `)
-          .join("")}
+          `).join("")
+        }
       </tbody>
     `;
     wrap.appendChild(table);
-  } catch (e) {
-    wrap.innerHTML += `<p>❌ Chyba: ${e.message}</p>`;
+  } catch (err) {
+    wrap.innerHTML += `<p>❌ Chyba: ${err.message}</p>`;
   }
 }
 
