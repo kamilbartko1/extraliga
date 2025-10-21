@@ -82,7 +82,7 @@ export default async function handler(req, res) {
         date: m.date,
         home: m.home_team,
         away: m.away_team,
-        twoGoals: success ? "✅ Áno" : "❌ Nie",
+        twoGoals: success ? "✅" : "❌",
         result: success ? "Výhra" : "Prehra",
         profit: Number(profitNum.toFixed(2)),
       });
