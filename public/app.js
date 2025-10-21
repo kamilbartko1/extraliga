@@ -69,67 +69,7 @@ function normalizeNhlGame(game, day) {
   };
 }
 
-// === Fetch schedule od 8.10.2025 do dnes ===
-async function fetchNhlSchedule() {
-  const games = [];
-  for (const day of dateRange(START_DATE, TODAY)) {
-    try {
-      const url = `https://api-web.nhle.com/v1/schedule/${day}`;
-      const resp = await fetch(url);
-      if (!resp.ok) continue;
-      const data = await resp.json();
-      const groups = Array.isArray(data.gameWeek) ? data.gameWeek : [];
-      groups.forEach(g => {
-        const dayGames = Array.isArray(g.games) ? g.games : [];
-        dayGames.forEach(game => {
-          if (["FINAL", "OFF"].includes(String(game.gameState || "").toUpperCase())) {
-            games.push(normalizeNhlGame(game, day));
-          }
-        });
-      });
-      console.log(`✅ ${day} – načítané ${games.length} zápasov`);
-    } catch (e) {
-      console.warn(`⚠️ Chyba pri dni ${day}: ${e.message}`);
-    }
-  }
-  console.log(`🔹 Spolu odohraných zápasov: ${games.length}`);
-  return games;
-}
-
-// === Výpočet ratingov tímov ===
-function computeTeamRatings(matches) {
-  const START_RATING = 1500;
-  const GOAL_POINTS = 10;
-  const WIN_POINTS = 10;
-  const LOSS_POINTS = -10;
-
-  const ratings = {};
-  const ensure = (team) => { if (ratings[team] == null) ratings[team] = START_RATING; };
-
-  matches.forEach(m => {
-    const home = m.sport_event.competitors[0].name;
-    const away = m.sport_event.competitors[1].name;
-    const hs = m.sport_event_status.home_score ?? 0;
-    const as = m.sport_event_status.away_score ?? 0;
-
-    ensure(home); ensure(away);
-
-    ratings[home] += hs * GOAL_POINTS - as * GOAL_POINTS;
-    ratings[away] += as * GOAL_POINTS - hs * GOAL_POINTS;
-
-    if (hs > as) {
-      ratings[home] += WIN_POINTS;
-      ratings[away] += LOSS_POINTS;
-    } else if (as > hs) {
-      ratings[away] += WIN_POINTS;
-      ratings[home] += LOSS_POINTS;
-    }
-  });
-
-  return ratings;
-}
-
-// === Hlavné načítanie ===
+// === Hlavné načítanie zápasov z backendu ===
 async function fetchMatches() {
   try {
     const response = await fetch(`${API_BASE}/api/matches`);
@@ -355,7 +295,6 @@ async function displayPredictions() {
 function displayStrategies() {
   const container = document.getElementById("strategies-section");
   if (!container) return;
-
   container.innerHTML = `
     <h2>Tipovacie stratégie</h2>
     <ul>
@@ -375,7 +314,7 @@ function showSection(id) {
 
   if (id === "mantingal-container") displayMantingal();
   if (id === "predictions-section") displayPredictions();
-  if (id === "strategies-section") displayStrategies();
+  if (id === "strategies-section") displayStrategies(); // 🔹 pridané
 }
 
 document.getElementById("mobileSelect")?.addEventListener("change", (e) => {
@@ -387,20 +326,11 @@ document.getElementById("mobileSelect")?.addEventListener("change", (e) => {
   if (val === "players") document.getElementById("players-section").style.display = "block";
   if (val === "mantingal") document.getElementById("mantingal-container").style.display = "block";
   if (val === "predictions") document.getElementById("predictions-section").style.display = "block";
-  if (val === "strategies") document.getElementById("strategies-section").style.display = "block";
+  if (val === "strategies") document.getElementById("strategies-section").style.display = "block"; // 🔹 pridané
 });
 
 // === Štart ===
 window.addEventListener("DOMContentLoaded", () => {
-  // načítaj zápasy a predikcie
   fetchMatches();
   displayPredictions();
-
-  // zobraz úvodnú sekciu (Výsledky)
-  showSection("matches-section");
-
-  // vyber „Výsledky“ ako aktívnu položku v mobile
-  const select = document.getElementById("mobileSelect");
-  if (select) select.value = "matches";
 });
-
