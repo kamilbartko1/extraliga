@@ -1333,6 +1333,69 @@ nav button:hover::after {
   }
 }
 
+/* === Oprava mobilného zobrazenia tabuliek === */
+@media (max-width: 768px) {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* pevné rozdelenie stĺpcov */
+  }
+
+  table th, table td {
+    font-size: 12px;
+    font-weight: 400;
+    padding: 5px 3px;
+    white-space: nowrap; /* nezalomí text */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: none;
+    vertical-align: middle;
+  }
+
+  /* nech sa celé názvy tímov zmestia a neprebíjajú rozloženie */
+  table td:nth-child(1),
+  table td:nth-child(2) {
+    width: 36%;
+  }
+  table td:nth-child(3) {
+    width: 18%;
+  }
+  table td:nth-child(4) {
+    width: 10%;
+    text-align: center;
+  }
+
+  /* hlavička tabuľky */
+  table th {
+    font-size: 11px;
+    font-weight: 600;
+    text-shadow: 0 0 2px rgba(0, 255, 255, 0.2);
+  }
+
+  /* dátumové riadky */
+  table tr td[colspan="4"] {
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    background: linear-gradient(90deg, rgba(0,255,255,0.1), rgba(0,255,255,0.05));
+    color: #44eaff;
+    border-radius: 4px;
+    padding: 8px 0;
+  }
+
+  /* nadpis sekcie */
+  h2 {
+    font-size: 17px;
+    text-shadow: 0 0 4px rgba(0, 255, 255, 0.4);
+    margin-bottom: 10px;
+  }
+
+  /* zabráni horizontálnemu posúvaniu */
+  body, .section {
+    overflow-x: hidden;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
