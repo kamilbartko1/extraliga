@@ -1,10 +1,7 @@
 // /api/strategies.js
-import fs from "fs/promises";
-
 const BET_AMOUNT = 10;
 const ODDS = 1.9;
 
-// Pomocná funkcia: skontroluj, či niekto dal aspoň 2 góly
 function hasTwoGoals(boxscore) {
   const allPlayers = [
     ...(boxscore?.homeTeam?.skaters || []),
@@ -15,12 +12,11 @@ function hasTwoGoals(boxscore) {
 
 export default async function handler(req, res) {
   try {
-    // 🔹 Oprava URL – garantujeme https://
-const BASE_URL = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "https://nhlpro.sk";
+    const BASE_URL = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "https://nhlpro.sk";
 
-const matchesResp = await fetch(`${BASE_URL}/api/matches`);
+    const matchesResp = await fetch(`${BASE_URL}/api/matches`);
     const matchesData = await matchesResp.json();
     const matches = matchesData.matches || [];
 
