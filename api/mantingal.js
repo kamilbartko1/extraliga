@@ -47,27 +47,31 @@ async function saveState(state) {
   }
 }
 
-// ---------- name helpers ----------
-function cleanName(str) {
-  return String(str || "")
+// ---------- name normalization ----------
+function normalizeName(name) {
+  return String(name || "")
+    .toLowerCase()
+    .replace(/\./g, "")
+    .replace(/\s+/g, "")
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-zA-Z]/g, "")
-    .toLowerCase();
+    .replace(/[\u0300-\u036f]/g, ""); // bez diakritiky
 }
 
-function parseNameVariants(name) {
-  const parts = name.split(" ").filter(Boolean);
-  const first = parts[0]?.replace(/\./g, "") || "";
-  const last = parts.slice(1).join(" ") || "";
-  const variants = new Set();
-  if (first && last) {
-    variants.add(cleanName(`${first} ${last}`));
-    variants.add(cleanName(`${first[0]} ${last}`));
-    variants.add(cleanName(`${first[0]}.${last}`));
-  }
-  variants.add(cleanName(name));
-  return { first, last, variants: Array.from(variants) };
+function matchesName(player, scorer) {
+  const p = normalizeName(player);
+  const s = normalizeName(scorer);
+
+  if (p === s) return true;
+
+  // Ak je hráč vo formáte JHughes, vezmi len priezvisko
+  const pLast = p.replace(/^[a-z]\s*/, "");
+  if (s.includes(pLast) || pLast.includes(s)) return true;
+
+  // Ak je J.Hughes vs JackHughes
+  const pInitial = p[0];
+  if (s.includes(pInitial) && s.includes(pLast)) return true;
+
+  return false;
 }
 
 // ---------- getTop10 ----------
@@ -89,31 +93,24 @@ async function getState() {
 
   if (!state.players || Object.keys(state.players).length === 0) {
     const top10 = await getTop10PlayersFromMatches();
-
-    if (!top10.length) {
-      return { ok: true, state: { players: {}, history: [] } };
-    }
-
     const players = {};
     for (const name of top10) {
       players[name] = {
         stake: 1,
         profit: 0,
-        lastResult: null,
+        lastResult: "-",
         streak: 0,
         activeToday: true,
       };
     }
-
     state = { players, history: [] };
     await saveState(state);
-    return { ok: true, state };
   }
 
   return { ok: true, state };
 }
 
-// ---------- UPDATE – kontrola gólov z boxscore ----------
+// ---------- UPDATE – kontrola gólov cez BOXCORE ----------
 async function doUpdate() {
   const state = await loadState();
   const players = state.players || {};
@@ -125,10 +122,9 @@ async function doUpdate() {
   const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
   const format = (d) => d.toISOString().slice(0, 10);
   const dates = [format(yesterday), format(now)];
-
   const allGames = [];
 
-  // 🔹 načítaj všetky zápasy za posledné 2 dni
+  // načítaj zápasy
   for (const day of dates) {
     try {
       const resp = await fetch(`https://api-web.nhle.com/v1/score/${day}`);
@@ -141,15 +137,14 @@ async function doUpdate() {
         allGames.push(...finals);
       }
     } catch (e) {
-      console.warn(`⚠️ Chyba pri načítaní zápasov pre ${day}:`, e.message);
+      console.warn(`⚠️ Chyba pri zápasoch pre ${day}:`, e.message);
     }
   }
 
-  console.log(`📅 Načítaných ${allGames.length} zápasov pre kontrolu strelcov`);
+  console.log(`📅 Načítaných ${allGames.length} zápasov`);
 
-  // 🔹 z každej hry získaj strelcov z boxscore
+  // načítaj strelcov z boxscore
   const scorers = new Set();
-
   for (const g of allGames) {
     try {
       const r = await fetch(`https://api-web.nhle.com/v1/gamecenter/${g.id}/boxscore`);
@@ -169,25 +164,21 @@ async function doUpdate() {
       for (const p of all) {
         const goals = Number(p.goals || 0);
         if (goals > 0) {
-          const first = p.firstName?.default || "";
-          const last = p.lastName?.default || "";
-          const name = `${first} ${last}`.trim();
-          if (name) scorers.add(name.replace(/[\s.]/g, "").toLowerCase());
+          const fullName = `${p.firstName?.default || ""} ${p.lastName?.default || ""}`.trim();
+          if (fullName) scorers.add(fullName);
         }
       }
     } catch (err) {
-      console.warn(`⚠️ Chyba pri načítaní boxscore ${g.id}:`, err.message);
+      console.warn(`⚠️ Chyba pri boxscore zápasu ${g.id}:`, err.message);
     }
   }
 
-  console.log(`📊 Nájdených strelcov: ${scorers.size}`);
+  console.log(`📊 Nájdených ${scorers.size} strelcov`);
 
-  // 🔹 vyhodnotenie Mantingalu
+  // vyhodnotenie
   for (const [name, p] of Object.entries(players)) {
     if (!p.activeToday) continue;
-
-    const clean = name.replace(/[\s.]/g, "").toLowerCase();
-    const scored = Array.from(scorers).some((s) => s.includes(clean) || clean.includes(s));
+    const scored = Array.from(scorers).some((s) => matchesName(name, s));
 
     if (scored) {
       const winProfit = +(p.stake * (FIXED_ODDS - 1)).toFixed(2);
@@ -196,7 +187,7 @@ async function doUpdate() {
       p.stake = 1;
       p.streak = 0;
       dailyProfit += winProfit;
-      console.log(`✅ ${name} skóroval +${winProfit}`);
+      console.log(`✅ ${name} skóroval (+${winProfit} €)`);
     } else {
       const loss = p.stake;
       p.profit = +(p.profit - loss).toFixed(2);
@@ -204,11 +195,10 @@ async function doUpdate() {
       p.streak++;
       p.stake *= 2;
       dailyProfit -= loss;
-      console.log(`❌ ${name} neskóroval -${loss}`);
+      console.log(`❌ ${name} neskóroval (-${loss} €)`);
     }
   }
 
-  // 🔹 uloženie histórie a stavu
   state.history = state.history || [];
   state.history.push({
     date: new Date().toISOString().slice(0, 10),
@@ -231,7 +221,7 @@ async function doReset() {
       state.players[name] = {
         stake: 1,
         profit: 0,
-        lastResult: null,
+        lastResult: "-",
         streak: 0,
         activeToday: true,
       };
