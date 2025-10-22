@@ -44,11 +44,11 @@ async function saveState(state) {
       await fs.writeFile(DATA_FILE, body);
     }
   } catch (e) {
-    console.warn("saveState warning:", e?.message || e);
+    console.warn("⚠️ saveState warning:", e?.message || e);
   }
 }
 
-// ---------- name helpers ----------
+// ---------- utils ----------
 function cleanName(str) {
   return String(str || "")
     .normalize("NFD")
@@ -98,91 +98,85 @@ async function doUpdate() {
   const FIXED_ODDS = 2.2;
   let dailyProfit = 0;
 
-  // 🏒 1) Fetch current or recent games
+  // === 1️⃣ Načítaj všetky zápasy dnes a včera ===
+  const now = new Date();
+  const yesterday = new Date(now.getTime() - 86400000);
+  const format = (d) => d.toISOString().slice(0, 10);
+  const dates = [format(yesterday), format(now)];
   let games = [];
-  try {
-    const nowResp = await fetch("https://api-web.nhle.com/v1/score/now");
-    if (nowResp.ok) {
-      const nowData = await nowResp.json();
-      if (Array.isArray(nowData.games)) games = nowData.games;
-    }
-  } catch (e) {
-    console.warn("⚠️ score/now failed:", e.message);
-  }
 
-  // fallback – posledné 2 dni
-  if (!games.length) {
-    const now = new Date();
-    const yesterday = new Date(now.getTime() - 86400000);
-    for (const d of [yesterday, now]) {
-      const day = d.toISOString().slice(0, 10);
-      try {
-        const r = await fetch(`https://api-web.nhle.com/v1/score/${day}`);
-        if (r.ok) {
-          const dd = await r.json();
-          if (Array.isArray(dd.games)) games.push(...dd.games);
-        }
-      } catch {}
+  for (const d of dates) {
+    try {
+      const r = await fetch(`https://api-web.nhle.com/v1/score/${d}`);
+      if (!r.ok) continue;
+      const data = await r.json();
+      if (Array.isArray(data.games)) games.push(...data.games);
+    } catch (e) {
+      console.warn(`⚠️ Chyba pri fetchnutí zápasov pre ${d}:`, e.message);
     }
   }
 
-  console.log(`📅 Načítaných zápasov: ${games.length}`);
+  games = games.filter((g) => g.id && ["FINAL", "OFF"].includes((g.gameState || "").toUpperCase()));
+  console.log(`📅 Zápasy na spracovanie: ${games.length}`);
 
-  // 🥅 2) Získať strelcov z boxscore
+  // === 2️⃣ Zo všetkých zápasov získať strelcov ===
   const scorers = new Set();
 
   for (const g of games) {
-    if (!g.id) continue;
     try {
-      const r = await fetch(`https://api-web.nhle.com/v1/gamecenter/${g.id}/boxscore`);
-      if (!r.ok) continue;
-      const box = await r.json();
+      const box = await (await fetch(`https://api-web.nhle.com/v1/gamecenter/${g.id}/boxscore`)).json();
 
-      const allPlayers = [
+      const all = [
         ...(box?.playerByGameStats?.homeTeam?.forwards || []),
         ...(box?.playerByGameStats?.homeTeam?.defense || []),
         ...(box?.playerByGameStats?.awayTeam?.forwards || []),
         ...(box?.playerByGameStats?.awayTeam?.defense || []),
       ];
 
-      for (const p of allPlayers) {
+      for (const p of all) {
         if (p.goals && p.goals > 0) {
-          const nm = p.name?.default || "";
-          if (nm) scorers.add(cleanName(nm));
+          const fullName =
+            p.name?.default ||
+            [p.firstName?.default, p.lastName?.default].filter(Boolean).join(" ");
+          if (fullName) scorers.add(cleanName(fullName));
         }
       }
     } catch (err) {
-      console.warn(`⚠️ Boxscore ${g.id} chyba:`, err.message);
+      console.warn(`⚠️ Nepodarilo sa načítať boxscore ${g.id}:`, err.message);
     }
   }
 
-  console.log(`📊 Počet strelcov: ${scorers.size}`);
+  console.log(`📊 Nájdených strelcov: ${scorers.size}`);
+  console.log("👉", Array.from(scorers).slice(0, 20)); // log prvých 20 strelcov
 
-  // 🎯 3) Vyhodnotenie Mantingalu
+  // === 3️⃣ Vyhodnotenie Mantingalu ===
   for (const [name, pl] of Object.entries(players)) {
     if (!pl.activeToday) continue;
     const clean = cleanName(name);
-    const scored = Array.from(scorers).some((s) => s.includes(clean) || clean.includes(s));
+    const scored = Array.from(scorers).some(
+      (s) => s.includes(clean) || clean.includes(s)
+    );
 
     if (scored) {
       const win = pl.stake * (FIXED_ODDS - 1);
-      pl.profit += win;
+      pl.profit = +(pl.profit + win).toFixed(2);
       pl.lastResult = "win";
       pl.stake = 1;
       pl.streak = 0;
       dailyProfit += win;
       console.log(`✅ ${name} skóroval +${win.toFixed(2)} €`);
     } else {
-      pl.profit -= pl.stake;
+      const loss = pl.stake;
+      pl.profit = +(pl.profit - loss).toFixed(2);
       pl.lastResult = "loss";
       pl.streak += 1;
-      dailyProfit -= pl.stake;
       pl.stake *= 2;
-      console.log(`❌ ${name} neskóroval -${pl.stake / 2} €`);
+      dailyProfit -= loss;
+      console.log(`❌ ${name} neskóroval -${loss} €`);
     }
   }
 
-  // 💾 4) Uložiť históriu
+  // === 4️⃣ Uložiť výsledky ===
   state.history = state.history || [];
   state.history.push({
     date: new Date().toISOString().slice(0, 10),
@@ -190,7 +184,12 @@ async function doUpdate() {
   });
 
   await saveState(state);
-  return { ok: true, message: "Update hotový", dailyProfit: Number(dailyProfit.toFixed(2)) };
+
+  return {
+    ok: true,
+    message: "Update hotový",
+    dailyProfit: Number(dailyProfit.toFixed(2)),
+  };
 }
 
 // ---------- RESET ----------
@@ -226,7 +225,7 @@ export default async function handler(req, res) {
     if (action === "reset") return res.status(200).json(await doReset());
     return res.status(400).json({ error: "Neznáma akcia" });
   } catch (e) {
-    console.error("mantingal error:", e);
+    console.error("❌ mantingal error:", e);
     return res.status(500).json({ error: e.message || "Mantingal error" });
   }
 }
