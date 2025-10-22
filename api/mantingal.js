@@ -113,122 +113,110 @@ async function getState() {
   return { ok: true, state };
 }
 
-// ---------- UPDATE – reálne výsledky z gólov (používa /score/now) ----------
+// ---------- UPDATE – kontrola gólov z boxscore ----------
 async function doUpdate() {
   const state = await loadState();
   const players = state.players || {};
   let dailyProfit = 0;
   const FIXED_ODDS = 2.2;
 
-  const baseUrl = "https://api-web.nhle.com/v1/score";
-  let dates = [];
+  // dátumy: dnes a včera
+  const now = new Date();
+  const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const format = (d) => d.toISOString().slice(0, 10);
+  const dates = [format(yesterday), format(now)];
 
-  try {
-    // načítaj meta-info s aktuálnym dňom a predchádzajúcim
-    const nowResp = await fetch(`${baseUrl}/now`);
-    if (nowResp.ok) {
-      const nowData = await nowResp.json();
-      if (nowData?.prevDate && nowData?.currentDate) {
-        dates = [nowData.prevDate, nowData.currentDate];
-      }
-    }
-  } catch (e) {
-    console.warn("⚠️ Nepodarilo sa načítať /score/now:", e.message);
-  }
+  const allGames = [];
 
-  // fallback ak by nevrátilo dátumy
-  if (!dates.length) {
-    const now = new Date();
-    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const fmt = (d) => d.toISOString().slice(0, 10);
-    dates = [fmt(yesterday), fmt(now)];
-  }
-
-  // 🔹 Načítaj zápasy pre tieto dátumy
-  let games = [];
-  for (const d of dates) {
+  // 🔹 načítaj všetky zápasy za posledné 2 dni
+  for (const day of dates) {
     try {
-      const resp = await fetch(`${baseUrl}/${d}`);
+      const resp = await fetch(`https://api-web.nhle.com/v1/score/${day}`);
       if (!resp.ok) continue;
-      const json = await resp.json();
-      if (Array.isArray(json.games)) {
-        games.push(...json.games);
+      const data = await resp.json();
+      if (Array.isArray(data.games)) {
+        const finals = data.games.filter((g) =>
+          ["FINAL", "OFF"].includes(String(g.gameState || "").toUpperCase())
+        );
+        allGames.push(...finals);
+      }
+    } catch (e) {
+      console.warn(`⚠️ Chyba pri načítaní zápasov pre ${day}:`, e.message);
+    }
+  }
+
+  console.log(`📅 Načítaných ${allGames.length} zápasov pre kontrolu strelcov`);
+
+  // 🔹 z každej hry získaj strelcov z boxscore
+  const scorers = new Set();
+
+  for (const g of allGames) {
+    try {
+      const r = await fetch(`https://api-web.nhle.com/v1/gamecenter/${g.id}/boxscore`);
+      if (!r.ok) continue;
+      const box = await r.json();
+
+      const extractPlayers = (team) => [
+        ...(team?.forwards || []),
+        ...(team?.defense || []),
+      ];
+
+      const all = [
+        ...extractPlayers(box?.playerByGameStats?.homeTeam),
+        ...extractPlayers(box?.playerByGameStats?.awayTeam),
+      ];
+
+      for (const p of all) {
+        const goals = Number(p.goals || 0);
+        if (goals > 0) {
+          const first = p.firstName?.default || "";
+          const last = p.lastName?.default || "";
+          const name = `${first} ${last}`.trim();
+          if (name) scorers.add(name.replace(/[\s.]/g, "").toLowerCase());
+        }
       }
     } catch (err) {
-      console.warn(`⚠️ Chyba pri fetchnutí zápasov pre ${d}:`, err.message);
+      console.warn(`⚠️ Chyba pri načítaní boxscore ${g.id}:`, err.message);
     }
   }
 
-  console.log(`📅 Načítaných ${games.length} zápasov z ${dates.join(", ")}`);
+  console.log(`📊 Nájdených strelcov: ${scorers.size}`);
 
-  // 🔹 Zhromaždi všetkých strelcov (z poľa "goals")
-  const scorers = [];
-  for (const g of games) {
-    if (!["FINAL", "OFF"].includes(String(g.gameState || "").toUpperCase()))
-      continue;
-
-    for (const goal of g.goals || []) {
-      const first = goal.firstName?.default || "";
-      const last = goal.lastName?.default || "";
-      const team = goal.teamAbbrev || "";
-      if (!first && !last) continue;
-      const full = `${first} ${last}`.trim();
-      scorers.push({
-        clean: full.replace(/[\s.]/g, "").toLowerCase(),
-        display: full,
-        team,
-      });
-    }
-  }
-
-  // 🔹 Odstráň duplicity
-  const scorerSet = new Map();
-  for (const s of scorers) {
-    if (!s || !s.clean) continue;
-    scorerSet.set(s.clean, s);
-  }
-
-  console.log(`📊 Nájdených unikátnych strelcov: ${scorerSet.size}`);
-
-  // 🔹 Pomocná funkcia pre kontrolu mena
-  function playerScored(playerName) {
-    const clean = playerName.replace(/[\s.]/g, "").toLowerCase();
-    return Array.from(scorerSet.keys()).some((s) => s.includes(clean) || clean.includes(s));
-  }
-
-  // 🔹 Vyhodnotenie Mantingalu
+  // 🔹 vyhodnotenie Mantingalu
   for (const [name, p] of Object.entries(players)) {
     if (!p.activeToday) continue;
 
-    const scored = playerScored(name);
+    const clean = name.replace(/[\s.]/g, "").toLowerCase();
+    const scored = Array.from(scorers).some((s) => s.includes(clean) || clean.includes(s));
+
     if (scored) {
-      const winProfit = Number((p.stake * (FIXED_ODDS - 1)).toFixed(2));
-      p.profit = Number((Number(p.profit || 0) + winProfit).toFixed(2));
+      const winProfit = +(p.stake * (FIXED_ODDS - 1)).toFixed(2);
+      p.profit = +(p.profit + winProfit).toFixed(2);
       p.lastResult = "win";
       p.stake = 1;
       p.streak = 0;
       dailyProfit += winProfit;
-      console.log(`✅ ${name} skóroval (+${winProfit.toFixed(2)} €)`);
+      console.log(`✅ ${name} skóroval +${winProfit}`);
     } else {
-      const lossAmount = Number(p.stake || 0);
-      p.profit = Number((Number(p.profit || 0) - lossAmount).toFixed(2));
+      const loss = p.stake;
+      p.profit = +(p.profit - loss).toFixed(2);
       p.lastResult = "loss";
-      p.streak = (p.streak || 0) + 1;
-      p.stake = Number((p.stake || 1) * 2);
-      dailyProfit -= lossAmount;
-      console.log(`❌ ${name} neskóroval (−${lossAmount.toFixed(2)} €), nový stake: ${p.stake}`);
+      p.streak++;
+      p.stake *= 2;
+      dailyProfit -= loss;
+      console.log(`❌ ${name} neskóroval -${loss}`);
     }
   }
 
-  // 🔹 Ulož históriu
+  // 🔹 uloženie histórie a stavu
   state.history = state.history || [];
   state.history.push({
     date: new Date().toISOString().slice(0, 10),
-    profit: Number(dailyProfit.toFixed(2)),
+    profit: +dailyProfit.toFixed(2),
   });
 
   await saveState(state);
-  return { ok: true, message: "Update hotový", dailyProfit: Number(dailyProfit.toFixed(2)) };
+  return { ok: true, message: "Update hotový", dailyProfit: +dailyProfit.toFixed(2) };
 }
 
 // ---------- RESET ----------
