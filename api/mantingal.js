@@ -91,88 +91,62 @@ async function getState() {
 }
 
 // ---------- UPDATE – reálne výsledky z boxscore ----------
+// ---------- UPDATE – reálne výsledky z boxscore ----------
 async function doUpdate() {
   const state = await loadState();
   const players = state.players || {};
   let dailyProfit = 0;
-
   const FIXED_ODDS = 2.2;
 
-  // dátumy – posledných 24h
   const now = new Date();
   const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
   const formatDate = (d) => d.toISOString().slice(0, 10);
   const dates = [formatDate(yesterday), formatDate(now)];
 
-  const recentGames = [];
+  const recentStats = {};
+
+  // prejdeme všetky zápasy za posledné 2 dni
   for (const day of dates) {
     try {
       const resp = await fetch(`https://api-web.nhle.com/v1/score/${day}`);
       if (!resp.ok) continue;
       const data = await resp.json();
       const games = Array.isArray(data.games) ? data.games : [];
-      for (const g of games) {
-        const state = String(g.gameState || "").toUpperCase();
-        if (["FINAL", "OFF"].includes(state)) {
-          recentGames.push(g);
+
+      for (const game of games) {
+        if (!["FINAL", "OFF"].includes(String(game.gameState || "").toUpperCase())) continue;
+
+        // každý FINAL zápas má zoznam gólov
+        const goals = game.goals || [];
+        for (const g of goals) {
+          const first = g.firstName?.default || g.firstName || "";
+          const last = g.lastName?.default || g.lastName || "";
+          const name = `${first} ${last}`.trim();
+          const team = g.teamAbbrev || "???";
+
+          if (!name) continue;
+
+          // spočítaj góly hráča
+          if (!recentStats[name]) {
+            recentStats[name] = { goals: 0, team };
+          }
+          recentStats[name].goals += 1;
         }
       }
     } catch (err) {
-      console.warn("⚠️ Chyba pri fetchnutí zápasov:", err.message);
+      console.warn(`⚠️ Chyba pri dni ${day}:`, err.message);
     }
   }
 
-  console.log(`📅 Načítaných ${recentGames.length} zápasov za posledných 24h`);
+  console.log(`📊 Načítaných ${Object.keys(recentStats).length} strelcov`);
 
-  // všetky hráčske dáta z boxscore
-  const recentStats = {};
-
-  for (const game of recentGames) {
-    try {
-      const r = await fetch(`https://api-web.nhle.com/v1/gamecenter/${game.id}/boxscore`);
-      if (!r.ok) continue;
-      const box = await r.json();
-
-      const extractPlayers = (team) => [
-        ...(team?.forwards || []),
-        ...(team?.defense || []),
-      ];
-
-      const skaters = [
-        ...extractPlayers(box?.playerByGameStats?.homeTeam),
-        ...extractPlayers(box?.playerByGameStats?.awayTeam),
-      ];
-
-      for (const p of skaters) {
-        const name =
-          p.name?.default ||
-          [p.firstName?.default, p.lastName?.default].filter(Boolean).join(" ");
-        if (!name) continue;
-
-        const goals = Number(p.goals || 0);
-        const assists = Number(p.assists || 0);
-
-        if (!recentStats[name]) {
-          recentStats[name] = { goals: 0, assists: 0, games: 0 };
-        }
-        recentStats[name].goals += goals;
-        recentStats[name].assists += assists;
-        recentStats[name].games += 1;
-      }
-    } catch (err) {
-      console.warn(`⚠️ Chyba pri boxscore zápasu ${game.id}:`, err.message);
-    }
-  }
-
-  console.log(`📊 Načítaných ${Object.keys(recentStats).length} hráčov zo zápasov`);
-
-  // vyhodnotenie
+  // teraz vyhodnotíme výsledky pre našich top hráčov
   for (const [name, p] of Object.entries(players)) {
     if (!p.activeToday) continue;
 
     const stats = recentStats[name];
     if (!stats) {
-      console.log(`⏸️ ${name} nehral – bez zmeny`);
+      console.log(`⏸️ ${name} nehral alebo nedal gól – bez zmeny`);
       continue;
     }
 
@@ -183,18 +157,18 @@ async function doUpdate() {
       p.stake = 1;
       p.streak = 0;
       dailyProfit += winProfit;
-      console.log(`✅ ${name} dal gól (${winProfit.toFixed(2)} €)`);
+      console.log(`✅ ${name} (${stats.team}) dal ${stats.goals} gól(ov) – výhra ${winProfit.toFixed(2)} €`);
     } else {
       p.profit -= p.stake;
       p.lastResult = "loss";
       p.streak = (p.streak || 0) + 1;
       p.stake *= 2;
       dailyProfit -= p.stake;
-      console.log(`❌ ${name} nevsietil, ďalší stake: ${p.stake} €`);
+      console.log(`❌ ${name} (${stats.team}) nevsietil – strata ${p.stake} €`);
     }
   }
 
-  // uloženie histórie
+  // uložíme históriu
   state.history = state.history || [];
   state.history.push({
     date: new Date().toISOString().slice(0, 10),
