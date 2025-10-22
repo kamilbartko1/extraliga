@@ -95,7 +95,6 @@ async function doUpdate() {
   const state = await loadState();
   const players = state.players || {};
   let dailyProfit = 0;
-
   const FIXED_ODDS = 2.2;
 
   // Dátumy – posledných 24 hodín
@@ -105,51 +104,54 @@ async function doUpdate() {
   const dates = [formatDate(yesterday), formatDate(now)];
 
   // 🔹 zhromaždíme všetky góly
-  const recentGoals = {};
+  const scorers = [];
 
   for (const day of dates) {
     try {
       const resp = await fetch(`https://api-web.nhle.com/v1/score/${day}`);
       if (!resp.ok) continue;
       const data = await resp.json();
-      const games = data.games || [];
 
-      for (const g of games) {
-        const state = String(g.gameState || "").toUpperCase();
-        if (!["FINAL", "OFF"].includes(state)) continue;
+      for (const g of data.games || []) {
+        if (!["FINAL", "OFF"].includes(String(g.gameState || "").toUpperCase()))
+          continue;
 
-        const goals = g.goals || [];
-        for (const goal of goals) {
-          const playerName = goal.name?.default || goal.lastName?.default || "";
-          if (!playerName) continue;
-          const lastName = goal.lastName?.default || playerName.split(" ").pop();
-
-          if (!recentGoals[lastName]) recentGoals[lastName] = 0;
-          recentGoals[lastName]++;
+        for (const goal of g.goals || []) {
+          const first = goal.firstName?.default || "";
+          const last = goal.lastName?.default || "";
+          if (!first && !last) continue;
+          scorers.push({
+            full: (first + last).replace(/[\s.]/g, "").toLowerCase(),
+            display: `${first} ${last}`,
+          });
         }
       }
     } catch (err) {
-      console.warn(`⚠️ Chyba pri načítaní dátumu ${day}:`, err.message);
+      console.warn(`⚠️ Chyba pri fetchnutí zápasov ${day}:`, err.message);
     }
   }
 
-  console.log("📊 Góly za posledných 24h:", recentGoals);
+  console.log("📊 Počet nájdených strelcov:", scorers.length);
 
-  // 🔹 vyhodnotenie hráčov z Mantingalu
+  // 🔹 funkcia pre zhodu mena hráča
+  function playerScored(playerName) {
+    const clean = playerName.replace(/[\s.]/g, "").toLowerCase();
+    return scorers.some((s) => s.full.includes(clean) || clean.includes(s.full));
+  }
+
+  // 🔹 vyhodnotenie Mantingalu
   for (const [name, p] of Object.entries(players)) {
     if (!p.activeToday) continue;
 
-    const lastName = name.split(" ").pop().replace(".", "");
-    const goals = recentGoals[lastName] || 0;
-
-    if (goals > 0) {
+    const scored = playerScored(name);
+    if (scored) {
       const winProfit = p.stake * (FIXED_ODDS - 1);
       p.profit += winProfit;
       p.lastResult = "win";
       p.stake = 1;
       p.streak = 0;
       dailyProfit += winProfit;
-      console.log(`✅ ${name} dal ${goals} gól(ov) (+${winProfit.toFixed(2)} €)`);
+      console.log(`✅ ${name} dal gól (+${winProfit.toFixed(2)} €)`);
     } else {
       p.profit -= p.stake;
       p.lastResult = "loss";
