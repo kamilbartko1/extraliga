@@ -97,7 +97,7 @@ async function doUpdate() {
   let dailyProfit = 0;
   const FIXED_ODDS = 2.2;
 
-  // 🔹 Načítaj aktuálne a posledné zápasy
+  // 🔹 Načítaj aktuálne / posledné zápasy
   let games = [];
   try {
     const resp = await fetch("https://api-web.nhle.com/v1/score/now");
@@ -108,7 +108,7 @@ async function doUpdate() {
     console.warn("⚠️ Chyba pri fetchnutí /score/now:", err.message);
   }
 
-  // 🔹 zhromaždíme všetky góly
+  // 🔹 Zozbieraj všetky góly (hráčov, čo skórovali)
   const scorers = [];
   for (const g of games) {
     if (!["FINAL", "OFF"].includes(String(g.gameState || "").toUpperCase()))
@@ -118,19 +118,26 @@ async function doUpdate() {
       const first = goal.firstName?.default || "";
       const last = goal.lastName?.default || "";
       if (!first && !last) continue;
+      const fullName = `${first} ${last}`.trim();
       scorers.push({
-        full: (first + last).replace(/[\s.]/g, "").toLowerCase(),
-        display: `${first} ${last}`,
+        clean: fullName.replace(/[\s.]/g, "").toLowerCase(),
+        display: fullName,
+        team: goal.teamAbbrev || "",
       });
     }
   }
 
   console.log(`📊 Počet strelcov nájdených: ${scorers.length}`);
 
-  // 🔹 Funkcia na porovnanie mien (napr. J. Hughes == Jack Hughes)
+  // 🔹 Funkcia pre spoľahlivé porovnanie mena
   function playerScored(playerName) {
     const clean = playerName.replace(/[\s.]/g, "").toLowerCase();
-    return scorers.some((s) => s.full.includes(clean) || clean.includes(s.full));
+    return scorers.some(
+      (s) =>
+        clean.includes(s.clean) ||
+        s.clean.includes(clean) ||
+        s.display.toLowerCase().includes(clean)
+    );
   }
 
   // 🔹 Vyhodnotenie Mantingalu
