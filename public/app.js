@@ -273,13 +273,64 @@ function displayPlayerRatings() {
   });
 }
 
-// === Mantingal placeholder ===
-function displayMantingal() {
-  const wrap = document.getElementById("mantingal-container");
-  if (!wrap) return;
-  wrap.innerHTML = `
-    <table><tr><td>Mantingal sa zapne po pripojení hráčskych štatistík (boxscore).</td></tr></table>
-  `;
+// === Mantingal sekcia (nová verzia) ===
+async function displayMantingal() {
+  const container = document.getElementById("mantingal-container");
+  if (!container) return;
+
+  container.innerHTML = "<h2>Mantingal stratégia</h2><p>Načítavam dáta...</p>";
+
+  try {
+    const resp = await fetch("/api/mantingal", { cache: "no-store" });
+    const data = await resp.json();
+
+    if (!data.ok || !Array.isArray(data.players)) {
+      container.innerHTML = "<p>❌ Nepodarilo sa načítať dáta Mantingal.</p>";
+      return;
+    }
+
+    const { players, dateChecked, totalGames, scorers } = data;
+
+    // Info o spracovaní
+    let html = `
+      <h2>Mantingal stratégia</h2>
+      <p><b>Dátum:</b> ${dateChecked}</p>
+      <p><b>Počet zápasov:</b> ${totalGames}</p>
+      <p><b>Počet strelcov:</b> ${scorers}</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Hráč</th>
+            <th>Stávka (€)</th>
+            <th>Zisk (€)</th>
+            <th>Streak</th>
+            <th>Výsledok</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    players.forEach((p) => {
+      html += `
+        <tr>
+          <td>${p.name}</td>
+          <td>${p.stake.toFixed(2)}</td>
+          <td style="color:${p.profit >= 0 ? "limegreen" : "red"}">${p.profit.toFixed(2)}</td>
+          <td>${p.streak}</td>
+          <td>${p.lastResult === "win" ? "✅" : p.lastResult === "loss" ? "❌" : "-"}</td>
+        </tr>
+      `;
+    });
+
+    html += `
+        </tbody>
+      </table>
+    `;
+
+    container.innerHTML = html;
+  } catch (err) {
+    container.innerHTML = `<p>❌ Chyba: ${err.message}</p>`;
+  }
 }
 
 // === Tipovacie stratégie ===
@@ -464,5 +515,6 @@ async function displayMantingal() {
 window.addEventListener("DOMContentLoaded", () => {
   fetchMatches();
   displayPredictions(); // 🔹 pridaj túto funkciu
-  displayStrategies(); 
+  displayStrategies();
+  displayMantingal(); 
 });
