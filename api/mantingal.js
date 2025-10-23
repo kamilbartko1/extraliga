@@ -1,19 +1,16 @@
-// /api/mantingal.js
+// /api/mantingal.js – jednoduchý Mantingal bez súborov a Upstash
+
 export default async function handler(req, res) {
   try {
-    const BASE_STAKE = 1;
     const FIXED_ODDS = 2.2;
+    const BASE_STAKE = 1;
 
-    // === 1️⃣ Získaj včerajší dátum ===
-    const now = new Date();
-    now.setDate(now.getDate() - 1);
-    const YESTERDAY = now.toISOString().slice(0, 10);
-
-    // === 2️⃣ Načítaj hráčov z /api/matches (Top 10 podľa ratingu) ===
-    const matchesResp = await fetch("https://nhlpro.sk/api/matches");
+    // === 1️⃣ Získaj top10 hráčov z /api/matches
+    const matchesResp = await fetch("https://nhlpro.sk/api/matches", { cache: "no-store" });
+    if (!matchesResp.ok) throw new Error("Nepodarilo sa načítať zápasy");
     const matchesData = await matchesResp.json();
-
     const playerRatings = matchesData.playerRatings || {};
+
     const top10 = Object.entries(playerRatings)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10)
@@ -21,72 +18,77 @@ export default async function handler(req, res) {
         name,
         stake: BASE_STAKE,
         profit: 0,
-        lastResult: "-",
         streak: 0,
+        lastResult: "-",
       }));
 
-    // === 3️⃣ Načítaj zápasy zo včerajška ===
-    const scoreResp = await fetch(`https://api-web.nhle.com/v1/score/${YESTERDAY}`);
+    // === 2️⃣ Zisti včerajší dátum
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const dateStr = yesterday.toISOString().slice(0, 10);
+
+    // === 3️⃣ Načítaj zápasy z včerajška
+    const scoreResp = await fetch(`https://api-web.nhle.com/v1/score/${dateStr}`);
+    if (!scoreResp.ok) throw new Error("Nepodarilo sa načítať včerajšie zápasy");
     const scoreData = await scoreResp.json();
     const games = Array.isArray(scoreData.games) ? scoreData.games : [];
 
-    // === 4️⃣ Získaj všetkých strelcov z boxscore dát ===
+    // === 4️⃣ Získaj strelcov z boxscore
     const scorers = new Set();
 
     for (const g of games) {
       if (!g.id) continue;
       try {
-        const r = await fetch(`https://api-web.nhle.com/v1/gamecenter/${g.id}/boxscore`);
-        if (!r.ok) continue;
-        const box = await r.json();
+        const boxResp = await fetch(`https://api-web.nhle.com/v1/gamecenter/${g.id}/boxscore`);
+        if (!boxResp.ok) continue;
+        const box = await boxResp.json();
 
-        const allPlayers = [
+        const players = [
           ...(box?.playerByGameStats?.homeTeam?.forwards || []),
-          ...(box?.playerByGameStats?.awayTeam?.forwards || []),
           ...(box?.playerByGameStats?.homeTeam?.defense || []),
+          ...(box?.playerByGameStats?.awayTeam?.forwards || []),
           ...(box?.playerByGameStats?.awayTeam?.defense || []),
         ];
 
-        for (const p of allPlayers) {
+        for (const p of players) {
           if (p.goals && p.goals > 0) {
-            const nm = p.name?.default || "";
-            if (nm) scorers.add(nm.toLowerCase());
+            scorers.add(String(p.name?.default || "").toLowerCase());
           }
         }
       } catch (err) {
-        console.warn("Boxscore error:", err.message);
+        console.warn(`Boxscore chyba ${g.id}:`, err.message);
       }
     }
 
-    // === 5️⃣ Vyhodnoť Mantingal pre top10 hráčov ===
+    // === 5️⃣ Vyhodnoť Mantingal logiku
+    let totalProfit = 0;
     for (const player of top10) {
-      const lower = player.name.toLowerCase();
-      const scored = Array.from(scorers).some(s => s.includes(lower) || lower.includes(s));
+      const clean = player.name.toLowerCase();
+      const scored = Array.from(scorers).some((s) => s.includes(clean) || clean.includes(s));
 
       if (scored) {
         const win = player.stake * (FIXED_ODDS - 1);
         player.profit += win;
         player.lastResult = "win";
-        player.stake = BASE_STAKE;
-        player.streak = 0;
+        totalProfit += win;
       } else {
         player.profit -= player.stake;
-        player.lastResult = "loss";
-        player.streak += 1;
         player.stake *= 2;
+        player.lastResult = "loss";
+        totalProfit -= player.stake;
       }
     }
 
-    // === 6️⃣ Pošli výsledky na frontend ===
-    res.status(200).json({
+    return res.status(200).json({
       ok: true,
-      dateChecked: YESTERDAY,
+      dateChecked: dateStr,
       totalGames: games.length,
       scorers: scorers.size,
       players: top10,
+      totalProfit: totalProfit.toFixed(2),
     });
   } catch (err) {
     console.error("Mantingal chyba:", err);
-    res.status(500).json({ error: err.message || "Mantingal error" });
+    res.status(500).json({ ok: false, error: err.message });
   }
 }
