@@ -317,7 +317,18 @@ async function displayMantingal() {
           <td>${p.stake.toFixed(2)}</td>
           <td style="color:${p.profit >= 0 ? "limegreen" : "red"}">${p.profit.toFixed(2)}</td>
           <td>${p.streak}</td>
-          <td>${p.lastResult === "win" ? "✅" : p.lastResult === "loss" ? "❌" : "-"}</td>
+          <td>
+  ${
+    p.lastResult === "win"
+      ? "✅"
+      : p.lastResult === "loss"
+      ? "❌"
+      : p.lastResult === "skip"
+      ? "⏸️"
+      : "-"
+  }
+</td>
+
         </tr>
       `;
     });
