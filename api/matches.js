@@ -111,7 +111,7 @@ export default async function handler(req, res) {
       } catch {}
     }
 
-    // Obmedzenie paralelných volaní
+    // obmedzenie paralelných volaní
     const CONCURRENCY = 6;
     const runWithLimit = async (jobs, limit) => {
       const queue = jobs.slice();
@@ -127,7 +127,7 @@ export default async function handler(req, res) {
     };
     await runWithLimit(boxscoreJobs, CONCURRENCY);
 
-    // Vyber TOP 50 hráčov podľa ratingu
+    // ---- nový krok: vyber TOP 50 hráčov podľa ratingu ----
     const topPlayers = Object.entries(playerRatings)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 50)
