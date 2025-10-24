@@ -126,18 +126,23 @@ export default async function handler(req, res) {
     };
     await runWithLimit(boxscoreJobs, CONCURRENCY);
 
+    // ---- nový krok: vyber TOP 50 hráčov podľa ratingu ----
     const topPlayers = Object.entries(playerRatings)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 50)
       .reduce((acc, [name, rating]) => {
-        acc[name] = Math.round(rating);
+        acc[name] = rating;
         return acc;
       }, {});
+
+    console.log(
+      `✅ Zápasy: ${allMatches.length} | Tímy: ${Object.keys(teamRatings).length} | TOP hráči: ${Object.keys(topPlayers).length}`
+    );
 
     res.status(200).json({
       matches: allMatches,
       teamRatings,
-      playerRatings: topPlayers,
+      playerRatings: topPlayers, // len TOP 50 hráčov
     });
   } catch (err) {
     console.error("❌ Chyba pri /api/matches:", err);
