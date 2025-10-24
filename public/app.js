@@ -469,48 +469,6 @@ document
   .querySelector("button[onclick*='predictions-section']")
   ?.addEventListener("click", displayPredictions);
 
- // === Mantingal sekcia ===
-async function displayMantingal() {
-  const container = document.getElementById("mantingal-container");
-  if (!container) return;
-  container.innerHTML = "<h2>Mantingal stratégia</h2><p>Načítavam stav...</p>";
-
-  try {
-    const resp = await fetch("/api/mantingal?action=state");
-    const data = await resp.json();
-
-    if (!data.ok || !data.state?.players) {
-      container.innerHTML = "<p>Žiadne dáta o hráčoch.</p>";
-      return;
-    }
-
-    const players = data.state.players;
-    const table = document.createElement("table");
-    table.innerHTML = `
-      <thead>
-        <tr><th>Hráč</th><th>Stávka (€)</th><th>Zisk (€)</th><th>Streak</th><th>Posledný výsledok</th></tr>
-      </thead>
-      <tbody>
-        ${Object.entries(players)
-          .map(([name, p]) => `
-            <tr>
-              <td>${name}</td>
-              <td>${p.stake?.toFixed?.(2) ?? p.stake}</td>
-              <td>${p.profit?.toFixed?.(2) ?? p.profit}</td>
-              <td>${p.streak ?? 0}</td>
-              <td>${p.lastResult ?? "-"}</td>
-            </tr>
-          `)
-          .join("")}
-      </tbody>
-    `;
-    container.innerHTML = "<h2>Mantingal stratégia</h2>";
-    container.appendChild(table);
-  } catch (e) {
-    container.innerHTML = `<p>Chyba pri načítaní Mantingal: ${e.message}</p>`;
-  }
-}
-
 // === Štart ===
 window.addEventListener("DOMContentLoaded", () => {
   fetchMatches();
