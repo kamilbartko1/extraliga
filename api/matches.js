@@ -191,8 +191,7 @@ export default async function handler(req, res) {
       teamRatings,
       playerRatings: topPlayers, // len TOP 50 hráčov
     });
-  } catch (err) {
-    console.error("❌ Chyba pri /api/matches:", err);
+    
     // ---- zaokrúhlenie ratingov na celé čísla ----
 Object.keys(playerRatings).forEach((name) => {
   playerRatings[name] = Math.round(playerRatings[name]);
@@ -200,6 +199,9 @@ Object.keys(playerRatings).forEach((name) => {
 Object.keys(teamRatings).forEach((team) => {
   teamRatings[team] = Math.round(teamRatings[team]);
 });
+
+  } catch (err) {
+    console.error("❌ Chyba pri /api/matches:", err);
     res.status(500).json({ error: err.message || "Server error" });
   }
 }
