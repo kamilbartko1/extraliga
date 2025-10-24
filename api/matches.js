@@ -25,13 +25,9 @@ export default async function handler(req, res) {
     const TEAM_WIN_POINTS = 10;
     const TEAM_LOSS_POINTS = -10;
 
-    // ---------- PLAYER RATING CONFIG (nové pravidlá) ----------
     const START_PLAYER_RATING = 1500;
-    const POINTS_GOAL = 50;           // gól
-    const POINTS_PP_GOAL = 20;        // gól v power play (pripočítame k powerPlayGoals)
-    const POINTS_ASSIST = 10;         // asistencia
-    const TOI_SEC_MULT = 0.01;        // každá sekunda * 0.01
-    const PLUSMINUS_MULT = 2;         // plusMinus * 2
+    const GOAL_POINTS = 20;
+    const ASSIST_POINTS = 10;
 
     const ensureTeam = (name) => {
       if (name && teamRatings[name] == null) teamRatings[name] = START_TEAM_RATING;
@@ -46,25 +42,6 @@ export default async function handler(req, res) {
       ...(Array.isArray(teamNode?.forwards) ? teamNode.forwards : []),
       ...(Array.isArray(teamNode?.defense) ? teamNode.defense : []),
     ];
-
-    // helper: prepočítať TOI (napr. "12:19" alebo "1:12:19") na sekundy
-    const toiToSeconds = (toi) => {
-      if (!toi && toi !== 0) return 0;
-      try {
-        const parts = String(toi).split(":").map(p => Number(p));
-        if (parts.length === 2) {
-          return parts[0] * 60 + parts[1];
-        } else if (parts.length === 3) {
-          return parts[0] * 3600 + parts[1] * 60 + parts[2];
-        } else if (!isNaN(Number(toi))) {
-          // už môže byť v sekundách
-          return Number(toi);
-        }
-      } catch (e) {
-        return 0;
-      }
-      return 0;
-    };
 
     const boxscoreJobs = [];
     for (const day of dateRange) {
@@ -122,39 +99,15 @@ export default async function handler(req, res) {
                 for (const p of allSkaters) {
                   const name = pickPlayerName(p);
                   if (!playerRatings[name]) playerRatings[name] = START_PLAYER_RATING;
-
-                  // existujúce hodnoty
                   const goals = Number(p.goals || 0);
                   const assists = Number(p.assists || 0);
-                  const ppGoals = Number(p.powerPlayGoals || 0); // ak je v boxscore
-                  const plusMinus = Number(p.plusMinus || 0);
-
-                  // TOI môže byť v p.toi (napr. "12:19") alebo p.toi môže byť v rôznych poliach
-                  const toiRaw = p.toi || p.timeOnIce || p.toiString || p.totalTOI || "";
-                  const toiSeconds = toiToSeconds(toiRaw);
-
-                  // rating increment podľa nových pravidiel
-                  const increment =
-                    goals * POINTS_GOAL +
-                    ppGoals * POINTS_PP_GOAL +
-                    assists * POINTS_ASSIST +
-                    toiSeconds * TOI_SEC_MULT +
-                    plusMinus * PLUSMINUS_MULT;
-
-                  // pripočítame
-                  playerRatings[name] += increment;
+                  playerRatings[name] += goals * GOAL_POINTS + assists * ASSIST_POINTS;
                 }
-              } catch (err) {
-                // ignorujeme chyby jednotlivých boxscore
-                console.warn(`Boxscore fetch error for ${gameId}:`, err?.message || err);
-              }
+              } catch {}
             });
           }
         }
-      } catch (err) {
-        // ignorujeme chyby pri volaní score/{day}
-        console.warn(`Score fetch error for ${day}:`, err?.message || err);
-      }
+      } catch {}
     }
 
     // obmedzenie paralelných volaní
@@ -173,27 +126,21 @@ export default async function handler(req, res) {
     };
     await runWithLimit(boxscoreJobs, CONCURRENCY);
 
-        // ---- nový krok: vyber TOP 50 hráčov podľa ratingu ----
     const topPlayers = Object.entries(playerRatings)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 50)
       .reduce((acc, [name, rating]) => {
-        acc[name] = Math.round(rating); // 💡 zaokrúhlené tu
+        acc[name] = Math.round(rating);
         return acc;
       }, {});
 
-    // 💡 (voliteľne) zaokrúhlenie ratingov tímov
-    Object.keys(teamRatings).forEach((team) => {
-      teamRatings[team] = Math.round(teamRatings[team]);
-    });
-
-    console.log(
-      `✅ Zápasy: ${allMatches.length} | Tímy: ${Object.keys(teamRatings).length} | TOP hráči: ${Object.keys(topPlayers).length}`
-    );
-
-    // 💡 až teraz odošleme zaokrúhlené dáta
     res.status(200).json({
       matches: allMatches,
       teamRatings,
-      playerRatings: topPlayers, // už zaokrúhlené
+      playerRatings: topPlayers,
     });
+  } catch (err) {
+    console.error("❌ Chyba pri /api/matches:", err);
+    res.status(500).json({ error: err.message || "Server error" });
+  }
+}
