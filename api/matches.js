@@ -26,8 +26,6 @@ export default async function handler(req, res) {
     const TEAM_LOSS_POINTS = -10;
 
     const START_PLAYER_RATING = 1500;
-    const GOAL_POINTS = 20;
-    const ASSIST_POINTS = 10;
 
     const ensureTeam = (name) => {
       if (name && teamRatings[name] == null) teamRatings[name] = START_TEAM_RATING;
@@ -42,6 +40,27 @@ export default async function handler(req, res) {
       ...(Array.isArray(teamNode?.forwards) ? teamNode.forwards : []),
       ...(Array.isArray(teamNode?.defense) ? teamNode.defense : []),
     ];
+
+    // 🧮 pomocné funkcie pre rating
+    function toiToSeconds(toi) {
+      if (!toi) return 0;
+      const [m, s] = toi.split(":").map(Number);
+      return (m * 60) + s;
+    }
+
+    function computePlayerRating(p) {
+      const goals = Number(p.goals || 0);
+      const assists = Number(p.assists || 0);
+      const ppGoals = Number(p.powerPlayGoals || 0);
+      const plusMinus = Number(p.plusMinus || 0);
+      const toiSec = toiToSeconds(p.toi);
+
+      return (goals * 50)
+           + (ppGoals * 20)
+           + (assists * 10)
+           + (toiSec * 0.01)
+           + plusMinus;
+    }
 
     const boxscoreJobs = [];
     for (const day of dateRange) {
@@ -84,6 +103,7 @@ export default async function handler(req, res) {
             teamRatings[match.home_team] += TEAM_LOSS_POINTS;
           }
 
+          // --- spracovanie hráčov z boxscore ---
           if (["FINAL", "OFF"].includes(state)) {
             const gameId = g.id;
             boxscoreJobs.push(async () => {
@@ -99,15 +119,19 @@ export default async function handler(req, res) {
                 for (const p of allSkaters) {
                   const name = pickPlayerName(p);
                   if (!playerRatings[name]) playerRatings[name] = START_PLAYER_RATING;
-                  const goals = Number(p.goals || 0);
-                  const assists = Number(p.assists || 0);
-                  playerRatings[name] += goals * GOAL_POINTS + assists * ASSIST_POINTS;
+
+                  const addRating = computePlayerRating(p);
+                  playerRatings[name] += addRating;
                 }
-              } catch {}
+              } catch (err) {
+                console.warn(`⚠️ Boxscore chyba ${gameId}:`, err.message);
+              }
             });
           }
         }
-      } catch {}
+      } catch (err) {
+        console.warn(`⚠️ Chyba pri dni ${day}:`, err.message);
+      }
     }
 
     // obmedzenie paralelných volaní
@@ -126,7 +150,7 @@ export default async function handler(req, res) {
     };
     await runWithLimit(boxscoreJobs, CONCURRENCY);
 
-    // ---- nový krok: vyber TOP 50 hráčov podľa ratingu ----
+    // ---- vyber TOP 50 hráčov podľa ratingu ----
     const topPlayers = Object.entries(playerRatings)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 50)
@@ -142,7 +166,7 @@ export default async function handler(req, res) {
     res.status(200).json({
       matches: allMatches,
       teamRatings,
-      playerRatings: topPlayers, // len TOP 50 hráčov
+      playerRatings: topPlayers,
     });
   } catch (err) {
     console.error("❌ Chyba pri /api/matches:", err);
