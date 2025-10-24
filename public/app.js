@@ -290,6 +290,10 @@ async function displayMantingal() {
     }
 
     const { players, dateChecked, totalGames, scorers } = data;
+    // 🔹 Spočítaj sumár Mantingal dňa
+    const totalBets = players.length; // každý hráč = 1 stávka
+    const totalProfit = players.reduce((sum, p) => sum + p.profit, 0);
+    const roi = ((totalProfit / (totalBets * 1)) * 100).toFixed(1); // ak je base stake 1€
 
     // Info o spracovaní
     let html = `
@@ -297,6 +301,11 @@ async function displayMantingal() {
       <p><b>Dátum:</b> ${dateChecked}</p>
       <p><b>Počet zápasov:</b> ${totalGames}</p>
       <p><b>Počet strelcov:</b> ${scorers}</p>
+      <p><b>Počet stávok:</b> ${totalBets}</p>
+      <p><b>Celkový zisk:</b> <span style="color:${totalProfit >= 0 ? "limegreen" : "red"}">
+        ${totalProfit.toFixed(2)} €
+      </span></p>
+      <p><b>ROI:</b> <span style="color:${roi >= 0 ? "limegreen" : "red"}">${roi}%</span></p>
       <table>
         <thead>
           <tr>
