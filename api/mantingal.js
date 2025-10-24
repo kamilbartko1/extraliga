@@ -1,4 +1,4 @@
-// /api/mantingal.js – jednoduchý Mantingal bez súborov a Upstash
+// /api/mantingal.js – Mantingal s rozlíšením: win / loss / skip
 
 export default async function handler(req, res) {
   try {
@@ -33,8 +33,9 @@ export default async function handler(req, res) {
     const scoreData = await scoreResp.json();
     const games = Array.isArray(scoreData.games) ? scoreData.games : [];
 
-    // === 4️⃣ Získaj strelcov z boxscore
+    // === 4️⃣ Získaj všetkých hráčov a strelcov z boxscore
     const scorers = new Set();
+    const playedPlayers = new Set();
 
     for (const g of games) {
       if (!g.id) continue;
@@ -51,9 +52,10 @@ export default async function handler(req, res) {
         ];
 
         for (const p of players) {
-          if (p.goals && p.goals > 0) {
-            scorers.add(String(p.name?.default || "").toLowerCase());
-          }
+          const nm = String(p.name?.default || "").toLowerCase().trim();
+          if (!nm) continue;
+          playedPlayers.add(nm); // hráč, ktorý nastúpil
+          if (p.goals && p.goals > 0) scorers.add(nm); // skóroval
         }
       } catch (err) {
         console.warn(`Boxscore chyba ${g.id}:`, err.message);
@@ -62,23 +64,43 @@ export default async function handler(req, res) {
 
     // === 5️⃣ Vyhodnoť Mantingal logiku
     let totalProfit = 0;
+
     for (const player of top10) {
       const clean = player.name.toLowerCase();
-      const scored = Array.from(scorers).some((s) => s.includes(clean) || clean.includes(s));
+
+      const played = Array.from(playedPlayers).some(
+        (p) => p.includes(clean) || clean.includes(p)
+      );
+
+      const scored = Array.from(scorers).some(
+        (s) => s.includes(clean) || clean.includes(s)
+      );
+
+      if (!played) {
+        // 🟦 Hráč nehral
+        player.lastResult = "skip";
+        player.stake = BASE_STAKE;
+        console.log(`⏸️ ${player.name} nehral – bez zmeny`);
+        continue;
+      }
 
       if (scored) {
         const win = player.stake * (FIXED_ODDS - 1);
         player.profit += win;
         player.lastResult = "win";
+        player.stake = BASE_STAKE;
         totalProfit += win;
+        console.log(`✅ ${player.name} skóroval +${win.toFixed(2)} €`);
       } else {
         player.profit -= player.stake;
-        player.stake *= 2;
-        player.lastResult = "loss";
         totalProfit -= player.stake;
+        player.lastResult = "loss";
+        player.stake *= 2;
+        console.log(`❌ ${player.name} hral, ale neskóroval – nový stake ${player.stake} €`);
       }
     }
 
+    // === 6️⃣ Výsledná odpoveď
     return res.status(200).json({
       ok: true,
       dateChecked: dateStr,
