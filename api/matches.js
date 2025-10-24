@@ -17,6 +17,7 @@ export default async function handler(req, res) {
     }
 
     const allMatches = [];
+    const processedGames = new Set(); // ✅ kontrola duplicít
     const teamRatings = {};
     const playerRatings = {};
 
@@ -44,6 +45,7 @@ export default async function handler(req, res) {
     ];
 
     const boxscoreJobs = [];
+
     for (const day of dateRange) {
       try {
         const resp = await fetch(`https://api-web.nhle.com/v1/score/${day}`);
@@ -53,10 +55,15 @@ export default async function handler(req, res) {
         const games = data.games || [];
         for (const g of games) {
           const state = String(g.gameState || "").toUpperCase();
+          const gameId = g.id;
+
+          if (!gameId || processedGames.has(gameId)) continue; // ✅ zabráni duplicitám
+          processedGames.add(gameId);
+
           if (!["FINAL", "OFF", "LIVE"].includes(state)) continue;
 
           const match = {
-            id: g.id,
+            id: gameId,
             date: day,
             status: state === "LIVE" ? "ap" : "closed",
             home_team: g.homeTeam?.name?.default || g.homeTeam?.abbrev || "Home",
@@ -65,6 +72,7 @@ export default async function handler(req, res) {
             away_score: g.awayTeam?.score ?? 0,
             start_time: g.startTimeUTC,
           };
+
           allMatches.push(match);
 
           ensureTeam(match.home_team);
@@ -85,12 +93,14 @@ export default async function handler(req, res) {
           }
 
           if (["FINAL", "OFF"].includes(state)) {
-            const gameId = g.id;
             boxscoreJobs.push(async () => {
               try {
                 const r = await fetch(`https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`);
                 if (!r.ok) return;
                 const box = await r.json();
+
+                // ✅ ochrana: prázdny boxscore preskočiť
+                if (!box?.playerByGameStats) return;
 
                 const homeSkaters = extractSkaters(box?.playerByGameStats?.homeTeam || {});
                 const awaySkaters = extractSkaters(box?.playerByGameStats?.awayTeam || {});
@@ -98,19 +108,28 @@ export default async function handler(req, res) {
 
                 for (const p of allSkaters) {
                   const name = pickPlayerName(p);
+                  if (!name) continue;
                   if (!playerRatings[name]) playerRatings[name] = START_PLAYER_RATING;
+
                   const goals = Number(p.goals || 0);
                   const assists = Number(p.assists || 0);
-                  playerRatings[name] += goals * GOAL_POINTS + assists * ASSIST_POINTS;
+
+                  if (goals > 0 || assists > 0) {
+                    playerRatings[name] += goals * GOAL_POINTS + assists * ASSIST_POINTS;
+                  }
                 }
-              } catch {}
+              } catch (err) {
+                console.warn(`Boxscore chyba pre ${gameId}:`, err.message);
+              }
             });
           }
         }
-      } catch {}
+      } catch (err) {
+        console.warn(`Chyba pri dni ${day}:`, err.message);
+      }
     }
 
-    // obmedzenie paralelných volaní
+    // ✅ obmedzenie paralelných volaní
     const CONCURRENCY = 6;
     const runWithLimit = async (jobs, limit) => {
       const queue = jobs.slice();
@@ -124,14 +143,16 @@ export default async function handler(req, res) {
         });
       await Promise.all(workers);
     };
+
     await runWithLimit(boxscoreJobs, CONCURRENCY);
 
-    // ---- nový krok: vyber TOP 50 hráčov podľa ratingu ----
+    // ✅ vyber TOP 50 hráčov (bez duplikátov)
     const topPlayers = Object.entries(playerRatings)
+      .filter(([name]) => !!name && !name.includes("Neznámy"))
       .sort((a, b) => b[1] - a[1])
       .slice(0, 50)
       .reduce((acc, [name, rating]) => {
-        acc[name] = rating;
+        acc[name] = Math.round(rating);
         return acc;
       }, {});
 
@@ -142,7 +163,7 @@ export default async function handler(req, res) {
     res.status(200).json({
       matches: allMatches,
       teamRatings,
-      playerRatings: topPlayers, // len TOP 50 hráčov
+      playerRatings: topPlayers,
     });
   } catch (err) {
     console.error("❌ Chyba pri /api/matches:", err);
