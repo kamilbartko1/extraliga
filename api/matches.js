@@ -193,6 +193,13 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     console.error("❌ Chyba pri /api/matches:", err);
+    // ---- zaokrúhlenie ratingov na celé čísla ----
+Object.keys(playerRatings).forEach((name) => {
+  playerRatings[name] = Math.round(playerRatings[name]);
+});
+Object.keys(teamRatings).forEach((team) => {
+  teamRatings[team] = Math.round(teamRatings[team]);
+});
     res.status(500).json({ error: err.message || "Server error" });
   }
 }
