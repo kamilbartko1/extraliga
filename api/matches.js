@@ -173,35 +173,27 @@ export default async function handler(req, res) {
     };
     await runWithLimit(boxscoreJobs, CONCURRENCY);
 
-    // ---- nový krok: vyber TOP 50 hráčov podľa ratingu ----
+        // ---- nový krok: vyber TOP 50 hráčov podľa ratingu ----
     const topPlayers = Object.entries(playerRatings)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 50)
       .reduce((acc, [name, rating]) => {
-        acc[name] = rating;
+        acc[name] = Math.round(rating); // 💡 zaokrúhlené tu
         return acc;
       }, {});
+
+    // 💡 (voliteľne) zaokrúhlenie ratingov tímov
+    Object.keys(teamRatings).forEach((team) => {
+      teamRatings[team] = Math.round(teamRatings[team]);
+    });
 
     console.log(
       `✅ Zápasy: ${allMatches.length} | Tímy: ${Object.keys(teamRatings).length} | TOP hráči: ${Object.keys(topPlayers).length}`
     );
 
+    // 💡 až teraz odošleme zaokrúhlené dáta
     res.status(200).json({
       matches: allMatches,
       teamRatings,
-      playerRatings: topPlayers, // len TOP 50 hráčov
+      playerRatings: topPlayers, // už zaokrúhlené
     });
-    
-    // ---- zaokrúhlenie ratingov na celé čísla ----
-Object.keys(playerRatings).forEach((name) => {
-  playerRatings[name] = Math.round(playerRatings[name]);
-});
-Object.keys(teamRatings).forEach((team) => {
-  teamRatings[team] = Math.round(teamRatings[team]);
-});
-
-  } catch (err) {
-    console.error("❌ Chyba pri /api/matches:", err);
-    res.status(500).json({ error: err.message || "Server error" });
-  }
-}
