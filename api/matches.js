@@ -43,7 +43,9 @@ export default async function handler(req, res) {
       ...(Array.isArray(teamNode?.defense) ? teamNode.defense : []),
     ];
 
+    // ---- Hlavná logika ----
     const boxscoreJobs = [];
+
     for (const day of dateRange) {
       try {
         const resp = await fetch(`https://api-web.nhle.com/v1/score/${day}`);
@@ -103,30 +105,21 @@ export default async function handler(req, res) {
                   const assists = Number(p.assists || 0);
                   playerRatings[name] += goals * GOAL_POINTS + assists * ASSIST_POINTS;
                 }
-              } catch {}
+              } catch (err) {
+                console.warn(`Boxscore fetch error for ${gameId}:`, err.message);
+              }
             });
           }
         }
-      } catch {}
+      } catch (err) {
+        console.warn(`Score fetch error for ${day}:`, err.message);
+      }
     }
 
-// obmedzenie paralelných volaní
-    const CONCURRENCY = 12;
-    const runWithLimit = async (jobs, limit) => {
-      const queue = jobs.slice();
-      const workers = Array(Math.min(limit, queue.length))
-        .fill(0)
-        .map(async () => {
-          while (queue.length) {
-            const job = queue.shift();
-            await job();
-          }
-        });
-      await Promise.all(workers);
-    };
-    await runWithLimit(boxscoreJobs, CONCURRENCY);
+    // 🚀 Spusti všetky boxscore fetchy naraz (bez limitu)
+    await Promise.all(boxscoreJobs.map(fn => fn()));
 
-    // ---- nový krok: vyber TOP 50 hráčov podľa ratingu ----
+    // ---- Vyber TOP 50 hráčov podľa ratingu ----
     const topPlayers = Object.entries(playerRatings)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 50)
@@ -142,7 +135,7 @@ export default async function handler(req, res) {
     res.status(200).json({
       matches: allMatches,
       teamRatings,
-      playerRatings: topPlayers, // len TOP 50 hráčov
+      playerRatings: topPlayers,
     });
   } catch (err) {
     console.error("❌ Chyba pri /api/matches:", err);
