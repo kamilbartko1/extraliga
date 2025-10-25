@@ -44,7 +44,6 @@ export default async function handler(req, res) {
     ];
 
     const boxscoreJobs = [];
-
     for (const day of dateRange) {
       try {
         const resp = await fetch(`https://api-web.nhle.com/v1/score/${day}`);
