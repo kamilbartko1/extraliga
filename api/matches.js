@@ -1,10 +1,8 @@
 // /api/matches.js
 export default async function handler(req, res) {
   try {
-    const START_DATE = "2025-10-08"; // začiatok sezóny
+    const START_DATE = "2025-10-08";
     const TODAY = new Date().toISOString().slice(0, 10);
-
-    // 💡 zobrazíme len posledné 3 dni zápasov
     const THREE_DAYS_AGO = new Date();
     THREE_DAYS_AGO.setDate(THREE_DAYS_AGO.getDate() - 3);
 
@@ -15,19 +13,22 @@ export default async function handler(req, res) {
       return `${yyyy}-${mm}-${dd}`;
     };
 
-    const dateRangeFull = [];
+    // 💡 rozsah pre výpočet ratingu (celá sezóna)
+    const fullDateRange = [];
     for (let d = new Date(START_DATE); d <= new Date(TODAY); d.setDate(d.getDate() + 1)) {
-      dateRangeFull.push(formatDate(new Date(d)));
+      fullDateRange.push(formatDate(new Date(d)));
     }
 
-    const dateRangeShort = [];
+    // 💡 rozsah pre rýchle zobrazenie (posledné 3 dni)
+    const shortDateRange = [];
     for (let d = new Date(THREE_DAYS_AGO); d <= new Date(TODAY); d.setDate(d.getDate() + 1)) {
-      dateRangeShort.push(formatDate(new Date(d)));
+      shortDateRange.push(formatDate(new Date(d)));
     }
 
     const allMatches = [];
     const teamRatings = {};
     const playerRatings = {};
+    const datesWithGames = new Set();
 
     // ===== KONŠTANTY =====
     const START_TEAM_RATING = 1500;
@@ -35,14 +36,12 @@ export default async function handler(req, res) {
     const TEAM_WIN_POINTS = 10;
     const TEAM_LOSS_POINTS = -10;
 
-    // ===== PLAYER RATING CONFIG =====
     const START_PLAYER_RATING = 1500;
-    const POINTS_GOAL = 50;
-    const POINTS_PP_GOAL = 30;
-    const POINTS_ASSIST = 20;
-    const POINTS_TOI_MIN = 1;
+    const GOAL_POINTS = 50;
+    const PP_GOAL_POINTS = 30;
+    const ASSIST_POINTS = 20;
+    const TOI_MIN_POINT = 1;
 
-    // ===== Pomocné funkcie =====
     const ensureTeam = (name) => {
       if (name && teamRatings[name] == null) teamRatings[name] = START_TEAM_RATING;
     };
@@ -57,73 +56,75 @@ export default async function handler(req, res) {
       ...(Array.isArray(teamNode?.defense) ? teamNode.defense : []),
     ];
 
-    // helper: prepočítať TOI (napr. "12:19" alebo "1:02:45") na minúty
+    // ⏱️ prepočet TOI na minúty
     const toiToMinutes = (toi) => {
       if (!toi) return 0;
       const parts = String(toi).split(":").map(Number);
-      if (parts.length === 2) return parts[0] + parts[1] / 60; // mm:ss
-      if (parts.length === 3) return parts[0] * 60 + parts[1] + parts[2] / 60; // hh:mm:ss
+      if (parts.length === 2) return parts[0] + parts[1] / 60;
+      if (parts.length === 3) return parts[0] * 60 + parts[1] + parts[2] / 60;
       return 0;
     };
 
-    // ==================== 1️⃣ načítanie zápasov pre RATING (celá sezóna) ====================
-    const boxscorePromises = [];
-
-    for (const day of dateRangeFull) {
-      const resp = await fetch(`https://api-web.nhle.com/v1/score/${day}`);
-      if (!resp.ok) continue;
-      const data = await resp.json();
-      const games = data.games || [];
-
-      for (const g of games) {
-        const state = String(g.gameState || "").toUpperCase();
-        if (!["FINAL", "OFF"].includes(state)) continue;
-
-        const gameId = g.id;
-        boxscorePromises.push(
-          (async () => {
-            try {
-              const r = await fetch(`https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`);
-              if (!r.ok) return;
-              const box = await r.json();
-
-              const homeSkaters = extractSkaters(box?.playerByGameStats?.homeTeam || {});
-              const awaySkaters = extractSkaters(box?.playerByGameStats?.awayTeam || {});
-              const allSkaters = [...homeSkaters, ...awaySkaters];
-
-              for (const p of allSkaters) {
-                const name = pickPlayerName(p);
-                if (!playerRatings[name]) playerRatings[name] = START_PLAYER_RATING;
-
-                const goals = Number(p.goals || 0);
-                const assists = Number(p.assists || 0);
-                const ppGoals = Number(p.powerPlayGoals || 0);
-                const toiMin = toiToMinutes(p.toi || p.timeOnIce || "");
-
-                playerRatings[name] +=
-                  goals * POINTS_GOAL +
-                  assists * POINTS_ASSIST +
-                  ppGoals * POINTS_PP_GOAL +
-                  toiMin * POINTS_TOI_MIN;
-              }
-            } catch (err) {
-              console.warn(`⚠️ Boxscore error ${gameId}:`, err.message);
-            }
-          })()
-        );
-      }
-    }
-
-    // ===== počkaj na všetky ratingové fetchy =====
-    await Promise.allSettled(boxscorePromises);
-
-    // ==================== 2️⃣ načítanie zápasov pre zobrazenie (len posledné 3 dni) ====================
-    for (const day of dateRangeShort) {
+    // ========== 1️⃣ Výpočet ratingu hráčov (celá sezóna) ==========
+    const boxscoreJobs = [];
+    for (const day of fullDateRange) {
       try {
         const resp = await fetch(`https://api-web.nhle.com/v1/score/${day}`);
         if (!resp.ok) continue;
         const data = await resp.json();
         const games = data.games || [];
+        for (const g of games) {
+          const state = String(g.gameState || "").toUpperCase();
+          if (!["FINAL", "OFF"].includes(state)) continue;
+
+          const gameId = g.id;
+          boxscoreJobs.push(
+            (async () => {
+              try {
+                const r = await fetch(`https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`);
+                if (!r.ok) return;
+                const box = await r.json();
+
+                const homeSkaters = extractSkaters(box?.playerByGameStats?.homeTeam || {});
+                const awaySkaters = extractSkaters(box?.playerByGameStats?.awayTeam || {});
+                const allSkaters = [...homeSkaters, ...awaySkaters];
+
+                for (const p of allSkaters) {
+                  const name = pickPlayerName(p);
+                  if (!playerRatings[name]) playerRatings[name] = START_PLAYER_RATING;
+
+                  const goals = Number(p.goals || 0);
+                  const assists = Number(p.assists || 0);
+                  const ppGoals = Number(p.powerPlayGoals || 0);
+                  const toiMin = toiToMinutes(p.toi || p.timeOnIce || "");
+
+                  playerRatings[name] +=
+                    goals * GOAL_POINTS +
+                    ppGoals * PP_GOAL_POINTS +
+                    assists * ASSIST_POINTS +
+                    toiMin * TOI_MIN_POINT;
+                }
+              } catch (err) {
+                console.warn(`⚠️ Boxscore error ${gameId}:`, err.message);
+              }
+            })()
+          );
+        }
+      } catch (err) {
+        console.warn(`⚠️ Rating fetch error ${day}:`, err.message);
+      }
+    }
+
+    await Promise.allSettled(boxscoreJobs);
+
+    // ========== 2️⃣ Načítanie zápasov (len posledné 3 dni) ==========
+    for (const day of shortDateRange) {
+      try {
+        const resp = await fetch(`https://api-web.nhle.com/v1/score/${day}`);
+        if (!resp.ok) continue;
+        const data = await resp.json();
+        const games = data.games || [];
+        if (games.length > 0) datesWithGames.add(day);
 
         for (const g of games) {
           const state = String(g.gameState || "").toUpperCase();
@@ -139,8 +140,8 @@ export default async function handler(req, res) {
             away_score: g.awayTeam?.score ?? 0,
             start_time: g.startTimeUTC,
           };
-          allMatches.push(match);
 
+          allMatches.push(match);
           ensureTeam(match.home_team);
           ensureTeam(match.away_team);
 
@@ -159,11 +160,11 @@ export default async function handler(req, res) {
           }
         }
       } catch (err) {
-        console.warn(`⚠️ Score fetch error for ${day}:`, err.message);
+        console.warn(`⚠️ Score fetch error ${day}:`, err.message);
       }
     }
 
-    // ==================== 3️⃣ výstup ====================
+    // ========== 3️⃣ Výstup ==========
     const topPlayers = Object.entries(playerRatings)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 50)
@@ -173,10 +174,11 @@ export default async function handler(req, res) {
       }, {});
 
     console.log(
-      `✅ Dokončené: ${allMatches.length} zápasov (posledné 3 dni) | Hráči v ratingu: ${Object.keys(playerRatings).length}`
+      `✅ Dokončené: ${allMatches.length} zápasov | Dátumy: ${datesWithGames.size} | TOP hráči: ${Object.keys(topPlayers).length}`
     );
 
     res.status(200).json({
+      dates: [...datesWithGames],
       matches: allMatches,
       teamRatings,
       playerRatings: topPlayers,
