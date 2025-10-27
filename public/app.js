@@ -69,33 +69,6 @@ function normalizeNhlGame(game, day) {
   };
 }
 
-// === Fetch schedule od 8.10.2025 do dnes ===
-async function fetchNhlSchedule() {
-  const games = [];
-  for (const day of dateRange(START_DATE, TODAY)) {
-    try {
-      const url = `https://api-web.nhle.com/v1/schedule/${day}`;
-      const resp = await fetch(url);
-      if (!resp.ok) continue;
-      const data = await resp.json();
-      const groups = Array.isArray(data.gameWeek) ? data.gameWeek : [];
-      groups.forEach(g => {
-        const dayGames = Array.isArray(g.games) ? g.games : [];
-        dayGames.forEach(game => {
-          if (["FINAL", "OFF"].includes(String(game.gameState || "").toUpperCase())) {
-            games.push(normalizeNhlGame(game, day));
-          }
-        });
-      });
-      console.log(`✅ ${day} – načítané ${games.length} zápasov`);
-    } catch (e) {
-      console.warn(`⚠️ Chyba pri dni ${day}: ${e.message}`);
-    }
-  }
-  console.log(`🔹 Spolu odohraných zápasov: ${games.length}`);
-  return games;
-}
-
 // === Výpočet ratingov tímov ===
 function computeTeamRatings(matches) {
   const START_RATING = 1500;
