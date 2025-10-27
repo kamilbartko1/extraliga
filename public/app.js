@@ -202,27 +202,35 @@ function displayMatches(matches) {
     return;
   }
 
+  // Skupiny podľa dátumu
   const grouped = {};
-  matches.forEach(m => {
+  matches.forEach((m) => {
     if (!grouped[m.date]) grouped[m.date] = [];
     grouped[m.date].push(m);
   });
 
   const days = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
 
- days.forEach((day) => {
-  const roundRow = document.createElement("tr");
-  const dateObj = new Date(day);
-const formattedDate = dateObj.toLocaleDateString("sk-SK", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric"
-});
-roundRow.innerHTML = `<td colspan="4"><b>${formattedDate}</b></td>`;
-  tableBody.appendChild(roundRow);
+  days.forEach((day) => {
+    const dateRow = document.createElement("tr");
+    const dateObj = new Date(day);
+    const formattedDate = dateObj.toLocaleDateString("sk-SK", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
 
-    grouped[day].forEach(match => {
+    // Klikateľný dátum
+    dateRow.innerHTML = `<td colspan="4" class="day-toggle" style="cursor:pointer; background:#222; color:#fff;">
+      📅 ${formattedDate} (klikni pre zobrazenie)
+    </td>`;
+    tableBody.appendChild(dateRow);
+
+    // Riadky zápasov (skryté pred kliknutím)
+    grouped[day].forEach((match) => {
       const row = document.createElement("tr");
+      row.classList.add(`matches-${day}`);
+      row.style.display = "none";
       row.innerHTML = `
         <td>${match.home_team}</td>
         <td>${match.away_team}</td>
@@ -230,6 +238,13 @@ roundRow.innerHTML = `<td colspan="4"><b>${formattedDate}</b></td>`;
         <td>${match.status === "closed" ? "✅" : "🟡"}</td>
       `;
       tableBody.appendChild(row);
+    });
+
+    // Kliknutie na dátum zobrazí/skrýva zápasy
+    dateRow.addEventListener("click", () => {
+      const rows = document.querySelectorAll(`.matches-${day}`);
+      const visible = Array.from(rows).some((r) => r.style.display !== "none");
+      rows.forEach((r) => (r.style.display = visible ? "none" : ""));
     });
   });
 }
