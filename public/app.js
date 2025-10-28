@@ -69,6 +69,33 @@ function normalizeNhlGame(game, day) {
   };
 }
 
+// === Fetch schedule od 8.10.2025 do dnes ===
+async function fetchNhlSchedule() {
+  const games = [];
+  for (const day of dateRange(START_DATE, TODAY)) {
+    try {
+      const url = `https://api-web.nhle.com/v1/schedule/${day}`;
+      const resp = await fetch(url);
+      if (!resp.ok) continue;
+      const data = await resp.json();
+      const groups = Array.isArray(data.gameWeek) ? data.gameWeek : [];
+      groups.forEach(g => {
+        const dayGames = Array.isArray(g.games) ? g.games : [];
+        dayGames.forEach(game => {
+          if (["FINAL", "OFF"].includes(String(game.gameState || "").toUpperCase())) {
+            games.push(normalizeNhlGame(game, day));
+          }
+        });
+      });
+      console.log(`✅ ${day} – načítané ${games.length} zápasov`);
+    } catch (e) {
+      console.warn(`⚠️ Chyba pri dni ${day}: ${e.message}`);
+    }
+  }
+  console.log(`🔹 Spolu odohraných zápasov: ${games.length}`);
+  return games;
+}
+
 // === Výpočet ratingov tímov ===
 function computeTeamRatings(matches) {
   const START_RATING = 1500;
@@ -111,17 +138,48 @@ async function fetchMatches() {
 
     console.log("✅ Dáta z backendu:", data);
 
-    // priamy prístup k dátam z backendu
-    allMatches = Array.isArray(data.matches) ? data.matches : [];
+    // NHL formát – očakávame pole data.matches
+    const matches = Array.isArray(data.matches) ? data.matches : [];
 
-    if (!allMatches.length) {
+    if (matches.length === 0) {
       console.warn("⚠️ Žiadne zápasy v data.matches");
     }
 
-    // zobraz zápasy tak, ako ich backend vrátil
-    displayMatches(allMatches);
+    // pre transformáciu do pôvodného tvaru
+    const normalized = matches.map((g) => ({
+      id: g.id,
+      date: g.date,
+      sport_event: {
+        start_time: g.start_time,
+        competitors: [
+          { name: g.home_team },
+          { name: g.away_team }
+        ]
+      },
+      sport_event_status: {
+        status: g.status,
+        home_score: g.home_score,
+        away_score: g.away_score
+      }
+    }));
 
-    // tímové a hráčske ratingy
+    allMatches = normalized; // pre Mantingal
+
+    // pre tabuľku zápasov
+    const simplified = normalized.map((m) => ({
+      id: m.id,
+      home_team: m.sport_event.competitors[0].name,
+      away_team: m.sport_event.competitors[1].name,
+      home_score: m.sport_event_status.home_score,
+      away_score: m.sport_event_status.away_score,
+      status: m.sport_event_status.status,
+      date: new Date(m.sport_event.start_time).toISOString().slice(0, 10)
+    }));
+
+    simplified.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    displayMatches(simplified);
+
     teamRatings = data.teamRatings || {};
     playerRatings = data.playerRatings || {};
 
@@ -144,35 +202,27 @@ function displayMatches(matches) {
     return;
   }
 
-  // Skupiny podľa dátumu
   const grouped = {};
-  matches.forEach((m) => {
+  matches.forEach(m => {
     if (!grouped[m.date]) grouped[m.date] = [];
     grouped[m.date].push(m);
   });
 
   const days = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
 
-  days.forEach((day) => {
-    const dateRow = document.createElement("tr");
-    const dateObj = new Date(day);
-    const formattedDate = dateObj.toLocaleDateString("sk-SK", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
+ days.forEach((day) => {
+  const roundRow = document.createElement("tr");
+  const dateObj = new Date(day);
+const formattedDate = dateObj.toLocaleDateString("sk-SK", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric"
+});
+roundRow.innerHTML = `<td colspan="4"><b>${formattedDate}</b></td>`;
+  tableBody.appendChild(roundRow);
 
-    // Klikateľný dátum
-    dateRow.innerHTML = `<td colspan="4" class="day-toggle" style="cursor:pointer; background:#222; color:#fff;">
-      📅 ${formattedDate} (klikni pre zobrazenie)
-    </td>`;
-    tableBody.appendChild(dateRow);
-
-    // Riadky zápasov (skryté pred kliknutím)
-    grouped[day].forEach((match) => {
+    grouped[day].forEach(match => {
       const row = document.createElement("tr");
-      row.classList.add(`matches-${day}`);
-      row.style.display = "none";
       row.innerHTML = `
         <td>${match.home_team}</td>
         <td>${match.away_team}</td>
@@ -180,13 +230,6 @@ function displayMatches(matches) {
         <td>${match.status === "closed" ? "✅" : "🟡"}</td>
       `;
       tableBody.appendChild(row);
-    });
-
-    // Kliknutie na dátum zobrazí/skrýva zápasy
-    dateRow.addEventListener("click", () => {
-      const rows = document.querySelectorAll(`.matches-${day}`);
-      const visible = Array.from(rows).some((r) => r.style.display !== "none");
-      rows.forEach((r) => (r.style.display = visible ? "none" : ""));
     });
   });
 }
