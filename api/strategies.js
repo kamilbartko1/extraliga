@@ -2,9 +2,11 @@
 const BET_AMOUNT = 10;
 const ODDS = 2.0;
 
+// --- pomocné funkcie ---
 function collectSkaters(box) {
   const home = box?.playerByGameStats?.homeTeam || {};
   const away = box?.playerByGameStats?.awayTeam || {};
+
   const homeSkaters = [
     ...(Array.isArray(home.forwards) ? home.forwards : []),
     ...(Array.isArray(home.defense) ? home.defense : []),
@@ -13,45 +15,62 @@ function collectSkaters(box) {
     ...(Array.isArray(away.forwards) ? away.forwards : []),
     ...(Array.isArray(away.defense) ? away.defense : []),
   ];
+
   return [
-    ...homeSkaters.map(p => ({ ...p, team: home.teamName?.default || "Home" })),
-    ...awaySkaters.map(p => ({ ...p, team: away.teamName?.default || "Away" })),
+    ...homeSkaters.map((p) => ({
+      ...p,
+      team: home.teamName?.default || "Home",
+    })),
+    ...awaySkaters.map((p) => ({
+      ...p,
+      team: away.teamName?.default || "Away",
+    })),
   ];
 }
 
 function playersWithTwoGoals(box) {
   return collectSkaters(box)
-    .filter(p => Number(p?.goals ?? p?.stats?.goals ?? 0) >= 2)
-    .map(p => ({
+    .filter((p) => Number(p?.goals ?? p?.stats?.goals ?? 0) >= 2)
+    .map((p) => ({
       name: `${p.firstName?.default || ""} ${p.lastName?.default || ""}`.trim(),
       goals: Number(p?.goals ?? p?.stats?.goals ?? 0),
       assists: Number(p?.assists ?? p?.stats?.assists ?? 0),
-      plusMinus: Number(p?.plusMinus ?? p?.stats?.plusMinus ?? 0),
-      shots: Number(p?.shots ?? p?.stats?.shots ?? 0),
       team: p.team || "",
     }));
 }
 
+// --- hlavná funkcia ---
 export default async function handler(req, res) {
   try {
     const { id } = req.query;
 
-    // === 🔹 1) Ak je zadaný ?id=, vráť detail pre jeden zápas ===
+    // === 1️⃣ DETAIL JEDNÉHO ZÁPASU (ak ?id=...) ===
     if (id) {
       const boxUrl = `https://api-web.nhle.com/v1/gamecenter/${id}/boxscore`;
       const boxResp = await fetch(boxUrl, { cache: "no-store" });
-      if (!boxResp.ok) throw new Error(`Boxscore ${id} nedostupné (${boxResp.status})`);
+      if (!boxResp.ok)
+        throw new Error(`Boxscore ${id} nedostupné (${boxResp.status})`);
       const box = await boxResp.json();
       const players = playersWithTwoGoals(box);
       return res.status(200).json({ ok: true, id, players });
     }
 
-    // === 🔹 2) Inak – vráť výpočty pre všetky zápasy ===
+    // === 2️⃣ VÝPOČTY PRE VŠETKY ZÁPASY ===
     const baseUrl = "https://nhlpro.sk";
-    const matchesResp = await fetch(`${baseUrl}/api/matches`, { cache: "no-store" });
-    if (!matchesResp.ok) throw new Error(`Nepodarilo sa načítať /api/matches`);
+    const matchesResp = await fetch(`${baseUrl}/api/matches`, {
+      cache: "no-store",
+    });
+    if (!matchesResp.ok)
+      throw new Error(`Nepodarilo sa načítať /api/matches`);
     const matchesData = await matchesResp.json();
-    const matches = Array.isArray(matchesData.matches) ? matchesData.matches : [];
+    let matches = Array.isArray(matchesData.matches)
+      ? matchesData.matches
+      : [];
+
+    // zoradíme podľa dátumu vzostupne
+    matches = matches
+      .filter((m) => m.date)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
 
     const results = [];
     let totalBet = 0;
@@ -66,9 +85,16 @@ export default async function handler(req, res) {
       try {
         const boxUrl = `https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`;
         const boxResp = await fetch(boxUrl, { cache: "no-store" });
-        if (!boxResp.ok) throw new Error(`Boxscore ${gameId} nedostupné`);
+
+        if (!boxResp.ok) {
+          console.warn(`⚠️ Zápas ${gameId}: boxscore nedostupné`);
+          continue;
+        }
+
         const box = await boxResp.json();
-        success = playersWithTwoGoals(box).length > 0;
+        const players = playersWithTwoGoals(box);
+        // len ak sú reálne nejaké dáta
+        success = Array.isArray(players) && players.length > 0;
       } catch (e) {
         console.warn(`⚠️ Zápas ${gameId}: ${e.message}`);
         success = false;
@@ -87,6 +113,9 @@ export default async function handler(req, res) {
         profit: Number(profitNum.toFixed(2)),
       });
     }
+
+    // finálne zoradenie podľa dátumu (vzostupne)
+    results.sort((a, b) => new Date(a.date) - new Date(b.date));
 
     res.status(200).json({
       ok: true,
