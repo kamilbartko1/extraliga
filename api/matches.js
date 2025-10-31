@@ -1,7 +1,7 @@
 // /api/matches.js
 export default async function handler(req, res) {
   try {
-    const START_DATE = "2025-10-20";
+    const START_DATE = "2025-10-08";
     const TODAY = new Date().toISOString().slice(0, 10);
 
     const formatDate = (d) => {
