@@ -130,64 +130,46 @@ function computeTeamRatings(matches) {
 }
 
 // === Hlavné načítanie ===
-// ========================= API načítanie =========================
 async function fetchMatches() {
+  const statusEl = document.getElementById("load-status");
+  if (statusEl) statusEl.textContent = "⏳ Načítavam zápasy a ratingy...";
+
   try {
     const response = await fetch(`${API_BASE}/api/matches`);
-    const data = await response.json();
 
-    console.log("✅ Dáta z backendu:", data);
-
-    // NHL formát – očakávame pole data.matches
-    const matches = Array.isArray(data.matches) ? data.matches : [];
-
-    if (matches.length === 0) {
-      console.warn("⚠️ Žiadne zápasy v data.matches");
+    if (!response.ok) {
+      const txt = await response.text();
+      console.error("❌ Server vrátil chybu:", txt);
+      if (statusEl) statusEl.textContent = "❌ Server vrátil chybu pri načítaní dát.";
+      return;
     }
 
-    // pre transformáciu do pôvodného tvaru
-    const normalized = matches.map((g) => ({
-      id: g.id,
-      date: g.date,
-      sport_event: {
-        start_time: g.start_time,
-        competitors: [
-          { name: g.home_team },
-          { name: g.away_team }
-        ]
-      },
-      sport_event_status: {
-        status: g.status,
-        home_score: g.home_score,
-        away_score: g.away_score
-      }
-    }));
+    const data = await response.json();
+    console.log("✅ Dáta z backendu:", data);
 
-    allMatches = normalized; // pre Mantingal
+    const totalGames = Array.isArray(data.matches) ? data.matches.length : 0;
+    const totalPlayers = data.playerRatings ? Object.keys(data.playerRatings).length : 0;
+    if (statusEl)
+      statusEl.textContent = `✅ Dokončené: ${totalGames} zápasov | ${totalPlayers} hráčov v rebríčku`;
 
-    // pre tabuľku zápasov
-    const simplified = normalized.map((m) => ({
-      id: m.id,
-      home_team: m.sport_event.competitors[0].name,
-      away_team: m.sport_event.competitors[1].name,
-      home_score: m.sport_event_status.home_score,
-      away_score: m.sport_event_status.away_score,
-      status: m.sport_event_status.status,
-      date: new Date(m.sport_event.start_time).toISOString().slice(0, 10)
-    }));
+    allMatches = Array.isArray(data.matches) ? data.matches : [];
 
-    simplified.sort((a, b) => new Date(b.date) - new Date(a.date));
+    if (!allMatches.length) {
+      console.warn("⚠️ Žiadne zápasy v data.matches");
+      if (statusEl) statusEl.textContent = "⚠️ Žiadne odohrané zápasy";
+    }
 
-    displayMatches(simplified);
-
+    displayMatches(allMatches);
     teamRatings = data.teamRatings || {};
     playerRatings = data.playerRatings || {};
-
     displayTeamRatings();
     displayPlayerRatings();
     displayMantingal();
+
   } catch (err) {
     console.error("❌ Chyba pri načítaní zápasov:", err);
+    if (statusEl)
+      statusEl.textContent = "❌ Chyba pri načítaní dát. Skús obnoviť stránku.";
   }
 }
 
@@ -197,37 +179,44 @@ function displayMatches(matches) {
   if (!tableBody) return;
   tableBody.innerHTML = "";
 
-  if (!matches.length) {
+  if (!matches || matches.length === 0) {
     tableBody.innerHTML = `<tr><td colspan="4">Žiadne odohrané zápasy</td></tr>`;
     return;
   }
 
+  // Zoskup zápasy podľa dátumu
   const grouped = {};
   matches.forEach(m => {
-    if (!grouped[m.date]) grouped[m.date] = [];
-    grouped[m.date].push(m);
+    const date = m.date || new Date(m.sport_event?.start_time || "").toISOString().slice(0, 10);
+    if (!grouped[date]) grouped[date] = [];
+    grouped[date].push(m);
   });
 
   const days = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
 
- days.forEach((day) => {
-  const roundRow = document.createElement("tr");
-  const dateObj = new Date(day);
-const formattedDate = dateObj.toLocaleDateString("sk-SK", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric"
-});
-roundRow.innerHTML = `<td colspan="4"><b>${formattedDate}</b></td>`;
-  tableBody.appendChild(roundRow);
+  days.forEach(day => {
+    const dateRow = document.createElement("tr");
+    const formatted = new Date(day).toLocaleDateString("sk-SK", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    dateRow.innerHTML = `<td colspan="4"><b>${formatted}</b></td>`;
+    tableBody.appendChild(dateRow);
 
     grouped[day].forEach(match => {
+      const home = match.home_team || match.sport_event?.competitors?.[0]?.name || "Home";
+      const away = match.away_team || match.sport_event?.competitors?.[1]?.name || "Away";
+      const hs = match.home_score ?? match.sport_event_status?.home_score ?? "-";
+      const as = match.away_score ?? match.sport_event_status?.away_score ?? "-";
+      const status = (match.status || match.sport_event_status?.status || "").toLowerCase();
+
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${match.home_team}</td>
-        <td>${match.away_team}</td>
-        <td>${match.home_score} : ${match.away_score}</td>
-        <td>${match.status === "closed" ? "✅" : "🟡"}</td>
+        <td>${home}</td>
+        <td>${away}</td>
+        <td>${hs} : ${as}</td>
+        <td>${status === "closed" ? "✅" : status === "ap" ? "🟡" : "..."}</td>
       `;
       tableBody.appendChild(row);
     });
