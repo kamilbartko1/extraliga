@@ -4,17 +4,23 @@ const ODDS = 2.0;
 
 // --- pomocné funkcie ---
 function collectSkaters(box) {
+  const getPlayers = (team) => {
+    if (!team) return [];
+    // NHL API niekedy používa rôzne štruktúry
+    return (
+      team.skaters ||
+      team.players ||
+      team.forwards ||
+      team.defense ||
+      []
+    );
+  };
+
   const home = box?.playerByGameStats?.homeTeam || {};
   const away = box?.playerByGameStats?.awayTeam || {};
 
-  const homeSkaters = [
-    ...(Array.isArray(home.forwards) ? home.forwards : []),
-    ...(Array.isArray(home.defense) ? home.defense : []),
-  ];
-  const awaySkaters = [
-    ...(Array.isArray(away.forwards) ? away.forwards : []),
-    ...(Array.isArray(away.defense) ? away.defense : []),
-  ];
+  const homeSkaters = getPlayers(home);
+  const awaySkaters = getPlayers(away);
 
   return [
     ...homeSkaters.map((p) => ({
@@ -30,16 +36,16 @@ function collectSkaters(box) {
 
 function playersWithTwoGoals(box) {
   return collectSkaters(box)
-    .filter((p) => Number(p?.goals ?? p?.stats?.goals ?? 0) >= 2)
+    .filter((p) => Number(p.goals ?? p.stats?.goals ?? 0) >= 2)
     .map((p) => ({
       name: `${p.firstName?.default || ""} ${p.lastName?.default || ""}`.trim(),
-      goals: Number(p?.goals ?? p?.stats?.goals ?? 0),
-      assists: Number(p?.assists ?? p?.stats?.assists ?? 0),
+      goals: Number(p.goals ?? p.stats?.goals ?? 0),
+      assists: Number(p.assists ?? p.stats?.assists ?? 0),
       team: p.team || "",
     }));
 }
 
-// --- pomocná funkcia pre limitované paralelné fetchovanie ---
+// --- paralelný beh s limitom ---
 async function runWithLimit(tasks, limit = 10) {
   const queue = [...tasks];
   const results = [];
@@ -69,12 +75,11 @@ export default async function handler(req, res) {
   try {
     const { id } = req.query;
 
-    // === 1️⃣ DETAIL JEDNÉHO ZÁPASU (ak ?id=...) ===
+    // === 1️⃣ DETAIL JEDNÉHO ZÁPASU ===
     if (id) {
       const boxUrl = `https://api-web.nhle.com/v1/gamecenter/${id}/boxscore`;
       const boxResp = await fetch(boxUrl, { cache: "no-store" });
-      if (!boxResp.ok)
-        throw new Error(`Boxscore ${id} nedostupné (${boxResp.status})`);
+      if (!boxResp.ok) throw new Error(`Boxscore ${id} nedostupné (${boxResp.status})`);
       const box = await boxResp.json();
       const players = playersWithTwoGoals(box);
       return res.status(200).json({ ok: true, id, players });
@@ -87,7 +92,7 @@ export default async function handler(req, res) {
     const matchesData = await matchesResp.json();
     let matches = Array.isArray(matchesData.matches) ? matchesData.matches : [];
 
-    // zoradíme podľa dátumu vzostupne
+    // zoradenie podľa dátumu
     matches = matches
       .filter((m) => m.date)
       .sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -96,7 +101,6 @@ export default async function handler(req, res) {
     let totalBet = 0;
     let totalProfit = 0;
 
-    // --- pripravíme všetky úlohy naraz ---
     const tasks = matches
       .filter((m) => m.status === "closed")
       .map((m) => async () => {
@@ -109,11 +113,10 @@ export default async function handler(req, res) {
           const boxUrl = `https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`;
           const boxResp = await fetch(boxUrl, { cache: "no-store" });
           if (!boxResp.ok) throw new Error(`Boxscore ${gameId} nedostupné`);
-
           const box = await boxResp.json();
+
           const players = playersWithTwoGoals(box);
           success = Array.isArray(players) && players.length > 0;
-
           profitNum = success ? BET_AMOUNT * (ODDS - 1) : -BET_AMOUNT;
         } catch (e) {
           console.warn(`⚠️ Zápas ${gameId}: ${e.message}`);
@@ -135,15 +138,11 @@ export default async function handler(req, res) {
       });
 
     console.log(`🏁 Načítavam ${tasks.length} zápasov (limit 10 naraz)...`);
-
-    // --- spustíme s paralelným limitom 10 ---
     const resultsRaw = await runWithLimit(tasks, 10);
-
     results.push(...resultsRaw.filter((r) => !r?.error));
 
-    // finálne zoradenie podľa dátumu (vzostupne)
+    // zoradenie podľa dátumu
     results.sort((a, b) => new Date(a.date) - new Date(b.date));
-
     console.log(`🏒 Dokončené ${results.length}/${matches.length} zápasov`);
 
     res.status(200).json({
