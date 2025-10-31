@@ -39,6 +39,31 @@ function playersWithTwoGoals(box) {
     }));
 }
 
+// --- pomocná funkcia pre limitované paralelné fetchovanie ---
+async function runWithLimit(tasks, limit = 10) {
+  const queue = [...tasks];
+  const results = [];
+  let active = 0;
+
+  return new Promise((resolve) => {
+    const runNext = async () => {
+      if (queue.length === 0 && active === 0) return resolve(results);
+      while (active < limit && queue.length) {
+        const job = queue.shift();
+        active++;
+        job()
+          .then((r) => results.push(r))
+          .catch((e) => results.push({ error: e.message }))
+          .finally(() => {
+            active--;
+            runNext();
+          });
+      }
+    };
+    runNext();
+  });
+}
+
 // --- hlavná funkcia ---
 export default async function handler(req, res) {
   try {
@@ -57,15 +82,10 @@ export default async function handler(req, res) {
 
     // === 2️⃣ VÝPOČTY PRE VŠETKY ZÁPASY ===
     const baseUrl = "https://nhlpro.sk";
-    const matchesResp = await fetch(`${baseUrl}/api/matches`, {
-      cache: "no-store",
-    });
-    if (!matchesResp.ok)
-      throw new Error(`Nepodarilo sa načítať /api/matches`);
+    const matchesResp = await fetch(`${baseUrl}/api/matches`, { cache: "no-store" });
+    if (!matchesResp.ok) throw new Error(`Nepodarilo sa načítať /api/matches`);
     const matchesData = await matchesResp.json();
-    let matches = Array.isArray(matchesData.matches)
-      ? matchesData.matches
-      : [];
+    let matches = Array.isArray(matchesData.matches) ? matchesData.matches : [];
 
     // zoradíme podľa dátumu vzostupne
     matches = matches
@@ -76,46 +96,55 @@ export default async function handler(req, res) {
     let totalBet = 0;
     let totalProfit = 0;
 
-    for (const m of matches) {
-      if (m.status !== "closed") continue;
-      totalBet += BET_AMOUNT;
-      const gameId = m.id;
-      let success = false;
+    // --- pripravíme všetky úlohy naraz ---
+    const tasks = matches
+      .filter((m) => m.status === "closed")
+      .map((m) => async () => {
+        totalBet += BET_AMOUNT;
+        const gameId = m.id;
+        let success = false;
+        let profitNum = 0;
 
-      try {
-        const boxUrl = `https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`;
-        const boxResp = await fetch(boxUrl, { cache: "no-store" });
+        try {
+          const boxUrl = `https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`;
+          const boxResp = await fetch(boxUrl, { cache: "no-store" });
+          if (!boxResp.ok) throw new Error(`Boxscore ${gameId} nedostupné`);
 
-        if (!boxResp.ok) {
-          console.warn(`⚠️ Zápas ${gameId}: boxscore nedostupné`);
-          continue;
+          const box = await boxResp.json();
+          const players = playersWithTwoGoals(box);
+          success = Array.isArray(players) && players.length > 0;
+
+          profitNum = success ? BET_AMOUNT * (ODDS - 1) : -BET_AMOUNT;
+        } catch (e) {
+          console.warn(`⚠️ Zápas ${gameId}: ${e.message}`);
+          profitNum = -BET_AMOUNT;
+          success = false;
         }
 
-        const box = await boxResp.json();
-        const players = playersWithTwoGoals(box);
-        // len ak sú reálne nejaké dáta
-        success = Array.isArray(players) && players.length > 0;
-      } catch (e) {
-        console.warn(`⚠️ Zápas ${gameId}: ${e.message}`);
-        success = false;
-      }
+        totalProfit += profitNum;
 
-      const profitNum = success ? BET_AMOUNT * (ODDS - 1) : -BET_AMOUNT;
-      totalProfit += profitNum;
-
-      results.push({
-        id: gameId,
-        date: m.date,
-        home: m.home_team,
-        away: m.away_team,
-        twoGoals: success ? "✅" : "❌",
-        result: success ? "Výhra" : "Prehra",
-        profit: Number(profitNum.toFixed(2)),
+        return {
+          id: gameId,
+          date: m.date,
+          home: m.home_team,
+          away: m.away_team,
+          twoGoals: success ? "✅" : "❌",
+          result: success ? "Výhra" : "Prehra",
+          profit: Number(profitNum.toFixed(2)),
+        };
       });
-    }
+
+    console.log(`🏁 Načítavam ${tasks.length} zápasov (limit 10 naraz)...`);
+
+    // --- spustíme s paralelným limitom 10 ---
+    const resultsRaw = await runWithLimit(tasks, 10);
+
+    results.push(...resultsRaw.filter((r) => !r?.error));
 
     // finálne zoradenie podľa dátumu (vzostupne)
     results.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    console.log(`🏒 Dokončené ${results.length}/${matches.length} zápasov`);
 
     res.status(200).json({
       ok: true,
