@@ -150,7 +150,7 @@ app.get("/api/matches", async (req, res) => {
         const game = matches[i];
         try {
           const boxUrl = `https://api-web.nhle.com/v1/gamecenter/${game.id}/boxscore`;
-          const resp = await axios.get(boxUrl, { timeout: 10000 });
+          const resp = await axios.get(boxUrl, { timeout: 100000 });
           const box = resp.data;
 
           const homePlayers = Array.isArray(box?.playerByGameStats?.homeTeam?.forwards)
