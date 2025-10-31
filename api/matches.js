@@ -223,7 +223,7 @@ app.get("/api/mantingal", async (req, res) => {
     console.log("🏁 Spúšťam Mantingal výpočet...");
 
     // 1️⃣ Získaj top10 hráčov z /api/matches
-    const matchesResp = await fetch("http://localhost:3000/api/matches", { cache: "no-store" });
+    const matchesResp = await fetch("https://nhlpro.sk/api/matches", { cache: "no-store" });
     if (!matchesResp.ok) throw new Error("Nepodarilo sa načítať zápasy");
     const matchesData = await matchesResp.json();
     const playerRatings = matchesData.playerRatings || {};
