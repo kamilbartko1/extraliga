@@ -1,4 +1,4 @@
-// backend/server.js
+// server.js
 import express from "express";
 import axios from "axios";
 import cors from "cors";
@@ -6,190 +6,225 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const app = express();
+const PORT = 3000;
 
-// === VERCEL PORT ===
-const PORT = process.env.PORT || 3000;
-
-// === Pre __dirname (Vercel ES Modules) ===
+// === Absolútne cesty pre ES Modules ===
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// === Middleware ===
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../frontend")));
+app.use(express.static(path.join(__dirname, "../public"))); // ✅ frontend = public
 
-// === KONŠTANTY PRE RATING A STRATÉGIU ===
-const START_RATING = 1500;
-const GOAL_POINTS = 10;
-const WIN_POINTS = 10;
-const LOSS_POINTS = -10;
-const PLAYER_GOAL_POINTS = 20;
-const PLAYER_ASSIST_POINTS = 10;
-const MANTINGALE_ODDS = 2.5;
-const MANTINGALE_START_STAKE = 1;
+// === KONŠTANTY PRE RATING ===
+const START_TEAM_RATING = 1500;
+const TEAM_GOAL_POINTS = 10;
+const TEAM_WIN_POINTS = 10;
+const TEAM_LOSS_POINTS = -10;
+
+const START_PLAYER_RATING = 1500;
+const GOAL_POINTS = 50;
+const PP_GOAL_POINTS = 30;
+const ASSIST_POINTS = 20;
+const TOI_PER_MIN = 1;
+
+// === Pomocné funkcie ===
+const formatDate = (d) => {
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+};
+function getDaysRange(fromStr, toStr) {
+  const start = new Date(fromStr);
+  const end = new Date(toStr);
+  const days = [];
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    days.push(formatDate(new Date(d)));
+  }
+  return days;
+}
+function chunk(array, size) {
+  const out = [];
+  for (let i = 0; i < array.length; i += size) out.push(array.slice(i, i + size));
+  return out;
+}
+function toiToMinutes(toi) {
+  if (!toi) return 0;
+  const parts = String(toi).split(":").map(Number);
+  if (parts.length === 2) return parts[0] + parts[1] / 60;
+  if (parts.length === 3) return parts[0] * 60 + parts[1] + parts[2] / 60;
+  return 0;
+}
+
+// === Cache (na 3 h) ===
+let cacheData = null;
+let cacheTime = 0;
+let cacheKey = "";
 
 // ======================================================
-// ENDPOINT: /matches  (všetky zápasy + ratingy + mantingal)
+// ENDPOINT: /api/matches
 // ======================================================
-app.get("/matches", async (req, res) => {
+app.get("/api/matches", async (req, res) => {
   try {
-    const scheduleUrl = "https://api-web.nhle.com/v1/schedule/now";
-    const { data } = await axios.get(scheduleUrl);
+    const START_DATE = "2025-10-08";
+    const TODAY = formatDate(new Date());
+    const from = req.query.from || START_DATE;
+    const to = req.query.to || TODAY;
+    const refresh = req.query.refresh === "1";
+    const key = `${from}_${to}`;
+    const now = Date.now();
 
-    // extrahuj všetky zápasy z týždňa
-    const allGames = (data?.gameWeek || []).flatMap(day => day.games || []);
+    if (!refresh && cacheData && cacheKey === key && now - cacheTime < 3 * 60 * 60 * 1000) {
+      console.log(`⚡ Cache hit (${from}–${to})`);
+      return res.json(cacheData);
+    }
 
-    // len odohrané alebo naplánované zápasy
-    const matches = allGames.filter(g =>
-      ["FINAL", "LIVE", "FUT"].includes(g.gameState)
-    );
+    const days = getDaysRange(from, to);
+    console.log(`🏁 Sťahujem zápasy ${days[0]} → ${days.at(-1)} (${days.length} dní)`);
 
+    const matches = [];
     const teamRatings = {};
     const playerRatings = {};
-    const martingaleState = new Map();
-    let totalStaked = 0;
-    let totalReturn = 0;
-    const matchesWithStats = [];
 
-    // =============================
-    // Načítaj boxscore pre každý zápas
-    // =============================
-    for (const game of matches) {
-      const gameId = game.id;
-      let boxData = null;
+    const batches = chunk(days, 4);
+    for (const batch of batches) {
+      const results = await Promise.allSettled(
+        batch.map(async (day) => {
+          const url = `https://api-web.nhle.com/v1/score/${day}`;
+          const resp = await axios.get(url, { timeout: 12000 });
+          const games = Array.isArray(resp.data?.games) ? resp.data.games : [];
 
-      try {
-        const boxUrl = `https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`;
-        const boxRes = await axios.get(boxUrl);
-        boxData = boxRes.data;
-      } catch {
-        // niektoré zápasy ešte nemajú boxscore
-      }
+          for (const g of games) {
+            const state = String(g.gameState || "").toUpperCase();
+            if (!["OFF", "FINAL"].includes(state)) continue;
 
-      const home = game.homeTeam?.commonName?.default || "Home";
-      const away = game.awayTeam?.commonName?.default || "Away";
-      const homeScore = boxData?.homeTeam?.score ?? 0;
-      const awayScore = boxData?.awayTeam?.score ?? 0;
+            const home = g.homeTeam?.name?.default || g.homeTeam?.abbrev || "Home";
+            const away = g.awayTeam?.name?.default || g.awayTeam?.abbrev || "Away";
+            const hs = g.homeTeam?.score ?? 0;
+            const as = g.awayTeam?.score ?? 0;
 
-      matchesWithStats.push({
-        id: gameId,
-        date: game.startTimeUTC,
-        home_team: home,
-        away_team: away,
-        home_score: homeScore,
-        away_score: awayScore,
-        status: game.gameState,
-        statistics: boxData,
+            matches.push({
+              id: g.id,
+              date: day,
+              status: "closed",
+              home_team: home,
+              away_team: away,
+              home_score: hs,
+              away_score: as,
+            });
+
+            // rating tímov
+            if (!teamRatings[home]) teamRatings[home] = START_TEAM_RATING;
+            if (!teamRatings[away]) teamRatings[away] = START_TEAM_RATING;
+
+            teamRatings[home] += hs * TEAM_GOAL_POINTS - as * TEAM_GOAL_POINTS;
+            teamRatings[away] += as * TEAM_GOAL_POINTS - hs * TEAM_GOAL_POINTS;
+
+            if (hs > as) {
+              teamRatings[home] += TEAM_WIN_POINTS;
+              teamRatings[away] += TEAM_LOSS_POINTS;
+            } else if (as > hs) {
+              teamRatings[away] += TEAM_WIN_POINTS;
+              teamRatings[home] += TEAM_LOSS_POINTS;
+            }
+          }
+        })
+      );
+      results.forEach((r, i) => {
+        if (r.status === "rejected")
+          console.warn(`⚠️ ${batch[i]}: ${r.reason?.message || r.reason}`);
       });
+    }
 
-      // === RATING TÍMOV ===
-      if (!teamRatings[home]) teamRatings[home] = START_RATING;
-      if (!teamRatings[away]) teamRatings[away] = START_RATING;
+    console.log(`✅ Zápasov: ${matches.length} | počítam hráčov...`);
 
-      teamRatings[home] += homeScore * GOAL_POINTS - awayScore * GOAL_POINTS;
-      teamRatings[away] += awayScore * GOAL_POINTS - homeScore * GOAL_POINTS;
+    // === Boxscore rating hráčov (limit 6 paralelne) ===
+    const CONCURRENCY = 6;
+    let index = 0;
 
-      if (homeScore > awayScore) {
-        teamRatings[home] += WIN_POINTS;
-        teamRatings[away] += LOSS_POINTS;
-      } else if (awayScore > homeScore) {
-        teamRatings[away] += WIN_POINTS;
-        teamRatings[home] += LOSS_POINTS;
-      }
+    async function worker() {
+      while (index < matches.length) {
+        const i = index++;
+        const game = matches[i];
+        try {
+          const boxUrl = `https://api-web.nhle.com/v1/gamecenter/${game.id}/boxscore`;
+          const resp = await axios.get(boxUrl, { timeout: 10000 });
+          const box = resp.data;
 
-      // === RATING HRÁČOV ===
-      const allPlayers = [
-        ...(boxData?.homeTeam?.players || []),
-        ...(boxData?.awayTeam?.players || []),
-      ];
+          const homePlayers = Array.isArray(box?.playerByGameStats?.homeTeam?.forwards)
+            ? box.playerByGameStats.homeTeam.forwards
+            : [];
+          const homeDef = Array.isArray(box?.playerByGameStats?.homeTeam?.defense)
+            ? box.playerByGameStats.homeTeam.defense
+            : [];
+          const awayPlayers = Array.isArray(box?.playerByGameStats?.awayTeam?.forwards)
+            ? box.playerByGameStats.awayTeam.forwards
+            : [];
+          const awayDef = Array.isArray(box?.playerByGameStats?.awayTeam?.defense)
+            ? box.playerByGameStats.awayTeam.defense
+            : [];
 
-      for (const p of allPlayers) {
-        const name = p?.person?.fullName;
-        if (!name) continue;
+          const all = [...homePlayers, ...homeDef, ...awayPlayers, ...awayDef];
 
-        const goals = p?.stats?.skaterStats?.goals ?? 0;
-        const assists = p?.stats?.skaterStats?.assists ?? 0;
+          for (const p of all) {
+            const name =
+              p?.name?.default ||
+              [p?.firstName?.default, p?.lastName?.default].filter(Boolean).join(" ").trim();
+            if (!name) continue;
 
-        if (!playerRatings[name]) playerRatings[name] = START_RATING;
-        playerRatings[name] += goals * PLAYER_GOAL_POINTS + assists * PLAYER_ASSIST_POINTS;
-      }
+            if (!playerRatings[name]) playerRatings[name] = START_PLAYER_RATING;
 
-      // === MANTINGAL ===
-      const top3 = Object.entries(playerRatings)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3)
-        .map(([name]) => name);
+            const goals = Number(p.goals || 0);
+            const assists = Number(p.assists || 0);
+            const ppGoals = Number(p.powerPlayGoals || 0);
+            const toi = toiToMinutes(p.toi);
 
-      for (const playerName of top3) {
-        if (!martingaleState.has(playerName)) {
-          martingaleState.set(playerName, {
-            stake: MANTINGALE_START_STAKE,
-            lastOutcome: null,
-          });
-        }
-
-        const s = martingaleState.get(playerName);
-        totalStaked += s.stake;
-
-        const playerStats = allPlayers.find(p => p?.person?.fullName === playerName);
-        const scored = playerStats?.stats?.skaterStats?.goals > 0;
-
-        if (scored) {
-          totalReturn += s.stake * MANTINGALE_ODDS;
-          martingaleState.set(playerName, {
-            stake: MANTINGALE_START_STAKE,
-            lastOutcome: "win",
-          });
-        } else {
-          martingaleState.set(playerName, {
-            stake: s.stake * 2,
-            lastOutcome: "loss",
-          });
+            playerRatings[name] +=
+              goals * GOAL_POINTS +
+              assists * ASSIST_POINTS +
+              ppGoals * PP_GOAL_POINTS +
+              toi * TOI_PER_MIN;
+          }
+        } catch (err) {
+          console.warn(`⚠️ boxscore ${game.id}: ${err.message}`);
         }
       }
     }
 
-    // === Výsledný súhrn Mantingalu ===
-    const martingaleSummary = {
-      totalStaked: Number(totalStaked.toFixed(2)),
-      totalReturn: Number(totalReturn.toFixed(2)),
-      profit: Number((totalReturn - totalStaked).toFixed(2)),
-      odds: MANTINGALE_ODDS,
-    };
+    const workers = Array(CONCURRENCY).fill(0).map(() => worker());
+    await Promise.all(workers);
 
-    res.json({
-      matches: matchesWithStats,
-      teamRatings,
-      playerRatings,
-      martingale: { summary: martingaleSummary },
-    });
+    const topPlayers = Object.entries(playerRatings)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 50)
+      .reduce((acc, [name, rating]) => {
+        acc[name] = Math.round(rating);
+        return acc;
+      }, {});
+
+    const result = { matches, teamRatings, playerRatings: topPlayers };
+    cacheData = result;
+    cacheKey = key;
+    cacheTime = Date.now();
+
+    console.log(`🏒 Hotovo! Zápasy: ${matches.length}, Hráči: ${Object.keys(topPlayers).length}`);
+    res.json(result);
   } catch (err) {
     console.error("❌ NHL API error:", err.message);
-    res.status(500).json({ error: "Chyba pri načítaní NHL dát" });
+    res.status(500).json({ error: "Chyba pri načítaní NHL dát", detail: err.message });
   }
 });
 
 // ======================================================
-// ENDPOINT: /match-details/:id
-// ======================================================
-app.get("/match-details/:id", async (req, res) => {
-  try {
-    const gameId = req.params.id;
-    const { data } = await axios.get(
-      `https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`
-    );
-    res.json(data);
-  } catch (err) {
-    console.error("❌ Chyba detailu zápasu:", err.message);
-    res.status(500).json({ error: "Chyba pri načítaní detailov zápasu" });
-  }
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public", "index.html"));
 });
 
-// ======================================================
-// SERVER START
 // ======================================================
 app.listen(PORT, () => {
-  console.log(`🏒 NHL Server beží na porte ${PORT}`);
+  console.log(`🏒 NHL Server beží lokálne na http://localhost:${PORT}`);
 });
 
 export default app;
