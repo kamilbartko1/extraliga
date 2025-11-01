@@ -5,9 +5,62 @@ import axios from "axios";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs/promises";
 
 const app = express();
 const PORT = 3000;
+
+// === Pomocné funkcie na prácu s menami ===
+function norm(s = "") {
+  return String(s)
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // odstráni diakritiku
+    .replace(/\./g, "") // odstráni bodky
+    .replace(/\s+/g, " ") // upraví viacnásobné medzery
+    .trim();
+}
+
+function initialForm(fullName) {
+  const [first, ...rest] = String(fullName).split(" ").filter(Boolean);
+  if (!first || rest.length === 0) return fullName;
+  return `${first[0]}. ${rest.join(" ")}`; // napr. "V. Lettieri"
+}
+
+let _playersIndex = null;
+async function getPlayersIndex() {
+  if (_playersIndex) return _playersIndex;
+
+  const filePath = path.join(process.cwd(), "data", "nhl_players.json");
+  const raw = await fs.readFile(filePath, "utf-8");
+  const players = JSON.parse(raw);
+  const list = Array.isArray(players) ? players : (players.players || []);
+
+  const byName = new Map();
+
+  for (const p of list) {
+    const first = p.meno || p.firstName || "";
+    const last = p.priezvisko || p.lastName || "";
+    const team = p.tím || p.team || "";
+    if (!first || !last) continue;
+
+    const fullName = `${first} ${last}`.trim();
+    const nFull = norm(fullName);
+    const nInit = norm(initialForm(fullName));
+
+    const value = {
+      id: p.id || null,
+      team,
+      fullName,
+      shortName: initialForm(fullName),
+    };
+
+    if (!byName.has(nFull)) byName.set(nFull, value);
+    if (!byName.has(nInit)) byName.set(nInit, value);
+  }
+
+  _playersIndex = byName;
+  return _playersIndex;
+}
 
 // === Absolútne cesty pre ES Modules ===
 const __filename = fileURLToPath(import.meta.url);
@@ -205,13 +258,37 @@ app.get("/api/matches", async (req, res) => {
         return acc;
       }, {});
 
-    const result = { matches, teamRatings, playerRatings: topPlayers };
-    cacheData = result;
-    cacheKey = key;
-    cacheTime = Date.now();
+    // === Doplnenie tímov hráčov z databázy ===
+const index = await getPlayersIndex();
+const playerTeams = {};
 
-    console.log(`🏒 Hotovo! Zápasy: ${matches.length}, Hráči: ${Object.keys(topPlayers).length}`);
-    res.json(result);
+for (const name of Object.keys(playerRatings)) {
+  const hit =
+    index.get(norm(name)) ||
+    index.get(norm(initialForm(name))); // skús plné aj iniciálové meno
+
+  if (hit?.team) {
+    playerTeams[name] = hit.team;
+  } else {
+    playerTeams[name] = "—"; // fallback, ak sa nenašiel
+  }
+}
+
+// === Výsledný objekt ===
+const result = {
+  matches,
+  teamRatings,
+  playerRatings: topPlayers,
+  playerTeams, // ✅ nové pole pre frontend
+};
+
+cacheData = result;
+cacheKey = key;
+cacheTime = Date.now();
+
+console.log(`🏒 Hotovo! Zápasy: ${matches.length}, Hráči: ${Object.keys(topPlayers).length}`);
+res.json(result);
+
   } catch (err) {
     console.error("❌ NHL API error:", err.message);
     res.status(500).json({ error: "Chyba pri načítaní NHL dát", detail: err.message });
