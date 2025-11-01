@@ -4,6 +4,7 @@ import axios from "axios";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs/promises";
 
 const app = express();
 const PORT = 3000;
@@ -62,6 +63,33 @@ function toiToMinutes(toi) {
 let cacheData = null;
 let cacheTime = 0;
 let cacheKey = "";
+
+// === Načítanie databázy hráčov (nhl_players.json) ===
+let playerDb = [];
+try {
+  const dbPath = path.join(__dirname, "../data/nhl_players.json");
+  const raw = await fs.readFile(dbPath, "utf-8");
+  playerDb = JSON.parse(raw);
+  console.log(`✅ Načítaná databáza hráčov (${playerDb.length})`);
+} catch (err) {
+  console.warn("⚠️ Nepodarilo sa načítať nhl_players.json:", err.message);
+}
+
+// === Funkcia na nájdenie tímu podľa mena hráča ===
+function findTeamByPlayerName(name) {
+  if (!name || !Array.isArray(playerDb)) return "Neznámy tím";
+  const normalized = name.toLowerCase().replace(/\./g, "").trim();
+
+  for (const p of playerDb) {
+    const full = `${p.firstName} ${p.lastName}`.toLowerCase().trim();
+    const short = `${p.firstName[0]}. ${p.lastName}`.toLowerCase().trim();
+    if (full === normalized || short === normalized) {
+      return p.team || "Neznámy tím";
+    }
+  }
+
+  return "Neznámy tím";
+}
 
 // ======================================================
 // ENDPOINT: /api/matches
@@ -196,20 +224,22 @@ app.get("/api/matches", async (req, res) => {
     const workers = Array(CONCURRENCY).fill(0).map(() => worker());
     await Promise.all(workers);
 
+    // 🔹 Tu doplníme názvy tímov z databázy
     const topPlayers = Object.entries(playerRatings)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 50)
-      .reduce((acc, [name, rating]) => {
-        acc[name] = Math.round(rating);
-        return acc;
-      }, {});
+      .map(([name, rating]) => ({
+        name,
+        rating: Math.round(rating),
+        team: findTeamByPlayerName(name),
+      }));
 
     const result = { matches, teamRatings, playerRatings: topPlayers };
     cacheData = result;
     cacheKey = key;
     cacheTime = Date.now();
 
-    console.log(`🏒 Hotovo! Zápasy: ${matches.length}, Hráči: ${Object.keys(topPlayers).length}`);
+    console.log(`🏒 Hotovo! Zápasy: ${matches.length}, Hráči: ${topPlayers.length}`);
     res.json(result);
   } catch (err) {
     console.error("❌ NHL API error:", err.message);
