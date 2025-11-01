@@ -1,4 +1,3 @@
-// /api/matches.js
 // server.js
 import express from "express";
 import axios from "axios";
