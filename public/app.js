@@ -255,7 +255,7 @@ function displayPlayerRatings() {
   sorted.forEach(([player, rating], index) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${index + 1}. ${player}</td>
+      <td>${index + 1}. ${p.name} (${p.team})</td>
       <td>${rating}</td>
     `;
     tableBody.appendChild(row);
