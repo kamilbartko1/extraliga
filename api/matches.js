@@ -1,9 +1,9 @@
-// server.js
 import express from "express";
 import axios from "axios";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import * as fs from "node:fs"; // 🔹 NEW - načítanie súborového systému pre JSON
 
 const app = express();
 const PORT = 3000;
@@ -56,6 +56,18 @@ function toiToMinutes(toi) {
   if (parts.length === 2) return parts[0] + parts[1] / 60;
   if (parts.length === 3) return parts[0] * 60 + parts[1] + parts[2] / 60;
   return 0;
+}
+
+// === 🔹 NEW: Načítanie lokálnej databázy hráčov ===
+const playersFile = path.join(process.cwd(), "data", "nhl_players.json");
+let playerDb = [];
+
+try {
+  const raw = fs.readFileSync(playersFile, "utf8");
+  playerDb = JSON.parse(raw);
+  console.log(`📘 Načítaných hráčov z databázy: ${playerDb.length}`);
+} catch (err) {
+  console.error("❌ Nepodarilo sa načítať nhl_players.json:", err.message);
 }
 
 // === Cache (na 3 h) ===
@@ -168,24 +180,39 @@ app.get("/api/matches", async (req, res) => {
 
           const all = [...homePlayers, ...homeDef, ...awayPlayers, ...awayDef];
 
+          // 🔹 upravené: rating + tím z databázy
           for (const p of all) {
-            const name =
-              p?.name?.default ||
-              [p?.firstName?.default, p?.lastName?.default].filter(Boolean).join(" ").trim();
+            const first = p?.firstName?.default || "";
+            const last = p?.lastName?.default || "";
+            const name = p?.name?.default || `${first} ${last}`.trim();
             if (!name) continue;
 
-            if (!playerRatings[name]) playerRatings[name] = START_PLAYER_RATING;
+            if (!playerRatings[name])
+              playerRatings[name] = {
+                rating: START_PLAYER_RATING,
+                team: null,
+              };
 
             const goals = Number(p.goals || 0);
             const assists = Number(p.assists || 0);
             const ppGoals = Number(p.powerPlayGoals || 0);
             const toi = toiToMinutes(p.toi);
 
-            playerRatings[name] +=
+            playerRatings[name].rating +=
               goals * GOAL_POINTS +
               assists * ASSIST_POINTS +
               ppGoals * PP_GOAL_POINTS +
               toi * TOI_PER_MIN;
+
+            // 🔹 Doplň tím podľa lokálnej databázy
+            if (!playerRatings[name].team) {
+              const found = playerDb.find(
+                (pl) =>
+                  pl.lastName?.toLowerCase() === last.toLowerCase() &&
+                  pl.firstName?.toLowerCase().startsWith(first.toLowerCase().slice(0, 2))
+              );
+              if (found) playerRatings[name].team = found.team;
+            }
           }
         } catch (err) {
           console.warn(`⚠️ boxscore ${game.id}: ${err.message}`);
@@ -196,20 +223,22 @@ app.get("/api/matches", async (req, res) => {
     const workers = Array(CONCURRENCY).fill(0).map(() => worker());
     await Promise.all(workers);
 
+    // 🔹 upravené - objekt na zoznam s ratingom a tímom
     const topPlayers = Object.entries(playerRatings)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 50)
-      .reduce((acc, [name, rating]) => {
-        acc[name] = Math.round(rating);
-        return acc;
-      }, {});
+      .map(([name, obj]) => ({
+        name,
+        rating: Math.round(obj.rating),
+        team: obj.team || "Neznámy tím",
+      }))
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, 50);
 
     const result = { matches, teamRatings, playerRatings: topPlayers };
     cacheData = result;
     cacheKey = key;
     cacheTime = Date.now();
 
-    console.log(`🏒 Hotovo! Zápasy: ${matches.length}, Hráči: ${Object.keys(topPlayers).length}`);
+    console.log(`🏒 Hotovo! Zápasy: ${matches.length}, Hráči: ${topPlayers.length}`);
     res.json(result);
   } catch (err) {
     console.error("❌ NHL API error:", err.message);
