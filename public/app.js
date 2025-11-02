@@ -354,37 +354,24 @@ async function displayStrategies() {
 
   try {
     const resp = await fetch("/api/strategies", { cache: "no-store" });
-
-    let data;
-    try {
-      data = await resp.json();
-    } catch {
-      const txt = await resp.text();
-      throw new Error("Očakával som JSON, prišlo: " + txt.slice(0, 120));
-    }
+    const data = await resp.json();
 
     if (!data.ok || !Array.isArray(data.players)) {
       throw new Error(data.error || "Nepodarilo sa načítať databázu hráčov");
     }
 
-    // === SUMÁR ===
     wrap.innerHTML = `
       <h2>Databáza hráčov NHL</h2>
       <p>Počet hráčov v databáze: <b>${data.count}</b></p>
       <p>Zobrazených prvých 100 hráčov:</p>
     `;
 
-    // === Funkcia: vlajka podľa ISO kódu ===
-    const flag = (code) => {
+    // 🔹 Funkcia: vracia URL vlajky podľa ISO kódu krajiny
+    const flagUrl = (code) => {
       if (!code) return "";
-      const cc = code.trim().toUpperCase();
-      // Emoji vlajka (US -> 🇺🇸)
-      return cc.replace(/./g, (c) =>
-        String.fromCodePoint(127397 + c.charCodeAt(0))
-      );
+      return `https://flagcdn.com/24x18/${code.toLowerCase()}.png`;
     };
 
-    // === Tabuľka hráčov ===
     const table = document.createElement("table");
     table.className = "players-table";
 
@@ -402,13 +389,14 @@ async function displayStrategies() {
           .slice(0, 100)
           .map(
             (p, i) => `
-              <tr>
-                <td>${i + 1}</td>
-                <td class="player-name">${p.name}</td>
-                <td class="team-cell">${p.team}</td>
-                <td class="country-cell">${flag(p.country)}</td>
-              </tr>
-            `
+            <tr>
+              <td>${i + 1}</td>
+              <td class="player-name">${p.name}</td>
+              <td class="team-cell">${p.team}</td>
+              <td class="country-cell">
+                <img src="${flagUrl(p.country)}" alt="${p.country}" title="${p.country}">
+              </td>
+            </tr>`
           )
           .join("")}
       </tbody>
