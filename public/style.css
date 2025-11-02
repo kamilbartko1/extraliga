@@ -2090,183 +2090,6 @@ nav button:hover::after {
   }
 }
 
-/* ----------- TIPOVACIE STRATÉGIE - MOBILE OPTIMIZÁCIA ----------- */
-@media (max-width: 768px) {
-
-  #strategies-section table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  #strategies-section th,
-  #strategies-section td {
-    padding: 8px 6px;
-    font-size: 14px;
-    line-height: 1.3;
-    text-align: center;
-    vertical-align: middle;
-  }
-
-  /* názvy tímov - nech sa zalamujú len po slovách */
-  #strategies-section td:nth-child(2) {
-    text-align: left;
-    white-space: normal;
-    word-break: normal;
-    overflow-wrap: anywhere;
-    hyphens: none;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 1.4;
-  }
-
-  /* dátum - menší, svetlejší */
-  #strategies-section td:nth-child(1) {
-    font-size: 13px;
-    color: #7fdcff;
-    text-align: left;
-    width: 25%;
-  }
-
-  /* 2+ góly a výsledok - centrovanie */
-  #strategies-section td:nth-child(3),
-  #strategies-section td:nth-child(4) {
-    text-align: center;
-    width: 15%;
-  }
-
-  /* zisk (€) - vpravo, farby podľa hodnoty */
-  #strategies-section td:nth-child(5) {
-    text-align: right;
-    width: 15%;
-    font-weight: 600;
-  }
-  #strategies-section td:nth-child(5):has(.loss),
-  #strategies-section td:nth-child(5):has([style*="red"]) {
-    color: #ff4040;
-  }
-  #strategies-section td:nth-child(5):has(.win),
-  #strategies-section td:nth-child(5):has([style*="green"]) {
-    color: #26ff78;
-  }
-
-  /* riadky oddelené jemným tieňom */
-  #strategies-section tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  }
-
-  /* hlavička tabuľky */
-  #strategies-section th {
-    font-size: 13px;
-    font-weight: 600;
-    color: #2bd0ff;
-    padding: 10px 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* lepšie vertikálne rozostupy */
-  #strategies-section tr td {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-
-  /* ak je obrazovka extrémne úzka */
-  @media (max-width: 380px) {
-    #strategies-section th, #strategies-section td {
-      font-size: 12.5px;
-      padding: 7px 4px;
-    }
-    #strategies-section td:nth-child(2) {
-      font-size: 13px;
-    }
-  }
-}
-
-/* === 🎨 Moderná tabuľka hráčov (Strategies) === */
-.players-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  background: rgba(15, 15, 20, 0.6);
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
-}
-
-.players-table thead {
-  background: rgba(0, 255, 255, 0.12);
-  color: #00ffff;
-  text-transform: uppercase;
-  font-size: 13px;
-  letter-spacing: 0.5px;
-}
-
-.players-table th,
-.players-table td {
-  padding: 10px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  text-align: left;
-}
-
-.players-table td {
-  color: #f0f0f0;
-  font-size: 14px;
-}
-
-.players-table .player-name {
-  font-weight: 600;
-  color: #fff;
-  width: 30%;
-  text-align: left;
-}
-
-.players-table .team-cell {
-  color: #00ffff;
-  font-weight: 500;
-  width: 40%;
-  white-space: nowrap;
-}
-
-.players-table .country-cell {
-  width: 20%;
-  text-align: left;
-}
-
-.players-table tr:nth-child(even) {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.players-table tr:hover {
-  background: rgba(0, 255, 255, 0.08);
-  transition: background 0.2s ease-in-out;
-}
-
-/* 📱 Responzívny režim */
-@media (max-width: 768px) {
-  .players-table th,
-  .players-table td {
-    font-size: 12px;
-    padding: 8px 6px;
-  }
-
-  .players-table .team-cell,
-  .players-table .country-cell {
-    white-space: normal;
-  }
-
-  .players-table .player-name {
-    display: block;
-    font-size: 13px;
-  }
-
-  .players-table {
-    display: block;
-    overflow-x: auto;
-    min-width: 400px;
-  }
-}
-
 /* === Databáza hráčov NHL === */
 #strategies-section {
   color: #eaeaea;
@@ -2275,7 +2098,7 @@ nav button:hover::after {
   border-radius: 10px;
   box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  overflow-x: auto; /* umožní posuv tabuľky na mobile */
+  overflow-x: auto;
 }
 
 #strategies-section h2 {
@@ -2292,46 +2115,46 @@ nav button:hover::after {
   margin: 4px 0 12px 0;
 }
 
-#strategies-section table {
+.players-table {
   width: 100%;
   min-width: 500px;
   border-collapse: collapse;
-  margin-top: 10px;
   background: rgba(10, 10, 10, 0.4);
   border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 8px;
   overflow: hidden;
 }
 
-#strategies-section th,
-#strategies-section td {
+.players-table th,
+.players-table td {
   padding: 10px 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   white-space: nowrap;
+  text-align: left;
 }
 
-#strategies-section th {
+.players-table th {
   color: #00ffff;
   text-transform: uppercase;
   font-size: 13px;
   border-bottom: 1px solid rgba(0, 255, 255, 0.3);
 }
 
-#strategies-section td {
+.players-table td {
   color: #fff;
   font-size: 14px;
+  vertical-align: middle;
 }
 
-#strategies-section tr:nth-child(even) {
+.players-table tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.03);
 }
 
-#strategies-section tr:hover {
+.players-table tr:hover {
   background: rgba(0, 255, 255, 0.08);
   transition: 0.2s;
 }
 
-/* 💡 špeciálne stĺpce */
 .player-name {
   font-weight: 600;
   color: #e8f9ff;
@@ -2342,25 +2165,34 @@ nav button:hover::after {
   font-weight: 500;
 }
 
-.country-cell {
-  text-align: center;
-  font-size: 18px;
+.country-cell img {
+  width: 24px;
+  height: 18px;
+  border-radius: 3px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
-/* 📱 Mobilná optimalizácia */
+/* 📱 Mobilná verzia */
 @media (max-width: 768px) {
-  #strategies-section table {
+  .players-table {
     font-size: 13px;
-    min-width: 400px;
+    min-width: 480px;
   }
 
-  #strategies-section th,
-  #strategies-section td {
+  .players-table th,
+  .players-table td {
     padding: 8px 6px;
   }
 
-  .country-cell {
-    font-size: 16px;
+  .player-name,
+  .team-cell {
+    white-space: nowrap;
+  }
+
+  .country-cell img {
+    width: 20px;
+    height: 15px;
   }
 }
 
