@@ -286,7 +286,7 @@ async function displayMantingal() {
 
     // Info o spracovaní
     let html = `
-      <h2>Mantingal stratégia</h2>
+      <h2>Martingale stratégia</h2>
       <p><b>Dátum:</b> ${dateChecked}</p>
       <p><b>Počet zápasov:</b> ${totalGames}</p>
       <p><b>Počet strelcov:</b> ${scorers}</p>
