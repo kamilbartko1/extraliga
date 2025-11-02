@@ -374,29 +374,19 @@ async function displayStrategies() {
       <p>Zobrazených prvých 100 hráčov:</p>
     `;
 
+    // === Funkcia: kód krajiny -> vlajka ===
+    const flag = (code) => {
+      if (!code) return "🏒";
+      const cc = code.trim().toUpperCase();
+      // premení napr. "US" -> 🇺🇸 pomocou Unicode region indicators
+      return cc.replace(/./g, (c) =>
+        String.fromCodePoint(127397 + c.charCodeAt(0))
+      );
+    };
+
     // === Vytvorenie tabuľky ===
     const table = document.createElement("table");
     table.className = "players-table";
-
-    // funkcia na emoji vlajku podľa country kódu
-    const flag = (code) => {
-      const flags = {
-        CAN: "🇨🇦",
-        USA: "🇺🇸",
-        SWE: "🇸🇪",
-        FIN: "🇫🇮",
-        CZE: "🇨🇿",
-        SVK: "🇸🇰",
-        RUS: "🇷🇺",
-        CHE: "🇨🇭",
-        GER: "🇩🇪",
-        DNK: "🇩🇰",
-        NOR: "🇳🇴",
-        LVA: "🇱🇻",
-        AUT: "🇦🇹",
-      };
-      return flags[code] || "🏒";
-    };
 
     table.innerHTML = `
       <thead>
