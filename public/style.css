@@ -2572,62 +2572,103 @@ nav button:hover::after {
   }
 }
 
-/* === Úprava hlavičky v sekcii Tipovacie stratégie === */
+/* === 🔹 Databáza hráčov NHL (sekcia stratégie) === */
+#strategies-section {
+  color: #eaeaea;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
 #strategies-section h2 {
   text-align: center;
-  margin-bottom: 1rem;
+  font-size: 24px;
+  color: #00ffff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+  margin-bottom: 10px;
 }
 
 #strategies-section p {
-  display: block;
+  text-align: center;
+  color: #bbb;
+  margin: 4px 0 12px 0;
+}
+
+/* 🧩 Tabuľka */
+#strategies-section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background: rgba(10, 10, 10, 0.4);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#strategies-section th,
+#strategies-section td {
+  padding: 10px 8px;
   text-align: left;
-  width: 90%;
-  max-width: 600px;
-  margin: 0.4rem auto;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.15);
-  font-size: 1rem;
-  color: #dffcff;
-  line-height: 1.4;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  white-space: nowrap;
 }
 
-#strategies-section p strong {
+#strategies-section th {
   color: #00ffff;
-  font-weight: 600;
+  font-weight: bold;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+  text-transform: uppercase;
 }
 
-#strategies-section p:last-of-type {
-  border-bottom: none;
+#strategies-section td {
+  color: #fff;
+  font-size: 13px;
 }
 
-/* Väčšie písmo pre desktop */
-@media (min-width: 1024px) {
-  #strategies-section p {
-    font-size: 1.05rem;
-    margin-left: 3rem;
-  }
+#strategies-section tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
 }
 
-<style>
+#strategies-section tr:hover {
+  background: rgba(0, 255, 255, 0.08);
+  transition: background 0.2s ease-in-out;
+}
+
+/* 📱 Responzívne zobrazenie (mobil, do 768px) */
+@media (max-width: 768px) {
   #strategies-section table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+    font-size: 12px;
   }
-  #strategies-section th, #strategies-section td {
-    border: 1px solid #888;
-    padding: 6px 10px;
-    text-align: left;
-  }
-  #strategies-section th {
-    background: #222;
-    color: #fff;
-  }
+
+  #strategies-section th,
   #strategies-section td {
-    background: #111;
-    color: #ddd;
+    padding: 8px 6px;
   }
-</style>
+
+  #strategies-section h2 {
+    font-size: 20px;
+  }
+
+  #strategies-section p {
+    font-size: 13px;
+  }
+}
+
+/* 🧭 Mobil – horizontálny scroll pre tabuľku (ak je potrebné) */
+@media (max-width: 500px) {
+  #strategies-section {
+    overflow-x: auto;
+  }
+
+  #strategies-section table {
+    display: block;
+    min-width: 400px;
+  }
+}
+
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
