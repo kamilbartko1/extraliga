@@ -9,6 +9,7 @@
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
 /* 🌍 pridany riadok */
 /* 🌍 Globálny font a farby */
@@ -2153,24 +2154,24 @@ nav button:hover::after {
   }
 }
 
-/* === DÁTUM NAD ZÁPASMI – rovnaký štýl ako "Tipuj NHL ako profík" === */
+/* === DÁTUM NAD ZÁPASMI – rovnaký ako nápis "Tipuj NHL ako profík" === */
 .date-header {
   font-family: "Permanent Marker", cursive !important;
-  font-size: clamp(20px, 2.5vw, 26px);
-  color: #ffd400; /* rovnaká žltá ako hlavný nápis */
+  font-size: clamp(20px, 2.5vw, 28px);
+  color: #ffd400; /* rovnaká žltá */
   text-align: center;
   padding: 10px 0 6px;
-  text-shadow: 0 2px 3px rgba(0,0,0,0.6), 0 0 15px rgba(255,215,0,0.6);
   background: none !important;
   border: none !important;
-  letter-spacing: 0.5px;
-  font-weight: 400;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 3px rgba(0,0,0,0.5), 0 0 18px rgba(255,215,0,0.6);
+  transform: none !important; /* žiadne naklonenie */
 }
 
 /* 📱 Mobilné zobrazenie */
 @media (max-width: 768px) {
   .date-header {
-    font-size: 18px;
+    font-size: 20px;
     padding: 8px 0 4px;
   }
 }
