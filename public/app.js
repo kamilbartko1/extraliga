@@ -470,33 +470,30 @@ async function displayPredictions() {
 
 // === Štart ===
 window.addEventListener("DOMContentLoaded", () => {
-  // ✅ Hlavné časti načítame hneď
-  fetchMatches();
+  // ✅ Hlavné sekcie sa načítajú hneď po štarte
+  fetchMatches().then(() => {
+    displayTeamRatings();
+    displayPlayerRatings();
+    displayMantingal();
+  });
+
   displayPredictions();
-  displayMantingal();
 
-  // 🧠 Po kliknutí na „Tipovacie stratégie“ načítaj databázu hráčov
+  // 🧩 Tipovacie stratégie – až po kliknutí
   const strategyBtn = document.querySelector("button[onclick*='strategies-section']");
-  const strategySection = document.getElementById("strategies-section");
-
-  if (strategyBtn && strategySection) {
-    strategyBtn.addEventListener("click", () => {
-      console.log("🧠 Klikol si na sekciu Tipovacie stratégie – načítavam hráčov...");
-      // zobraz sekciu (ak je skrytá)
-      strategySection.style.display = "block";
-      // načítaj dáta hráčov z /api/strategies
-      displayStrategies();
+  if (strategyBtn) {
+    strategyBtn.addEventListener("click", async () => {
+      console.log("🧠 Načítavam databázu hráčov...");
+      await displayStrategies();
     });
   }
 
-  // 📊 Po kliknutí na „Predikcie“ znova načítaj kurzy
+  // 🧭 Predikcie – opätovné načítanie po kliknutí
   const predBtn = document.querySelector("button[onclick*='predictions-section']");
-  if (predBtn) predBtn.addEventListener("click", displayPredictions);
-
-  // 🧩 Ak používateľ prišiel priamo s hashom #strategies, načítaj hneď
-  if (window.location.hash.includes("strategies")) {
-    displayStrategies();
+  if (predBtn) {
+    predBtn.addEventListener("click", displayPredictions);
   }
 });
+
 
 
