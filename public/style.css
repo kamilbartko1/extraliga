@@ -2608,6 +2608,27 @@ nav button:hover::after {
   }
 }
 
+<style>
+  #strategies-section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  #strategies-section th, #strategies-section td {
+    border: 1px solid #888;
+    padding: 6px 10px;
+    text-align: left;
+  }
+  #strategies-section th {
+    background: #222;
+    color: #fff;
+  }
+  #strategies-section td {
+    background: #111;
+    color: #ddd;
+  }
+</style>
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
