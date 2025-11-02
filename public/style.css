@@ -2153,29 +2153,49 @@ nav button:hover::after {
   }
 }
 
-/* === DÁTUM NAD ZÁPASMI – rovnaký ako nápis "Tipuj NHL ako profík!" === */
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
-
+/* === DÁTUM NAD ZÁPASMI – rovnaký font + žlté ozdobné čiary nad aj pod === */
 .date-header {
   font-family: "Permanent Marker", cursive !important;
   font-size: clamp(20px, 2.5vw, 28px);
-  color: #ffd400 !important; /* rovnaká žltá ako nadpis */
+  color: #ffd400 !important;
   text-align: center;
-  padding: 10px 0 6px;
-  background: none !important;
-  border: none !important;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5),
-               0 0 18px rgba(255, 215, 0, 0.7),
-               0 0 30px rgba(255, 215, 0, 0.4);
-  transform: none !important;
+  padding: 6px 0;
+  position: relative;
+  text-shadow: 0 2px 3px rgba(0,0,0,0.5),
+               0 0 12px rgba(255,215,0,0.6),
+               0 0 25px rgba(255,215,0,0.4);
 }
 
-/* 📱 Mobilné zobrazenie */
+/* tenké ozdobné čiary nad a pod dátumom */
+.date-header::before,
+.date-header::after {
+  content: "";
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  height: 1.5px;
+  background: linear-gradient(90deg, rgba(255,215,0,0.9) 0%, rgba(255,215,0,0.5) 100%);
+  box-shadow: 0 0 6px rgba(255,215,0,0.6);
+}
+
+.date-header::before {
+  top: 0;
+}
+
+.date-header::after {
+  bottom: 0;
+}
+
+/* 📱 Mobilná verzia */
 @media (max-width: 768px) {
   .date-header {
     font-size: 22px;
-    padding: 8px 0 4px;
+    padding: 5px 0;
+  }
+  .date-header::before,
+  .date-header::after {
+    left: 10%;
+    right: 10%;
   }
 }
 
