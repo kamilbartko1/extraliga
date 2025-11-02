@@ -468,30 +468,51 @@ async function displayPredictions() {
   }
 }
 
-// 🔁 Načítaj predikcie, keď sa otvorí sekcia
+// === Štart ===
+window.addEventListener("DOMContentLoaded", () => {
+  // načítaj hlavnú časť – výsledky, ratingy, mantingal
+  fetchMatches();
+  displayPredictions();
+  displayMantingal();
+});
+
+// 🔁 Načítaj predikcie, keď sa otvorí sekcia Predikcie
 document
   .querySelector("button[onclick*='predictions-section']")
   ?.addEventListener("click", displayPredictions);
 
-// === Štart ===
-window.addEventListener("DOMContentLoaded", () => {
-  fetchMatches();
-  displayPredictions(); // 🔹 pridaj túto funkciu
-  displayStrategies();
-  displayMantingal(); 
+// 🔁 Načítaj databázu hráčov, keď sa otvorí sekcia Tipovacie stratégie
+document
+  .querySelector("button[onclick*='strategies-section']")
+  ?.addEventListener("click", () => {
+    console.log("🧠 Klikol si na sekciu Tipovacie stratégie – načítavam hráčov...");
+    const strategySection = document.getElementById("strategies-section");
+    if (strategySection) {
+      strategySection.style.display = "block"; // zobraz sekciu
+    }
+    displayStrategies(); // načítaj tabuľku hráčov
+  });
+
+// === 💡 Záloha: ak by používateľ prišiel priamo na stránku, zobrazíme aj tak databázu
+window.addEventListener("load", () => {
+  const hash = window.location.hash || "";
+  if (hash.includes("strategies")) {
+    displayStrategies();
+  }
 });
 
-// === 💡 Aktivácia sekcie Tipovacie stratégie ===
+// === 💡 Oprava zobrazenia Tipovacích stratégií (istota pri DOM načítaní)
 window.addEventListener("DOMContentLoaded", () => {
-  // zobrazíme stratégie len keď sa sekcia otvorí
   const strategyBtn = document.querySelector("button[onclick*='strategies-section']");
   const strategySection = document.getElementById("strategies-section");
 
   if (strategyBtn && strategySection) {
     strategyBtn.addEventListener("click", () => {
-      console.log("🧠 Klik na Tipovacie stratégie – spúšťam displayStrategies()");
-      strategySection.style.display = "block"; // odkry sekciu
-      displayStrategies(); // načítaj hráčov
+      console.log("🧠 Klikol si na sekciu Tipovacie stratégie – načítavam hráčov...");
+      strategySection.style.display = "block"; // odskry sekciu
+      displayStrategies(); // spusti načítanie hráčov
     });
   }
 });
+
+
