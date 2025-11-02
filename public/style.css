@@ -2167,54 +2167,24 @@ nav button:hover::after {
   text-transform: uppercase;
 }
 
-/* 🟨 Animované žlté čiary (horná aj dolná) */
-#matches tbody tr td[colspan="4"] b::before,
-#matches tbody tr td[colspan="4"] b::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  width: 0%;
-  height: 3px;
-  background: linear-gradient(to right, #ffd400 0%, #ffd400 100%);
-  border-radius: 2px;
-  animation: growLine 0.4s ease-out forwards;
-}
-
-/* horná čiara */
-#matches tbody tr td[colspan="4"] b::before {
-  top: 0;
-}
-
-/* dolná čiara */
-#matches tbody tr td[colspan="4"] b::after {
-  bottom: 0;
-}
-
-/* ✨ Animácia – vyrastie zľava doprava */
-@keyframes growLine {
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-.date-header td {
-  font-family: "Permanent Marker", cursive;
-  color: #ffd400;
+/* === DÁTUMY NAD ZÁPASM === */
+.date-header {
+  font-family: "Permanent Marker", cursive !important;
   font-size: clamp(20px, 2.5vw, 28px);
+  color: #ffd400;
   text-align: center;
-  letter-spacing: 1px;
   padding: 14px 0 10px;
+  letter-spacing: 1px;
+  text-transform: none;
   background: transparent;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.6), 0 0 15px rgba(255,215,0,0.4);
+  border: none !important;
+  text-shadow: 0 2px 3px rgba(0,0,0,0.6), 0 0 15px rgba(255,215,0,0.4);
   transform: rotate(-2deg);
-  border: none;
   position: relative;
 }
 
-.date-header td::after {
+/* tenká zlatá čiara pod dátumom */
+.date-header::after {
   content: "";
   display: block;
   width: 80%;
@@ -2222,7 +2192,16 @@ nav button:hover::after {
   margin: 8px auto 0;
   background: linear-gradient(90deg, #ffd400 0%, #fff176 50%, #ffd400 100%);
   border-radius: 2px;
-  box-shadow: 0 0 6px rgba(255,215,0,0.5);
+  box-shadow: 0 0 6px rgba(255,215,0,0.6);
+}
+
+/* menšie verzie pre mobil */
+@media (max-width: 768px) {
+  .date-header {
+    font-size: 20px;
+    transform: rotate(-1deg);
+    padding: 10px 0 8px;
+  }
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
