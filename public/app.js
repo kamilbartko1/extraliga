@@ -470,16 +470,30 @@ async function displayPredictions() {
 
 // === Štart ===
 window.addEventListener("DOMContentLoaded", () => {
-  // ✅ Hlavné sekcie sa načítajú hneď po štarte
-  fetchMatches().then(() => {
-    displayTeamRatings();
-    displayPlayerRatings();
-    displayMantingal();
-  });
+  console.log("🚀 NHLPRO frontend spustený");
 
-  displayPredictions();
+  // 🏒 Výsledky + tímové ratingy hneď po načítaní
+  fetchMatches();
 
-  // 🧩 Tipovacie stratégie – až po kliknutí
+  // 🧩 Player Ratings – až po kliknutí
+  const playersBtn = document.querySelector("button[onclick*='players-section']");
+  if (playersBtn) {
+    playersBtn.addEventListener("click", async () => {
+      console.log("👤 Načítavam rating hráčov...");
+      await displayPlayerRatings();
+    });
+  }
+
+  // 💰 Mantingal – až po kliknutí
+  const mantingalBtn = document.querySelector("button[onclick*='mantingal-container']");
+  if (mantingalBtn) {
+    mantingalBtn.addEventListener("click", async () => {
+      console.log("🎯 Načítavam Mantingal dáta...");
+      await displayMantingal();
+    });
+  }
+
+  // 🧠 Tipovacie stratégie – až po kliknutí
   const strategyBtn = document.querySelector("button[onclick*='strategies-section']");
   if (strategyBtn) {
     strategyBtn.addEventListener("click", async () => {
@@ -488,11 +502,17 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 🧭 Predikcie – opätovné načítanie po kliknutí
+  // 📊 Predikcie – až po kliknutí
   const predBtn = document.querySelector("button[onclick*='predictions-section']");
   if (predBtn) {
-    predBtn.addEventListener("click", displayPredictions);
+    predBtn.addEventListener("click", async () => {
+      console.log("📈 Načítavam kurzy bookmakerov...");
+      await displayPredictions();
+    });
   }
+
+  // 🔹 Predvolené zobrazenie
+  showSection("matches-section");
 });
 
 
