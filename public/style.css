@@ -2182,493 +2182,90 @@ nav button:hover::after {
   }
 }
 
-/* ======= TIPOVACIE STRATÉGIE – FINÁLNA ÚPRAVA ======= */
-@media (max-width: 768px) {
-  #strategies-section table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: inherit;
-  }
-
-  #strategies-section th,
-  #strategies-section td {
-    padding: 6px 4px;
-    font-size: 14px; /* rovnaké ako pri výsledkoch */
-    line-height: 1.4;
-    vertical-align: middle;
-    text-align: center;
-    white-space: nowrap;
-  }
-
-  /* Stĺpce */
-  #strategies-section th:nth-child(1),
-  #strategies-section td:nth-child(1) {
-    width: 23%;
-    text-align: left;
-    color: #6fe2ff;
-  }
-
-  #strategies-section th:nth-child(2),
-  #strategies-section td:nth-child(2) {
-    width: 35%;
-    text-align: left;
-    white-space: normal;
-    word-break: keep-all;
-    overflow-wrap: break-word;
-    font-weight: 500;
-  }
-
-  #strategies-section th:nth-child(3),
-  #strategies-section td:nth-child(3) {
-    width: 12%;
-  }
-
-  #strategies-section th:nth-child(4),
-  #strategies-section td:nth-child(4) {
-    width: 15%;
-  }
-
-  #strategies-section th:nth-child(5),
-  #strategies-section td:nth-child(5) {
-    width: 15%;
-    text-align: right;
-    font-weight: 600;
-  }
-
-  /* Hlavička – nech sa nič neprekrýva */
-  #strategies-section th {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    color: #2bd0ff;
-    padding: 8px 4px;
-    white-space: nowrap;
-  }
-
-  /* Zarovnanie a rozostupy riadkov */
-  #strategies-section tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  }
-
-  #strategies-section td {
-    padding-top: 8px;
-    padding-bottom: 8px;
-  }
-
-  /* Farby výhier/prehier */
-  #strategies-section td:last-child {
-    color: #fff;
-  }
-  #strategies-section td:last-child:has([style*="red"]) {
-    color: #ff5050;
-  }
-  #strategies-section td:last-child:has([style*="green"]) {
-    color: #00ff88;
-  }
-
-  /* Ak je obrazovka veľmi úzka (napr. iPhone SE) */
-  @media (max-width: 380px) {
-    #strategies-section th,
-    #strategies-section td {
-      font-size: 12.5px;
-      padding: 5px 3px;
-    }
-  }
-}
-
-/* === TIPOVACIE STRATÉGIE (opravené zarovnanie a medzery) === */
-
-#strategies-section table {
+/* === 🎨 Moderná tabuľka hráčov (Strategies) === */
+.players-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
-  word-wrap: break-word;
-  font-size: 14px;
+  margin-top: 20px;
+  background: rgba(15, 15, 20, 0.6);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
 }
 
-#strategies-section th,
-#strategies-section td {
-  padding: 8px 6px;
-  text-align: center;
-  white-space: nowrap;
-}
-
-#strategies-section th {
-  color: #18ffff;
-  text-shadow: 0 0 4px #0ff;
-  font-weight: 600;
-  border-bottom: 1px solid rgba(0,255,255,0.2);
-}
-
-/* menší tieň nadpisov, lepšie čitateľné */
-#strategies-section th {
-  text-shadow: 0 0 3px rgba(0,255,255,0.6);
-}
-
-/* názvy zápasov – aby sa celé zmestili */
-#strategies-section td:nth-child(2) {
-  text-align: left;
-  padding-left: 10px;
-  white-space: normal;
-  line-height: 1.2;
-}
-
-/* dátum – zúžený stĺpec */
-#strategies-section td:first-child,
-#strategies-section th:first-child {
-  width: 85px;
-}
-
-/* 2+ (góly) stĺpec zúžený, bez zalomenia */
-#strategies-section th:nth-child(3),
-#strategies-section td:nth-child(3) {
-  width: 45px;
-}
-
-/* výsledok a zisk */
-#strategies-section th:nth-child(4),
-#strategies-section th:nth-child(5),
-#strategies-section td:nth-child(4),
-#strategies-section td:nth-child(5) {
-  width: 70px;
-}
-
-/* farby výhier a prehier */
-#strategies-section td:last-child {
-  font-weight: 600;
-}
-#strategies-section td:last-child:has(span.win) {
-  color: #00ff99;
-}
-#strategies-section td:last-child:has(span.loss) {
-  color: #ff4444;
-}
-
-/* medzery medzi riadkami pre lepší prehľad */
-#strategies-section tr {
-  border-bottom: 1px solid rgba(0,255,255,0.07);
-}
-
-/* === RESPONSÍVNE PRE MOBILY === */
-@media (max-width: 768px) {
-  #strategies-section table {
-    font-size: 13px;
-  }
-  #strategies-section th,
-  #strategies-section td {
-    padding: 6px 4px;
-  }
-  #strategies-section td:nth-child(2) {
-    font-size: 13px;
-  }
-}
-
-/* === NADPIS "TIPOVACIE STRATÉGIE" === */
-#strategies-section h2 {
-  font-size: 20px;
-  text-align: center;
-  text-shadow: 0 0 6px #00e6ff;
-  margin-bottom: 10px;
-}
-
-/* === ČISTEJŠÍ TEXT PRE ZÁPASY === */
-#strategies-section td:nth-child(2) {
-  font-family: "Poppins", "Segoe UI", sans-serif;
-  font-weight: 500;
-  color: #e6faff;
-  text-shadow: 0 0 2px rgba(0, 255, 255, 0.4);
-  white-space: normal;
-  line-height: 1.2;
-  letter-spacing: 0.3px;
-}
-
-/* rovnaký font pre nadpisy stĺpcov */
-#strategies-section th {
-  font-family: "Poppins", "Segoe UI", sans-serif;
-  font-weight: 600;
-  text-shadow: 0 0 3px rgba(0, 255, 255, 0.5);
-}
-
-/* celé tabuľky – menej rozmazaný text */
-#strategies-section td,
-#strategies-section th {
-  color: #dff9ff;
-  text-shadow: 0 0 2px rgba(0, 255, 255, 0.3);
-}
-
-/* nadpis TIPOVACIE STRATÉGIE – jednotný vzhľad */
-#strategies-section h2 {
-  font-family: "Poppins", "Segoe UI", sans-serif;
-  color: #00e6ff;
-  text-shadow: 0 0 5px rgba(0, 255, 255, 0.6);
+.players-table thead {
+  background: rgba(0, 255, 255, 0.12);
+  color: #00ffff;
+  text-transform: uppercase;
+  font-size: 13px;
   letter-spacing: 0.5px;
 }
 
-/* === ZJEDNOTENÝ FONT A KONTRAST PRE STRATÉGIE === */
-#strategies-section {
-  font-family: "Poppins", "Segoe UI", sans-serif;
+.players-table th,
+.players-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  text-align: left;
 }
 
-#strategies-section h2 {
-  color: #00e6ff;
-  text-shadow: 0 0 4px rgba(0, 255, 255, 0.4);
+.players-table td {
+  color: #f0f0f0;
+  font-size: 14px;
+}
+
+.players-table .player-name {
   font-weight: 600;
-  letter-spacing: 0.4px;
+  color: #fff;
+  width: 30%;
+  text-align: left;
 }
 
-#strategies-section table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-#strategies-section th {
-  font-size: 13px;
-  font-weight: 600;
-  color: #5ff6ff;
-  text-shadow: 0 0 2px rgba(0, 255, 255, 0.3);
-  padding: 6px 4px;
-  text-align: center;
-}
-
-#strategies-section td {
-  font-size: 13px;
+.players-table .team-cell {
+  color: #00ffff;
   font-weight: 500;
-  color: #e8fbff;
-  text-shadow: none;
-  padding: 6px 4px;
-  text-align: center;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.08);
-}
-
-/* názvy zápasov vľavo, aby sa čítali prirodzene */
-#strategies-section td:nth-child(2) {
-  text-align: left;
-}
-
-/* lepšie rozostupy riadkov */
-#strategies-section tr {
-  line-height: 1.25;
-}
-
-/* vizuálny oddiel medzi riadkami */
-#strategies-section tr:not(:last-child) {
-  border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-}
-
-/* menší tieň a viac priestoru medzi stĺpcami */
-#strategies-section td,
-#strategies-section th {
-  letter-spacing: 0.2px;
-}
-
-/* === VYLEPŠENÝ DESKTOP ŠTÝL PRE TABUĽKU STRATÉGIÍ === */
-@media (min-width: 1024px) {
-  #strategies-section {
-    font-family: "Poppins", "Segoe UI", sans-serif;
-    text-align: center;
-  }
-
-  #strategies-section h2 {
-    font-size: 1.6rem;
-    color: #00eaff;
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
-    margin-bottom: 1.5rem;
-  }
-
-  #strategies-section table {
-    width: 95%;
-    margin: 0 auto;
-    border-collapse: collapse;
-    border-spacing: 0;
-  }
-
-  #strategies-section th {
-    font-size: 15px;
-    font-weight: 600;
-    color: #4fefff;
-    text-shadow: 0 0 3px rgba(0, 255, 255, 0.3);
-    padding: 12px 10px;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-  }
-
-  #strategies-section td {
-    font-size: 15px;
-    color: #e7faff;
-    text-shadow: none;
-    padding: 12px 10px;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.08);
-  }
-
-  #strategies-section td:nth-child(2) {
-    text-align: center;
-  }
-
-  #strategies-section tr {
-    line-height: 1.6;
-  }
-
-  #strategies-section tr:nth-child(even) {
-    background-color: rgba(0, 255, 255, 0.02);
-  }
-
-  #strategies-section tr:hover {
-    background-color: rgba(0, 255, 255, 0.05);
-    transition: 0.2s ease;
-  }
-
-  /* viac priestoru medzi tabuľkou a textom hore */
-  #strategies-section p {
-    margin-bottom: 1.2rem;
-  }
-}
-
-/* === ÚPRAVA BLOKU ŠTATISTÍK V TIPOVACÍCH STRATÉGIÁCH === */
-@media (min-width: 1024px) {
-  #strategies-section p {
-    text-align: left;
-    width: fit-content;
-    margin: 0.4rem auto 0.4rem 3rem; /* posunie text doľava */
-    padding-bottom: 0.3rem;
-    border-bottom: 1px solid rgba(0, 255, 255, 0.15);
-    font-size: 15px;
-    color: #dffcff;
-    line-height: 1.4;
-  }
-
-  #strategies-section p:last-of-type {
-    border-bottom: none;
-  }
-}
-
-/* === BLOK ŠTATISTÍK V TIPOVACÍCH STRATÉGIÁCH – POD SEBOU === */
-#strategies-section p {
-  display: block;
-  text-align: left;
-  margin: 0.5rem auto;
-  padding: 0.3rem 0;
-  width: 90%;
-  max-width: 600px;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.15);
-  font-size: 1rem;
-  color: #dffcff;
-  line-height: 1.5;
-}
-
-#strategies-section p strong {
-  color: #00ffff;
-  font-weight: 600;
-}
-
-#strategies-section p:last-of-type {
-  border-bottom: none;
-}
-
-/* Desktop vzhľad */
-@media (min-width: 1024px) {
-  #strategies-section p {
-    margin-left: 3rem;
-    font-size: 1.05rem;
-  }
-}
-
-/* === 🔹 Databáza hráčov NHL (sekcia stratégie) === */
-#strategies-section {
-  color: #eaeaea;
-  background: rgba(0, 0, 0, 0.55);
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-#strategies-section h2 {
-  text-align: center;
-  font-size: 24px;
-  color: #00ffff;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
-  margin-bottom: 10px;
-}
-
-#strategies-section p {
-  text-align: center;
-  color: #bbb;
-  margin: 4px 0 12px 0;
-}
-
-/* 🧩 Tabuľka */
-#strategies-section table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-  background: rgba(10, 10, 10, 0.4);
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-#strategies-section th,
-#strategies-section td {
-  padding: 10px 8px;
-  text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  width: 40%;
   white-space: nowrap;
 }
 
-#strategies-section th {
-  color: #00ffff;
-  font-weight: bold;
-  font-size: 14px;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-  text-transform: uppercase;
+.players-table .country-cell {
+  width: 20%;
+  text-align: left;
 }
 
-#strategies-section td {
-  color: #fff;
-  font-size: 13px;
-}
-
-#strategies-section tr:nth-child(even) {
+.players-table tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.03);
 }
 
-#strategies-section tr:hover {
+.players-table tr:hover {
   background: rgba(0, 255, 255, 0.08);
   transition: background 0.2s ease-in-out;
 }
 
-/* 📱 Responzívne zobrazenie (mobil, do 768px) */
+/* 📱 Responzívny režim */
 @media (max-width: 768px) {
-  #strategies-section table {
+  .players-table th,
+  .players-table td {
     font-size: 12px;
-  }
-
-  #strategies-section th,
-  #strategies-section td {
     padding: 8px 6px;
   }
 
-  #strategies-section h2 {
-    font-size: 20px;
+  .players-table .team-cell,
+  .players-table .country-cell {
+    white-space: normal;
   }
 
-  #strategies-section p {
+  .players-table .player-name {
+    display: block;
     font-size: 13px;
   }
-}
 
-/* 🧭 Mobil – horizontálny scroll pre tabuľku (ak je potrebné) */
-@media (max-width: 500px) {
-  #strategies-section {
-    overflow-x: auto;
-  }
-
-  #strategies-section table {
+  .players-table {
     display: block;
+    overflow-x: auto;
     min-width: 400px;
   }
 }
-
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
