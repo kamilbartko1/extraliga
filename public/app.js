@@ -473,11 +473,6 @@ document
   .querySelector("button[onclick*='predictions-section']")
   ?.addEventListener("click", displayPredictions);
 
-  // 🔁 Načítaj databázu hráčov, keď sa otvorí sekcia Tipovacie stratégie
-document
-  .querySelector("button[onclick*='strategies-section']")
-  ?.addEventListener("click", displayStrategies);
-
 // === Štart ===
 window.addEventListener("DOMContentLoaded", () => {
   fetchMatches();
