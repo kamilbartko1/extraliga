@@ -342,21 +342,19 @@ async function displayMantingal() {
   }
 }
 
-// === Tipovacie stratégie ===
+// === Tipovacie stratégie (zobrazenie databázy hráčov) ===
 async function displayStrategies() {
   const wrap = document.getElementById("strategies-section");
   if (!wrap) return;
 
   wrap.innerHTML = `
-    <h2>Tipovacie stratégie</h2>
-    <p>💡 Test: vsádzame 10 € na to, že v zápase niekto dá aspoň 2 góly. Kurz = 1.9.</p>
-    <p>Prebieha výpočet ziskovosti...</p>
+    <h2>Databáza hráčov NHL</h2>
+    <p>Načítavam údaje z lokálnej databázy...</p>
   `;
 
   try {
     const resp = await fetch("/api/strategies", { cache: "no-store" });
 
-    // bezpečný parse — ak by server vrátil HTML chybu
     let data;
     try {
       data = await resp.json();
@@ -365,53 +363,50 @@ async function displayStrategies() {
       throw new Error("Očakával som JSON, prišlo: " + txt.slice(0, 120));
     }
 
-    if (!data.ok) throw new Error(data.error || "Chyba výpočtu");
+    if (!data.ok || !Array.isArray(data.players)) {
+      throw new Error(data.error || "Nepodarilo sa načítať databázu hráčov");
+    }
 
-    const { totalBet, totalProfit, results } = data;
-
-    // Header so sumárom
+    // === Zobrazenie sumára ===
     wrap.innerHTML = `
-      <h2>Tipovacie stratégie</h2>
-      <p><b>Model:</b> 10 € na „hráč dá 2+ góly“ (kurz 1.9)</p>
-      <p><b>Počet zápasov:</b> ${results.length} </p>
-      <p><b>Vsadené spolu:</b> ${Number(totalBet).toFixed(2)} € </p>
-      <p><b>Výsledok:</b> <span style="color:${Number(totalProfit) >= 0 ? "limegreen" : "red"}">
-           ${Number(totalProfit).toFixed(2)} €
-         </span>
-      </p>
+      <h2>Databáza hráčov NHL</h2>
+      <p>Počet hráčov v databáze: <b>${data.count}</b></p>
+      <p>Zobrazených prvých 100 hráčov:</p>
     `;
 
-    // Tabuľka výsledkov
+    // === Vytvorenie tabuľky ===
     const table = document.createElement("table");
     table.innerHTML = `
       <thead>
         <tr>
-          <th>Dátum</th>
-          <th>Zápas</th>
-          <th>2+</th>
-          <th>Výsl.</th>
-          <th>Zisk</th>
+          <th>#</th>
+          <th>Meno</th>
+          <th>Tím</th>
+          <th>Krajina</th>
         </tr>
       </thead>
       <tbody>
-        ${
-          results.map(r => `
+        ${data.players
+          .slice(0, 100) // obmedzíme výpis na prvých 100 hráčov
+          .map(
+            (p, i) => `
             <tr>
-              <td>${r.date}</td>
-              <td>${r.home} – ${r.away}</td>
-              <td>${r.twoGoals}</td>
-              <td>${r.result}</td>
-              <td style="color:${Number(r.profit) >= 0 ? "limegreen" : "red"}">
-                ${Number(r.profit).toFixed(2)}
-              </td>
-            </tr>
-          `).join("")
-        }
+              <td>${i + 1}</td>
+              <td>${p.name}</td>
+              <td>${p.team}</td>
+              <td>${p.country}</td>
+            </tr>`
+          )
+          .join("")}
       </tbody>
     `;
+
     wrap.appendChild(table);
   } catch (err) {
-    wrap.innerHTML += `<p>❌ Chyba: ${err.message}</p>`;
+    wrap.innerHTML = `
+      <h2>Databáza hráčov NHL</h2>
+      <p style="color:red;">❌ Chyba: ${err.message}</p>
+    `;
   }
 }
 
