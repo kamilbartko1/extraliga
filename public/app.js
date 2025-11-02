@@ -367,24 +367,24 @@ async function displayStrategies() {
       throw new Error(data.error || "Nepodarilo sa načítať databázu hráčov");
     }
 
-    // === Zobrazenie sumára ===
+    // === SUMÁR ===
     wrap.innerHTML = `
       <h2>Databáza hráčov NHL</h2>
       <p>Počet hráčov v databáze: <b>${data.count}</b></p>
       <p>Zobrazených prvých 100 hráčov:</p>
     `;
 
-    // === Funkcia: kód krajiny -> vlajka ===
+    // === Funkcia: vlajka podľa ISO kódu ===
     const flag = (code) => {
-      if (!code) return "🏒";
+      if (!code) return "";
       const cc = code.trim().toUpperCase();
-      // premení napr. "US" -> 🇺🇸 pomocou Unicode region indicators
+      // Emoji vlajka (US -> 🇺🇸)
       return cc.replace(/./g, (c) =>
         String.fromCodePoint(127397 + c.charCodeAt(0))
       );
     };
 
-    // === Vytvorenie tabuľky ===
+    // === Tabuľka hráčov ===
     const table = document.createElement("table");
     table.className = "players-table";
 
@@ -406,7 +406,7 @@ async function displayStrategies() {
                 <td>${i + 1}</td>
                 <td class="player-name">${p.name}</td>
                 <td class="team-cell">${p.team}</td>
-                <td class="country-cell">${flag(p.country)} ${p.country}</td>
+                <td class="country-cell">${flag(p.country)}</td>
               </tr>
             `
           )
