@@ -2153,38 +2153,25 @@ nav button:hover::after {
   }
 }
 
-/* 🟡 Dátum medzi zápasmi – tyrkysový text + animované žlté čiary hore a dole */
-#matches tbody tr td[colspan="4"] b {
-  display: block;
-  position: relative;
-  text-align: center;
-  color: #00eaff; /* tyrkysový text */
-  font-weight: 700;
-  letter-spacing: 0.6px;
-  padding: 10px 0;
-  margin: 10px 0;
-  font-size: 1rem;
-  text-transform: uppercase;
-}
-
-/* === DÁTUM NAD ZÁPASM — ROVNAKÝ ŠTÝL AKO "TIPUJ NHL AKO PROFÍK" === */
+/* === DÁTUM NAD ZÁPASMI – rovnaký štýl ako "Tipuj NHL ako profík" === */
 .date-header {
   font-family: "Permanent Marker", cursive !important;
   font-size: clamp(20px, 2.5vw, 26px);
-  color: #ffd400; /* rovnaká žltá */
+  color: #ffd400; /* rovnaká žltá ako hlavný nápis */
   text-align: center;
   padding: 10px 0 6px;
-  text-shadow: 0 2px 3px rgba(0,0,0,0.5), 0 0 15px rgba(255,215,0,0.5);
-  background: transparent;
+  text-shadow: 0 2px 3px rgba(0,0,0,0.6), 0 0 15px rgba(255,215,0,0.6);
+  background: none !important;
   border: none !important;
   letter-spacing: 0.5px;
+  font-weight: 400;
 }
 
-/* mobil – mierne menší text, stále čitateľný */
+/* 📱 Mobilné zobrazenie */
 @media (max-width: 768px) {
   .date-header {
     font-size: 18px;
-    padding: 8px 0 5px;
+    padding: 8px 0 4px;
   }
 }
 
