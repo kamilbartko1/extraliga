@@ -2153,34 +2153,34 @@ nav button:hover::after {
   }
 }
 
-/* 🟡 Zlatá linka pod dátumom v tabuľke zápasov */
+/* 🟡 Zlatá čiara pod dátumom v tabuľke zápasov */
 #matches tbody tr td[colspan="4"] b {
   display: block;
   position: relative;
   text-align: center;
-  color: #ffd400;
-  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  color: #00eaff; /* zachovaná tyrkysová farba dátumu */
   font-weight: 700;
   letter-spacing: 0.5px;
-  background: rgba(255, 215, 0, 0.05);
-  border-radius: 6px;
   padding: 6px 0;
   margin: 4px 0;
+  text-shadow: 0 0 6px rgba(0, 234, 255, 0.6);
 }
 
 #matches tbody tr td[colspan="4"] b::after {
   content: "";
   position: absolute;
-  bottom: -4px;
+  bottom: -3px;
   left: 0;
   width: 100%;
   height: 3px;
   background: linear-gradient(
     90deg,
     rgba(255, 215, 0, 0.9) 0%,
-    rgba(255, 215, 0, 0.4) 70%,
-    rgba(255, 215, 0, 0.1) 100%
+    rgba(255, 215, 0, 0.6) 40%,
+    rgba(255, 215, 0, 0.3) 70%,
+    rgba(255, 215, 0, 0.05) 100%
   );
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5); /* jemný neónový efekt */
   border-radius: 2px;
 }
 
