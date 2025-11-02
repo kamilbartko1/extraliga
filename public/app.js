@@ -348,55 +348,38 @@ async function displayStrategies() {
   if (!wrap) return;
 
   wrap.innerHTML = `
-    <h2>Databáza hráčov</h2>
-    <p>Načítavam údaje...</p>
+    <h2>Tipovacie stratégie</h2>
+    <p>💡 Test: vsádzame 10 € na to, že v zápase niekto dá aspoň 2 góly. Kurz = 1.9.</p>
+    <p>Prebieha výpočet ziskovosti...</p>
   `;
 
   try {
     const resp = await fetch("/api/strategies", { cache: "no-store" });
-    const data = await resp.json();
 
-    if (!data.ok || !Array.isArray(data.players)) {
-      wrap.innerHTML = "<p>❌ Nepodarilo sa načítať databázu hráčov.</p>";
-      return;
+    // bezpečný parse — ak by server vrátil HTML chybu
+    let data;
+    try {
+      data = await resp.json();
+    } catch {
+      const txt = await resp.text();
+      throw new Error("Očakával som JSON, prišlo: " + txt.slice(0, 120));
     }
 
-    // Vytvor tabuľku
-    const table = document.createElement("table");
-    table.innerHTML = `
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Meno</th>
-          <th>Tím</th>
-          <th>Krajina</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${data.players
-          .slice(0, 100) // obmedzíme len prvých 100 pre rýchlosť
-          .map(
-            (p, i) => `
-          <tr>
-            <td>${i + 1}</td>
-            <td>${p.name}</td>
-            <td>${p.team}</td>
-            <td>${p.country}</td>
-          </tr>
-        `
-          )
-          .join("")}
-      </tbody>
-    `;
+    if (!data.ok) throw new Error(data.error || "Chyba výpočtu");
+
+    const { totalBet, totalProfit, results } = data;
+
+    // Header so sumárom
     wrap.innerHTML = `
-      <h2>Databáza hráčov (${data.count})</h2>
-      <p>Zobrazených prvých 100 hráčov</p>
+      <h2>Tipovacie stratégie</h2>
+      <p><b>Model:</b> 10 € na „hráč dá 2+ góly“ (kurz 1.9)</p>
+      <p><b>Počet zápasov:</b> ${results.length} </p>
+      <p><b>Vsadené spolu:</b> ${Number(totalBet).toFixed(2)} € </p>
+      <p><b>Výsledok:</b> <span style="color:${Number(totalProfit) >= 0 ? "limegreen" : "red"}">
+           ${Number(totalProfit).toFixed(2)} €
+         </span>
+      </p>
     `;
-    wrap.appendChild(table);
-  } catch (err) {
-    wrap.innerHTML = `<p>❌ Chyba: ${err.message}</p>`;
-  }
-}
 
     // Tabuľka výsledkov
     const table = document.createElement("table");
