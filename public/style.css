@@ -2090,109 +2090,66 @@ nav button:hover::after {
   }
 }
 
-/* === Databáza hráčov NHL === */
-#strategies-section {
-  color: #eaeaea;
-  background: rgba(0, 0, 0, 0.55);
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  overflow-x: auto;
-}
-
-#strategies-section h2 {
-  text-align: center;
-  font-size: 24px;
-  color: #00ffff;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
-  margin-bottom: 10px;
-}
-
-#strategies-section p {
-  text-align: center;
-  color: #bbb;
-  margin: 4px 0 12px 0;
-}
-
 .players-table {
   width: 100%;
-  min-width: 500px;
   border-collapse: collapse;
-  background: rgba(10, 10, 10, 0.4);
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: 8px;
+  margin-top: 15px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  color: #e8f7ff;
+  background: rgba(0, 20, 30, 0.5);
+  border-radius: 10px;
   overflow: hidden;
 }
 
-.players-table th,
-.players-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  white-space: nowrap;
+.players-table th, .players-table td {
+  padding: 10px 8px;
   text-align: left;
-}
-
-.players-table th {
-  color: #00ffff;
-  text-transform: uppercase;
-  font-size: 13px;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-}
-
-.players-table td {
-  color: #fff;
-  font-size: 14px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
   vertical-align: middle;
 }
 
-.players-table tr:nth-child(even) {
-  background: rgba(255, 255, 255, 0.03);
+.players-table th {
+  background: rgba(0, 60, 80, 0.8);
+  color: #00ffff;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 13px;
 }
 
 .players-table tr:hover {
   background: rgba(0, 255, 255, 0.08);
-  transition: 0.2s;
 }
 
-.player-name {
-  font-weight: 600;
-  color: #e8f9ff;
-}
-
-.team-cell {
-  color: #00ffff;
-  font-weight: 500;
-}
-
-.country-cell img {
+.flag {
   width: 24px;
   height: 18px;
-  border-radius: 3px;
-  display: inline-block;
   vertical-align: middle;
+  margin-right: 5px;
+  border-radius: 3px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.3);
 }
 
-/* 📱 Mobilná verzia */
+/* 🔹 Mobilná verzia – tabuľka sa nezväčší mimo obrazovku */
 @media (max-width: 768px) {
   .players-table {
     font-size: 13px;
-    min-width: 480px;
   }
-
-  .players-table th,
-  .players-table td {
-    padding: 8px 6px;
+  .players-table th:nth-child(1),
+  .players-table td:nth-child(1) {
+    width: 30px;
   }
-
-  .player-name,
-  .team-cell {
-    white-space: nowrap;
+  .players-table th:nth-child(3),
+  .players-table td:nth-child(3) {
+    width: 120px;
   }
-
-  .country-cell img {
-    width: 20px;
-    height: 15px;
+  .players-table th:nth-child(4),
+  .players-table td:nth-child(4) {
+    width: 100px;
+  }
+  .players-table th:nth-child(2),
+  .players-table td:nth-child(2) {
+    white-space: normal;
   }
 }
 
