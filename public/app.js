@@ -473,14 +473,10 @@ document
   .querySelector("button[onclick*='predictions-section']")
   ?.addEventListener("click", displayPredictions);
 
- // === Zobrazenie sekcie Tipovacie stratégie po kliknutí ===
-document.querySelector("button[onclick*='strategies-section']")?.addEventListener("click", () => {
-  const section = document.getElementById("strategies-section");
-  if (section) {
-    section.style.display = "block"; // odskry sekciu
-    displayStrategies(); // načítaj údaje z /api/strategies
-  }
-});
+  // 🔁 Načítaj databázu hráčov, keď sa otvorí sekcia Tipovacie stratégie
+document
+  .querySelector("button[onclick*='strategies-section']")
+  ?.addEventListener("click", displayStrategies);
 
 // === Štart ===
 window.addEventListener("DOMContentLoaded", () => {
@@ -489,4 +485,3 @@ window.addEventListener("DOMContentLoaded", () => {
   displayStrategies();
   displayMantingal(); 
 });
-
