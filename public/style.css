@@ -2153,29 +2153,29 @@ nav button:hover::after {
   }
 }
 
-/* === DÁTUM NAD ZÁPASMI – rovnaký font + žlté ozdobné čiary nad aj pod === */
+/* === DÁTUM NAD ZÁPASMI – žlté písmo + čiary na plnú šírku === */
 .date-header {
   font-family: "Permanent Marker", cursive !important;
   font-size: clamp(20px, 2.5vw, 28px);
   color: #ffd400 !important;
   text-align: center;
-  padding: 6px 0;
+  padding: 8px 0;
   position: relative;
-  text-shadow: 0 2px 3px rgba(0,0,0,0.5),
-               0 0 12px rgba(255,215,0,0.6),
-               0 0 25px rgba(255,215,0,0.4);
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.6),
+               0 0 12px rgba(255, 215, 0, 0.6),
+               0 0 25px rgba(255, 215, 0, 0.4);
 }
 
-/* tenké ozdobné čiary nad a pod dátumom */
+/* --- žlté čiary nad aj pod dátumom na plnú šírku sekcie --- */
 .date-header::before,
 .date-header::after {
   content: "";
   position: absolute;
-  left: 15%;
-  right: 15%;
-  height: 1.5px;
-  background: linear-gradient(90deg, rgba(255,215,0,0.9) 0%, rgba(255,215,0,0.5) 100%);
-  box-shadow: 0 0 6px rgba(255,215,0,0.6);
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ffd400, #ffd400);
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
 }
 
 .date-header::before {
@@ -2190,12 +2190,11 @@ nav button:hover::after {
 @media (max-width: 768px) {
   .date-header {
     font-size: 22px;
-    padding: 5px 0;
+    padding: 6px 0;
   }
   .date-header::before,
   .date-header::after {
-    left: 10%;
-    right: 10%;
+    height: 1.5px;
   }
 }
 
