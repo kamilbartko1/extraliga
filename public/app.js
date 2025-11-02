@@ -366,14 +366,16 @@ async function displayStrategies() {
       <p>Zobrazených prvých 100 hráčov:</p>
     `;
 
-    // 🔹 Funkcia: vracia URL vlajky podľa ISO kódu krajiny
-    const flagUrl = (code) => {
-      if (!code) return "";
-      return `https://flagcdn.com/24x18/${code.toLowerCase()}.png`;
-    };
-
     const table = document.createElement("table");
     table.className = "players-table";
+
+    const getFlag = (code) => {
+      const c = String(code).trim().toUpperCase();
+      if (!c) return "";
+      // Používame oficiálne SVG vlajky z flagcdn
+      return `<img src="https://flagcdn.com/24x18/${c.slice(0, 2).toLowerCase()}.png" 
+               alt="${c}" title="${c}" class="flag">`;
+    };
 
     table.innerHTML = `
       <thead>
@@ -391,17 +393,14 @@ async function displayStrategies() {
             (p, i) => `
             <tr>
               <td>${i + 1}</td>
-              <td class="player-name">${p.name}</td>
-              <td class="team-cell">${p.team}</td>
-              <td class="country-cell">
-                <img src="${flagUrl(p.country)}" alt="${p.country}" title="${p.country}">
-              </td>
+              <td>${p.name}</td>
+              <td>${p.team}</td>
+              <td>${getFlag(p.country)} ${p.country}</td>
             </tr>`
           )
           .join("")}
       </tbody>
     `;
-
     wrap.appendChild(table);
   } catch (err) {
     wrap.innerHTML = `
