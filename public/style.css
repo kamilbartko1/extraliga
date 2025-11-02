@@ -2153,35 +2153,71 @@ nav button:hover::after {
   }
 }
 
-/* 🟡 Zlatá čiara pod dátumom v tabuľke zápasov */
+/* 🟡 Dátum medzi zápasmi – tyrkysový text + žlté čiary hore a dole */
 #matches tbody tr td[colspan="4"] b {
   display: block;
   position: relative;
   text-align: center;
-  color: #00eaff; /* zachovaná tyrkysová farba dátumu */
+  color: #00eaff; /* tyrkysový dátum */
   font-weight: 700;
-  letter-spacing: 0.5px;
-  padding: 6px 0;
-  margin: 4px 0;
-  text-shadow: 0 0 6px rgba(0, 234, 255, 0.6);
+  letter-spacing: 0.6px;
+  padding: 8px 0;
+  margin: 6px 0;
+  text-shadow: 0 0 8px rgba(0, 234, 255, 0.6);
+  opacity: 0;
+  animation: fadeInDate 0.5s ease-in forwards;
 }
 
+/* 🔹 Animácia fade-in */
+@keyframes fadeInDate {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 🟨 Žltá línia nad dátumom */
+#matches tbody tr td[colspan="4"] b::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 215, 0, 0.8) 0%,
+    rgba(255, 215, 0, 0.5) 50%,
+    rgba(255, 215, 0, 0.1) 100%
+  );
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+  border-radius: 2px;
+  opacity: 0;
+  animation: fadeInLine 0.6s ease-in forwards;
+}
+
+/* 🟨 Žltá línia pod dátumom */
 #matches tbody tr td[colspan="4"] b::after {
   content: "";
   position: absolute;
-  bottom: -3px;
+  bottom: 0;
   left: 0;
   width: 100%;
   height: 3px;
   background: linear-gradient(
     90deg,
     rgba(255, 215, 0, 0.9) 0%,
-    rgba(255, 215, 0, 0.6) 40%,
-    rgba(255, 215, 0, 0.3) 70%,
-    rgba(255, 215, 0, 0.05) 100%
+    rgba(255, 215, 0, 0.5) 60%,
+    rgba(255, 215, 0, 0.1) 100%
   );
-  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5); /* jemný neónový efekt */
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
   border-radius: 2px;
+  opacity: 0;
+  animation: fadeInLine 0.6s ease-in forwards;
+}
+
+/* ✨ Animácia pre linky */
+@keyframes fadeInLine {
+  from { opacity: 0; transform: scaleX(0.6); }
+  to { opacity: 1; transform: scaleX(1); }
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
