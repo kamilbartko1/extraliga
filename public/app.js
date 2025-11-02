@@ -473,12 +473,12 @@ document
   .querySelector("button[onclick*='predictions-section']")
   ?.addEventListener("click", displayPredictions);
 
-  // 🟢 Zobraz sekciu pri kliknutí na "Tipovacie stratégie"
+ // === Zobrazenie sekcie Tipovacie stratégie po kliknutí ===
 document.querySelector("button[onclick*='strategies-section']")?.addEventListener("click", () => {
   const section = document.getElementById("strategies-section");
   if (section) {
-    section.style.display = "block";
-    displayStrategies();
+    section.style.display = "block"; // odskry sekciu
+    displayStrategies(); // načítaj údaje z /api/strategies
   }
 });
 
