@@ -2153,29 +2153,29 @@ nav button:hover::after {
   }
 }
 
-/* === DÁTUM NAD ZÁPASMI – žltá farba, čitateľný font === */
+/* === DÁTUM NAD ZÁPASMI – jemné, elegantné === */
 .date-header {
   font-family: "Poppins", "Segoe UI", sans-serif !important;
-  font-weight: 500;
-  font-size: clamp(17px, 2vw, 22px);
+  font-weight: 400; /* jemnejšie písmo */
+  font-size: clamp(16px, 1.8vw, 20px);
   color: #ffd400 !important;
   text-align: center;
-  padding: 10px 0;
+  padding: 8px 0;
   position: relative;
-  letter-spacing: 0.5px;
-  text-shadow: 0 0 6px rgba(255, 215, 0, 0.4);
+  letter-spacing: 0.4px;
+  text-shadow: 0 0 4px rgba(255, 215, 0, 0.3);
 }
 
-/* --- žlté čiary nad a pod dátumom --- */
+/* --- jemné tenké čiary nad a pod dátumom --- */
 .date-header::before,
 .date-header::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  height: 2px;
-  background: #ffd400;
-  box-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
+  height: 1px; /* tenká ako vlas */
+  background: rgba(255, 212, 0, 0.6);
+  box-shadow: 0 0 3px rgba(255, 212, 0, 0.3);
 }
 
 .date-header::before {
@@ -2189,12 +2189,13 @@ nav button:hover::after {
 /* 📱 Mobilná verzia */
 @media (max-width: 768px) {
   .date-header {
-    font-size: 18px;
-    padding: 8px 0;
+    font-size: 17px;
+    padding: 6px 0;
   }
   .date-header::before,
   .date-header::after {
-    height: 1.5px;
+    height: 0.8px;
+    opacity: 0.8;
   }
 }
 
