@@ -468,52 +468,25 @@ async function displayPredictions() {
   }
 }
 
-// === Štart ===
-window.addEventListener("DOMContentLoaded", () => {
-  console.log("🚀 NHLPRO frontend spustený");
+// 🔁 Načítaj predikcie, keď sa otvorí sekcia
+document
+  .querySelector("button[onclick*='predictions-section']")
+  ?.addEventListener("click", displayPredictions);
 
-  // 🏒 Výsledky + tímové ratingy hneď po načítaní
-  fetchMatches();
-
-  // 🧩 Player Ratings – až po kliknutí
-  const playersBtn = document.querySelector("button[onclick*='players-section']");
-  if (playersBtn) {
-    playersBtn.addEventListener("click", async () => {
-      console.log("👤 Načítavam rating hráčov...");
-      await displayPlayerRatings();
-    });
+ // === Zobrazenie sekcie Tipovacie stratégie po kliknutí ===
+document.querySelector("button[onclick*='strategies-section']")?.addEventListener("click", () => {
+  const section = document.getElementById("strategies-section");
+  if (section) {
+    section.style.display = "block"; // odskry sekciu
+    displayStrategies(); // načítaj údaje z /api/strategies
   }
-
-  // 💰 Mantingal – až po kliknutí
-  const mantingalBtn = document.querySelector("button[onclick*='mantingal-container']");
-  if (mantingalBtn) {
-    mantingalBtn.addEventListener("click", async () => {
-      console.log("🎯 Načítavam Mantingal dáta...");
-      await displayMantingal();
-    });
-  }
-
-  // 🧠 Tipovacie stratégie – až po kliknutí
-  const strategyBtn = document.querySelector("button[onclick*='strategies-section']");
-  if (strategyBtn) {
-    strategyBtn.addEventListener("click", async () => {
-      console.log("🧠 Načítavam databázu hráčov...");
-      await displayStrategies();
-    });
-  }
-
-  // 📊 Predikcie – až po kliknutí
-  const predBtn = document.querySelector("button[onclick*='predictions-section']");
-  if (predBtn) {
-    predBtn.addEventListener("click", async () => {
-      console.log("📈 Načítavam kurzy bookmakerov...");
-      await displayPredictions();
-    });
-  }
-
-  // 🔹 Predvolené zobrazenie
-  showSection("matches-section");
 });
 
-
+// === Štart ===
+window.addEventListener("DOMContentLoaded", () => {
+  fetchMatches();
+  displayPredictions(); // 🔹 pridaj túto funkciu
+  displayStrategies();
+  displayMantingal(); 
+});
 
