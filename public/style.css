@@ -2167,40 +2167,24 @@ nav button:hover::after {
   text-transform: uppercase;
 }
 
-/* === DÁTUMY NAD ZÁPASM === */
+/* === DÁTUM NAD ZÁPASM — ROVNAKÝ ŠTÝL AKO "TIPUJ NHL AKO PROFÍK" === */
 .date-header {
   font-family: "Permanent Marker", cursive !important;
-  font-size: clamp(20px, 2.5vw, 28px);
-  color: #ffd400;
+  font-size: clamp(20px, 2.5vw, 26px);
+  color: #ffd400; /* rovnaká žltá */
   text-align: center;
-  padding: 14px 0 10px;
-  letter-spacing: 1px;
-  text-transform: none;
+  padding: 10px 0 6px;
+  text-shadow: 0 2px 3px rgba(0,0,0,0.5), 0 0 15px rgba(255,215,0,0.5);
   background: transparent;
   border: none !important;
-  text-shadow: 0 2px 3px rgba(0,0,0,0.6), 0 0 15px rgba(255,215,0,0.4);
-  transform: rotate(-2deg);
-  position: relative;
+  letter-spacing: 0.5px;
 }
 
-/* tenká zlatá čiara pod dátumom */
-.date-header::after {
-  content: "";
-  display: block;
-  width: 80%;
-  height: 2px;
-  margin: 8px auto 0;
-  background: linear-gradient(90deg, #ffd400 0%, #fff176 50%, #ffd400 100%);
-  border-radius: 2px;
-  box-shadow: 0 0 6px rgba(255,215,0,0.6);
-}
-
-/* menšie verzie pre mobil */
+/* mobil – mierne menší text, stále čitateľný */
 @media (max-width: 768px) {
   .date-header {
-    font-size: 20px;
-    transform: rotate(-1deg);
-    padding: 10px 0 8px;
+    font-size: 18px;
+    padding: 8px 0 5px;
   }
 }
 
