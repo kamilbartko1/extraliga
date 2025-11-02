@@ -376,6 +376,28 @@ async function displayStrategies() {
 
     // === Vytvorenie tabuľky ===
     const table = document.createElement("table");
+    table.className = "players-table";
+
+    // funkcia na emoji vlajku podľa country kódu
+    const flag = (code) => {
+      const flags = {
+        CAN: "🇨🇦",
+        USA: "🇺🇸",
+        SWE: "🇸🇪",
+        FIN: "🇫🇮",
+        CZE: "🇨🇿",
+        SVK: "🇸🇰",
+        RUS: "🇷🇺",
+        CHE: "🇨🇭",
+        GER: "🇩🇪",
+        DNK: "🇩🇰",
+        NOR: "🇳🇴",
+        LVA: "🇱🇻",
+        AUT: "🇦🇹",
+      };
+      return flags[code] || "🏒";
+    };
+
     table.innerHTML = `
       <thead>
         <tr>
@@ -387,15 +409,16 @@ async function displayStrategies() {
       </thead>
       <tbody>
         ${data.players
-          .slice(0, 100) // obmedzíme výpis na prvých 100 hráčov
+          .slice(0, 100)
           .map(
             (p, i) => `
-            <tr>
-              <td>${i + 1}</td>
-              <td>${p.name}</td>
-              <td>${p.team}</td>
-              <td>${p.country}</td>
-            </tr>`
+              <tr>
+                <td>${i + 1}</td>
+                <td class="player-name">${p.name}</td>
+                <td class="team-cell">${p.team}</td>
+                <td class="country-cell">${flag(p.country)} ${p.country}</td>
+              </tr>
+            `
           )
           .join("")}
       </tbody>
