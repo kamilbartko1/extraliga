@@ -1,71 +1,132 @@
-/* -------------------------------
-   RESET + FONTS
-----------------------------------*/
+/* ===========================================
+   NHLPRO.sk – Dark Green / Flashscore Variant
+   =========================================== */
+
+/* 🔤 Fonty + reset */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: "Segoe UI", Roboto, Arial, sans-serif;
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-/* 🌍 pridany riadok */
-/* 🌍 Globálny font a farby */
-body, select, input, button, table, th, td, h1, h2, h3, p, div, span {
   font-family: "Poppins", "Segoe UI", sans-serif;
-  color: #eaf9ff;
-  letter-spacing: 0.3px;
 }
 
 body {
-  font-family: "Poppins", "Segoe UI", sans-serif;
-  background: radial-gradient(circle at top, #001f33 0%, #000814 100%);
-  color: #f2f6f8;
-  margin: 0;
-  padding: 0;
+  background: radial-gradient(circle at top, #000e1a 0%, #000 100%);
+  color: #e6faff;
   line-height: 1.6;
+  margin: 0;
   padding: 1rem;
+}
+
+/* ====== ZELENÉ AKCENTY (namiesto tyrkysu) ====== */
+:root {
+  --green-accent: #39ff14;
+  --green-hover: #7cff62;
+  --bg-dark: #0b0f15;
+  --bg-card: #151c25;
+  --text-main: #eaf9ff;
+  --text-dim: #a8b2bd;
 }
 
 /* -------------------------------
    HLAVIČKA
 ----------------------------------*/
-h1 {
-  text-align: center;
-  color: #00b7ff;
-  margin-bottom: 1.5rem;
-  text-shadow: 0 0 10px rgba(0,183,255,0.6);
+header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(90deg, rgba(0, 20, 40, 0.9), rgba(0, 5, 15, 0.95));
+  border-bottom: 2px solid rgba(57, 255, 20, 0.25);
+  padding: 1rem 2rem;
+  z-index: 10;
 }
 
-header h1 {
-  text-align: center;
-  font-size: 2.8rem;
-  color: #ffffff;
-  font-weight: 800;
-  text-shadow: 0 0 10px rgba(0, 234, 255, 0.7),
-               0 0 20px rgba(0, 234, 255, 0.5),
-               0 0 30px rgba(0, 234, 255, 0.3);
-  letter-spacing: 1px;
-  margin-bottom: 0.8rem;
-  font-family: "Poppins", "Segoe UI", sans-serif;
+.header-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-#matches-section h2 {
-  text-align: center;
-  font-size: 1.3rem;
-  color: #00eaff;
-  text-shadow: 0 0 8px rgba(0, 183, 255, 0.6);
-  margin-top: 1rem;
+.header-left img {
+  width: 80px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 0 8px rgba(57, 255, 20, 0.4));
+}
+
+.header-left span {
+  color: var(--green-accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-shadow: 0 0 5px rgba(57, 255, 20, 0.4);
+}
+
+.header-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-2deg);
+  font-family: "Permanent Marker", cursive;
+  color: #ffd400;
+  font-size: clamp(22px, 2.5vw, 32px);
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 215, 0, 0.4);
 }
 
 /* -------------------------------
-   SEKCIE
+   MENU
+----------------------------------*/
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  background: rgba(10, 15, 20, 0.95);
+  border-top: 1px solid rgba(57, 255, 20, 0.25);
+  border-bottom: 1px solid rgba(57, 255, 20, 0.25);
+  padding: 14px 0;
+}
+
+nav button {
+  background: none;
+  border: none;
+  color: var(--green-accent);
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+nav button:hover {
+  color: var(--green-hover);
+  transform: translateY(-2px);
+}
+
+nav button::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 0%;
+  height: 2px;
+  background: var(--green-accent);
+  transition: width 0.25s ease;
+}
+
+nav button:hover::after {
+  width: 100%;
+}
+
+/* -------------------------------
+   SEKCIÁ
 ----------------------------------*/
 .section {
-  background: #161b22;
+  background: var(--bg-card);
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
   padding: 1rem;
   margin-bottom: 1.5rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -73,25 +134,17 @@ header h1 {
 
 .section:hover {
   transform: translateY(-3px);
-  box-shadow: 0 0 15px rgba(0,183,255,0.3);
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
 }
 
-#mobileSelect {
-  display: block;
-  margin: 0 auto 1rem auto;
+.section h2 {
   text-align: center;
-  font-size: 1.1rem;
-  color: #00eaff;
-  background: rgba(0, 183, 255, 0.1);
-  border: 1px solid rgba(0, 234, 255, 0.4);
-  border-radius: 8px;
-  padding: 0.6rem 1rem;
-  text-align-last: center; /* 🔹 toto centrovanie textu v <select> */
-  box-shadow: 0 0 8px rgba(0, 234, 255, 0.2);
-}
-
-#mobileSelect option {
-  text-align: center;
+  color: var(--green-accent);
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
 }
 
 /* -------------------------------
@@ -100,94 +153,100 @@ header h1 {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
   font-size: 0.95rem;
+  background: #0d1218;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 th, td {
-  padding: 0.6rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   text-align: left;
+  color: var(--text-main);
 }
 
 th {
-  background: #0f1419;
-  color: #00b7ff;
+  background: #12181f;
+  color: var(--green-accent);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-tr:hover td {
-  background: rgba(0,183,255,0.05);
-  cursor: pointer;
+tbody tr:hover {
+  background: rgba(57, 255, 20, 0.07);
+  transition: 0.2s ease;
 }
 
-/* zvýraznenie kôl */
+/* dátumové riadky */
 tr td[colspan="4"] b {
   display: block;
-  background: linear-gradient(90deg, #00b7ff44, transparent);
-  padding: 0.4rem;
+  background: linear-gradient(90deg, rgba(57, 255, 20, 0.1), rgba(0, 0, 0, 0.3));
+  text-align: center;
+  color: var(--green-accent);
+  padding: 6px 0;
   border-radius: 6px;
-  text-transform: uppercase;
-  color: #00b7ff;
 }
 
 /* -------------------------------
    TLAČIDLÁ
 ----------------------------------*/
 button {
-  background: #00b7ff;
+  background: var(--green-accent);
   color: #000;
   border: none;
-  border-radius: 5px;
-  padding: 0.3rem 0.7rem;
-  font-weight: bold;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 button:hover {
-  background: #00e0ff;
+  background: var(--green-hover);
   transform: scale(1.05);
 }
 
 /* -------------------------------
-   MANTINGAL SEKCIÁ
+   MANTINGAL / INFO BOXY
 ----------------------------------*/
-#mantingal {
-  margin-top: 1rem;
-}
-
-#mantingal th {
-  background: #1b242f;
-  color: #00eaff;
-}
-
 #mantingal-summary-pc, 
 #mantingal-summary-mobile {
-  background: #10161d;
-  border: 1px solid rgba(0,183,255,0.3);
-  border-radius: 8px;
-  padding: 0.8rem;
+  background: #0e131a;
+  border: 1px solid rgba(57, 255, 20, 0.25);
+  border-radius: 10px;
+  padding: 1rem;
   margin-top: 1rem;
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.15);
 }
 
 #mantingal-summary-pc p, 
 #mantingal-summary-mobile p {
   margin: 0.3rem 0;
+  color: var(--text-dim);
 }
 
 /* -------------------------------
-   DETAILY ZÁPASU
+   MOBILE MENU (zostáva)
 ----------------------------------*/
-.details-box {
-  background: #10161d;
-  border-left: 3px solid #00b7ff;
-  padding: 0.7rem;
-  border-radius: 5px;
-  font-size: 0.9rem;
-  color: #ddd;
+#mobileSelect {
+  display: block;
+  margin: 1rem auto;
+  padding: 0.6rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--green-accent);
+  background: rgba(57, 255, 20, 0.1);
+  border: 1px solid rgba(57, 255, 20, 0.4);
+  border-radius: 8px;
+  text-align-last: center;
+  box-shadow: 0 0 8px rgba(57, 255, 20, 0.2);
+  transition: all 0.3s ease;
+}
+
+#mobileSelect:hover {
+  background: rgba(57, 255, 20, 0.15);
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
 }
 
 /* -------------------------------
@@ -199,1974 +258,58 @@ button:hover {
   }
 
   table {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    table-layout: fixed;
+  }
+
+  th, td {
+    padding: 6px 4px;
+    text-align: center;
+    white-space: normal;
   }
 
   .section {
     margin-bottom: 1rem;
   }
 
-  h1 {
-    font-size: 1.3rem;
-  }
-}
-
-/* -------------------------------
-   NAVIGAČNÉ MENU POD NADPISOM
-----------------------------------*/
-
-#mobileSelect {
-  display: block;
-  margin: 0.8rem auto 1.5rem auto;   /* centrovanie */
-  padding: 0.7rem 1rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #00b7ff, #00eaff);
-  color: #0c1015;
-  border: none;
-  box-shadow: 0 0 10px rgba(0,183,255,0.4);
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 240px;   /* šírka menu */
-}
-
-#mobileSelect:hover {
-  background: linear-gradient(135deg, #00eaff, #00b7ff);
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(0,183,255,0.6);
-}
-
-#mobileSelect:focus {
-  outline: 2px solid #00eaff;
-  outline-offset: 3px;
-}
-
-/* Nadpis kola v tabuľke zápasov */
-#matches tbody tr td[colspan="4"] {
-  text-align: center;
-  background: linear-gradient(90deg, rgba(0,183,255,0.15), rgba(0,234,255,0.15));
-  color: #00eaff;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  padding: 0.6rem 0;
-  border-radius: 6px;
-}
-
-/* Vycentrovanie nadpisu kola (napr. 9. kolo (2025-10-05)) */
-#matches tbody tr td[colspan="4"] {
-  text-align: center !important;
-  background: linear-gradient(90deg, rgba(0,183,255,0.15), rgba(0,234,255,0.15));
-  color: #00eaff;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  padding: 0.6rem 0;
-  border-radius: 6px;
-}
-
-/* Vycentrovanie rating timov a rating hracov */
-#teamRatings-section h2,
-#playerRatings-section h2 {
-  text-align: center;
-  font-size: 1.8rem;
-  color: #00eaff;
-  text-shadow: 0 0 8px rgba(0, 234, 255, 0.6);
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-/* Rolovacie menu */
-#mobileSelect {
-  display: block;
-  margin: 0.5rem auto 1.2rem auto;
-  text-align-last: center;
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: #00eaff;
-  background: rgba(0, 255, 255, 0.05);
-  border: 1px solid rgba(0, 234, 255, 0.6);
-  border-radius: 10px;
-  padding: 0.6rem 1.2rem;
-  box-shadow: 0 0 15px rgba(0, 234, 255, 0.2);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-#mobileSelect:hover {
-  background: rgba(0, 255, 255, 0.15);
-  box-shadow: 0 0 20px rgba(0, 234, 255, 0.4);
-}
-
-#mobileSelect:focus {
-  outline: none;
-  border-color: #00eaff;
-  box-shadow: 0 0 25px rgba(0, 234, 255, 0.6);
-}
-
-#mobileSelect option {
-  background: #001f33;
-  color: #00eaff;
-  text-align: center;
-  font-weight: 500;
-}
-
-/* BONUS - Jemny glow */
-#teamRatings table,
-#playerRatings table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
-  font-size: 1rem;
-  color: #e6faff;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 234, 255, 0.2);
-  backdrop-filter: blur(3px);
-}
-
-/* Skry nadpisy v sekciách Rating tímov a Rating hráčov */
-#teamRatings-section h2,
-#playerRatings-section h2 {
-  display: none;
-}
-
-#teamRatings h2,
-#playerRatings h2 {
-  display: none;
-
-}
-
-.corner-note {
-  position: relative;
-  display: block;
-  width: 100%;
-  text-align: center;
-  margin-bottom: 0.3rem;
-
-  font-family: "Permanent Marker", cursive !important;
-  font-size: clamp(20px, 2.5vw, 32px);
-  color: #ffd400;
-  text-shadow: 0 2px 3px rgba(0,0,0,0.5), 0 0 15px rgba(255, 208, 0, 0.4);
-  transform: rotate(-1deg);
-}
-
-/* 💫 Žltý nápis hore v strede */
-#corner-note {
-  position: fixed;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%) rotate(-2deg);
-  font-family: "Permanent Marker", cursive;
-  font-size: clamp(20px, 2.5vw, 30px);
-  color: #ffd400;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 215, 0, 0.4);
-  pointer-events: none;
-  z-index: 1000;
-}
-
-/* 🏒 Logo vľavo s podnadpisom */
-.logo-container {
-  position: fixed;
-  top: 50px;      /* posunuté nižšie pod žltý text */
-  left: 20px;
-  text-align: center;
-  z-index: 900;
-}
-
-.nhl-logo {
-  width: 100px;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
-}
-
-.logo-subtitle {
-  font-family: "Poppins", sans-serif;
-  font-size: 0.9rem;
-  color: #00eaff;
-  text-shadow: 0 0 6px rgba(0, 234, 255, 0.6);
-  margin-top: 0.3rem;
-  font-weight: 500;
-}
-
-/* -------------------------------
-   HLAVIČKA / HEADER
-----------------------------------*/
-.main-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(180deg, rgba(0,15,30,0.9), rgba(0,10,25,0.95));
-  padding: 1rem 2rem;
-  border-bottom: 2px solid rgba(0,234,255,0.2);
-  box-shadow: 0 4px 20px rgba(0, 234, 255, 0.15);
-}
-
-.header-left {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.nhl-logo {
-  width: 80px;
-  filter: drop-shadow(0 0 8px rgba(0,234,255,0.5));
-}
-
-.season-text {
-  color: #00eaff;
-  font-weight: 600;
-  font-size: 1rem;
-  text-shadow: 0 0 8px rgba(0,234,255,0.4);
-}
-
-.header-center {
-  flex: 1;
-  text-align: center;
-}
-
-.header-title {
-  font-family: "Permanent Marker", cursive;
-  color: #ffd400;
-  font-size: clamp(22px, 3vw, 34px);
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5), 0 0 20px rgba(255,212,0,0.6);
-  margin: 0;
-  transform: rotate(-2deg);
-}
-
-/* -------------------------------
-   NAVIGÁCIA PRE PC
-----------------------------------*/
-.desktop-nav {
-  display: none;
-  justify-content: center;
-  background: rgba(0,20,40,0.8);
-  border-top: 1px solid rgba(0,234,255,0.25);
-  border-bottom: 1px solid rgba(0,234,255,0.25);
-  backdrop-filter: blur(8px);
-  padding: 0.8rem 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.desktop-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 2.5rem;
-  padding: 0;
-  margin: 0;
-}
-
-.desktop-nav li {
-  color: #00eaff;
-  font-weight: 600;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.desktop-nav li:hover {
-  color: #ffd400;
-  text-shadow: 0 0 8px rgba(255,212,0,0.8);
-  transform: translateY(-2px);
-}
-
-.desktop-nav li::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -5px;
-  width: 0%;
-  height: 2px;
-  background: #ffd400;
-  transition: width 0.3s ease;
-}
-
-.desktop-nav li:hover::after {
-  width: 100%;
-}
-
-/* Zobraziť navigáciu len na PC */
-@media (min-width: 769px) {
-  .desktop-nav {
-    display: flex;
-  }
-
-  .mobile-menu {
-    display: none;
-  }
-}
-
-/* -------------------------------
-   MOBILNÉ ZOBRAZENIE HEADERA
-----------------------------------*/
-@media (max-width: 768px) {
-  .main-header {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 1rem;
-  }
-
-  .nhl-logo {
-    width: 60px;
-  }
-
-  .season-text {
-    font-size: 0.9rem;
-  }
-
-  .header-title {
-    font-size: 1.4rem;
-  }
-}
-
-/* ======= MOBILE FIX: iba v mobile ======= */
-@media (max-width: 768px) {
-
-  /* skryť iba nápis NHL 2025 – 2026 vľavo (nie žltý text!) */
-  .header-left span,
-  .header-left h1 {
-    display: none !important;
-    visibility: hidden !important;
-  }
-
-  /* skryť malé logo vľavo – použijeme ho ako pozadie */
-  .header-left img {
-    display: none !important;
-  }
-
-  /* header s pozadím loga */
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 40px;
-  background: linear-gradient(90deg, rgba(0, 40, 70, 0.8), rgba(0, 10, 25, 0.9));
-  border-bottom: 1px solid rgba(0, 183, 255, 0.3);
-  position: relative;
-  height: 100px;
-}
-
-.header-left img {
-  width: 80px;
-  height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 0 10px rgba(0, 183, 255, 0.6));
-}
-
-  /* žltý nápis – vždy zobraz a vycentruj */
-  .header-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: block !important;
-    z-index: 2;
-    font-family: "Permanent Marker", cursive;
-    color: #ffd400;
-    font-size: clamp(22px, 6vw, 30px);
-    text-shadow: 0 3px 8px rgba(0,0,0,.7), 0 0 15px rgba(255,215,0,.5);
-    white-space: nowrap;
-    text-align: center;
-  }
-}
-
-/* 📱 Mobilné zobrazenie – zobraz iba rolovacie menu */
-@media (max-width: 768px) {
-  nav {
-    display: none !important; /* skry horizontálne menu */
-  }
-  .mobile-menu {
-    display: block !important; /* zobraz rolovacie menu */
-    margin: 1rem auto;
-    text-align: center;
-  }
-}
-
-/* 💻 Desktop zobrazenie – zobraz horizontálne menu, skry rolovacie */
-@media (min-width: 769px) {
-  nav {
-    display: flex !important;
-  }
-  .mobile-menu {
-    display: none !important;
-  }
-}
-
-/* -------------------------------
-   HEADER / HLAVIČKA (už hotová)
-----------------------------------*/
-header {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(90deg, rgba(0, 40, 70, 0.8), rgba(0, 10, 25, 0.9));
-  border-bottom: 1px solid rgba(0, 183, 255, 0.3);
-  padding: 1rem 2rem;
-  overflow: hidden;
-  z-index: 10; /* aby bolo nad pozadím, ale pod menu */
-}
-
-.header-left {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 2;
-}
-
-.header-left img {
-  width: 80px;
-  height: auto;
-  display: block;
-  filter: drop-shadow(0 0 8px rgba(0, 183, 255, 0.5));
-}
-
-.header-left span {
-  margin-top: 0.4rem;
-  color: #00b7ff;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-shadow: 0 0 5px rgba(0, 183, 255, 0.4);
-}
-
-.header-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-2deg);
-  font-family: "Permanent Marker", cursive;
-  font-size: clamp(22px, 2.5vw, 32px);
-  color: #ffd400;
-  text-shadow: 0 2px 3px rgba(0,0,0,0.5), 0 0 15px rgba(255, 208, 0, 0.4);
-  z-index: 2;
-  pointer-events: none;
-}
-
-header::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: none;
-  opacity: 0;
-  z-index: 1;
-}
-
-/* -------------------------------
-   MENU POD HEADEROM
-----------------------------------*/
-nav {
-  display: flex;
-  justify-content: center;
-  background: rgba(0, 20, 35, 0.9);
-  border-top: 1px solid rgba(0, 183, 255, 0.3);
-  border-bottom: 1px solid rgba(0, 183, 255, 0.3);
-  padding: 12px 0;
-  gap: 20px;
-  position: relative;
-  z-index: 50; /* 🔹 dôležité: menu nad headerom */
-}
-
-nav button {
-  background: rgba(0, 183, 255, 0.1);
-  color: #00eaff;
-  border: 1px solid rgba(0, 183, 255, 0.3);
-  padding: 8px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-nav button:hover {
-  background: rgba(0, 234, 255, 0.25);
-  box-shadow: 0 0 10px rgba(0, 234, 255, 0.4);
-  transform: scale(1.05);
-}
-
-/* 📱 Mobilné zobrazenie – len rolovacie menu */
-@media (max-width: 768px) {
   nav {
     display: none !important;
   }
+
   .mobile-menu {
     display: block !important;
-    margin: 1rem auto;
+  }
+
+  h1, h2 {
+    font-size: 1.1rem;
     text-align: center;
-  }
-
-  header::before {
-    background: url("public/nhl_logo.png") center/contain no-repeat;
-    opacity: 0.08;
-  }
-
-  .header-left img,
-  .header-left span {
-    display: none !important;
-  }
-
-  .header-center {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-2deg);
-    text-align: center;
-    font-size: clamp(22px, 6vw, 30px);
-  }
-}
-
-/* 💻 Desktop zobrazenie */
-@media (min-width: 769px) {
-  nav {
-    display: flex !important;
-  }
-
-  .mobile-menu {
-    display: none !important;
-  }
-
-  header::before {
-    background: none;
-    opacity: 0;
   }
 }
 
 /* -------------------------------
-   HORIZONTÁLNE MENU POD HEADEROM
+   WATERMARK
 ----------------------------------*/
-nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2.5rem;
-  background: rgba(0, 20, 35, 0.9);
-  border-top: 1px solid rgba(0, 183, 255, 0.3);
-  border-bottom: 1px solid rgba(0, 183, 255, 0.3);
-  padding: 14px 0;
-  position: relative;
-  z-index: 50;
-}
-
-/* základný vzhľad tlačidiel – teraz ako text */
-nav button {
-  background: none;
-  border: none;
-  color: #00eaff;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0.3rem 0.5rem;
-  position: relative;
-  text-transform: uppercase;
-  transition: color 0.3s ease, transform 0.2s ease;
-}
-
-/* animované žlté čiary hore a dole */
-nav button::before,
-nav button::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: #ffd400;
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-  opacity: 0.9;
-}
-
-nav button::before {
-  top: 0;
-  transform-origin: left;
-}
-
-nav button::after {
-  bottom: 0;
-  transform-origin: right;
-}
-
-/* efekt pri hover */
-nav button:hover {
-  color: #ffd400;
-  transform: translateY(-2px);
-}
-
-nav button:hover::before {
-  transform: scaleX(1);
-  transform-origin: right;
-}
-
-nav button:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-
-/* -------------------------------
-   SEKCIÁ PREDIKCIE – KURZY
-----------------------------------*/
-#predictions-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.prediction-card {
-  background: rgba(0, 20, 40, 0.5);
-  border: 1px solid rgba(0, 234, 255, 0.25);
-  border-radius: 10px;
-  padding: 0.8rem 1rem;
-  box-shadow: 0 0 10px rgba(0, 234, 255, 0.2);
-}
-
-.prediction-card .matchup {
-  font-weight: 600;
-  color: #00eaff;
-  text-align: center;
-  margin-bottom: 0.5rem;
-  font-size: 1.1rem;
-}
-
-.odds-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.6rem;
-}
-
-.bookmaker {
-  background: rgba(0, 255, 255, 0.08);
-  border-radius: 6px;
-  padding: 0.4rem 0.7rem;
-  text-align: center;
-  min-width: 150px;
-  color: #eaf9ff;
-  font-size: 0.9rem;
-}
-
-.bookmaker .provider {
-  display: block;
-  color: #ffd400;
-  font-weight: 600;
-  margin-bottom: 0.2rem;
-}
-
-.odds-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.odds-item {
-  background: linear-gradient(90deg, rgba(0, 30, 60, 0.7), rgba(0, 15, 30, 0.9));
-  border: 1px solid rgba(0, 183, 255, 0.3);
-  border-radius: 8px;
-  padding: 10px;
-  text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.odds-item:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 10px rgba(0,183,255,0.4);
-}
-
-.match-info {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 1rem;
-  color: #eaf9ff;
-}
-
-.team-logo {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-  filter: drop-shadow(0 0 5px rgba(0,183,255,0.5));
-}
-/* ====== PREDICTIONS TABUĽKA ====== */
-.odds-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-  background: rgba(0, 20, 35, 0.8);
-  border: 1px solid rgba(0, 234, 255, 0.2);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.odds-table th, .odds-table td {
-  padding: 10px;
-  text-align: center;
-  border-bottom: 1px solid rgba(0, 234, 255, 0.1);
-}
-
-.odds-table th {
-  color: #00eaff;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 0.9rem;
-}
-
-.odds-table td {
-  color: #eaf9ff;
-  font-size: 1rem;
-}
-
-.odds-table tr:hover {
-  background: rgba(0, 234, 255, 0.1);
-  transition: 0.3s ease;
-}
-
-/* ======== BLOKY PREDIKCIÍ ======== */
-.odds-blocks {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.odds-match {
-  background: rgba(0, 10, 25, 0.7);
-  border: 1px solid rgba(0, 234, 255, 0.2);
-  border-radius: 10px;
-  padding: 1rem;
-  margin-bottom: 1.2rem;
-  text-align: center;
-  box-shadow: 0 0 10px rgba(0, 234, 255, 0.15);
-}
-
-.match-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  margin-bottom: 0.6rem;
-}
-
-.team-logo {
-  width: 36px;
-  height: 36px;
-  object-fit: contain;
-}
-
-.odds-row {
-  display: flex;
-  justify-content: center;
-  gap: 0.8rem;
-}
-
-.odds-cell {
-  background: rgba(0, 234, 255, 0.05);
-  border: 1px solid rgba(0, 234, 255, 0.2);
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  min-width: 50px;
-  color: #fff;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
-}
-
-.odds-cell:hover {
-  background: rgba(255, 215, 0, 0.2);
-  border-color: #ffd400;
-}
-
-.odds-cell b {
-  color: #ffd400;
-  font-size: 1.1rem;
-}
-
-.team-name {
-  color: #00eaff;
-  font-weight: 600;
-}
-
-/* --- Jednotný štýl nadpisov pre všetky sekcie --- */
-.section h2 {
-  text-align: center;
-  color: #00ffff; /* tyrkysová */
-  font-size: 1.3rem;
-  font-weight: bold;
-  margin: 10px 0 20px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* voliteľne, ak chceš presne ako "Výsledky" */
-#teamRatings-section h2,
-#playerRatings-section h2 {
-  text-align: center;
-  color: #00ffff;
-}
-
-/* ===== Vylepšenie vzhľadu tabuliek Ratingov a Výsledkov ===== */
-
-/* Tímové a hráčske ratingy */
-#teamRatings td,
-#playerRatings td {
-  font-size: 1.05rem;          /* jemne väčšie písmo */
-  font-family: "Poppins", sans-serif;  /* moderný font, elegantný a čitateľný */
-  font-weight: 500;
-  color: #e6faff;              /* jemne tyrkysová farba ako pri nadpisoch */
-  text-shadow: 1px 1px 3px rgba(0, 255, 255, 0.4); /* svetlý tieň */
-  letter-spacing: 0.3px;
-}
-
-/* Názvy tímov vo Výsledkoch */
-#matches td {
-  font-size: 1.05rem;
-  font-family: "Poppins", sans-serif;
-  font-weight: 500;
-  color: #ffffff;
-  text-shadow: 1px 1px 2px rgba(0, 255, 255, 0.3);
-}
-
-/* Hlavičky tabuliek (napr. TÍM, RATING, HOSTIA, SKÓRE...) */
-#matches th,
-#teamRatings th,
-#playerRatings th {
-  font-size: 1.1rem;
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  color: #00ffff;
-  text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
-}
-
-/* ===== Vodoznak "Powered by AI-Logic" ===== */
 .ai-watermark {
   position: absolute;
   top: 8px;
   right: 14px;
-  font-family: "Poppins", sans-serif;
+  color: rgba(57, 255, 20, 0.35);
   font-size: 1rem;
   font-weight: 500;
-  color: rgba(0, 255, 255, 0.35);
-  text-shadow: 0 0 4px rgba(0, 255, 255, 0.4);
   letter-spacing: 0.5px;
   user-select: none;
   pointer-events: none;
 }
 
-/* Zvýraznenie slova AI-Logic */
 .ai-watermark span {
-  font-family: "Orbitron", sans-serif;
-  color: rgba(0, 255, 255, 0.55);
-  text-shadow: 0 0 6px rgba(0, 255, 255, 0.7);
+  color: rgba(57, 255, 20, 0.55);
+  text-shadow: 0 0 6px rgba(57, 255, 20, 0.7);
 }
 
-/* 🔹 Optimalizácia pre mobilné zariadenia */
 @media (max-width: 768px) {
   .ai-watermark {
-    top: 4px;
-    right: 10px;
-    font-size: 0.75rem;
-    opacity: 0.6;
-  }
-
-  .ai-watermark span {
     font-size: 0.8rem;
-    text-shadow: 0 0 3px rgba(0, 255, 255, 0.5);
-  }
-}
-
-/* === Lepšie zobrazenie tabuliek na mobiloch (bez posúvania) === */
-@media (max-width: 768px) {
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; /* 👈 dôležité – všetky stĺpce sa zmenšia rovnomerne */
-  }
-
-  th, td {
-    font-size: 0.75rem; /* 👈 menšie písmo */
-    padding: 4px 6px;
-    text-align: center;
-    word-wrap: break-word;
-  }
-
-  /* Nadpisy sekcií (napr. VÝSLEDKY, RATING TÍMOV...) */
-  h2 {
-    font-size: 1.1rem;
-    text-align: center;
-    letter-spacing: 1px;
-  }
-
-  /* Tímové a hráčske mená mierne menšie, ale čitateľné */
-  table td:first-child,
-  table td:nth-child(2) {
-    font-weight: 600;
-    font-size: 0.8rem;
-  }
-
-  /* Ak by text presahoval, zalom ho */
-  td {
-    white-space: normal;
-  }
-}
-
-/* === Lepšie zobrazenie tabuliek na mobiloch (bez posúvania) === */
-@media (max-width: 768px) {
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; /* 👈 dôležité – všetky stĺpce sa zmenšia rovnomerne */
-  }
-
-  th, td {
-    font-size: 0.75rem; /* 👈 menšie písmo */
-    padding: 4px 6px;
-    text-align: center;
-    word-wrap: break-word;
-  }
-
-  /* Nadpisy sekcií (napr. VÝSLEDKY, RATING TÍMOV...) */
-  h2 {
-    font-size: 1.1rem;
-    text-align: center;
-    letter-spacing: 1px;
-  }
-
-  /* Tímové a hráčske mená mierne menšie, ale čitateľné */
-  table td:first-child,
-  table td:nth-child(2) {
-    font-weight: 600;
-    font-size: 0.8rem;
-  }
-
-  /* Ak by text presahoval, zalom ho */
-  td {
-    white-space: normal;
-  }
-}
-
-/* === Optimalizácia pre mobily – kompaktný vzhľad === */
-@media (max-width: 768px) {
-  /* Všetky sekcie */
-  body {
-    font-size: 0.9rem;
-  }
-
-  /* Nadpisy sekcií (VÝSLEDKY, RATING TÍMOV...) */
-  h2 {
-    font-size: 1rem;
-    margin: 8px 0;
-    letter-spacing: 1px;
-    text-align: center;
-    color: #00eaff;
-    text-shadow: 0 0 6px #00eaff;
-  }
-
-  /* Tabuľky */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-  }
-
-  th, td {
-    font-size: 0.7rem;
-    padding: 3px 4px;
-    text-align: center;
-    word-wrap: break-word;
-  }
-
-  th {
-    color: #00eaff;
-    text-shadow: 0 0 4px #00eaff;
-    font-weight: 700;
-  }
-
-  td {
-    color: #eafcff;
-    text-shadow: 0 0 2px #00aaff;
-  }
-
-  /* Tímy */
-  table td:first-child,
-  table td:nth-child(2) {
-    font-weight: 600;
-    font-size: 0.75rem;
-  }
-
-  /* Dátum (napr. 21.10.2025) */
-  tr td[colspan="4"] b {
-    display: block;
-    text-align: center;
-    color: #00d4ff;
-    text-shadow: 0 0 6px #00d4ff;
-    font-size: 0.85rem;
-    margin: 4px 0;
-  }
-
-  /* Header vodoznak */
-  .ai-watermark {
-    font-size: 0.75rem;
-    opacity: 0.85;
-    top: 4px;
+    top: 6px;
     right: 10px;
   }
 }
-
-/* --- Mobilné zlepšenia čitateľnosti --- */
-@media (max-width: 768px) {
-  /* menšie a čitateľnejšie názvy tímov */
-  table td {
-    font-size: 13px;           /* zmenšené písmo */
-    white-space: nowrap;       /* zabráni zalomeniu názvu */
-    text-overflow: ellipsis;   /* ak by sa nezmestil, zobrazí „…“ */
-    overflow: hidden;          /* skryje pretečený text */
-  }
-
-  /* menej žiarivé nadpisy (DOMÁCI, HOSTIA, SKÓRE...) */
-  table th {
-    font-size: 12px;
-    text-shadow: 0 0 4px rgba(0,255,255,0.5); /* jemnejší tieň */
-    letter-spacing: 1px;
-  }
-
-  /* hlavičky sekcií ako “VÝSLEDKY”, “TIPOVACIE STRATÉGIE” */
-  h2 {
-    font-size: 18px;
-    text-shadow: 0 0 6px rgba(0,255,255,0.4); /* menej kontrastný */
-  }
-
-  /* prispôsobenie tabuľky - menšie okraje */
-  table {
-    width: 100%;
-    border-spacing: 0;
-  }
-
-  /* odstráni horizontálne posúvanie */
-  .section {
-    overflow-x: hidden;
-  }
-}
-
-/* === Mobilné zobrazenie – oprava tabuliek tímov === */
-@media (max-width: 768px) {
-  /* bunky v tabuľkách */
-  table td {
-    font-size: 13px;       /* menšie písmo */
-    font-weight: 400;      /* nie tučné */
-    white-space: normal;   /* umožní zalomenie, ale celé slovo */
-    text-overflow: clip;   /* žiadne skratky */
-    overflow: visible;     /* zobrazí celý text */
-    text-shadow: none;     /* odstráni svietiaci tieň */
-    line-height: 1.4;
-  }
-
-  /* názvy stĺpcov DOMÁCI / HOSTIA / SKÓRE / STATUS */
-  table th {
-    font-size: 12px;
-    font-weight: 600;
-    text-shadow: 0 0 3px rgba(0,255,255,0.3); /* jemný efekt, nie oslepujúci */
-  }
-
-  /* zmenšený a čitateľný názov sekcie (napr. VÝSLEDKY, TIPOVACIE STRATÉGIE) */
-  h2 {
-    font-size: 18px;
-    text-shadow: 0 0 4px rgba(0,255,255,0.4);
-    margin-bottom: 10px;
-  }
-
-  /* aby sa všetko vošlo na obrazovku */
-  table {
-    table-layout: fixed;
-    width: 100%;
-    border-spacing: 0;
-  }
-
-  .section {
-    overflow-x: hidden;
-  }
-}
-
-/* === Optimalizácia tabuliek pre mobil === */
-@media (max-width: 768px) {
-  table {
-    width: 100%;
-    table-layout: auto; /* prispôsobí šírku obsahu */
-    border-spacing: 0;
-  }
-
-  table th, table td {
-    font-size: 12px;          /* menšie písmo */
-    font-weight: 400;         /* tenké písmo */
-    white-space: nowrap;      /* nezalomí text na viac riadkov */
-    overflow: hidden;
-    text-overflow: ellipsis;  /* ak by bolo extrémne dlhé slovo, skráti ho tromi bodkami */
-    text-shadow: none;        /* odstránený tieň */
-    padding: 6px 4px;
-  }
-
-  table th {
-    font-size: 11px;
-    font-weight: 600;
-    text-shadow: 0 0 2px rgba(0, 255, 255, 0.3); /* jemné svetlo, čitateľné */
-  }
-
-  /* dátumový riadok (21. 10. 2025) – nech má priestor */
-  table tr td[colspan="4"] {
-    font-size: 13px;
-    font-weight: 600;
-    text-align: center;
-    padding: 8px 0;
-  }
-
-  /* sekčný nadpis – menší pre mobil */
-  h2 {
-    font-size: 17px;
-    text-shadow: 0 0 4px rgba(0, 255, 255, 0.4);
-    margin-bottom: 10px;
-  }
-
-  /* kontajner sekcie – nech nepovoľuje horizontálny scroll */
-  .section {
-    overflow-x: hidden;
-  }
-}
-
-/* === Oprava mobilného zobrazenia tabuliek === */
-@media (max-width: 768px) {
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; /* pevné rozdelenie stĺpcov */
-  }
-
-  table th, table td {
-    font-size: 12px;
-    font-weight: 400;
-    padding: 5px 3px;
-    white-space: nowrap; /* nezalomí text */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-shadow: none;
-    vertical-align: middle;
-  }
-
-  /* nech sa celé názvy tímov zmestia a neprebíjajú rozloženie */
-  table td:nth-child(1),
-  table td:nth-child(2) {
-    width: 36%;
-  }
-  table td:nth-child(3) {
-    width: 18%;
-  }
-  table td:nth-child(4) {
-    width: 10%;
-    text-align: center;
-  }
-
-  /* hlavička tabuľky */
-  table th {
-    font-size: 11px;
-    font-weight: 600;
-    text-shadow: 0 0 2px rgba(0, 255, 255, 0.2);
-  }
-
-  /* dátumové riadky */
-  table tr td[colspan="4"] {
-    font-size: 13px;
-    font-weight: 600;
-    text-align: center;
-    background: linear-gradient(90deg, rgba(0,255,255,0.1), rgba(0,255,255,0.05));
-    color: #44eaff;
-    border-radius: 4px;
-    padding: 8px 0;
-  }
-
-  /* nadpis sekcie */
-  h2 {
-    font-size: 17px;
-    text-shadow: 0 0 4px rgba(0, 255, 255, 0.4);
-    margin-bottom: 10px;
-  }
-
-  /* zabráni horizontálnemu posúvaniu */
-  body, .section {
-    overflow-x: hidden;
-  }
-}
-
-/* === Oprava pre mobil: zobraz celé názvy tímov === */
-@media (max-width: 768px) {
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-  }
-
-  table th, table td {
-    font-size: 12px;
-    font-weight: 400;
-    padding: 5px 3px;
-    white-space: nowrap;
-    overflow: visible !important; /* ← zobrazí celý text */
-    text-overflow: unset !important; /* ← žiadne „…“ */
-    text-shadow: none;
-    vertical-align: middle;
-  }
-
-  table td:nth-child(1),
-  table td:nth-child(2) {
-    width: 35%;
-  }
-
-  table td:nth-child(3) {
-    width: 20%;
-    text-align: center;
-  }
-
-  table td:nth-child(4) {
-    width: 10%;
-    text-align: center;
-  }
-
-  table th {
-    font-size: 11px;
-    font-weight: 600;
-    text-shadow: 0 0 2px rgba(0, 255, 255, 0.2);
-  }
-
-  /* Hlavička stĺpcov (DOMÁCI / HOSTIA / SKÓRE / STATUS) */
-  table thead th {
-    white-space: nowrap;
-    text-overflow: clip;
-  }
-
-  h2 {
-    font-size: 17px;
-    text-shadow: 0 0 3px rgba(0, 255, 255, 0.3);
-  }
-
-  body, .section {
-    overflow-x: hidden;
-  }
-}
-
-/* === MOBILNÁ OPRAVA PRE TABUĽKU ZÁPASOV === */
-@media (max-width: 768px) {
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-  }
-
-  table th, table td {
-    font-size: 12px; /* menšie, ale stále čitateľné */
-    font-weight: 400;
-    padding: 5px 4px;
-    text-shadow: none;
-    line-height: 1.2;
-    word-break: keep-all;      /* nezlomí jednoslovné */
-    white-space: normal;       /* ale dovolí viacslovné pod seba */
-    text-align: left;
-    vertical-align: middle;
-  }
-
-  /* DOMÁCI / HOSTIA menšie a čitateľnejšie */
-  table th {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 6px 2px;
-    text-shadow: 0 0 2px rgba(0, 255, 255, 0.25);
-  }
-
-  /* Stĺpce rozložené rozumne */
-  table td:nth-child(1) { width: 38%; } /* domáci */
-  table td:nth-child(2) { width: 38%; } /* hostia */
-  table td:nth-child(3) { width: 14%; text-align: center; } /* skóre */
-  table td:nth-child(4) { width: 10%; text-align: center; } /* status */
-
-  /* Nadpis (napr. VÝSLEDKY) */
-  h2 {
-    font-size: 16px;
-    text-shadow: 0 0 3px rgba(0, 255, 255, 0.3);
-  }
-
-  body, .section {
-    overflow-x: hidden;
-  }
-}
-
-/* === Fix tabuliek pre mobily (VÝSLEDKY aj STRATÉGIE) === */
-@media (max-width: 768px) {
-  /* pevné rozloženie stĺpcov a žiadny horizontálny scroll */
-  #matches table,
-  #strategiesTable,
-  .section table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse;
-  }
-
-  /* hlavička – menšia, nezalamovať */
-  #matches thead th,
-  #strategiesTable thead th,
-  .section table thead th {
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-    letter-spacing: 0.5px;
-    text-shadow: 0 0 2px rgba(0,255,255,.25);
-  }
-
-  /* bunky – menšie písmo, žiadne agresívne tieňe */
-  #matches tbody td,
-  #strategiesTable tbody td,
-  .section table tbody td {
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.25;
-    padding: 8px 6px;
-    text-shadow: none;
-    overflow: hidden;
-  }
-
-  /* rozdelenie stĺpcov v “VÝSLEDKY”: domáci / hostia / skóre / status */
-  #matches tbody td:nth-child(1) { width: 42%; } /* domáci */
-  #matches tbody td:nth-child(2) { width: 38%; } /* hostia */
-  #matches tbody td:nth-child(3) { width: 12%; text-align:center; } /* skóre */
-  #matches tbody td:nth-child(4) { width: 8%;  text-align:center; } /* status */
-
-  /* rozdelenie stĺpcov v tabuľke stratégií (ak používaš 5 stĺpcov) */
-  #strategiesTable tbody td:nth-child(1) { width: 22%; } /* dátum */
-  #strategiesTable tbody td:nth-child(2) { width: 44%; } /* zápas */
-  #strategiesTable tbody td:nth-child(3) { width: 12%; text-align:center; } /* 2+ góly */
-  #strategiesTable tbody td:nth-child(4) { width: 12%; text-align:center; } /* výsledok */
-  #strategiesTable tbody td:nth-child(5) { width: 10%; text-align:right;  } /* zisk */
-
-  /* ====== KĽÚČOVÉ: správanie názvov tímov ====== */
-  /* jednoslovné nikdy nelám – viacslovné môžu na MEDZERE */
-  #matches tbody td:nth-child(1),
-  #matches tbody td:nth-child(2),
-  #strategiesTable tbody td:nth-child(2) {
-    white-space: normal;         /* umožní zalomenie na medzere */
-    overflow-wrap: normal;       /* neláma uprostred slova */
-    word-break: keep-all;        /* drž spolu jednoslovné názvy */
-  }
-
-  /* dátumový pás – nech sa text nezalamuje do dvoch riadkov */
-  .day-row, .round-row, .date-row {
-    white-space: nowrap;
-    font-size: 13px !important;
-  }
-
-  /* pre istotu – žiadny horizontálny scroll tela */
-  html, body { overflow-x: hidden; }
-}
-
-/* === Final mobilný layout tabuliek (vysledky, strategie) === */
-@media (max-width: 768px) {
-  #matches table,
-  #strategiesTable {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse;
-  }
-
-  #matches thead th,
-  #strategiesTable thead th {
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-    text-shadow: 0 0 2px rgba(0,255,255,0.25);
-    letter-spacing: 0.5px;
-  }
-
-  #matches tbody td,
-  #strategiesTable tbody td {
-    font-size: 14px;
-    font-weight: 500;
-    padding: 6px 4px;
-    line-height: 1.2;
-    text-shadow: none;
-  }
-
-  /* ===== Rozloženie stĺpcov pre výsledky ===== */
-  #matches tbody td:nth-child(1) { 
-    width: 40%; 
-    text-align: right; 
-    padding-right: 6px;
-  } /* domáci */
-
-  #matches tbody td:nth-child(2) { 
-    width: 40%; 
-    text-align: left; 
-    padding-left: 6px;
-  } /* hostia */
-
-  #matches tbody td:nth-child(3) { 
-    width: 12%; 
-    text-align: right; 
-    padding-right: 4px;
-  } /* skóre */
-
-  #matches tbody td:nth-child(4) { 
-    width: 8%; 
-    text-align: right;
-    padding-right: 2px;
-  } /* status */
-
-  /* === aby názvy tímov sedeli vedľa seba a nelámali sa uprostred === */
-  #matches tbody td:nth-child(1),
-  #matches tbody td:nth-child(2) {
-    white-space: normal;
-    word-break: keep-all;
-    overflow-wrap: normal;
-  }
-
-  /* Dátumový riadok */
-  .day-row, .round-row {
-    font-size: 13px !important;
-    white-space: nowrap;
-    text-align: center;
-  }
-
-  html, body {
-    overflow-x: hidden;
-  }
-}
-
-/* === Finálne zarovnanie a rozostupy v mobilnom zobrazení === */
-@media (max-width: 768px) {
-  #matches table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse;
-  }
-
-  /* Nadpisy tabuľky */
-  #matches thead th {
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-    text-shadow: 0 0 2px rgba(0,255,255,0.25);
-    letter-spacing: 0.5px;
-    padding: 8px 4px;
-    text-align: center;
-  }
-
-  /* Bunky tabuľky */
-  #matches tbody td {
-    font-size: 14px;
-    font-weight: 500;
-    padding: 10px 4px;
-    line-height: 1.3;
-    text-shadow: none;
-    border-bottom: 1px solid rgba(0,255,255,0.05);
-    vertical-align: middle;
-  }
-
-  /* Stĺpce - presné zarovnanie */
-  #matches tbody td:nth-child(1) {
-    width: 37%;
-    text-align: right;
-    padding-right: 8px;
-  } /* DOMÁCI */
-
-  #matches tbody td:nth-child(2) {
-    width: 37%;
-    text-align: left;
-    padding-left: 8px;
-  } /* HOSTIA */
-
-  #matches tbody td:nth-child(3) {
-    width: 16%;
-    text-align: center;
-  } /* SKÓRE */
-
-  #matches tbody td:nth-child(4) {
-    width: 10%;
-    text-align: center;
-  } /* STATUS */
-
-  /* Zákaz zalamovania názvov tímov */
-  #matches tbody td:nth-child(1),
-  #matches tbody td:nth-child(2) {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /* Väčší odstup medzi zápasmi */
-  #matches tbody tr:not(.round-row):not(.day-row) {
-    border-spacing: 0 10px;
-  }
-
-  /* Dátumový riadok */
-  .day-row {
-    font-size: 13px !important;
-    white-space: nowrap;
-    text-align: center;
-    padding: 6px 0 !important;
-  }
-
-  html, body {
-    overflow-x: hidden;
-  }
-}
-
-/* === Finálne mobilné zarovnanie výsledkov === */
-@media (max-width: 768px) {
-  #matches table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse;
-  }
-
-  #matches thead th {
-    font-size: 12px;
-    font-weight: 600;
-    text-align: center;
-    letter-spacing: 0.3px;
-    padding: 6px 2px;
-    white-space: nowrap;
-    text-shadow: 0 0 2px rgba(0,255,255,0.3);
-  }
-
-  #matches tbody td {
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 1.4;
-    vertical-align: middle;
-    text-shadow: none;
-    padding: 8px 3px;
-  }
-
-  /* DOMÁCI */
-  #matches tbody td:nth-child(1) {
-    width: 35%;
-    text-align: right;
-    padding-right: 6px;
-  }
-
-  /* HOSTIA */
-  #matches tbody td:nth-child(2) {
-    width: 35%;
-    text-align: left;
-    padding-left: 6px;
-  }
-
-  /* SKÓRE */
-  #matches tbody td:nth-child(3) {
-    width: 18%;
-    text-align: center;
-  }
-
-  /* STATUS */
-  #matches tbody td:nth-child(4) {
-    width: 12%;
-    text-align: center;
-  }
-
-  /* Názvy tímov – nech sa nezalomujú jednoslovné a dvojslovné len ak treba */
-  #matches tbody td:nth-child(1),
-  #matches tbody td:nth-child(2) {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /* Väčšie vertikálne rozostupy medzi zápasmi */
-  #matches tbody tr:not(.day-row) {
-    border-bottom: 1px solid rgba(0,255,255,0.08);
-  }
-
-  /* Riadok s dátumom */
-  .day-row td {
-    text-align: center;
-    padding: 6px 0;
-    font-size: 13px;
-    white-space: nowrap;
-  }
-
-  html, body {
-    overflow-x: hidden;
-  }
-}
-
-@media (max-width: 768px) {
-  #matches table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: auto; /* ✅ nech sa šírka prispôsobí obsahu */
-  }
-
-  #matches thead th {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 6px 4px;
-    text-align: center;
-    white-space: nowrap;
-  }
-
-  #matches tbody td {
-    font-size: 13px;
-    padding: 6px 4px;
-    line-height: 1.3;
-    white-space: normal; /* ✅ povolí dvojslovné zalomenie */
-    word-break: keep-all; /* ✅ nerozdelí jednoslovné názvy */
-    overflow: visible;
-  }
-
-  #matches tbody td:nth-child(1),
-  #matches tbody td:nth-child(2) {
-    width: 38%; /* viac miesta pre názvy tímov */
-  }
-
-  #matches tbody td:nth-child(3) {
-    width: 14%;
-    text-align: center;
-  }
-
-  #matches tbody td:nth-child(4) {
-    width: 10%;
-    text-align: center;
-  }
-
-  /* Lepšie zarovnanie textu */
-  #matches tbody td:nth-child(1) {
-    text-align: right;
-    padding-right: 8px;
-  }
-
-  #matches tbody td:nth-child(2) {
-    text-align: left;
-    padding-left: 8px;
-  }
-
-  /* Väčšie medzery medzi riadkami */
-  #matches tbody tr:not(.day-row) {
-    border-bottom: 1px solid rgba(0,255,255,0.1);
-  }
-
-  .day-row td {
-    font-size: 13px;
-    text-align: center;
-    padding: 8px 0;
-  }
-
-  html, body {
-    overflow-x: hidden;
-  }
-}
-
-/* === Mobilná úprava výsledkov – fix názvov tímov a zarovnania === */
-@media (max-width: 768px) {
-  #matches table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-  }
-
-  #matches thead th {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 6px 4px;
-    text-align: center;
-    white-space: nowrap;
-  }
-
-  #matches tbody td {
-    font-size: 13px;
-    padding: 6px 6px;
-    line-height: 1.3;
-    white-space: normal;
-    word-break: normal;
-    overflow: visible;
-  }
-
-  /* viac miesta pre názvy tímov */
-  #matches tbody td:nth-child(1),
-  #matches tbody td:nth-child(2) {
-    width: 33%;
-  }
-
-  /* zarovnanie a rozloženie */
-  #matches tbody td:nth-child(1) {
-    text-align: right;
-    padding-right: 8px;
-  }
-
-  #matches tbody td:nth-child(2) {
-    text-align: left;
-    padding-left: 8px;
-  }
-
-  #matches tbody td:nth-child(3) {
-    width: 18%;
-    text-align: center;
-  }
-
-  #matches tbody td:nth-child(4) {
-    width: 10%;
-    text-align: center;
-  }
-
-  /* fix zlievania textu pri dlhých názvoch */
-  #matches td {
-    word-break: keep-all;
-    white-space: nowrap;
-  }
-
-  /* dvojslovné názvy tímov sa môžu zalomiť pod seba */
-  #matches td:has(span) span {
-    display: inline-block;
-    white-space: normal;
-    word-break: keep-all;
-  }
-
-  /* menšie medzery medzi riadkami */
-  #matches tbody tr:not(.day-row) {
-    border-bottom: 1px solid rgba(0,255,255,0.15);
-  }
-
-  .day-row td {
-    font-size: 13px;
-    text-align: center;
-    padding: 8px 0;
-  }
-
-  /* zabráni horizontálnemu posunu */
-  html, body {
-    overflow-x: hidden;
-  }
-}
-
-/* === Mobilný FIX: zarovnanie a čitateľnosť výsledkov === */
-@media (max-width: 768px) {
-  #matches table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: auto;
-  }
-
-  #matches thead th {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 6px 4px;
-    text-align: center;
-    white-space: nowrap;
-    letter-spacing: 0.5px;
-  }
-
-  #matches tbody td {
-    font-size: 13px;
-    padding: 8px 6px;
-    line-height: 1.2;
-    white-space: nowrap;
-    text-align: center;
-  }
-
-  /* menšie písmo pre dlhé názvy tímov */
-  #matches tbody td:nth-child(1),
-  #matches tbody td:nth-child(2) {
-    font-size: 12px;
-    max-width: 120px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /* ak sú názvy dlhé, nech sa zalomia pod seba len pri dvoj-slovných */
-  #matches tbody td:nth-child(1),
-  #matches tbody td:nth-child(2) {
-    white-space: normal;
-    word-break: keep-all;
-  }
-
-  #matches tbody td:nth-child(3) {
-    width: 15%;
-    text-align: center;
-    padding: 6px 0;
-  }
-
-  #matches tbody td:nth-child(4) {
-    width: 12%;
-    text-align: center;
-    padding: 6px 0;
-  }
-
-  /* vizuálne oddelenie riadkov */
-  #matches tbody tr {
-    border-bottom: 1px solid rgba(0,255,255,0.1);
-  }
-
-  /* väčšie medzery medzi zápasmi */
-  #matches tbody tr td {
-    padding-top: 6px;
-    padding-bottom: 6px;
-  }
-
-  /* dátumové hlavičky */
-  .day-row td {
-    font-size: 13px;
-    text-align: center;
-    padding: 8px 0;
-    background: rgba(0, 255, 255, 0.08);
-    border-radius: 4px;
-    color: #32e0ff;
-    font-weight: 600;
-  }
-
-  /* zabráni zlievaniu písmen */
-  html, body {
-    overflow-x: hidden;
-    word-spacing: 1px;
-    letter-spacing: 0.2px;
-  }
-}
-
-/* === Mobilná úprava vzhľadu výsledkov === */
-@media (max-width: 768px) {
-  /* Dátumové bloky – tenšie a kompaktnejšie */
-  .day-row td {
-    font-size: 13px;
-    text-align: center;
-    padding: 5px 0;
-    background: linear-gradient(90deg, rgba(0,255,255,0.05), rgba(0,255,255,0.1));
-    border-radius: 4px;
-    color: #32e0ff;
-    font-weight: 600;
-    margin: 0;
-  }
-
-  /* Riadky zápasov – o niečo vyššie a čitateľnejšie */
-  #matches tbody tr {
-    border-bottom: 1px solid rgba(0,255,255,0.05);
-    background: linear-gradient(90deg, rgba(0,255,255,0.02), rgba(0,255,255,0.03));
-    transition: background 0.2s ease;
-  }
-
-  #matches tbody tr:hover {
-    background: linear-gradient(90deg, rgba(0,255,255,0.08), rgba(0,255,255,0.1));
-  }
-
-  #matches tbody td {
-    font-size: 13px;
-    padding: 10px 6px; /* vyšší riadok */
-    line-height: 1.3;
-    white-space: nowrap;
-    text-align: center;
-  }
-
-  /* názvy tímov – mierne viac miesta a plynule zarovnanie */
-  #matches tbody td:nth-child(1),
-  #matches tbody td:nth-child(2) {
-    font-size: 12.5px;
-    white-space: normal;
-    word-break: keep-all;
-    text-align: left;
-    padding-left: 8px;
-  }
-
-  #matches tbody td:nth-child(3) {
-    width: 15%;
-    text-align: center;
-  }
-
-  #matches tbody td:nth-child(4) {
-    width: 12%;
-    text-align: center;
-  }
-
-  /* jemné oddelenie medzi zápasmi */
-  #matches tbody tr + tr td {
-    border-top: 1px solid rgba(0,255,255,0.07);
-  }
-
-  /* väčší kontrast pre prehľadnosť */
-  #matches {
-    border-radius: 6px;
-    overflow: hidden;
-  }
-}
-
-.players-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-  font-family: 'Roboto', sans-serif;
-  font-size: 15px;
-  color: #e8f7ff;
-  background: rgba(0, 20, 30, 0.5);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.players-table th, .players-table td {
-  padding: 10px 8px;
-  text-align: left;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-  vertical-align: middle;
-}
-
-.players-table th {
-  background: rgba(0, 60, 80, 0.8);
-  color: #00ffff;
-  text-transform: uppercase;
-  font-weight: 600;
-  font-size: 13px;
-}
-
-.players-table tr:hover {
-  background: rgba(0, 255, 255, 0.08);
-}
-
-.flag {
-  width: 24px;
-  height: 18px;
-  vertical-align: middle;
-  margin-right: 5px;
-  border-radius: 3px;
-  box-shadow: 0 0 2px rgba(0,0,0,0.3);
-}
-
-/* 🔹 Mobilná verzia – tabuľka sa nezväčší mimo obrazovku */
-@media (max-width: 768px) {
-  .players-table {
-    font-size: 13px;
-  }
-  .players-table th:nth-child(1),
-  .players-table td:nth-child(1) {
-    width: 30px;
-  }
-  .players-table th:nth-child(3),
-  .players-table td:nth-child(3) {
-    width: 120px;
-  }
-  .players-table th:nth-child(4),
-  .players-table td:nth-child(4) {
-    width: 100px;
-  }
-  .players-table th:nth-child(2),
-  .players-table td:nth-child(2) {
-    white-space: normal;
-  }
-}
-
-/* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
-@media (max-width: 768px) {
-  nav {
-    display: none !important;
-  }
-  .mobile-menu {
-    display: block !important;
-    margin: 1rem auto;
-    text-align: center;
-  }
-}
-
-
-
-
-
-
