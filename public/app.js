@@ -201,7 +201,7 @@ function displayMatches(matches) {
       month: "2-digit",
       year: "numeric",
     });
-    dateRow.innerHTML = `<td colspan="4"><b>${formatted}</b></td>`;
+    dateRow.innerHTML = `<td colspan="4" class="date-header">${formatted}</td>`;
     tableBody.appendChild(dateRow);
 
     grouped[day].forEach(match => {
