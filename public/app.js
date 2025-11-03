@@ -602,7 +602,7 @@ document
   ?.addEventListener("click", displayPredictions);
 
 // === Štart ===
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded",  async () => {
   await loadPlayerTeams();
   fetchMatches();
   displayPredictions(); // 🔹 pridaj túto funkciu
