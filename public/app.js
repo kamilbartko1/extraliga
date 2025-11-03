@@ -440,12 +440,40 @@ async function displayStrategies() {
     table.className = "players-table";
 
     const getFlag = (code) => {
-      const c = String(code).trim().toUpperCase();
-      if (!c) return "";
-      // Používame oficiálne SVG vlajky z flagcdn
-      return `<img src="https://flagcdn.com/24x18/${c.slice(0, 2).toLowerCase()}.png" 
-               alt="${c}" title="${c}" class="flag">`;
-    };
+  if (!code) return "";
+
+  const map = {
+    CAN: "ca",
+    USA: "us",
+    RUS: "ru",
+    SWE: "se",
+    FIN: "fi",
+    DNK: "dk",
+    CZE: "cz",
+    SVK: "sk",
+    GER: "de",
+    SUI: "ch",
+    NOR: "no",
+    AUT: "at",
+    LVA: "lv",
+    EST: "ee",
+    FRA: "fr",
+    GBR: "gb",
+    AUS: "au",
+  };
+
+  const c = String(code).trim().toUpperCase();
+  const iso2 = map[c] || c.slice(0, 2).toLowerCase();
+
+  return `
+    <img 
+      src="https://flagcdn.com/24x18/${iso2}.png" 
+      alt="${c}" 
+      title="${c}" 
+      class="flag" 
+      onerror="this.style.display='none'">
+  `;
+};
 
     table.innerHTML = `
       <thead>
