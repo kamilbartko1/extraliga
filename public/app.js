@@ -3,6 +3,7 @@
 let teamRatings = {};
 let playerRatings = {};
 let allMatches = [];
+let playerTeams = {}; // mapovanie priezvisko → tím
 
 const BASE_STAKE = 1;
 const ODDS = 2.5;
@@ -237,6 +238,24 @@ function displayTeamRatings() {
   });
 }
 
+// Načítaj lokálnu databázu hráčov
+async function loadPlayerTeams() {
+  try {
+    const resp = await fetch("/data/nhl_players.json");
+    const players = await resp.json();
+
+    playerTeams = players.reduce((acc, p) => {
+      const last = String(p.lastName || "").trim().toLowerCase();
+      if (last) acc[last] = p.team || "";
+      return acc;
+    }, {});
+
+    console.log("✅ Načítané tímy pre hráčov:", Object.keys(playerTeams).length);
+  } catch (err) {
+    console.warn("⚠️ Nepodarilo sa načítať /data/nhl_players.json:", err.message);
+  }
+}
+
 // === Rating hráčov ===
 function displayPlayerRatings() {
   const tableBody = document.querySelector("#playerRatings tbody");
@@ -253,9 +272,20 @@ function displayPlayerRatings() {
   tableBody.innerHTML = ""; // vyčisti tabuľku
 
   sorted.forEach(([player, rating], index) => {
+    // 🔹 zisti priezvisko (posledné slovo v mene)
+    const parts = player.split(" ");
+    const lastName = parts[parts.length - 1].replace(/\./g, "").toLowerCase();
+
+    // 🔹 z databázy (globálna premená playerTeams)
+    const team = playerTeams && playerTeams[lastName] ? playerTeams[lastName] : "";
+
+    // 🔹 vytvor riadok tabuľky
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${index + 1}. ${player}</td>
+      <td>
+        ${index + 1}. ${player}
+        ${team ? `<span style="color:#999; font-size:0.9em;"> (${team})</span>` : ""}
+      </td>
       <td>${rating}</td>
     `;
     tableBody.appendChild(row);
@@ -573,6 +603,7 @@ document
 
 // === Štart ===
 window.addEventListener("DOMContentLoaded", () => {
+  await loadPlayerTeams();
   fetchMatches();
   displayPredictions(); // 🔹 pridaj túto funkciu
   displayStrategies();
