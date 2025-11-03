@@ -1,12 +1,15 @@
 // /api/mantingal.js
+import fs from "fs/promises";
+import path from "path";
+
 export default async function handler(req, res) {
   try {
-    const FIXED_ODDS = 2.2;  // kurz pre výhru
-    const BASE_STAKE = 1;    // základná stávka v eurách
+    const FIXED_ODDS = 2.2;
+    const BASE_STAKE = 1;
 
     console.log("🏁 Spúšťam Mantingal výpočet...");
 
-    // 1️⃣ Získaj Top10 hráčov z tvojho backendu
+    // 🟢 1️⃣ Načítaj Top10 hráčov
     const matchesResp = await fetch("https://nhlpro.sk/api/matches", { cache: "no-store" });
     if (!matchesResp.ok) throw new Error("Nepodarilo sa načítať zápasy z /api/matches");
     const matchesData = await matchesResp.json();
@@ -23,19 +26,18 @@ export default async function handler(req, res) {
         lastResult: "-",
       }));
 
-    // 2️⃣ Zisti včerajší dátum
+    // 🟢 2️⃣ Zisti včerajší dátum
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const dateStr = yesterday.toISOString().slice(0, 10);
-    console.log("📅 Kontrolujem dátum:", dateStr);
 
-    // 3️⃣ Načítaj všetky zápasy z včerajška
+    // 🟢 3️⃣ Načítaj včerajšie zápasy
     const scoreResp = await fetch(`https://api-web.nhle.com/v1/score/${dateStr}`);
     if (!scoreResp.ok) throw new Error("Nepodarilo sa načítať včerajšie zápasy");
     const scoreData = await scoreResp.json();
     const games = Array.isArray(scoreData.games) ? scoreData.games : [];
 
-    // 4️⃣ Získaj všetkých hráčov a strelcov z boxscore
+    // 🟢 4️⃣ Hráči a strelci
     const scorers = new Set();
     const playedPlayers = new Set();
 
@@ -64,7 +66,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // 5️⃣ Mantingal výpočet pre top10
+    // 🟢 5️⃣ Mantingal výpočet
     let totalProfit = 0;
 
     for (const player of top10) {
@@ -79,7 +81,6 @@ export default async function handler(req, res) {
       );
 
       if (!played) {
-        // hráč nenastúpil
         player.lastResult = "skip";
         player.stake = BASE_STAKE;
         continue;
@@ -99,7 +100,39 @@ export default async function handler(req, res) {
       }
     }
 
-    // 6️⃣ Výsledok
+    // 🟢 6️⃣ Uloženie do súboru data/mantingal.json
+    const filePath = path.join(process.cwd(), "data", "mantingal.json");
+
+    // načítaj existujúci obsah (ak existuje)
+    let current = { history: [] };
+    try {
+      const content = await fs.readFile(filePath, "utf-8");
+      current = JSON.parse(content);
+    } catch {
+      console.log("🆕 Vytváram nový súbor mantingal.json");
+    }
+
+    // pridaj nové záznamy
+    for (const player of top10) {
+      current.history.push({
+        day: dateStr,
+        name: player.name,
+        stake: player.stake,
+        result: player.lastResult,
+        profitAfter: player.profit,
+      });
+    }
+
+    // zachovaj len posledných 500 záznamov
+    if (current.history.length > 500) {
+      current.history = current.history.slice(-500);
+    }
+
+    // zapíš späť
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, JSON.stringify(current, null, 2), "utf-8");
+
+    // 🟢 7️⃣ Výsledok
     return res.status(200).json({
       ok: true,
       dateChecked: dateStr,
@@ -107,6 +140,8 @@ export default async function handler(req, res) {
       scorers: scorers.size,
       players: top10,
       totalProfit: totalProfit.toFixed(2),
+      saved: true,
+      file: "/data/mantingal.json",
     });
   } catch (err) {
     console.error("❌ Mantingal chyba:", err);
