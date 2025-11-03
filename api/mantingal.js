@@ -154,21 +154,21 @@ export default async function handler(req, res) {
       }
     }
 
-    // 6️⃣ Uloženie do Upstash Redis (história)
-    // Každého hráča zapíšeme ako 1 "bet" (najnovšie idú na začiatok listu).
-    const ts = new Date().toISOString();
+    // 6️⃣ (Dočasne vypnuté) Ukladanie do Upstash Redis
+console.log("🧩 Testovací režim: žiadne dáta sa nezapisujú do Upstash.");
 
-    for (const player of top10) {
-      const bet = {
-        day: dateStr,
-        name: player.name,
-        stake: player.stake,          // POZOR: toto je už "next stake" po výpočte; ak chceš uložiť "pôvodný stake", ulož si ho do pomocnej premennej pred výpočtom
-        result: player.lastResult,
-        profitAfter: Number(player.profit.toFixed(4)),
-        ts
-      };
-      await redisLPushJSON(KV_BETS_KEY, bet);
-    }
+const ts = new Date().toISOString();
+const previewBets = top10.map(p => ({
+  day: dateStr,
+  name: p.name,
+  stake: p.stake,
+  result: p.lastResult,
+  profitAfter: Number(p.profit.toFixed(4)),
+  ts
+}));
+
+// len pre náhľad – nič sa nezapisuje
+console.log("📊 Náhľad betov:", previewBets.length, "hráčov");
 
     // udrž posledných 5000 záznamov
     await redisLTrim(KV_BETS_KEY, 0, BETS_CAP - 1);
