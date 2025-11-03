@@ -292,6 +292,156 @@ function displayPlayerRatings() {
   });
 }
 
+// === Mantingal sekcia (nová verzia) ===
+async function displayMantingal() {
+  const container = document.getElementById("mantingal-container");
+  if (!container) return;
+
+  container.innerHTML = "<h2>Mantingal stratégia</h2><p>Načítavam dáta...</p>";
+
+  try {
+    const resp = await fetch("/api/mantingal", { cache: "no-store" });
+    const data = await resp.json();
+
+    if (!data.ok || !Array.isArray(data.players)) {
+      container.innerHTML = "<p>❌ Nepodarilo sa načítať dáta Mantingal.</p>";
+      return;
+    }
+
+    const { players, dateChecked, totalGames, scorers } = data;
+    // 🔹 Spočítaj sumár Mantingal dňa
+    const totalBets = players.length; // každý hráč = 1 stávka
+    const totalProfit = players.reduce((sum, p) => sum + p.profit, 0);
+    const roi = ((totalProfit / (totalBets * 1)) * 100).toFixed(1); // ak je base stake 1€
+
+    // Info o spracovaní
+    let html = `
+      <h2>Martingale stratégia</h2>
+      <p><b>Dátum:</b> ${dateChecked}</p>
+      <p><b>Počet zápasov:</b> ${totalGames}</p>
+      <p><b>Počet strelcov:</b> ${scorers}</p>
+      <p><b>Počet stávok:</b> ${totalBets}</p>
+      <p><b>Celkový zisk:</b> <span style="color:${totalProfit >= 0 ? "limegreen" : "red"}">
+        ${totalProfit.toFixed(2)} €
+      </span></p>
+      <p><b>ROI:</b> <span style="color:${roi >= 0 ? "limegreen" : "red"}">${roi}%</span></p>
+      <table>
+        <thead>
+          <tr>
+            <th>Hráč</th>
+            <th>Stávka (€)</th>
+            <th>Zisk (€)</th>
+            <th>Streak</th>
+            <th>Výsledok</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    players.forEach((p) => {
+      html += `
+        <tr>
+          <td>${p.name}</td>
+          <td>${p.stake.toFixed(2)}</td>
+          <td style="color:${p.profit >= 0 ? "limegreen" : "red"}">${p.profit.toFixed(2)}</td>
+          <td>${p.streak}</td>
+          <td>
+  ${
+    p.lastResult === "win"
+      ? "✅"
+      : p.lastResult === "loss"
+      ? "❌"
+      : p.lastResult === "skip"
+      ? "⏸️"
+      : "-"
+  }
+</td>
+
+        </tr>
+      `;
+    });
+
+    html += `
+        </tbody>
+      </table>
+    `;
+
+    container.innerHTML = html;
+  } catch (err) {
+    container.innerHTML = `<p>❌ Chyba: ${err.message}</p>`;
+  }
+}
+
+// === História stávok Mantingalu (vložená pod Mantingal tabuľku) ===
+async function displayMantingalHistory() {
+  const mainContainer = document.getElementById("mantingal-container");
+  if (!mainContainer) return;
+
+  // vytvor nový blok pre históriu
+  const historyDiv = document.createElement("div");
+  historyDiv.id = "mantingal-history";
+  historyDiv.innerHTML = "<h3>História stávok Mantingalu</h3><p>Načítavam dáta...</p>";
+  mainContainer.appendChild(historyDiv);
+
+  try {
+    const resp = await fetch("/api/mantingal?action=history&limit=50");
+    const data = await resp.json();
+
+    if (!data.ok || !Array.isArray(data.bets)) {
+      historyDiv.innerHTML = "<p>❌ Nepodarilo sa načítať históriu stávok.</p>";
+      return;
+    }
+
+    const bets = data.bets;
+    if (!bets.length) {
+      historyDiv.innerHTML = "<h3>História stávok Mantingalu</h3><p>Zatiaľ žiadne dáta.</p>";
+      return;
+    }
+
+    // vytvor tabuľku
+    let html = `
+      <h3>História stávok Mantingalu</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Dátum</th>
+            <th>Hráč</th>
+            <th>Výsledok</th>
+            <th>Stávka (€)</th>
+            <th>Profit po (€)</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    bets.forEach(b => {
+      const resultIcon =
+        b.result === "win"
+          ? "✅"
+          : b.result === "loss"
+          ? "❌"
+          : b.result === "skip"
+          ? "⏸️"
+          : "-";
+
+      html += `
+        <tr class="${b.result}">
+          <td>${new Date(b.ts).toLocaleString("sk-SK")}</td>
+          <td>${b.name}</td>
+          <td>${resultIcon}</td>
+          <td>${b.stake.toFixed(2)}</td>
+          <td style="color:${b.profitAfter >= 0 ? "limegreen" : "red"}">${b.profitAfter.toFixed(2)}</td>
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+    historyDiv.innerHTML = html;
+  } catch (err) {
+    historyDiv.innerHTML = `<p>❌ Chyba: ${err.message}</p>`;
+  }
+}
+
 // === Tipovacie stratégie (zobrazenie databázy hráčov) ===
 async function displayStrategies() {
   const wrap = document.getElementById("strategies-section");
