@@ -2199,6 +2199,21 @@ nav button:hover::after {
   }
 }
 
+#mantingal-history table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: .5rem;
+}
+#mantingal-history th, #mantingal-history td {
+  padding: .4rem .6rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  text-align: left;
+}
+#mantingal-history tr.win { background: rgba(0,255,0,0.05); }
+#mantingal-history tr.loss { background: rgba(255,0,0,0.05); }
+#mantingal-history tr.skip { background: rgba(255,255,0,0.05); }
+#mantingal-history h2 { margin-bottom: .3rem; }
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {

@@ -342,6 +342,72 @@ async function displayMantingal() {
   }
 }
 
+// === História stávok Mantingalu ===
+async function displayMantingalHistory() {
+  const container = document.getElementById("mantingal-history");
+  if (!container) return;
+
+  container.innerHTML = "<h2>História stávok Mantingalu</h2><p>Načítavam dáta...</p>";
+
+  try {
+    const resp = await fetch("/api/mantingal?action=history&limit=50");
+    const data = await resp.json();
+
+    if (!data.ok || !Array.isArray(data.bets)) {
+      container.innerHTML = "<p>❌ Nepodarilo sa načítať históriu stávok.</p>";
+      return;
+    }
+
+    const bets = data.bets;
+    if (!bets.length) {
+      container.innerHTML = "<h2>História stávok Mantingalu</h2><p>Zatiaľ žiadne dáta.</p>";
+      return;
+    }
+
+    // vytvor tabuľku
+    let html = `
+      <h2>História stávok Mantingalu</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Dátum</th>
+            <th>Hráč</th>
+            <th>Výsledok</th>
+            <th>Stávka (€)</th>
+            <th>Profit po (€)</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    bets.forEach(b => {
+      const resultIcon =
+        b.result === "win"
+          ? "✅"
+          : b.result === "loss"
+          ? "❌"
+          : b.result === "skip"
+          ? "⏸️"
+          : "-";
+
+      html += `
+        <tr class="${b.result}">
+          <td>${new Date(b.ts).toLocaleString("sk-SK")}</td>
+          <td>${b.name}</td>
+          <td>${resultIcon}</td>
+          <td>${b.stake.toFixed(2)}</td>
+          <td style="color:${b.profitAfter >= 0 ? "limegreen" : "red"}">${b.profitAfter.toFixed(2)}</td>
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+  } catch (err) {
+    container.innerHTML = `<p>❌ Chyba: ${err.message}</p>`;
+  }
+}
+
 // === Tipovacie stratégie (zobrazenie databázy hráčov) ===
 async function displayStrategies() {
   const wrap = document.getElementById("strategies-section");
@@ -479,4 +545,5 @@ window.addEventListener("DOMContentLoaded", () => {
   displayPredictions(); // 🔹 pridaj túto funkciu
   displayStrategies();
   displayMantingal(); 
+  displayMantingalHistory();
 });
