@@ -5238,7 +5238,7 @@
   {
     "id": 8483515,
     "firstName": "Juraj",
-    "lastName": "SlafkovskĂ˝",
+    "lastName": "Slafkovský",
     "number": 20,
     "position": "L",
     "shoots": "L",
@@ -5273,7 +5273,7 @@
     "height": 185,
     "weight": 91,
     "birthDate": "2000-01-13",
-    "birthCity": "MontrĂ©al",
+    "birthCity": "Montreal",
     "country": "CAN",
     "team": "Montreal Canadiens"
   },
@@ -6946,7 +6946,7 @@
   {
     "id": 8482116,
     "firstName": "Tim",
-    "lastName": "StĂĽtzle",
+    "lastName": "Stützle",
     "number": 18,
     "position": "C",
     "shoots": "L",
