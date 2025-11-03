@@ -1,12 +1,65 @@
 // /api/mantingal.js
+// Jednoduché: výpočet + trvalá história v Upstash Redis (bez RAM, bez súborov)
+
+const USE_UPSTASH = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
+const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+const KV_BETS_KEY = "mantingal_bets_v1"; // globálny list histórie (najnovšie prvé)
+const BETS_CAP = 5000; // drž posledných 5000 záznamov
+
+// --- Upstash REST helpers (bez knižníc) ---
+async function redisLPushJSON(key, valueObj) {
+  const url = `${REDIS_URL}/lpush/${encodeURIComponent(key)}/${encodeURIComponent(JSON.stringify(valueObj))}`;
+  const resp = await fetch(url, { headers: { Authorization: `Bearer ${REDIS_TOKEN}` } });
+  if (!resp.ok) throw new Error("Upstash LPUSH error");
+}
+
+async function redisLTrim(key, start, stop) {
+  const url = `${REDIS_URL}/ltrim/${encodeURIComponent(key)}/${start}/${stop}`;
+  const resp = await fetch(url, { headers: { Authorization: `Bearer ${REDIS_TOKEN}` } });
+  if (!resp.ok) throw new Error("Upstash LTRIM error");
+}
+
+async function redisLRangeJSON(key, start, stop) {
+  const url = `${REDIS_URL}/lrange/${encodeURIComponent(key)}/${start}/${stop}`;
+  const resp = await fetch(url, { headers: { Authorization: `Bearer ${REDIS_TOKEN}` } });
+  if (!resp.ok) throw new Error("Upstash LRANGE error");
+  const data = await resp.json(); // Upstash vracia { result: [ "json", "json", ... ] }
+  const arr = data?.result || [];
+  return arr.map(s => {
+    try { return JSON.parse(s); } catch { return null; }
+  }).filter(Boolean);
+}
+
+// --- Tvoja existujúca logika (upravená len minimálne) ---
 export default async function handler(req, res) {
   try {
+    // 1) endpoint na čítanie histórie: /api/mantingal?action=history&limit=50
+    if (req.method === "GET" && (req.query.action === "history")) {
+      if (!USE_UPSTASH) {
+        return res.status(500).json({ ok: false, error: "Upstash nie je nastavený (chýba URL/TOKEN)." });
+      }
+      const limit = Math.max(1, Math.min(500, parseInt(req.query.limit || "50", 10)));
+      // LRANGE 0..limit-1 (najnovšie prvé, keďže LPUSH)
+      const bets = await redisLRangeJSON(KV_BETS_KEY, 0, limit - 1);
+      return res.status(200).json({ ok: true, bets });
+    }
+
+    // 2) hlavný výpočet ako doteraz (len na konci uložíme do Redis)
     const FIXED_ODDS = 2.2;  // kurz pre výhru
     const BASE_STAKE = 1;    // základná stávka v eurách
 
+    // ❗ Kontrola Upstash ešte pred výpočtom (nech padne hneď, ak nie je nastavený)
+    if (!USE_UPSTASH) {
+      return res.status(500).json({
+        ok: false,
+        error: "Upstash nie je nastavený. Pridaj UPSTASH_REDIS_REST_URL a UPSTASH_REDIS_REST_TOKEN do Vercel env."
+      });
+    }
+
     console.log("🏁 Spúšťam Mantingal výpočet...");
 
-    // 1️⃣ Získaj Top10 hráčov z tvojho backendu
+    // 1️⃣ Načítaj Top10 hráčov
     const matchesResp = await fetch("https://nhlpro.sk/api/matches", { cache: "no-store" });
     if (!matchesResp.ok) throw new Error("Nepodarilo sa načítať zápasy z /api/matches");
     const matchesData = await matchesResp.json();
@@ -23,19 +76,19 @@ export default async function handler(req, res) {
         lastResult: "-",
       }));
 
-    // 2️⃣ Zisti včerajší dátum
+    // 2️⃣ Včerajší dátum (UTC)
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const dateStr = yesterday.toISOString().slice(0, 10);
     console.log("📅 Kontrolujem dátum:", dateStr);
 
-    // 3️⃣ Načítaj všetky zápasy z včerajška
+    // 3️⃣ Včerajšie zápasy
     const scoreResp = await fetch(`https://api-web.nhle.com/v1/score/${dateStr}`);
     if (!scoreResp.ok) throw new Error("Nepodarilo sa načítať včerajšie zápasy");
     const scoreData = await scoreResp.json();
     const games = Array.isArray(scoreData.games) ? scoreData.games : [];
 
-    // 4️⃣ Získaj všetkých hráčov a strelcov z boxscore
+    // 4️⃣ Hráči a strelci z boxscore
     const scorers = new Set();
     const playedPlayers = new Set();
 
@@ -64,7 +117,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // 5️⃣ Mantingal výpočet pre top10
+    // 5️⃣ Mantingal výpočet
     let totalProfit = 0;
 
     for (const player of top10) {
@@ -79,7 +132,6 @@ export default async function handler(req, res) {
       );
 
       if (!played) {
-        // hráč nenastúpil
         player.lastResult = "skip";
         player.stake = BASE_STAKE;
         continue;
@@ -94,20 +146,44 @@ export default async function handler(req, res) {
       } else {
         player.profit -= player.stake;
         player.lastResult = "loss";
-        player.stake *= 2;
+        // POZOR: v pôvodnom kóde si mal logiku totalProfit -= player.stake *po* zdvojnásobení,
+        // čo nie je správne (odráža ďalší stake, nie aktuálnu stratu).
+        // Korektné je odpočítať práve prehraný stake:
         totalProfit -= player.stake;
+        player.stake *= 2;
       }
     }
 
-    // 6️⃣ Výsledok
+    // 6️⃣ Uloženie do Upstash Redis (história)
+    // Každého hráča zapíšeme ako 1 "bet" (najnovšie idú na začiatok listu).
+    const ts = new Date().toISOString();
+
+    for (const player of top10) {
+      const bet = {
+        day: dateStr,
+        name: player.name,
+        stake: player.stake,          // POZOR: toto je už "next stake" po výpočte; ak chceš uložiť "pôvodný stake", ulož si ho do pomocnej premennej pred výpočtom
+        result: player.lastResult,
+        profitAfter: Number(player.profit.toFixed(4)),
+        ts
+      };
+      await redisLPushJSON(KV_BETS_KEY, bet);
+    }
+
+    // udrž posledných 5000 záznamov
+    await redisLTrim(KV_BETS_KEY, 0, BETS_CAP - 1);
+
+    // 7️⃣ Odpoveď
     return res.status(200).json({
       ok: true,
       dateChecked: dateStr,
       totalGames: games.length,
       scorers: scorers.size,
       players: top10,
-      totalProfit: totalProfit.toFixed(2),
+      totalProfit: Number(totalProfit.toFixed(2)),
+      savedTo: KV_BETS_KEY
     });
+
   } catch (err) {
     console.error("❌ Mantingal chyba:", err);
     return res.status(500).json({ ok: false, error: err.message });
