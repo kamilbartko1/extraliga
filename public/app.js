@@ -342,31 +342,35 @@ async function displayMantingal() {
   }
 }
 
-// === História stávok Mantingalu ===
+// === História stávok Mantingalu (vložená pod Mantingal tabuľku) ===
 async function displayMantingalHistory() {
-  const container = document.getElementById("mantingal-history");
-  if (!container) return;
+  const mainContainer = document.getElementById("mantingal-container");
+  if (!mainContainer) return;
 
-  container.innerHTML = "<h2>História stávok Mantingalu</h2><p>Načítavam dáta...</p>";
+  // vytvor nový blok pre históriu
+  const historyDiv = document.createElement("div");
+  historyDiv.id = "mantingal-history";
+  historyDiv.innerHTML = "<h3>História stávok Mantingalu</h3><p>Načítavam dáta...</p>";
+  mainContainer.appendChild(historyDiv);
 
   try {
     const resp = await fetch("/api/mantingal?action=history&limit=50");
     const data = await resp.json();
 
     if (!data.ok || !Array.isArray(data.bets)) {
-      container.innerHTML = "<p>❌ Nepodarilo sa načítať históriu stávok.</p>";
+      historyDiv.innerHTML = "<p>❌ Nepodarilo sa načítať históriu stávok.</p>";
       return;
     }
 
     const bets = data.bets;
     if (!bets.length) {
-      container.innerHTML = "<h2>História stávok Mantingalu</h2><p>Zatiaľ žiadne dáta.</p>";
+      historyDiv.innerHTML = "<h3>História stávok Mantingalu</h3><p>Zatiaľ žiadne dáta.</p>";
       return;
     }
 
     // vytvor tabuľku
     let html = `
-      <h2>História stávok Mantingalu</h2>
+      <h3>História stávok Mantingalu</h3>
       <table>
         <thead>
           <tr>
@@ -402,9 +406,9 @@ async function displayMantingalHistory() {
     });
 
     html += `</tbody></table>`;
-    container.innerHTML = html;
+    historyDiv.innerHTML = html;
   } catch (err) {
-    container.innerHTML = `<p>❌ Chyba: ${err.message}</p>`;
+    historyDiv.innerHTML = `<p>❌ Chyba: ${err.message}</p>`;
   }
 }
 
