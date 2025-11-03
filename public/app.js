@@ -433,7 +433,7 @@ async function displayStrategies() {
     wrap.innerHTML = `
       <h2>Databáza hráčov NHL</h2>
       <p>Počet hráčov v databáze: <b>${data.count}</b></p>
-      <p>Zobrazených prvých 100 hráčov:</p>
+      <p>Zobrazených prvých 300 hráčov:</p>
     `;
 
     const table = document.createElement("table");
@@ -458,7 +458,7 @@ async function displayStrategies() {
       </thead>
       <tbody>
         ${data.players
-          .slice(0, 100)
+          .slice(0, 300)
           .map(
             (p, i) => `
             <tr>
