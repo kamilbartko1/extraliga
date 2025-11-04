@@ -2320,6 +2320,45 @@ header * {
   z-index: 1;
 }
 
+/* === Rating tímov – vycentrovanie stĺpcov === */
+#teamRatings {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#teamRatings th {
+  text-align: center;
+  padding: 10px 20px;
+}
+
+#teamRatings td {
+  padding: 8px 20px;
+  text-align: center;
+}
+
+#teamRatings tbody tr td:first-child {
+  text-align: right;
+  padding-right: 40px; /* jemné odsadenie od stredu */
+}
+
+#teamRatings tbody tr td:last-child {
+  text-align: left;
+  padding-left: 40px;
+}
+
+/* Vycentruj nadpisy nad stĺpcami */
+#teamRatings thead tr th:first-child {
+  text-align: right;
+  padding-right: 40px;
+}
+
+#teamRatings thead tr th:last-child {
+  text-align: left;
+  padding-left: 40px;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
