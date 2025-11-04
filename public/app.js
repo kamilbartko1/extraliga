@@ -230,95 +230,90 @@ async function displayTeamRatings() {
   if (!tableBody) return;
   tableBody.innerHTML = "";
 
-  // === 1️⃣ Načítaj mapu celých názvov tímov z databázy ===
+  // 1️⃣ Načítaj databázu hráčov, aby sme dostali celé názvy tímov
   let fullTeamNames = {};
   try {
     const resp = await fetch("/data/nhl_players.json", { cache: "no-store" });
     const players = await resp.json();
-
     players.forEach((p) => {
       if (p.team) {
-        const teamName = p.team.trim(); // "Edmonton Oilers"
-        const short = teamName.split(" ").pop(); // "Oilers"
-        if (!fullTeamNames[short]) {
-          fullTeamNames[short] = teamName;
-        }
+        const teamName = p.team.trim();
+        const short = teamName.split(" ").pop();
+        if (!fullTeamNames[short]) fullTeamNames[short] = teamName;
       }
     });
   } catch (err) {
     console.warn("⚠️ Nepodarilo sa načítať nhl_players.json:", err);
   }
 
-  // === 2️⃣ Funkcia na získanie loga (rovnako ako v /api/predictions) ===
-  const getTeamLogo = (teamName) => {
-    // Skúsime použiť API adresu NHL loga (SVG)
-    const normalized = teamName
-      .replace(/[^a-zA-Z ]/g, "")
-      .trim()
-      .toLowerCase();
-
-    // mapovanie známych aliasov, lebo názvy v API sú niekedy iné
-    const logoMap = {
-      "anaheim ducks": "ANA",
-      "arizona coyotes": "ARI",
-      "boston bruins": "BOS",
-      "buffalo sabres": "BUF",
-      "calgary flames": "CGY",
-      "carolina hurricanes": "CAR",
-      "chicago blackhawks": "CHI",
-      "colorado avalanche": "COL",
-      "columbus blue jackets": "CBJ",
-      "dallas stars": "DAL",
-      "detroit red wings": "DET",
-      "edmonton oilers": "EDM",
-      "florida panthers": "FLA",
-      "los angeles kings": "LAK",
-      "minnesota wild": "MIN",
-      "montreal canadiens": "MTL",
-      "nashville predators": "NSH",
-      "new jersey devils": "NJD",
-      "new york islanders": "NYI",
-      "new york rangers": "NYR",
-      "ottawa senators": "OTT",
-      "philadelphia flyers": "PHI",
-      "pittsburgh penguins": "PIT",
-      "san jose sharks": "SJS",
-      "seattle kraken": "SEA",
-      "st louis blues": "STL",
-      "tampa bay lightning": "TBL",
-      "toronto maple leafs": "TOR",
-      "vancouver canucks": "VAN",
-      "vegas golden knights": "VGK",
-      "washington capitals": "WSH",
-      "winnipeg jets": "WPG",
-    };
-
-    const code = logoMap[normalized];
-    if (code) {
-      return `https://assets.nhle.com/logos/nhl/svg/${code}.svg`;
-    } else {
-      return `/icons/nhl_placeholder.svg`; // fallback
-    }
+  // 2️⃣ Oficiálne skratky tímov podľa NHL API (rovnaké ako v predikciách)
+  const teamCodes = {
+    "Anaheim Ducks": "ANA",
+    "Arizona Coyotes": "ARI",
+    "Boston Bruins": "BOS",
+    "Buffalo Sabres": "BUF",
+    "Calgary Flames": "CGY",
+    "Carolina Hurricanes": "CAR",
+    "Chicago Blackhawks": "CHI",
+    "Colorado Avalanche": "COL",
+    "Columbus Blue Jackets": "CBJ",
+    "Dallas Stars": "DAL",
+    "Detroit Red Wings": "DET",
+    "Edmonton Oilers": "EDM",
+    "Florida Panthers": "FLA",
+    "Los Angeles Kings": "LAK",
+    "Minnesota Wild": "MIN",
+    "Montreal Canadiens": "MTL",
+    "Nashville Predators": "NSH",
+    "New Jersey Devils": "NJD",
+    "New York Islanders": "NYI",
+    "New York Rangers": "NYR",
+    "Ottawa Senators": "OTT",
+    "Philadelphia Flyers": "PHI",
+    "Pittsburgh Penguins": "PIT",
+    "San Jose Sharks": "SJS",
+    "Seattle Kraken": "SEA",
+    "St. Louis Blues": "STL",
+    "Tampa Bay Lightning": "TBL",
+    "Toronto Maple Leafs": "TOR",
+    "Vancouver Canucks": "VAN",
+    "Vegas Golden Knights": "VGK",
+    "Washington Capitals": "WSH",
+    "Winnipeg Jets": "WPG",
+    "Utah Mammoth": "UTA"
   };
 
-  // === 3️⃣ Zoradenie podľa ratingu ===
+  const getTeamLogo = (teamName) => {
+    const code = teamCodes[teamName] || "";
+    if (!code) return "/icons/nhl_placeholder.svg";
+    return `https://assets.nhle.com/logos/nhl/svg/${code}_light.svg`;
+  };
+
+  // 3️⃣ Zoradenie tímov podľa ratingu (zostupne)
   const sorted = Object.entries(teamRatings).sort((a, b) => b[1] - a[1]);
 
-  // === 4️⃣ Render tabuľky ===
+  // 4️⃣ Render tabuľky
   sorted.forEach(([team, rating]) => {
     const fullName = fullTeamNames[team] || team;
     const logoUrl = getTeamLogo(fullName);
 
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td style="display:flex; align-items:center; gap:8px;">
-        <img src="${logoUrl}" alt="${fullName}" title="${fullName}" 
-             style="width:26px; height:26px; object-fit:contain; vertical-align:middle; filter:drop-shadow(0 0 4px rgba(255,255,255,0.2));">
-        <span style="font-weight:500;">${fullName}</span>
+      <td style="display:flex; align-items:center; gap:10px; min-width:200px;">
+        <img src="${logoUrl}" alt="${fullName}" title="${fullName}"
+             onerror="this.src='/icons/nhl_placeholder.svg'"
+             style="width:26px; height:26px; object-fit:contain; transition:transform 0.2s ease;">
+        <span>${fullName}</span>
       </td>
-      <td style="text-align:right;">${rating}</td>
+      <td style="text-align:center; font-weight:600;">${rating}</td>
     `;
     tableBody.appendChild(row);
+  });
+
+  // 💫 Hover efekt pre logá
+  document.querySelectorAll("#teamRatings img").forEach(img => {
+    img.addEventListener("mouseenter", () => img.style.transform = "scale(1.15)");
+    img.addEventListener("mouseleave", () => img.style.transform = "scale(1)");
   });
 }
 
