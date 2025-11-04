@@ -2320,18 +2320,23 @@ header * {
   z-index: 1;
 }
 
-/* 🌍 Štandardne pre PC – pozadie headera */
+/* 🌍 PC – s pozadím */
 header {
-  background: url("/pozadie.png") center center / cover no-repeat;
-  background-blend-mode: overlay;
+  background-image: url("/pozadie.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   background-color: rgba(0, 0, 0, 0.6);
+  background-blend-mode: overlay;
+   opacity: 0.27;      /* jemná viditeľnosť obrázka */
 }
 
-/* 📱 Pre mobil – bez pozadia */
+/* 📱 Mobil – bez pozadia, len čistá farba */
 @media (max-width: 768px) {
   header {
-    background: none;
-    background-color: #0a1828; /* alebo tvoja pôvodná farba headera */
+    background: none !important;         /* vypne úplne pozadie */
+    background-image: none !important;   /* istota */
+    background-color: #0a1828 !important; /* tvoja pôvodná tmavá farba headeru */
   }
 }
 
