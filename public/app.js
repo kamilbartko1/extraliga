@@ -1,4 +1,5 @@
 // public/app.js
+// public/app.js
 
 let teamRatings = {};
 let playerRatings = {};
@@ -247,6 +248,7 @@ async function displayTeamRatings() {
   }
 
   // 2️⃣ Oficiálne skratky tímov podľa NHL API (rovnaké ako v predikciách)
+  // 2️⃣ Oficiálne skratky tímov podľa NHL API (rovnaké ako v predikciách)
   const teamCodes = {
     "Anaheim Ducks": "ANA",
     "Arizona Coyotes": "ARI",
@@ -256,7 +258,7 @@ async function displayTeamRatings() {
     "Carolina Hurricanes": "CAR",
     "Chicago Blackhawks": "CHI",
     "Colorado Avalanche": "COL",
-    "Columbus Blue Jackets": "CBJ",
+    "Blue Jackets": "CBJ",
     "Dallas Stars": "DAL",
     "Red Wings": "DET",
     "Edmonton Oilers": "EDM",
@@ -275,9 +277,9 @@ async function displayTeamRatings() {
     "Seattle Kraken": "SEA",
     "St.Louis Blues": "STL",
     "Tampa Bay Lightning": "TBL",
-    "Toronto Maple Leafs": "TOR",
+    "Maple Leafs": "TOR",
     "Vancouver Canucks": "VAN",
-    "Vegas Golden Knights": "VGK",
+    "Golden Knights": "VGK",
     "Washington Capitals": "WSH",
     "Winnipeg Jets": "WPG",
     "Utah Mammoth": "UTA"
