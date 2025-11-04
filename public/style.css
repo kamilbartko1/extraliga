@@ -2462,6 +2462,27 @@ header * {
   }
 }
 
+.shooting-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.shooting-table th,
+.shooting-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #333;
+}
+
+.player-headshot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {

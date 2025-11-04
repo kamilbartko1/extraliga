@@ -677,6 +677,65 @@ async function displayPredictions() {
   }
 }
 
+// === Najlepšia strelecká úspešnosť NHL ===
+async function displayShootingLeaders() {
+  const container = document.getElementById("shooting-section");
+  if (!container) return;
+
+  container.innerHTML = "<h2>Najlepšia strelecká úspešnosť NHL</h2><p>Načítavam dáta...</p>";
+
+  try {
+    const resp = await fetch("/api/statistics");
+    const data = await resp.json();
+
+    if (!data.ok || !Array.isArray(data.top) || data.top.length === 0) {
+      container.innerHTML = "<p>❌ Dáta sa nepodarilo načítať.</p>";
+      return;
+    }
+
+    const players = data.top.slice(0, 50);
+
+    let html = `
+      <h2>Najlepšia strelecká úspešnosť NHL</h2>
+      <table class="shooting-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Hráč</th>
+            <th>Tím</th>
+            <th>Góly</th>
+            <th>Strely</th>
+            <th>Úspešnosť</th>
+            <th>Zápasy</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    players.forEach((p, i) => {
+      html += `
+        <tr>
+          <td>${i + 1}</td>
+          <td>
+            <img src="${p.headshot}" alt="${p.name}" class="player-headshot">
+            ${p.name}
+          </td>
+          <td>${p.team}</td>
+          <td>${p.goals}</td>
+          <td>${p.shots}</td>
+          <td>${p.shootingPctg.toFixed(1)}%</td>
+          <td>${p.gamesPlayed}</td>
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+  } catch (err) {
+    container.innerHTML = `<p>❌ Chyba: ${err.message}</p>`;
+  }
+}
+
 // 🔁 Načítaj predikcie, keď sa otvorí sekcia
 document
   .querySelector("button[onclick*='predictions-section']")
@@ -690,4 +749,5 @@ window.addEventListener("DOMContentLoaded",  async () => {
   displayStrategies();
   displayMantingal(); 
   displayMantingalHistory();
+  displayShootingLeaders(); // 🔹 pridaj túto funkciu
 });

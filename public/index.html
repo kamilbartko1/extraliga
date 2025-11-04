@@ -26,6 +26,7 @@
   <button onclick="showSection('players-section')">Rating hráčov</button>
   <button onclick="showSection('mantingal-container')">Martingale</button>
   <button onclick="showSection('predictions-section')">Predikcie</button>
+  <button onclick="showSection('shooting-section')">Strelecká úspešnosť</button>
   <button onclick="showSection('strategies-section')">Databáza hráčov</button>
 </nav>
     
@@ -37,6 +38,7 @@
             <option value="players">Rating hráčov</option>
             <option value="mantingal">Martingale</option>
             <option value="predictions">Predikcie</option>
+            <option value="shooting">Strelecká úspešnosť</option>
             <option value="strategies">Databáza hráčov</option>
         </select>
     </div>
@@ -105,6 +107,12 @@
             <p>Načítavam kurzy...</p>
         </div>
         </div>
+
+        <!-- 📊 Najlepsia uspesnost strelby -->
+        <section id="shooting-section" class="content-section">
+        <h2>Najlepšia strelecká úspešnosť NHL</h2>
+        <p>Načítavam údaje...</p>
+        </section>
 
         <!-- 💡 TIPOVACIE STRATÉGIE -->
         <div class="section" id="strategies-section" style="display:none;">
