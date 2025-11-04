@@ -747,7 +747,7 @@ window.addEventListener("DOMContentLoaded",  async () => {
   fetchMatches();
   displayPredictions(); // 🔹 pridaj túto funkciu
   displayStrategies();
+  displayShootingLeaders(); // 🔹 pridaj túto funkciu
   displayMantingal(); 
   displayMantingalHistory();
-  displayShootingLeaders(); // 🔹 pridaj túto funkciu
 });
