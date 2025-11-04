@@ -1,60 +1,74 @@
 // /api/statistics.js
-import axios from "axios";
+import fetch from "node-fetch";
 
 export default async function handler(req, res) {
   try {
-    console.log("📊 Načítavam štatistiky hráčov (shooting %)");
-
-    // Zoznam len 10 tímov na test (aby sme nevyčerpali Vercel čas)
-    const teams = [
-      "TOR", "EDM", "BOS", "NYR", "COL",
-      "MTL", "FLA", "WPG", "VGK", "DET"
+    const season = "20252026";
+    // všetky tímy NHL (trojpísmenové kódy)
+    const teamCodes = [
+      "ANA", "ARI", "BOS", "BUF", "CGY", "CAR", "CHI", "COL",
+      "CBJ", "DAL", "DET", "EDM", "FLA", "LAK", "MIN", "MTL",
+      "NSH", "NJD", "NYI", "NYR", "OTT", "PHI", "PIT", "SEA",
+      "SJS", "STL", "TBL", "TOR", "UTA", "VAN", "VGK", "WPG",
+      "WSH"
     ];
 
-    const SEASON = "20252026";
-    const STATS_TYPE = 2;
+    // limit počtu paralelných volaní, aby si nepreťažil API
+    const CONCURRENCY = 5;
+    let index = 0;
     const allPlayers = [];
 
-    // === spracuj postupne, nie všetko naraz ===
-    for (const team of teams) {
-      const url = `https://api-web.nhle.com/v1/club-stats/${team}/${SEASON}/${STATS_TYPE}`;
-      console.log("📥", url);
+    async function worker() {
+      while (index < teamCodes.length) {
+        const i = index++;
+        const team = teamCodes[i];
+        try {
+          const url = `https://api-web.nhle.com/v1/club-stats/${team}/${season}/2`;
+          const resp = await fetch(url);
+          if (!resp.ok) throw new Error(`Chyba ${resp.status} pre tím ${team}`);
+          const data = await resp.json();
+          const players = Array.isArray(data) ? data : [];
 
-      try {
-        const resp = await axios.get(url, { timeout: 8000 });
-        const players = resp.data?.skaters || [];
-        for (const p of players) {
-          const shootingPct = p.shootingPctg ?? 0;
-          if (shootingPct > 0) {
+          for (const p of players) {
+            if (!p?.shootingPctg || !p.shots || p.shots === 0) continue;
+
             allPlayers.push({
               id: p.playerId,
               name: `${p.firstName?.default || ""} ${p.lastName?.default || ""}`.trim(),
               team,
-              goals: p.goals || 0,
-              shots: p.shots || 0,
-              shootingPctg: Number((shootingPct * 100).toFixed(1)),
-              gamesPlayed: p.gamesPlayed || 0,
-              headshot: p.headshot || ""
+              goals: p.goals ?? 0,
+              shots: p.shots ?? 0,
+              shootingPctg: Math.round((p.shootingPctg || 0) * 1000) / 10, // napr. 17.1
+              gamesPlayed: p.gamesPlayed ?? 0,
+              headshot: p.headshot || `https://assets.nhle.com/mugs/nhl/${season}/${team}/${p.playerId}.png`
             });
           }
+
+          console.log(`✅ ${team}: ${players.length} hráčov`);
+        } catch (err) {
+          console.warn(`⚠️ ${team}: ${err.message}`);
         }
-      } catch (err) {
-        console.warn(`⚠️ ${team}: ${err.message}`);
       }
     }
 
-    const topPlayers = allPlayers
+    // spustenie s limitom paralelne
+    const workers = Array(CONCURRENCY).fill(0).map(() => worker());
+    await Promise.all(workers);
+
+    console.log(`🔹 Načítaných hráčov: ${allPlayers.length}`);
+
+    // zoradenie podľa úspešnosti streľby
+    const top = allPlayers
       .sort((a, b) => b.shootingPctg - a.shootingPctg)
       .slice(0, 50);
 
-    res.status(200).json({
+    return res.status(200).json({
       ok: true,
       count: allPlayers.length,
-      top: topPlayers
+      top
     });
-
   } catch (err) {
-    console.error("❌ Chyba v /api/statistics:", err.message);
-    res.status(500).json({ ok: false, error: err.message });
+    console.error("❌ Chyba pri spracovaní:", err);
+    return res.status(500).json({ ok: false, error: err.message });
   }
 }
