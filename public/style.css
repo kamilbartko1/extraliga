@@ -2257,49 +2257,49 @@ nav button:hover::after {
   padding-top: 4px;
   padding-bottom: 4px;
 }
-
-/* === Rating tímov === */
+/* === Rating tímov – zarovnanie v strede === */
 #teamRatings {
-  width: 70%;              /* zúžime tabuľku, aby nebola natiahnutá */
-  margin: 0 auto;          /* vycentrujeme ju */
+  width: 100%;
   border-collapse: collapse;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 8px;
-  overflow: hidden;
+  margin-top: 10px;
 }
 
-#teamRatings th, #teamRatings td {
-  padding: 10px 20px;      /* menej priestoru medzi stĺpcami */
-  text-align: left;
+#teamRatings th,
+#teamRatings td {
+  padding: 10px 15px;
+  font-size: 15px;
 }
 
-#teamRatings th {
-  text-align: center;      /* nadpis „Tím“ vycentrovaný */
-  font-weight: 600;
-  letter-spacing: 0.5px;
+/* Nadpis „Tím“ bude zarovnaný do stredu nad stĺpcom tímov */
+#teamRatings th:first-child {
+  text-align: center;
+  width: 55%;               /* trochu širší priestor pre názov tímu */
 }
 
-#teamRatings td:last-child,
-#teamRatings th:last-child {
-  text-align: right;       /* ratingy zarovnáme doprava */
-  padding-right: 25px;
+/* „Rating“ bude bližšie k tímu – nie úplne vpravo */
+#teamRatings th:last-child,
+#teamRatings td:last-child {
+  text-align: left;         /* zľava, nie doprava */
+  width: 25%;               /* nech nie je úplne pri okraji */
+  padding-left: 40px;       /* posun bližšie k tímom */
 }
 
+/* Jemný efekt pre prehľadnosť */
 #teamRatings tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.03);
 }
-
 #teamRatings tr:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
 }
 
+/* === Hlavička s pozadím === */
 header {
   position: relative;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.6);
   overflow: hidden;
 }
 
-/* Pozadie hráča v hlavičke */
+/* Pozadie headeru */
 header::before {
   content: "";
   position: absolute;
@@ -2307,14 +2307,14 @@ header::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url("/hokejista.jpeg");
+  background-image: url("/pozadie.png");
   background-size: cover;
   background-position: center;
-  opacity: 0.25;            /* jemný efekt */
+  opacity: 0.25;      /* jemná viditeľnosť obrázka */
   z-index: 0;
 }
 
-/* Text a logá zostanú navrchu */
+/* Texty a logá nech sú nad pozadím */
 header * {
   position: relative;
   z-index: 1;
