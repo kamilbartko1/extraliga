@@ -225,7 +225,6 @@ function displayMatches(matches) {
   });
 }
 
-// === Rating tímov ===
 async function displayTeamRatings() {
   const tableBody = document.querySelector("#teamRatings tbody");
   if (!tableBody) return;
@@ -250,38 +249,75 @@ async function displayTeamRatings() {
     console.warn("⚠️ Nepodarilo sa načítať nhl_players.json:", err);
   }
 
-  // === 2️⃣ Zoradenie podľa ratingu ===
+  // === 2️⃣ Pomocná funkcia pre logo tímu ===
+  const getTeamLogo = (fullName) => {
+    // Skúsime identifikovať podľa posledného slova (napr. "Oilers", "Flames" atď.)
+    const short = fullName.split(" ").pop().toLowerCase();
+
+    // Mapovanie log pre tímy podľa oficiálnych skrátených názvov
+    const map = {
+      oilers: "EDM",
+      flames: "CGY",
+      canucks: "VAN",
+      jets: "WPG",
+      leafs: "TOR",
+      senators: "OTT",
+      canadiens: "MTL",
+      bruins: "BOS",
+      sabres: "BUF",
+      red: "DET", // red wings
+      panthers: "FLA",
+      lightning: "TBL",
+      predators: "NSH",
+      hurricanes: "CAR",
+      blue: "CBJ", // blue jackets
+      islanders: "NYI",
+      rangers: "NYR",
+      devils: "NJD",
+      flyers: "PHI",
+      penguins: "PIT",
+      capitals: "WSH",
+      blackhawks: "CHI",
+      avalanche: "COL",
+      stars: "DAL",
+      wild: "MIN",
+      blues: "STL",
+      coyotes: "ARI",
+      ducks: "ANA",
+      sharks: "SJS",
+      kings: "LAK",
+      golden: "VGK", // golden knights
+      kraken: "SEA",
+      jackets: "CBJ",
+    };
+
+    const code = map[short] || "";
+    if (code) {
+      return `https://assets.nhle.com/logos/nhl/svg/${code}.svg`;
+    } else {
+      return `/icons/nhl_placeholder.svg`; // fallback (vlož si ho do /public/icons)
+    }
+  };
+
+  // === 3️⃣ Zoradenie podľa ratingu ===
   const sorted = Object.entries(teamRatings).sort((a, b) => b[1] - a[1]);
 
-  // === 3️⃣ Render tabuľky ===
+  // === 4️⃣ Render tabuľky ===
   sorted.forEach(([team, rating]) => {
-    const fullName = fullTeamNames[team] || team; // fallback, ak nenájde v mape
+    const fullName = fullTeamNames[team] || team;
+    const logoUrl = getTeamLogo(fullName);
+
     const row = document.createElement("tr");
-    row.innerHTML = `<td>${fullName}</td><td>${rating}</td>`;
+    row.innerHTML = `
+      <td style="display:flex; align-items:center; gap:8px;">
+        <img src="${logoUrl}" alt="${fullName}" title="${fullName}" 
+             style="width:24px; height:24px; object-fit:contain; vertical-align:middle;">
+        <span>${fullName}</span>
+      </td>
+      <td>${rating}</td>
+    `;
     tableBody.appendChild(row);
   });
-}
-
-async function loadFullTeamNames() {
-  if (Object.keys(fullTeamNames).length > 0) return fullTeamNames; // cache
-
-  try {
-    const resp = await fetch("/data/nhl_players.json");
-    const players = await resp.json();
-
-    players.forEach(p => {
-      if (p.team) {
-        const teamName = p.team.trim();
-        const short = teamName.split(" ").pop(); // napr. "Oilers"
-        if (!fullTeamNames[short]) {
-          fullTeamNames[short] = teamName; // "Oilers" → "Edmonton Oilers"
-        }
-      }
-    });
-  } catch (err) {
-    console.error("Nepodarilo sa načítať fullTeamNames:", err);
-  }
-  return fullTeamNames;
 }
 
 // Načítaj lokálnu databázu hráčov
