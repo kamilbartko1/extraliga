@@ -2258,6 +2258,68 @@ nav button:hover::after {
   padding-bottom: 4px;
 }
 
+/* === Rating tímov === */
+#teamRatings {
+  width: 70%;              /* zúžime tabuľku, aby nebola natiahnutá */
+  margin: 0 auto;          /* vycentrujeme ju */
+  border-collapse: collapse;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#teamRatings th, #teamRatings td {
+  padding: 10px 20px;      /* menej priestoru medzi stĺpcami */
+  text-align: left;
+}
+
+#teamRatings th {
+  text-align: center;      /* nadpis „Tím“ vycentrovaný */
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+#teamRatings td:last-child,
+#teamRatings th:last-child {
+  text-align: right;       /* ratingy zarovnáme doprava */
+  padding-right: 25px;
+}
+
+#teamRatings tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+#teamRatings tr:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+header {
+  position: relative;
+  background: rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+}
+
+/* Pozadie hráča v hlavičke */
+header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/hokejista.jpeg");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.25;            /* jemný efekt */
+  z-index: 0;
+}
+
+/* Text a logá zostanú navrchu */
+header * {
+  position: relative;
+  z-index: 1;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
