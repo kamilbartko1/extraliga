@@ -2320,54 +2320,71 @@ header * {
   z-index: 1;
 }
 
-/* === Rating tímov – zarovnanie a estetika === */
+/* === Rating tímov – presné zarovnanie stĺpcov === */
 #teamRatings {
-  width: 80%;                  /* mierne zúžené, aby nebolo nalepené na okrajoch */
-  margin: 0 auto;              /* vycentrovanie tabuľky */
+  width: 80%;
+  margin: 0 auto;
   border-collapse: collapse;
   text-align: center;
 }
 
-/* Nadpisy stĺpcov */
+/* Hlavička tabuľky */
 #teamRatings thead th {
-  text-align: center;
+  color: #00ffff;
   font-weight: 700;
   padding: 10px 0;
-  color: #00ffff;
+  text-align: center;
 }
 
-/* Riadky s dátami */
+/* Riadky dát */
 #teamRatings tbody td {
-  padding: 8px 0;
+  padding: 10px 0;
   font-size: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Prvý stĺpec (Tím) – mierne viac doľava, ale stále zarovnaný k nadpisu */
-#teamRatings tbody td:first-child,
-#teamRatings thead th:first-child {
-  width: 60%;
+/* 🟢 Stĺpec Tím – posunutý tak, aby text začínal za logom */
+#teamRatings tbody td:first-child {
   text-align: left;
-  padding-left: 80px;
+  padding-left: 115px; /* zarovnáva pod nadpis "Tím" */
+  width: 60%;
 }
 
-/* Druhý stĺpec (Rating) – vpravo, vycentrovaný pod nadpisom */
-#teamRatings tbody td:last-child,
-#teamRatings thead th:last-child {
-  width: 40%;
+/* 🟢 Nadpis Tím – presne nad názvami, nie nad logami */
+#teamRatings thead th:first-child {
+  text-align: left;
+  padding-left: 115px;
+}
+
+/* 🟢 Stĺpec Rating – zarovnaný presne nad číslami */
+#teamRatings tbody td:last-child {
   text-align: right;
-  padding-right: 80px;
+  padding-right: 115px;
+  width: 40%;
 }
 
-/* Responsívne: mobilná verzia nech je plná šírka */
+#teamRatings thead th:last-child {
+  text-align: right;
+  padding-right: 115px;
+}
+
+/* Hover efekt pre riadky */
+#teamRatings tbody tr:hover {
+  background-color: rgba(0, 255, 255, 0.08);
+  transition: 0.2s;
+}
+
+/* Mobilná verzia */
 @media (max-width: 768px) {
   #teamRatings {
     width: 100%;
   }
+
   #teamRatings tbody td:first-child,
   #teamRatings thead th:first-child {
     padding-left: 20px;
   }
+
   #teamRatings tbody td:last-child,
   #teamRatings thead th:last-child {
     padding-right: 20px;
