@@ -2358,7 +2358,7 @@ header * {
 
 /* 🟢 Stĺpec Rating – zarovnaný presne nad číslami */
 #teamRatings tbody td:last-child {
-  text-align: right;
+  text-align: center;
   padding-right: 33px;
   width: 40%;
 }
