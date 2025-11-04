@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     const safeFetch = async (url) => {
       try {
         const ctrl = new AbortController();
-        const timeout = setTimeout(() => ctrl.abort(), 10000); // 10s
+        const timeout = setTimeout(() => ctrl.abort(), 10000); // 10s timeout
         const resp = await fetch(url, { signal: ctrl.signal });
         clearTimeout(timeout);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
