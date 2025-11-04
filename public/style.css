@@ -2391,6 +2391,77 @@ header * {
   }
 }
 
+/* === Rating hráčov – vizuálne zjednotenie s ratingom tímov === */
+#playerRatings {
+  width: 80%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+/* Hlavička tabuľky */
+#playerRatings thead th {
+  color: #00ffff;
+  font-weight: 700;
+  padding: 10px 0;
+  text-align: center;
+}
+
+/* Riadky dát */
+#playerRatings tbody td {
+  padding: 10px 0;
+  font-size: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Stĺpec Hráč – zarovnanie doľava, ale bližšie k stredu */
+#playerRatings tbody td:first-child {
+  text-align: left;
+  padding-left: 115px;
+  width: 60%;
+}
+
+/* Nadpis Hráč */
+#playerRatings thead th:first-child {
+  text-align: left;
+  padding-left: 115px;
+}
+
+/* Stĺpec Rating – zarovnanie presne nad čísla */
+#playerRatings tbody td:last-child {
+  text-align: right;
+  padding-right: 115px;
+  width: 40%;
+}
+
+#playerRatings thead th:last-child {
+  text-align: right;
+  padding-right: 115px;
+}
+
+/* Hover efekt */
+#playerRatings tbody tr:hover {
+  background-color: rgba(0, 255, 255, 0.08);
+  transition: 0.2s;
+}
+
+/* 📱 Mobilné zarovnanie */
+@media (max-width: 768px) {
+  #playerRatings {
+    width: 100%;
+  }
+
+  #playerRatings tbody td:first-child,
+  #playerRatings thead th:first-child {
+    padding-left: 20px;
+  }
+
+  #playerRatings tbody td:last-child,
+  #playerRatings thead th:last-child {
+    padding-right: 20px;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
