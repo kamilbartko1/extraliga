@@ -2320,43 +2320,58 @@ header * {
   z-index: 1;
 }
 
-/* === Rating tímov – vycentrovanie stĺpcov === */
+/* === Rating tímov – zarovnanie a estetika === */
 #teamRatings {
-  width: 100%;
+  width: 80%;                  /* mierne zúžené, aby nebolo nalepené na okrajoch */
+  margin: 0 auto;              /* vycentrovanie tabuľky */
   border-collapse: collapse;
-  margin: 0 auto;
   text-align: center;
 }
 
-#teamRatings th {
+/* Nadpisy stĺpcov */
+#teamRatings thead th {
   text-align: center;
-  padding: 10px 20px;
+  font-weight: 700;
+  padding: 10px 0;
+  color: #00ffff;
 }
 
-#teamRatings td {
-  padding: 8px 20px;
-  text-align: center;
+/* Riadky s dátami */
+#teamRatings tbody td {
+  padding: 8px 0;
+  font-size: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-#teamRatings tbody tr td:first-child {
-  text-align: right;
-  padding-right: 40px; /* jemné odsadenie od stredu */
-}
-
-#teamRatings tbody tr td:last-child {
+/* Prvý stĺpec (Tím) – mierne viac doľava, ale stále zarovnaný k nadpisu */
+#teamRatings tbody td:first-child,
+#teamRatings thead th:first-child {
+  width: 60%;
   text-align: left;
-  padding-left: 40px;
+  padding-left: 80px;
 }
 
-/* Vycentruj nadpisy nad stĺpcami */
-#teamRatings thead tr th:first-child {
+/* Druhý stĺpec (Rating) – vpravo, vycentrovaný pod nadpisom */
+#teamRatings tbody td:last-child,
+#teamRatings thead th:last-child {
+  width: 40%;
   text-align: right;
-  padding-right: 40px;
+  padding-right: 80px;
 }
 
-#teamRatings thead tr th:last-child {
-  text-align: left;
-  padding-left: 40px;
+/* Responsívne: mobilná verzia nech je plná šírka */
+@media (max-width: 768px) {
+  #teamRatings {
+    width: 100%;
+  }
+  #teamRatings tbody td:first-child,
+  #teamRatings thead th:first-child {
+    padding-left: 20px;
+  }
+  #teamRatings tbody td:last-child,
+  #teamRatings thead th:last-child {
+    padding-right: 20px;
+  }
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
