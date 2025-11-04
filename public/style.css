@@ -2216,8 +2216,8 @@ nav button:hover::after {
 
 /* === Logá v sekcii Rating tímov === */
 #teamRatings img {
-  width: 34px;
-  height: 34px;
+  width: 37px;
+  height: 37px;
   object-fit: contain;
   margin-right: 8px;
   vertical-align: middle;
