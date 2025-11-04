@@ -680,10 +680,7 @@ async function displayPredictions() {
 // === Najlepšia strelecká úspešnosť NHL ===
 async function displayShootingLeaders() {
   const container = document.getElementById("shooting-section");
-  if (!container) return;
-
-  container.innerHTML = "<h2>Najlepšia strelecká úspešnosť NHL</h2><p>Načítavam dáta...</p>";
-
+ 
   try {
     const resp = await fetch("/api/statistics");
     const data = await resp.json();
