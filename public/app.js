@@ -4,6 +4,7 @@ let teamRatings = {};
 let playerRatings = {};
 let allMatches = [];
 let playerTeams = {}; // mapovanie priezvisko → tím
+let fullTeamNames = {};
 
 const BASE_STAKE = 1;
 const ODDS = 2.5;
@@ -225,17 +226,62 @@ function displayMatches(matches) {
 }
 
 // === Rating tímov ===
-function displayTeamRatings() {
+async function displayTeamRatings() {
   const tableBody = document.querySelector("#teamRatings tbody");
   if (!tableBody) return;
   tableBody.innerHTML = "";
 
+  // === 1️⃣ Načítaj mapu celých názvov tímov z databázy ===
+  let fullTeamNames = {};
+  try {
+    const resp = await fetch("/data/nhl_players.json", { cache: "no-store" });
+    const players = await resp.json();
+
+    players.forEach((p) => {
+      if (p.team) {
+        const teamName = p.team.trim(); // "Edmonton Oilers"
+        const short = teamName.split(" ").pop(); // "Oilers"
+        if (!fullTeamNames[short]) {
+          fullTeamNames[short] = teamName;
+        }
+      }
+    });
+  } catch (err) {
+    console.warn("⚠️ Nepodarilo sa načítať nhl_players.json:", err);
+  }
+
+  // === 2️⃣ Zoradenie podľa ratingu ===
   const sorted = Object.entries(teamRatings).sort((a, b) => b[1] - a[1]);
+
+  // === 3️⃣ Render tabuľky ===
   sorted.forEach(([team, rating]) => {
+    const fullName = fullTeamNames[team] || team; // fallback, ak nenájde v mape
     const row = document.createElement("tr");
-    row.innerHTML = `<td>${team}</td><td>${rating}</td>`;
+    row.innerHTML = `<td>${fullName}</td><td>${rating}</td>`;
     tableBody.appendChild(row);
   });
+}
+
+async function loadFullTeamNames() {
+  if (Object.keys(fullTeamNames).length > 0) return fullTeamNames; // cache
+
+  try {
+    const resp = await fetch("/data/nhl_players.json");
+    const players = await resp.json();
+
+    players.forEach(p => {
+      if (p.team) {
+        const teamName = p.team.trim();
+        const short = teamName.split(" ").pop(); // napr. "Oilers"
+        if (!fullTeamNames[short]) {
+          fullTeamNames[short] = teamName; // "Oilers" → "Edmonton Oilers"
+        }
+      }
+    });
+  } catch (err) {
+    console.error("Nepodarilo sa načítať fullTeamNames:", err);
+  }
+  return fullTeamNames;
 }
 
 // Načítaj lokálnu databázu hráčov
