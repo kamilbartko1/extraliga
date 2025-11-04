@@ -2320,6 +2320,21 @@ header * {
   z-index: 1;
 }
 
+/* 🌍 Štandardne pre PC – pozadie headera */
+header {
+  background: url("/pozadie.png") center center / cover no-repeat;
+  background-blend-mode: overlay;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* 📱 Pre mobil – bez pozadia */
+@media (max-width: 768px) {
+  header {
+    background: none;
+    background-color: #0a1828; /* alebo tvoja pôvodná farba headera */
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
