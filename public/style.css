@@ -2310,7 +2310,7 @@ header::before {
   background-image: url("/pozadie.png");
   background-size: cover;
   background-position: center;
-  opacity: 0.15;      /* jemná viditeľnosť obrázka */
+  opacity: 0.27;      /* jemná viditeľnosť obrázka */
   z-index: 0;
 }
 
