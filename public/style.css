@@ -2353,7 +2353,7 @@ header * {
 /* 🟢 Nadpis Tím – presne nad názvami, nie nad logami */
 #teamRatings thead th:first-child {
   text-align: left;
-  padding-left: 115px;
+  padding-left: 133px;
 }
 
 /* 🟢 Stĺpec Rating – zarovnaný presne nad číslami */
