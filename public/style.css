@@ -2331,7 +2331,7 @@ header * {
 /* Hlavička tabuľky */
 #teamRatings thead th {
   color: #00ffff;
-  font-weight: 700;
+  font-weight: 600;
   padding: 10px 0;
   text-align: center;
 }
@@ -2402,7 +2402,7 @@ header * {
 /* Hlavička tabuľky */
 #playerRatings thead th {
   color: #00ffff;
-  font-weight: 700;
+  font-weight: 600;
   padding: 10px 0;
   text-align: center;
 }
@@ -2424,7 +2424,7 @@ header * {
 /* Nadpis Hráč */
 #playerRatings thead th:first-child {
   text-align: left;
-  padding-left: 115px;
+  padding-left: 145px;
 }
 
 /* Stĺpec Rating – zarovnanie presne nad čísla */
