@@ -2424,7 +2424,7 @@ header * {
 /* Nadpis Hráč */
 #playerRatings thead th:first-child {
   text-align: left;
-  padding-left: 145px;
+  padding-left: 170px;
 }
 
 /* Stĺpec Rating – zarovnanie presne nad čísla */
