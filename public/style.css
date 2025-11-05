@@ -2531,16 +2531,16 @@ header * {
   }
 }
 
-/* 📱 Oprava pre mobil – sekcia Strelecká úspešnosť */
+/* ✅ Finálna verzia pre mobil – oprava streleckej tabuľky */
 @media (max-width: 768px) {
   #shooting-section {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 8px;
+    padding-bottom: 10px;
   }
 
   .shooting-table {
-    width: 720px; /* pevná šírka – aby sa nič nelámalo */
+    width: 750px;
     border-collapse: collapse;
   }
 
@@ -2549,14 +2549,15 @@ header * {
     white-space: nowrap !important;
     padding: 6px 10px;
     font-size: 14px;
+    text-align: center;
   }
 
-  /* Stĺpec HRÁČ – meno a fotka vedľa seba */
+  /* 🔹 Meno hráča – celkom vľavo vedľa čísla */
   .shooting-table td:nth-child(2) {
     display: flex !important;
     align-items: center;
     justify-content: flex-start;
-    gap: 8px;
+    gap: 10px;
     text-align: left;
   }
 
@@ -2565,14 +2566,21 @@ header * {
     height: 32px;
     border-radius: 50%;
     flex-shrink: 0;
-    box-shadow: 0 0 4px rgba(0, 255, 255, 0.5);
+    box-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
   }
 
-  /* Zabezpeči, že tím bude mať oddelený priestor */
+  /* 🔹 Tím – oddelený priestor, aby sa nikdy neprekrýval */
   .shooting-table td:nth-child(3) {
-    padding-left: 6px;
-    min-width: 45px;
+    padding-left: 12px;
+    min-width: 55px;
     text-align: center;
+  }
+
+  /* 🔹 Zabezpeč, že text v bunkách sa neláme */
+  .shooting-table td span,
+  .shooting-table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
