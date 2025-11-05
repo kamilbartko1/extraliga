@@ -2589,6 +2589,11 @@ header * {
   }
 }
 
+#strategies-section h2,
+#strategies-section p {
+  text-align: center;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
