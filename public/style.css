@@ -658,6 +658,7 @@ header::before {
 /* -------------------------------
    MENU POD HEADEROM
 ----------------------------------*/
+/* 🔹 Navigácia (bez zmeny rozmerov, len jemnejší font + tieň) */
 nav {
   display: flex;
   justify-content: center;
@@ -667,9 +668,10 @@ nav {
   padding: 12px 0;
   gap: 20px;
   position: relative;
-  z-index: 50; /* 🔹 dôležité: menu nad headerom */
+  z-index: 50;
 }
 
+/* 🩵 Elegantné menu tlačidlá */
 nav button {
   background: rgba(0, 183, 255, 0.1);
   color: #00eaff;
@@ -677,8 +679,11 @@ nav button {
   padding: 8px 18px;
   border-radius: 8px;
   cursor: pointer;
+  font-family: 'Inter', 'Poppins', sans-serif; /* 🔹 jemný moderný font */
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 4px rgba(0, 255, 255, 0.35); /* jemný modrý tieň */
   transition: all 0.3s ease;
 }
 
@@ -686,6 +691,8 @@ nav button:hover {
   background: rgba(0, 234, 255, 0.25);
   box-shadow: 0 0 10px rgba(0, 234, 255, 0.4);
   transform: scale(1.05);
+  color: #bffaff;
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu */
