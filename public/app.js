@@ -738,6 +738,11 @@ document
   .querySelector("button[onclick*='predictions-section']")
   ?.addEventListener("click", displayPredictions);
 
+  // 🔁 Načítaj statistiky streleckej uspesnosti, keď sa otvorí sekcia
+  document
+  .querySelector("button[onclick*='shooting-section']")
+  ?.addEventListener("click", displayShootingLeaders);
+
 // === Štart ===
 window.addEventListener("DOMContentLoaded",  async () => {
   await loadPlayerTeams();
