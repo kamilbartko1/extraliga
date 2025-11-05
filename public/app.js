@@ -226,13 +226,13 @@ function displayMatches(matches) {
   });
 }
 
-// === RATING TÍMOV + POSLEDNÉ ZÁPASY PO KLIKNUTÍ ===
+// === RATING TÍMOV + POSLEDNÉ ZÁPASY PO KLIKNUTÍ (robustný triCode) ===
 async function displayTeamRatings() {
   const tableBody = document.querySelector("#teamRatings tbody");
   if (!tableBody) return;
   tableBody.innerHTML = "";
 
-  // 1️⃣ Načítaj databázu hráčov, aby sme dostali celé názvy tímov
+  // 1) Názvy tímov z lokálnej DB (ako máš doteraz)
   let fullTeamNames = {};
   try {
     const resp = await fetch("/data/nhl_players.json", { cache: "no-store" });
@@ -248,61 +248,62 @@ async function displayTeamRatings() {
     console.warn("⚠️ Nepodarilo sa načítať nhl_players.json:", err);
   }
 
-  // 2️⃣ Oficiálne skratky tímov podľa NHL API (rovnaké ako v predikciách)
-  const teamCodes = {
-    "Anaheim Ducks": "ANA",
-    "Arizona Coyotes": "ARI",
-    "Boston Bruins": "BOS",
-    "Buffalo Sabres": "BUF",
-    "Calgary Flames": "CGY",
-    "Carolina Hurricanes": "CAR",
-    "Chicago Blackhawks": "CHI",
-    "Colorado Avalanche": "COL",
-    "Blue Jackets": "CBJ",
-    "Dallas Stars": "DAL",
-    "Red Wings": "DET",
-    "Edmonton Oilers": "EDM",
-    "Florida Panthers": "FLA",
-    "Los Angeles Kings": "LAK",
-    "Minnesota Wild": "MIN",
-    "Montreal Canadiens": "MTL",
-    "Nashville Predators": "NSH",
-    "New Jersey Devils": "NJD",
-    "New York Islanders": "NYI",
-    "New York Rangers": "NYR",
-    "Ottawa Senators": "OTT",
-    "Philadelphia Flyers": "PHI",
-    "Pittsburgh Penguins": "PIT",
-    "San Jose Sharks": "SJS",
-    "Seattle Kraken": "SEA",
-    "St.Louis Blues": "STL",
-    "Tampa Bay Lightning": "TBL",
-    "Maple Leafs": "TOR",
-    "Vancouver Canucks": "VAN",
-    "Golden Knights": "VGK",
-    "Washington Capitals": "WSH",
-    "Winnipeg Jets": "WPG",
-    "Utah Mammoth": "UTA"
+  // 2) Mapa nickname → triCode (zachovávam tvoju, dopĺňam problematické tvary)
+  const nickToCode = {
+    "Ducks":"ANA","Coyotes":"ARI","Bruins":"BOS","Sabres":"BUF","Flames":"CGY","Hurricanes":"CAR",
+    "Blackhawks":"CHI","Avalanche":"COL","Blue Jackets":"CBJ","Stars":"DAL","Red Wings":"DET",
+    "Oilers":"EDM","Panthers":"FLA","Kings":"LAK","Wild":"MIN","Canadiens":"MTL","Predators":"NSH",
+    "Devils":"NJD","Islanders":"NYI","Rangers":"NYR","Senators":"OTT","Flyers":"PHI","Penguins":"PIT",
+    "Sharks":"SJS","Kraken":"SEA","Blues":"STL","Lightning":"TBL","Maple Leafs":"TOR","Canucks":"VAN",
+    "Golden Knights":"VGK","Capitals":"WSH","Jets":"WPG","Mammoth":"UTA","Mammoths":"UTA"
   };
 
-  const getTeamLogo = (teamName) => {
-    const code = teamCodes[teamName] || "";
-    if (!code) return "/icons/nhl_placeholder.svg";
-    return `https://assets.nhle.com/logos/nhl/svg/${code}_light.svg`;
-  };
+  // 3) Pomocná: z „Toronto Maple Leafs“ urob „TOR“ atď.
+  function resolveTeamCode(fullName) {
+    if (!fullName) return "";
 
-  // 3️⃣ Zoradenie tímov podľa ratingu (zostupne)
+    // normalizácia bodiek/viacnásobných medzier
+    const norm = fullName.replace(/\./g, "").replace(/\s+/g, " ").trim(); // "St Louis Blues"
+    const words = norm.split(" ");                                        // ["St","Louis","Blues"]
+    const nickname = words.slice(1).join(" ");                            // "Louis Blues" (nie vždy OK)
+    const lastWord = words[words.length - 1];                              // "Blues"
+
+    // 3.1 priama zhoda (ak si zvolil celé názvy ako kľúče)
+    if (nickToCode[norm]) return nickToCode[norm];
+
+    // 3.2 pokus: nickname (napr. "Maple Leafs", "Golden Knights", "Blue Jackets", "Red Wings")
+    // nájdi najdlhšiu zhodu z mapy v stringu
+    let best = "";
+    for (const key of Object.keys(nickToCode)) {
+      const rx = new RegExp(`\\b${key}\\b`, "i");
+      if (rx.test(norm) && key.length > best.length) best = key;
+    }
+    if (best) return nickToCode[best];
+
+    // 3.3 fallback: posledné slovo (Blues, Kings, Jets…)
+    if (nickToCode[lastWord]) return nickToCode[lastWord];
+
+    return "";
+  }
+
+  // 4) zoradenie podľa ratingu
   const sorted = Object.entries(teamRatings).sort((a, b) => b[1] - a[1]);
 
-  // 4️⃣ Render tabuľky
+  // 5) render + klik
   sorted.forEach(([team, rating]) => {
+    // `team` je kľúč z teamRatings (pravdepodobne "Toronto Maple Leafs")
     const fullName = fullTeamNames[team] || team;
-    const code = teamCodes[team] || "";
-    const logoUrl = getTeamLogo(fullName);
+    const code = resolveTeamCode(fullName);
+
+    // logo podľa code (ak sa nedá, placeholder)
+    const logoUrl = code
+      ? `https://assets.nhle.com/logos/nhl/svg/${code}_light.svg`
+      : "/icons/nhl_placeholder.svg";
 
     const row = document.createElement("tr");
     row.classList.add("team-row");
-    row.dataset.teamCode = code;
+    row.dataset.teamCode = code || ""; // kvôli debugu
+
     row.innerHTML = `
       <td style="display:flex; align-items:center; gap:10px; min-width:220px; cursor:pointer;">
         <img src="${logoUrl}" alt="${fullName}" title="${fullName}"
@@ -314,60 +315,33 @@ async function displayTeamRatings() {
     `;
     tableBody.appendChild(row);
 
-    // 🧩 Po kliknutí zobraz posledných 10 zápasov
     row.addEventListener("click", async () => {
-      await showTeamRecent(code, row);
+      if (!code) {
+        console.warn("❗ Nepodarilo sa získať triCode pre:", fullName);
+        // ukáž užívateľovi jemnú správu namiesto pádu
+        const tmp = document.createElement("tr");
+        tmp.className = "team-recent-row";
+        tmp.innerHTML = `<td colspan="2" style="color:#ffb3b3; text-align:center;">
+          ⚠️ Pre tím <b>${fullName}</b> sa nepodarilo určiť kód. (Skús aktualizovať mapovanie.)
+        </td>`;
+        // zavri/otvor logiku: ak už existuje, zmaž; inak vlož
+        const existing = row.nextElementSibling;
+        if (existing && existing.classList.contains("team-recent-row")) {
+          existing.remove();
+        } else {
+          row.insertAdjacentElement("afterend", tmp);
+        }
+        return;
+      }
+      await showTeamRecent(code, row);  // tvoje existujúce zobrazenie posledných 10 zápasov
     });
   });
 
-  // 💫 Hover efekt pre logá
+  // hover efekt na logá
   document.querySelectorAll("#teamRatings img").forEach(img => {
     img.addEventListener("mouseenter", () => img.style.transform = "scale(1.15)");
     img.addEventListener("mouseleave", () => img.style.transform = "scale(1)");
   });
-}
-
-// === Kliknutie na tím – načítaj posledných 10 zápasov z /api/teamSchedule ===
-async function showTeamRecent(teamCode, rowEl) {
-  // ak už je otvorené, zavri
-  const existing = rowEl.nextElementSibling;
-  if (existing && existing.classList.contains("team-recent-row")) {
-    existing.remove();
-    return;
-  }
-
-  // načítanie
-  const loadingRow = document.createElement("tr");
-  loadingRow.className = "team-recent-row";
-  loadingRow.innerHTML = `<td colspan="2" style="text-align:center;">⏳ Načítavam posledných 10 zápasov...</td>`;
-  rowEl.insertAdjacentElement("afterend", loadingRow);
-
-  try {
-    const resp = await fetch(`/api/teamSchedule?team=${teamCode}`);
-    const data = await resp.json();
-    if (!data.ok) throw new Error(data.error || "Neznáma chyba servera");
-
-    const games = data.games;
-    const rows = games.map(g => `
-      <tr class="mini-game">
-        <td colspan="2" style="display:flex; align-items:center; justify-content:center; gap:10px;">
-          <img src="${g.opponentLogo}" alt="${g.opponent}" style="width:20px;height:20px;">
-          <span>${g.home} ${g.homeScore} : ${g.awayScore} ${g.away}</span>
-          <span style="color:${g.result === 'W' ? 'limegreen' : 'red'}; font-weight:600; margin-left:8px;">
-            ${g.result}
-          </span>
-        </td>
-      </tr>`).join("");
-
-    loadingRow.outerHTML = `
-      <tr class="team-recent-row">
-        <td colspan="2">
-          <table class="recent-table">${rows}</table>
-        </td>
-      </tr>`;
-  } catch (err) {
-    loadingRow.innerHTML = `<td colspan="2" style="color:red;">❌ Chyba: ${err.message}</td>`;
-  }
 }
 
 // Načítaj lokálnu databázu hráčov
