@@ -679,9 +679,9 @@ nav button {
   padding: 8px 18px;
   border-radius: 8px;
   cursor: pointer;
-  font-family:  'Inter'; /* 🔹 tenšie a elegantné */
-  font-weight: 250; /* výrazne tenšie písmo */
-  font-size: 0,5rem;
+  font-family:  'Poppins', sans-serif; /* 🔹 tenšie a elegantné */
+  font-weight: 150; /* výrazne tenšie písmo */
+  font-size: 1rem;
   letter-spacing: 0.4px;
   text-shadow: 0 0 4px rgba(0, 255, 255, 0.4); /* jemný svietiaci tieň */
   transition: all 0.3s ease;
@@ -1749,43 +1749,6 @@ nav button:hover::after {
     text-shadow: none;
     padding: 8px 3px;
   }
-
-  nav {
-  display: flex;
-  justify-content: center;
-  background: rgba(0, 20, 35, 0.9);
-  border-top: 1px solid rgba(0, 183, 255, 0.3);
-  border-bottom: 1px solid rgba(0, 183, 255, 0.3);
-  padding: 12px 0;
-  gap: 20px;
-  position: relative;
-  z-index: 50;
-}
-
-/* 🔹 Tlačidlá v menu – nový štýl písma */
-nav button {
-  background: rgba(0, 183, 255, 0.08);
-  color: #00eaff;
-  border: 1px solid rgba(0, 183, 255, 0.25);
-  padding: 8px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-family:  'Inter'; /* 🔹 tenšie a elegantné */
-  font-weight: 250; /* výrazne tenšie písmo */
-  font-size: 0,5rem;
-  letter-spacing: 0.4px;
-  text-shadow: 0 0 4px rgba(0, 255, 255, 0.4); /* jemný svietiaci tieň */
-  transition: all 0.3s ease;
-  backdrop-filter: blur(2px);
-}
-
-nav button:hover {
-  background: rgba(0, 234, 255, 0.25);
-  box-shadow: 0 0 10px rgba(0, 234, 255, 0.35);
-  transform: scale(1.05);
-  color: #bffaff;
-  text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
-}
 
   /* DOMÁCI */
   #matches tbody td:nth-child(1) {
