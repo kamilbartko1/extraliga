@@ -739,9 +739,12 @@ document
   ?.addEventListener("click", displayPredictions);
 
   // 🔁 Načítaj statistiky streleckej uspesnosti, keď sa otvorí sekcia
-  document
-  .querySelector("button[onclick*='shooting-section']")
-  ?.addEventListener("click", displayShootingLeaders);
+document.querySelectorAll("[onclick*='shooting-section']").forEach(el => {
+  el.addEventListener("click", () => {
+    console.log("📊 Otváram sekciu strelecká úspešnosť...");
+    displayShootingLeaders();
+  });
+});
 
 // === Štart ===
 window.addEventListener("DOMContentLoaded",  async () => {
