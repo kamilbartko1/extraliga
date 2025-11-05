@@ -2483,6 +2483,53 @@ header * {
   margin-right: 6px;
 }
 
+/* === Strelecká úspešnosť – tabuľka === */
+.shooting-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 15px;
+}
+
+.shooting-table th,
+.shooting-table td {
+  padding: 8px 10px;
+  text-align: center;
+  white-space: nowrap; /* ⬅️ nezalamuj text */
+}
+
+.shooting-table td img.player-headshot {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+/* === Zabali tabuľku do posúvateľného kontajnera === */
+#shooting-section {
+  overflow-x: auto;        /* ⬅️ umožní horizontálny posuvník */
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+
+#shooting-section table {
+  min-width: 650px;        /* ⬅️ aby sa na úzkom mobile dalo posúvať */
+}
+
+/* Na menších displejoch trochu zmenši text */
+@media (max-width: 768px) {
+  .shooting-table th,
+  .shooting-table td {
+    font-size: 13px;
+    padding: 6px;
+  }
+  .shooting-table td img.player-headshot {
+    width: 32px;
+    height: 32px;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
