@@ -2664,6 +2664,69 @@ header * {
   }
 }
 
+/* === Posledné zápasy (po kliknutí na tím) === */
+.recent-row-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 10px;
+  padding: 10px 0;
+  justify-content: flex-start;
+  scrollbar-width: thin;
+  scrollbar-color: #00eaff40 transparent;
+}
+
+.recent-box {
+  flex: 0 0 auto;
+  background: rgba(0, 20, 40, 0.8);
+  border: 1px solid rgba(0, 183, 255, 0.3);
+  border-radius: 8px;
+  width: 70px;
+  text-align: center;
+  color: #00eaff;
+  font-weight: 600;
+  padding: 6px 4px;
+  box-shadow: 0 0 8px rgba(0, 183, 255, 0.25);
+  transition: transform 0.2s ease;
+}
+
+.recent-box:hover {
+  transform: scale(1.08);
+}
+
+.recent-box .teams {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.recent-box .teams img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.recent-box .score {
+  font-size: 0.9rem;
+  color: #fff;
+  text-shadow: 0 0 4px #00eaff;
+}
+
+.game-result {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.1rem;
+}
+
+.game-result.win {
+  color: limegreen;
+}
+.game-result.loss {
+  color: red;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
