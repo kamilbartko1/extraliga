@@ -226,6 +226,7 @@ function displayMatches(matches) {
   });
 }
 
+// === RATING TÍMOV + POSLEDNÉ ZÁPASY PO KLIKNUTÍ ===
 async function displayTeamRatings() {
   const tableBody = document.querySelector("#teamRatings tbody");
   if (!tableBody) return;
@@ -247,7 +248,6 @@ async function displayTeamRatings() {
     console.warn("⚠️ Nepodarilo sa načítať nhl_players.json:", err);
   }
 
-  // 2️⃣ Oficiálne skratky tímov podľa NHL API (rovnaké ako v predikciách)
   // 2️⃣ Oficiálne skratky tímov podľa NHL API (rovnaké ako v predikciách)
   const teamCodes = {
     "Anaheim Ducks": "ANA",
@@ -294,14 +294,17 @@ async function displayTeamRatings() {
   // 3️⃣ Zoradenie tímov podľa ratingu (zostupne)
   const sorted = Object.entries(teamRatings).sort((a, b) => b[1] - a[1]);
 
-    // 4️⃣ Render tabuľky
+  // 4️⃣ Render tabuľky
   sorted.forEach(([team, rating]) => {
     const fullName = fullTeamNames[team] || team;
+    const code = teamCodes[team] || "";
     const logoUrl = getTeamLogo(fullName);
 
     const row = document.createElement("tr");
+    row.classList.add("team-row");
+    row.dataset.teamCode = code;
     row.innerHTML = `
-      <td style="display:flex; align-items:center; gap:10px; min-width:200px;">
+      <td style="display:flex; align-items:center; gap:10px; min-width:220px; cursor:pointer;">
         <img src="${logoUrl}" alt="${fullName}" title="${fullName}"
              onerror="this.src='/icons/nhl_placeholder.svg'"
              style="width:26px; height:26px; object-fit:contain; transition:transform 0.2s ease;">
@@ -311,16 +314,10 @@ async function displayTeamRatings() {
     `;
     tableBody.appendChild(row);
 
-    // 🟦⬇️ TU pridaj túto logiku (kliknutie na tím)
-    const teamCode =
-      teamCodes[Object.keys(teamCodes).find(key => fullName.includes(key))] ||
-      teamCodes[team] ||
-      null;
-
-    if (teamCode) {
-      row.style.cursor = "pointer";
-      row.addEventListener("click", () => showTeamRecent(teamCode, row));
-    }
+    // 🧩 Po kliknutí zobraz posledných 10 zápasov
+    row.addEventListener("click", async () => {
+      await showTeamRecent(code, row);
+    });
   });
 
   // 💫 Hover efekt pre logá
@@ -330,7 +327,7 @@ async function displayTeamRatings() {
   });
 }
 
-// === Kliknutie na tím – načítaj posledných 10 zápasov ===
+// === Kliknutie na tím – načítaj posledných 10 zápasov z /api/teamSchedule ===
 async function showTeamRecent(teamCode, rowEl) {
   // ak už je otvorené, zavri
   const existing = rowEl.nextElementSibling;
@@ -342,33 +339,32 @@ async function showTeamRecent(teamCode, rowEl) {
   // načítanie
   const loadingRow = document.createElement("tr");
   loadingRow.className = "team-recent-row";
-  loadingRow.innerHTML = `<td colspan="2" style="text-align:center;">Načítavam posledných 10 zápasov...</td>`;
+  loadingRow.innerHTML = `<td colspan="2" style="text-align:center;">⏳ Načítavam posledných 10 zápasov...</td>`;
   rowEl.insertAdjacentElement("afterend", loadingRow);
 
   try {
-    const resp = await fetch(`/api/team-recent?team=${teamCode}`);
+    const resp = await fetch(`/api/teamSchedule?team=${teamCode}`);
     const data = await resp.json();
-    if (!data.ok) throw new Error(data.error);
+    if (!data.ok) throw new Error(data.error || "Neznáma chyba servera");
 
     const games = data.games;
     const rows = games.map(g => `
       <tr class="mini-game">
         <td colspan="2" style="display:flex; align-items:center; justify-content:center; gap:10px;">
           <img src="${g.opponentLogo}" alt="${g.opponent}" style="width:20px;height:20px;">
-          ${g.home} ${g.homeScore} : ${g.awayScore} ${g.away} 
+          <span>${g.home} ${g.homeScore} : ${g.awayScore} ${g.away}</span>
           <span style="color:${g.result === 'W' ? 'limegreen' : 'red'}; font-weight:600; margin-left:8px;">
             ${g.result}
           </span>
         </td>
       </tr>`).join("");
 
-    loadingRow.outerHTML = `<tr class="team-recent-row">
-      <td colspan="2">
-        <table class="recent-table">
-          ${rows}
-        </table>
-      </td>
-    </tr>`;
+    loadingRow.outerHTML = `
+      <tr class="team-recent-row">
+        <td colspan="2">
+          <table class="recent-table">${rows}</table>
+        </td>
+      </tr>`;
   } catch (err) {
     loadingRow.innerHTML = `<td colspan="2" style="color:red;">❌ Chyba: ${err.message}</td>`;
   }
