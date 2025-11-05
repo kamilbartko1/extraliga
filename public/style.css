@@ -2602,69 +2602,56 @@ header * {
   text-align: center;
 }
 
-/* === Mini tabuľka posledných zápasov tímu === */
-.recent-table {
+/* === Boxy posledných zápasov tímu === */
+.recent-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   margin-top: 8px;
+  padding: 10px;
 }
 
-.recent-game {
-  background: rgba(0, 183, 255, 0.08);
-  border: 1px solid rgba(0, 183, 255, 0.25);
-  border-radius: 6px;
+.recent-box {
+  background: rgba(0, 40, 70, 0.6);
+  border: 1px solid rgba(0, 183, 255, 0.3);
+  border-radius: 8px;
   padding: 6px 10px;
-  font-size: 0.9rem;
+  min-width: 80px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.2s ease;
+}
+
+.recent-box:hover {
+  transform: scale(1.07);
+  background: rgba(0, 80, 130, 0.7);
+}
+
+.recent-box .logos {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  min-width: 90px;
-  text-align: center;
-  transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.recent-game:hover {
-  background: rgba(0, 183, 255, 0.15);
-  transform: scale(1.05);
-}
-
-.recent-game img {
-  width: 18px;
-  height: 18px;
+.recent-box img {
+  width: 22px;
+  height: 22px;
   object-fit: contain;
 }
 
-.recent-game .score {
+.recent-box .score {
   font-weight: 600;
   color: #fff;
+  font-size: 0.95rem;
 }
 
-.recent-game .result {
-  font-weight: 700;
-  margin-left: 4px;
-}
-
-.recent-game .result.win {
-  color: limegreen;
-}
-
-.recent-game .result.loss {
-  color: red;
-}
-
-/* Mobil: nech sa zalamuje do 2 riadkov */
-@media (max-width: 768px) {
-  .recent-table {
-    justify-content: center;
-    gap: 6px;
-  }
-
-  .recent-game {
-    font-size: 0.8rem;
-    padding: 5px 8px;
-  }
+.recent-box .result {
+  font-size: 1rem;
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */

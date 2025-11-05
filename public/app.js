@@ -250,25 +250,30 @@ async function showTeamRecent(teamCode, rowEl) {
       throw new Error(data.error || "Dáta neobsahujú zápasy.");
     }
 
-    // posledných 10 zápasov
     const recentGames = data.games.slice(-10).reverse();
 
-    // nový horizontálny layout
     const gamesHtml = recentGames
-      .map(
-        (g) => `
-        <div class="recent-game" title="${g.date || ''} vs ${g.opponent || ''}">
-          <img src="${g.opponentLogo || ''}" alt="${g.opponent || ''}">
-          <span class="score">${g.homeScore}:${g.awayScore}</span>
-          <span class="result ${g.result === "W" ? "win" : "loss"}">${g.result}</span>
-        </div>`
-      )
+      .map((g) => {
+        const resultIcon =
+          g.result === "W"
+            ? '<span style="color:limegreen;font-weight:700;">✅</span>'
+            : '<span style="color:red;font-weight:700;">❌</span>';
+        return `
+          <div class="recent-box">
+            <div class="logos">
+              <img src="${g.homeLogo}" alt="${g.home}" title="${g.home}">
+              <img src="${g.awayLogo}" alt="${g.away}" title="${g.away}">
+            </div>
+            <div class="score">${g.homeScore} : ${g.awayScore}</div>
+            <div class="result">${resultIcon}</div>
+          </div>`;
+      })
       .join("");
 
     loadingRow.outerHTML = `
       <tr class="team-recent-row">
         <td colspan="2">
-          <div class="recent-table">
+          <div class="recent-container">
             ${gamesHtml}
           </div>
         </td>
