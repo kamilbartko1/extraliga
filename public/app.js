@@ -253,27 +253,24 @@ async function showTeamRecent(teamCode, rowEl) {
     // posledných 10 zápasov
     const recentGames = data.games.slice(-10).reverse();
 
-    const rows = recentGames
+    // nový horizontálny layout
+    const gamesHtml = recentGames
       .map(
         (g) => `
-        <tr class="mini-game">
-          <td colspan="2" style="display:flex;align-items:center;justify-content:center;gap:8px;">
-            <img src="${g.opponentLogo || ""}" alt="${g.opponent || ""}" style="width:20px;height:20px;">
-            <span>${g.home} ${g.homeScore} : ${g.awayScore} ${g.away}</span>
-            <span style="color:${g.result === "W" ? "limegreen" : "red"}; font-weight:600; margin-left:6px;">
-              ${g.result}
-            </span>
-          </td>
-        </tr>`
+        <div class="recent-game" title="${g.date || ''} vs ${g.opponent || ''}">
+          <img src="${g.opponentLogo || ''}" alt="${g.opponent || ''}">
+          <span class="score">${g.homeScore}:${g.awayScore}</span>
+          <span class="result ${g.result === "W" ? "win" : "loss"}">${g.result}</span>
+        </div>`
       )
       .join("");
 
     loadingRow.outerHTML = `
       <tr class="team-recent-row">
         <td colspan="2">
-          <table class="recent-table">
-            ${rows}
-          </table>
+          <div class="recent-table">
+            ${gamesHtml}
+          </div>
         </td>
       </tr>`;
   } catch (err) {
@@ -293,7 +290,7 @@ async function displayTeamRatings() {
   try {
     const resp = await fetch("/data/nhl_players.json", { cache: "no-store" });
     const players = await resp.json();
-    players.forEach(p => {
+    players.forEach((p) => {
       if (p.team) {
         const teamName = p.team.trim();
         const short = teamName.split(" ").pop();
@@ -306,12 +303,13 @@ async function displayTeamRatings() {
 
   // mapy triCode
   const nickToCode = {
-    "Ducks":"ANA","Coyotes":"ARI","Bruins":"BOS","Sabres":"BUF","Flames":"CGY","Hurricanes":"CAR",
-    "Blackhawks":"CHI","Avalanche":"COL","Blue Jackets":"CBJ","Stars":"DAL","Red Wings":"DET",
-    "Oilers":"EDM","Panthers":"FLA","Kings":"LAK","Wild":"MIN","Canadiens":"MTL","Predators":"NSH",
-    "Devils":"NJD","Islanders":"NYI","Rangers":"NYR","Senators":"OTT","Flyers":"PHI","Penguins":"PIT",
-    "Sharks":"SJS","Kraken":"SEA","Blues":"STL","Lightning":"TBL","Maple Leafs":"TOR","Canucks":"VAN",
-    "Golden Knights":"VGK","Capitals":"WSH","Jets":"WPG","Mammoth":"UTA","Mammoths":"UTA"
+    "Ducks": "ANA", "Coyotes": "ARI", "Bruins": "BOS", "Sabres": "BUF", "Flames": "CGY",
+    "Hurricanes": "CAR", "Blackhawks": "CHI", "Avalanche": "COL", "Blue Jackets": "CBJ",
+    "Stars": "DAL", "Red Wings": "DET", "Oilers": "EDM", "Panthers": "FLA", "Kings": "LAK",
+    "Wild": "MIN", "Canadiens": "MTL", "Predators": "NSH", "Devils": "NJD", "Islanders": "NYI",
+    "Rangers": "NYR", "Senators": "OTT", "Flyers": "PHI", "Penguins": "PIT", "Sharks": "SJS",
+    "Kraken": "SEA", "Blues": "STL", "Lightning": "TBL", "Maple Leafs": "TOR", "Canucks": "VAN",
+    "Golden Knights": "VGK", "Capitals": "WSH", "Jets": "WPG", "Mammoth": "UTA", "Mammoths": "UTA"
   };
 
   function resolveTeamCode(fullName) {
@@ -349,7 +347,7 @@ async function displayTeamRatings() {
     `;
     tableBody.appendChild(row);
 
-    // 👇 kliknutie na riadok
+    // 👇 kliknutie na riadok – zobrazí/zavrie posledné zápasy
     row.addEventListener("click", () => {
       const existing = row.nextElementSibling;
       if (existing && existing.classList.contains("team-recent-row")) {
@@ -359,16 +357,18 @@ async function displayTeamRatings() {
       } else {
         const warn = document.createElement("tr");
         warn.className = "team-recent-row";
-        warn.innerHTML = `<td colspan="2" style="text-align:center;color:#f66;">⚠️ Nepodarilo sa určiť kód pre ${fullName}</td>`;
+        warn.innerHTML = `<td colspan="2" style="text-align:center;color:#f66;">
+          ⚠️ Nepodarilo sa určiť kód pre ${fullName}
+        </td>`;
         row.insertAdjacentElement("afterend", warn);
       }
     });
   });
 
   // hover efekt na logá
-  document.querySelectorAll("#teamRatings img").forEach(img => {
-    img.addEventListener("mouseenter", () => img.style.transform = "scale(1.15)");
-    img.addEventListener("mouseleave", () => img.style.transform = "scale(1)");
+  document.querySelectorAll("#teamRatings img").forEach((img) => {
+    img.addEventListener("mouseenter", () => (img.style.transform = "scale(1.15)"));
+    img.addEventListener("mouseleave", () => (img.style.transform = "scale(1)"));
   });
 }
 
