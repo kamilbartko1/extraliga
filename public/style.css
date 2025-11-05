@@ -2531,56 +2531,61 @@ header * {
   }
 }
 
-/* ✅ Finálna verzia pre mobil – oprava streleckej tabuľky */
+/* --- Mobile tweak: posun hráča bližšie k poradovému číslu --- */
 @media (max-width: 768px) {
-  #shooting-section {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 10px;
-  }
-
+  /* celková posuvná tabuľka */
   .shooting-table {
-    width: 750px;
+    width: 760px; /* umožní horizontálny scroll bez zalamovania mien */
     border-collapse: collapse;
   }
 
-  .shooting-table th,
-  .shooting-table td {
-    white-space: nowrap !important;
-    padding: 6px 10px;
-    font-size: 14px;
+  /* poradové číslo: pevná šírka (vľavo) */
+  .shooting-table td:first-child,
+  .shooting-table th:first-child {
+    width: 40px;
     text-align: center;
+    padding: 8px 6px;
+    vertical-align: middle;
   }
 
-  /* 🔹 Meno hráča – celkom vľavo vedľa čísla */
-  .shooting-table td:nth-child(2) {
+  /* bunka s hráčom: flex, bez veľkého paddingu, posunutá mierne doľava */
+  .shooting-table td:nth-child(2),
+  .shooting-table th:nth-child(2) {
     display: flex !important;
     align-items: center;
     justify-content: flex-start;
     gap: 10px;
-    text-align: left;
+    padding-left: 4px !important;      /* menej vnútorného odsadenia */
+    transform: translateX(-6px);       /* posunie celé meno + foto mierne doľava */
   }
 
+  /* fotka hráča */
   .shooting-table .player-headshot {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     flex-shrink: 0;
-    box-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
+    margin-right: 8px;
+    object-fit: cover;
+    box-shadow: 0 0 6px rgba(0,255,255,0.25);
   }
 
-  /* 🔹 Tím – oddelený priestor, aby sa nikdy neprekrýval */
-  .shooting-table td:nth-child(3) {
-    padding-left: 12px;
-    min-width: 55px;
+  /* tím - nech má svoj priestor, aby sa neprekrýval s menom */
+  .shooting-table td:nth-child(3),
+  .shooting-table th:nth-child(3) {
+    min-width: 56px;
+    padding-left: 8px;
     text-align: center;
   }
 
-  /* 🔹 Zabezpeč, že text v bunkách sa neláme */
-  .shooting-table td span,
-  .shooting-table td {
+  /* zjednotený text: neprerušovať, ukázať elipsu ak treba */
+  .shooting-table td,
+  .shooting-table th {
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 14px;
+    padding: 8px 10px;
   }
 }
 
