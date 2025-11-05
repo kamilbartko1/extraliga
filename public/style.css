@@ -679,8 +679,8 @@ nav button {
   padding: 8px 18px;
   border-radius: 8px;
   cursor: pointer;
-  font-family: 'Roboto', 'Poppins', sans-serif; /* 🔹 tenšie a elegantné */
-  font-weight: 300; /* výrazne tenšie písmo */
+  font-family:  'Inter', sans-serif; /* 🔹 tenšie a elegantné */
+  font-weight: 150; /* výrazne tenšie písmo */
   font-size: 1rem;
   letter-spacing: 0.4px;
   text-shadow: 0 0 4px rgba(0, 255, 255, 0.4); /* jemný svietiaci tieň */
