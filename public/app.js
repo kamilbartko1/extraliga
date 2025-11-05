@@ -680,56 +680,69 @@ async function displayPredictions() {
 // === Najlepšia strelecká úspešnosť NHL ===
 async function displayShootingLeaders() {
   const container = document.getElementById("shooting-section");
- 
+  if (!container) return;
+
+  // 💡 Zobrazíme loader, aby používateľ vedel, že sa načítava
+  container.innerHTML = `<p>⏳ Načítavam tabuľku streleckej úspešnosti...</p>`;
+
   try {
-    const resp = await fetch("/api/statistics");
+    const resp = await fetch("/api/statistics", { cache: "no-store" });
+    if (!resp.ok) {
+      throw new Error(`Server vrátil chybu ${resp.status}`);
+    }
+
     const data = await resp.json();
 
-    if (!data.ok || !Array.isArray(data.top) || data.top.length === 0) {
-      container.innerHTML = "<p>❌ Dáta sa nepodarilo načítať.</p>";
+    // 🔹 Ošetrenie – čakáme, kým data.top naozaj existuje
+    if (!data || !data.ok || !Array.isArray(data.top) || data.top.length === 0) {
+      console.warn("⚠️ Chýbajú alebo prázdne dáta z /api/statistics:", data);
+      container.innerHTML = `<p>⚠️ Dáta sa momentálne načítavajú. Skús obnoviť stránku o pár sekúnd.</p>`;
       return;
     }
 
     const players = data.top.slice(0, 50);
 
+    // 🔹 HTML tabuľka
     let html = `
       <h2>Najlepšia strelecká úspešnosť NHL</h2>
-      <table class="shooting-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Hráč</th>
-            <th>Tím</th>
-            <th>Góly</th>
-            <th>Strely</th>
-            <th>Úspešnosť</th>
-            <th>Zápasy</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="shooting-table-wrapper">
+        <table class="shooting-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Hráč</th>
+              <th>Tím</th>
+              <th>Góly</th>
+              <th>Strely</th>
+              <th>Úspešnosť</th>
+              <th>Zápasy</th>
+            </tr>
+          </thead>
+          <tbody>
     `;
 
-    players.forEach((p, i) => {
+    for (const [i, p] of players.entries()) {
       html += `
         <tr>
           <td>${i + 1}</td>
-          <td>
+          <td style="white-space: nowrap;">
             <img src="${p.headshot}" alt="${p.name}" class="player-headshot">
             ${p.name}
           </td>
           <td>${p.team}</td>
           <td>${p.goals}</td>
           <td>${p.shots}</td>
-          <td>${p.shootingPctg.toFixed(1)}%</td>
+          <td>${p.shootingPctg?.toFixed(1) || "0.0"}%</td>
           <td>${p.gamesPlayed}</td>
         </tr>
       `;
-    });
+    }
 
-    html += `</tbody></table>`;
-    container.innerHTML = `<div class="shooting-table-wrapper">${html}</div>`;
+    html += `</tbody></table></div>`;
+    container.innerHTML = html;
   } catch (err) {
-    container.innerHTML = `<p>❌ Chyba: ${err.message}</p>`;
+    console.error("❌ Chyba v displayShootingLeaders:", err);
+    container.innerHTML = `<p style="color:red;">❌ Chyba pri načítaní údajov: ${err.message}</p>`;
   }
 }
 
