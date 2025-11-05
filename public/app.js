@@ -226,16 +226,14 @@ function displayMatches(matches) {
   });
 }
 
-// === Kliknutie na tím – načítaj posledných 10 zápasov z /api/teamSchedule ===
+// === Klik na tím: posledných 10 zápasov – vodorovné karty s oboma logami ===
 async function showTeamRecent(teamCode, rowEl) {
-  // ak už je otvorené, zavri
   const existing = rowEl.nextElementSibling;
   if (existing && existing.classList.contains("team-recent-row")) {
     existing.remove();
     return;
   }
 
-  // loader
   const loadingRow = document.createElement("tr");
   loadingRow.className = "team-recent-row";
   loadingRow.innerHTML = `<td colspan="2" style="text-align:center;">⏳ Načítavam posledných 10 zápasov...</td>`;
@@ -247,41 +245,38 @@ async function showTeamRecent(teamCode, rowEl) {
     const data = await resp.json();
     if (!data.ok || !Array.isArray(data.games)) throw new Error("Dáta neobsahujú zápasy.");
 
-    // posledných 10 zápasov
-    const recentGames = data.games.slice(-10).reverse();
+    const games = data.games.slice(-10).reverse();
 
-    const gamesHtml = recentGames.map((g) => {
-      const resultIcon =
-        g.result === "W"
-          ? '<span style="color:limegreen;font-weight:700;">✅</span>'
-          : '<span style="color:red;font-weight:700;">❌</span>';
-
-      // zabezpeč, že logá sa načítajú
+    const html = games.map(g => {
+      const homeAbbr = g.homeAbbr || g.home || "";
+      const awayAbbr = g.awayAbbr || g.away || "";
       const homeLogo = g.homeLogo || g.home?.logo || "/icons/nhl_placeholder.svg";
       const awayLogo = g.awayLogo || g.away?.logo || "/icons/nhl_placeholder.svg";
+      const score = `${g.homeScore} : ${g.awayScore}`;
+      const resultIcon = g.result === "W" ? "✅" : "❌";
 
       return `
-        <div class="recent-box">
-          <div class="logos">
-            <img src="${homeLogo}" alt="${g.home}" title="${g.home}">
-            <span class="score">${g.homeScore} : ${g.awayScore}</span>
-            <img src="${awayLogo}" alt="${g.away}" title="${g.away}">
+        <div class="recent-card">
+          <div class="badge-logos">
+            <img src="${homeLogo}" alt="${homeAbbr}" title="${homeAbbr}">
+            <span class="score">${score}</span>
+            <img src="${awayLogo}" alt="${awayAbbr}" title="${awayAbbr}">
           </div>
-          <div class="result">${resultIcon}</div>
+          <div class="abbrs">${homeAbbr} &nbsp;–&nbsp; ${awayAbbr}</div>
+          <div class="result ${g.result === "W" ? "win" : "loss"}">${resultIcon}</div>
         </div>`;
     }).join("");
 
     loadingRow.outerHTML = `
       <tr class="team-recent-row">
         <td colspan="2">
-          <div class="recent-container">
-            ${gamesHtml}
+          <div class="recent-row">
+            ${html}
           </div>
         </td>
       </tr>`;
   } catch (err) {
-    console.error("❌ Chyba v showTeamRecent:", err);
-    loadingRow.innerHTML = `<td colspan="2" style="color:red;">❌ ${err.message}</td>`;
+    loadingRow.innerHTML = `<td colspan="2" style="color:#f66; text-align:center;">❌ ${err.message}</td>`;
   }
 }
 

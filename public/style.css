@@ -2602,57 +2602,53 @@ header * {
   text-align: center;
 }
 
-/* === BOXY POSLEDNÝCH ZÁPASOV (vodorovné) === */
-.recent-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 10px;
-  margin-top: 10px;
-  padding: 10px 0;
+/* vodorovný rad boxov pod tímom */
+.recent-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  align-items:stretch;
+  padding:10px 2px 4px;
 }
 
-.recent-box {
-  background: rgba(0, 30, 50, 0.7);
-  border: 1px solid rgba(0, 183, 255, 0.3);
-  border-radius: 8px;
-  padding: 8px 10px;
-  width: 100px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  transition: all 0.2s ease;
+/* samotný box zápasu */
+.recent-card{
+  width:120px;              /* na mobile sa pekne zalamujú */
+  background:rgba(0,30,50,.75);
+  border:1px solid rgba(0,183,255,.35);
+  border-radius:10px;
+  padding:8px 8px 6px;
+  text-align:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);
+  transition:transform .15s ease, background .15s ease;
+}
+.recent-card:hover{ transform:scale(1.05); background:rgba(0,60,100,.85); }
+
+/* horný riadok: logo – skóre – logo */
+.badge-logos{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:6px;
+  margin-bottom:4px;
+}
+.badge-logos img{
+  width:24px; height:24px; object-fit:contain;
+}
+.recent-card .score{
+  font-weight:700; color:#e9f7ff; letter-spacing:.5px;
 }
 
-.recent-box:hover {
-  transform: scale(1.08);
-  background: rgba(0, 80, 130, 0.8);
+/* malé skratky pod logami */
+.recent-card .abbrs{
+  font-size:.78rem; color:#9fd9ff; margin-bottom:4px;
+  white-space:nowrap;
 }
 
-.recent-box .logos {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.recent-box img {
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-}
-
-.recent-box .score {
-  font-weight: 600;
-  color: #fff;
-  font-size: 0.95rem;
-}
-
-.recent-box .result {
-  font-size: 1rem;
-}
+/* výsledok ✅/❌ */
+.recent-card .result{ font-size:1rem; }
+.recent-card .result.win{ color:limegreen; }
+.recent-card .result.loss{ color:#ff5b5b; }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
