@@ -228,52 +228,65 @@ function displayMatches(matches) {
 
 // === Kliknutie na tím – načítaj posledných 10 zápasov z /api/teamSchedule ===
 async function showTeamRecent(teamCode, rowEl) {
-  // Ak už je otvorené, zavri
+  // Zavrie, ak už je otvorené
   const existing = rowEl.nextElementSibling;
   if (existing && existing.classList.contains("team-recent-row")) {
     existing.remove();
     return;
   }
 
-  // Načítavanie
+  // Loader
   const loadingRow = document.createElement("tr");
   loadingRow.className = "team-recent-row";
-  loadingRow.innerHTML = `<td colspan="2" style="text-align:center;">⏳ Načítavam posledných 10 zápasov...</td>`;
+  loadingRow.innerHTML = `<td colspan="2" style="text-align:center;">⏳ Načítavam zápasy...</td>`;
   rowEl.insertAdjacentElement("afterend", loadingRow);
 
   try {
-    const resp = await fetch(`/api/teamSchedule?team=${teamCode}`, { cache: "no-store" });
+    const resp = await fetch(`/api/teamSchedule?team=${encodeURIComponent(teamCode)}`, { cache: "no-store" });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
+    if (!data.games || !Array.isArray(data.games)) throw new Error("Neplatná odpoveď z API");
 
-    if (!data.ok || !Array.isArray(data.games)) throw new Error("Dáta neobsahujú zápasy");
+    const recent = data.games
+      .filter(g => g.gameState === "FINAL")
+      .slice(-10)
+      .reverse();
 
-    const recentGames = data.games.slice(-10).reverse();
+    const boxes = recent.map(g => {
+      const home = g.homeTeam;
+      const away = g.awayTeam;
 
-    const boxes = recentGames.map(g => {
-      const home = g.homeTeam?.abbrev || "";
-      const away = g.awayTeam?.abbrev || "";
-      const homeLogo = g.homeTeam?.logo || "";
-      const awayLogo = g.awayTeam?.logo || "";
-      const homeScore = g.homeTeam?.score ?? "-";
-      const awayScore = g.awayTeam?.score ?? "-";
+      const homeAbbrev = home.abbrev || "";
+      const awayAbbrev = away.abbrev || "";
 
-      // urči výsledok pre daný tím
-      const isHome = home === teamCode;
-      const teamScore = isHome ? homeScore : awayScore;
-      const oppScore = isHome ? awayScore : homeScore;
-      const result = teamScore > oppScore ? "W" : "L";
-      const resultIcon = result === "W" ? "✅" : "❌";
-      const resultColor = result === "W" ? "limegreen" : "red";
+      const homeLogo = home.logo || `/icons/nhl_placeholder.svg`;
+      const awayLogo = away.logo || `/icons/nhl_placeholder.svg`;
+
+      const hs = home.score ?? "-";
+      const as = away.score ?? "-";
+
+      // určí výhru/prehru z pohľadu kliknutého tímu
+      const isTeamHome = teamCode.toUpperCase() === homeAbbrev.toUpperCase();
+      let result = "draw";
+      if (hs > as) result = isTeamHome ? "win" : "loss";
+      if (hs < as) result = isTeamHome ? "loss" : "win";
+
+      const resultIcon = result === "win"
+        ? `<span class="game-result win">✔</span>`
+        : result === "loss"
+        ? `<span class="game-result loss">✖</span>`
+        : `<span class="game-result draw">-</span>`;
 
       return `
         <div class="recent-box">
-          <div class="logos">
-            <img src="${homeLogo}" alt="${home}" title="${home}">
-            <img src="${awayLogo}" alt="${away}" title="${away}">
+          <div class="teams">
+            <img src="${homeLogo}" alt="${homeAbbrev}" title="${homeAbbrev}" 
+                 onerror="this.src='/icons/nhl_placeholder.svg'">
+            <img src="${awayLogo}" alt="${awayAbbrev}" title="${awayAbbrev}" 
+                 onerror="this.src='/icons/nhl_placeholder.svg'">
           </div>
-          <div class="score">${homeScore} : ${awayScore}</div>
-          <div class="result" style="color:${resultColor}">${resultIcon}</div>
+          <div class="score">${hs} : ${as}</div>
+          ${resultIcon}
         </div>
       `;
     }).join("");
@@ -281,12 +294,13 @@ async function showTeamRecent(teamCode, rowEl) {
     loadingRow.outerHTML = `
       <tr class="team-recent-row">
         <td colspan="2">
-          <div class="recent-container">${boxes}</div>
+          <div class="recent-row-wrapper">
+            ${boxes || "<div class='no-games'>Žiadne zápasy</div>"}
+          </div>
         </td>
       </tr>
     `;
   } catch (err) {
-    console.error("❌ Chyba v showTeamRecent:", err);
     loadingRow.innerHTML = `<td colspan="2" style="color:red;">❌ ${err.message}</td>`;
   }
 }
