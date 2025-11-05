@@ -2602,88 +2602,68 @@ header * {
   text-align: center;
 }
 
-/* -------- Team recent horizontal boxes -------- */
-.recent-row-container {
+.recent-container {
   display: flex;
-  flex-direction: row;
-  gap: 14px;
-  overflow-x: auto;
-  padding: 8px;
-  -webkit-overflow-scrolling: touch;
-  align-items: flex-start;
-}
-
-/* Single match box */
-.recent-box {
-  min-width: 128px;
-  max-width: 160px;
-  background: linear-gradient(180deg, rgba(6,26,34,0.35), rgba(6,26,34,0.15));
-  border: 1px solid rgba(0,183,255,0.12);
-  box-shadow: 0 2px 0 rgba(0,0,0,0.25) inset;
-  border-radius: 10px;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  color: #dff9ff;
-  text-align: center;
-  white-space: nowrap;
-}
-
-/* logos row inside box */
-.recent-box .team-logos {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-.recent-box .team-logos img {
-  width: 34px;
-  height: 34px;
-  object-fit: contain;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(0,0,0,0.15);
-}
-
-/* score row */
-.recent-box .score-line {
-  display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   gap: 8px;
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: #e6ffff;
-}
-.recent-box .score-line .abbr {
-  font-size: 0.78rem;
-  opacity: 0.9;
-  color: #bfefff;
-}
-.recent-box .score-line .score {
-  font-size: 1.05rem;
-  min-width: 48px;
+  margin-top: 8px;
+  padding: 8px;
 }
 
-/* result icon */
-.result-wrap { margin-top: 4px; }
-.result-icon {
-  display:inline-block;
-  font-size:1.15rem;
-  padding:2px 6px;
-  border-radius:6px;
+.recent-box {
+  background: rgba(0, 40, 70, 0.6);
+  border: 1px solid rgba(0, 183, 255, 0.3);
+  border-radius: 10px;
+  width: 90px;
+  text-align: center;
+  padding: 6px;
+  font-size: 13px;
+  color: #fff;
+  box-shadow: 0 0 8px rgba(0, 183, 255, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.result-icon.win { color:#0f6; background: rgba(0,128,0,0.06); border: 1px solid rgba(0,255,128,0.08); }
-.result-icon.loss { color:#ff5b5b; background: rgba(255,0,0,0.04); border: 1px solid rgba(255,0,0,0.06); }
-.result-icon.draw { color:#ccc; }
 
-/* ensure horizontal boxes show nicely on mobile too */
+.recent-box:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 12px rgba(0, 234, 255, 0.4);
+}
+
+.recent-box .logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 3px;
+}
+
+.recent-box img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.recent-box .score {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.recent-box .result {
+  margin-top: 2px;
+  font-weight: bold;
+}
+
 @media (max-width: 768px) {
-  .recent-box { min-width: 120px; max-width: 140px; padding:8px; }
-  .recent-box .team-logos img { width:28px; height:28px; }
-  .recent-row-container { gap:10px; }
+  .recent-box {
+    width: 70px;
+    font-size: 11px;
+    padding: 4px;
+  }
+
+  .recent-box img {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
