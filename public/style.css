@@ -2462,27 +2462,6 @@ header * {
   }
 }
 
-.shooting-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-  text-align: center;
-}
-
-.shooting-table th,
-.shooting-table td {
-  padding: 6px 8px;
-  border-bottom: 1px solid #333;
-}
-
-.player-headshot {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  vertical-align: middle;
-  margin-right: 6px;
-}
-
 /* === Strelecká úspešnosť – tabuľka === */
 .shooting-table {
   width: 100%;
@@ -2495,7 +2474,7 @@ header * {
 .shooting-table td {
   padding: 8px 10px;
   text-align: center;
-  white-space: nowrap; /* ⬅️ nezalamuj text */
+  white-space: nowrap; /* nezalamuj text */
 }
 
 .shooting-table td img.player-headshot {
@@ -2506,27 +2485,49 @@ header * {
   margin-right: 8px;
 }
 
+/* 🔹 hráč – nech je meno zarovnané doľava */
+.shooting-table td:first-child,
+.shooting-table td:nth-child(2) {
+  text-align: left;
+}
+
+/* 🔹 vizuálne oddelenie tímového kódu */
+.shooting-table td:nth-child(3) {
+  padding-left: 20px;
+}
+
 /* === Zabali tabuľku do posúvateľného kontajnera === */
 #shooting-section {
-  overflow-x: auto;        /* ⬅️ umožní horizontálny posuvník */
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 8px;
 }
 
 #shooting-section table {
-  min-width: 650px;        /* ⬅️ aby sa na úzkom mobile dalo posúvať */
+  min-width: 700px; /* širšia tabuľka pre mobilný posuvník */
 }
 
-/* Na menších displejoch trochu zmenši text */
+/* Na menších displejoch */
 @media (max-width: 768px) {
   .shooting-table th,
   .shooting-table td {
     font-size: 13px;
-    padding: 6px;
+    padding: 6px 8px;
   }
+
   .shooting-table td img.player-headshot {
     width: 32px;
     height: 32px;
+  }
+
+  /* 🟩 Zarovnanie mena viac doľava, aby sa neprekrývalo */
+  .shooting-table td:nth-child(2) {
+    text-align: left;
+    padding-left: 4px;
+  }
+
+  .shooting-table td:nth-child(3) {
+    padding-left: 16px;
   }
 }
 
