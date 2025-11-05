@@ -226,7 +226,7 @@ function displayMatches(matches) {
   });
 }
 
-// === Kliknutie na tím – načítaj posledných 10 zápasov ===
+// === Kliknutie na tím – načítaj posledných 10 zápasov z /api/teamSchedule ===
 async function showTeamRecent(teamCode, rowEl) {
   // ak už je otvorené, zavri
   const existing = rowEl.nextElementSibling;
@@ -235,43 +235,52 @@ async function showTeamRecent(teamCode, rowEl) {
     return;
   }
 
-  // načítanie
+  // načítavanie
   const loadingRow = document.createElement("tr");
   loadingRow.className = "team-recent-row";
   loadingRow.innerHTML = `<td colspan="2" style="text-align:center;">⏳ Načítavam posledných 10 zápasov...</td>`;
   rowEl.insertAdjacentElement("afterend", loadingRow);
 
   try {
-    const resp = await fetch(`/api/team-recent?team=${teamCode}`, { cache: "no-store" });
+    const resp = await fetch(`/api/teamSchedule?team=${teamCode}`, { cache: "no-store" });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const data = await resp.json();
-    if (!data.ok) throw new Error(data.error || "Nepodarilo sa načítať dáta");
 
-    const games = data.games.slice(0, 10);
-    const rows = games.map(g => `
-      <tr class="mini-game">
-        <td colspan="2" style="display:flex; align-items:center; justify-content:center; gap:8px;">
-          <img src="${g.opponentLogo}" alt="${g.opponent}" style="width:20px;height:20px;">
-          <span>${g.home} ${g.homeScore} : ${g.awayScore} ${g.away}</span>
-          <span style="color:${g.result === 'W' ? 'limegreen' : 'red'}; font-weight:600; margin-left:6px;">
-            ${g.result}
-          </span>
-        </td>
-      </tr>
-    `).join("");
+    const data = await resp.json();
+    if (!data.ok || !Array.isArray(data.games)) {
+      throw new Error(data.error || "Dáta neobsahujú zápasy.");
+    }
+
+    // posledných 10 zápasov
+    const recentGames = data.games.slice(-10).reverse();
+
+    const rows = recentGames
+      .map(
+        (g) => `
+        <tr class="mini-game">
+          <td colspan="2" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+            <img src="${g.opponentLogo || ""}" alt="${g.opponent || ""}" style="width:20px;height:20px;">
+            <span>${g.home} ${g.homeScore} : ${g.awayScore} ${g.away}</span>
+            <span style="color:${g.result === "W" ? "limegreen" : "red"}; font-weight:600; margin-left:6px;">
+              ${g.result}
+            </span>
+          </td>
+        </tr>`
+      )
+      .join("");
 
     loadingRow.outerHTML = `
       <tr class="team-recent-row">
         <td colspan="2">
-          <table class="recent-table">${rows}</table>
+          <table class="recent-table">
+            ${rows}
+          </table>
         </td>
-      </tr>
-    `;
+      </tr>`;
   } catch (err) {
-    loadingRow.innerHTML = `<td colspan="2" style="color:red;">❌ Chyba: ${err.message}</td>`;
+    console.error("❌ Chyba v showTeamRecent:", err);
+    loadingRow.innerHTML = `<td colspan="2" style="color:red;">❌ ${err.message}</td>`;
   }
 }
-
 
 // === RATING TÍMOV – vrátane kliknutia na tím ===
 async function displayTeamRatings() {
