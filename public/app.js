@@ -235,7 +235,7 @@ async function showTeamRecent(teamCode, rowEl) {
     return;
   }
 
-  // načítavanie
+  // loader
   const loadingRow = document.createElement("tr");
   loadingRow.className = "team-recent-row";
   loadingRow.innerHTML = `<td colspan="2" style="text-align:center;">⏳ Načítavam posledných 10 zápasov...</td>`;
@@ -244,31 +244,32 @@ async function showTeamRecent(teamCode, rowEl) {
   try {
     const resp = await fetch(`/api/teamSchedule?team=${teamCode}`, { cache: "no-store" });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-
     const data = await resp.json();
-    if (!data.ok || !Array.isArray(data.games)) {
-      throw new Error(data.error || "Dáta neobsahujú zápasy.");
-    }
+    if (!data.ok || !Array.isArray(data.games)) throw new Error("Dáta neobsahujú zápasy.");
 
+    // posledných 10 zápasov
     const recentGames = data.games.slice(-10).reverse();
 
-    const gamesHtml = recentGames
-      .map((g) => {
-        const resultIcon =
-          g.result === "W"
-            ? '<span style="color:limegreen;font-weight:700;">✅</span>'
-            : '<span style="color:red;font-weight:700;">❌</span>';
-        return `
-          <div class="recent-box">
-            <div class="logos">
-              <img src="${g.homeLogo}" alt="${g.home}" title="${g.home}">
-              <img src="${g.awayLogo}" alt="${g.away}" title="${g.away}">
-            </div>
-            <div class="score">${g.homeScore} : ${g.awayScore}</div>
-            <div class="result">${resultIcon}</div>
-          </div>`;
-      })
-      .join("");
+    const gamesHtml = recentGames.map((g) => {
+      const resultIcon =
+        g.result === "W"
+          ? '<span style="color:limegreen;font-weight:700;">✅</span>'
+          : '<span style="color:red;font-weight:700;">❌</span>';
+
+      // zabezpeč, že logá sa načítajú
+      const homeLogo = g.homeLogo || g.home?.logo || "/icons/nhl_placeholder.svg";
+      const awayLogo = g.awayLogo || g.away?.logo || "/icons/nhl_placeholder.svg";
+
+      return `
+        <div class="recent-box">
+          <div class="logos">
+            <img src="${homeLogo}" alt="${g.home}" title="${g.home}">
+            <span class="score">${g.homeScore} : ${g.awayScore}</span>
+            <img src="${awayLogo}" alt="${g.away}" title="${g.away}">
+          </div>
+          <div class="result">${resultIcon}</div>
+        </div>`;
+    }).join("");
 
     loadingRow.outerHTML = `
       <tr class="team-recent-row">
