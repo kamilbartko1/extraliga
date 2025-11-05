@@ -2602,56 +2602,68 @@ header * {
   text-align: center;
 }
 
+/* horizontal recent boxes */
 .recent-row-wrapper {
   display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
   gap: 12px;
-  padding: 10px 5px;
+  padding: 8px 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  align-items: flex-start;
+  scrollbar-width: thin;
 }
 
 .recent-box {
   flex: 0 0 auto;
-  width: 95px;
-  background: rgba(0, 20, 35, 0.6);
-  border: 1px solid rgba(0, 183, 255, 0.25);
+  width: 96px;
+  min-width: 86px;
+  background: rgba(0, 17, 28, 0.55);
+  border: 1px solid rgba(0, 183, 255, 0.18);
   border-radius: 10px;
-  padding: 6px;
+  padding: 8px 6px;
   text-align: center;
-  color: #b9e9ff;
-  font-weight: 600;
+  color: #bfeeff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.12) inset;
 }
 
 .recent-box .teams {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  margin-bottom: 4px;
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  margin-bottom:6px;
 }
 
 .recent-box img {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.05);
+  width:34px;
+  height:34px;
+  object-fit:contain;
+  background: rgba(255,255,255,0.02);
+  border-radius:4px;
 }
 
 .recent-box .score {
-  font-size: 1rem;
-  margin-bottom: 2px;
+  font-weight:700;
+  font-size:16px;
+  margin-bottom:6px;
+  color:#dff;
 }
 
 .game-result {
-  font-size: 18px;
-  font-weight: bold;
-  display: block;
+  display:block;
+  font-size:18px;
+  font-weight:800;
 }
 
-.game-result.win { color: #4fff92; }
-.game-result.loss { color: #ff5757; }
-.game-result.draw { color: #ccc; }s
+.game-result.win { color:#4fff92; }
+.game-result.loss { color:#ff6b6b; }
+.game-result.draw { color:#cfcfcf; }
+
+/* small responsive tweak */
+@media (max-width:600px) {
+  .recent-box { width:84px; min-width:74px; padding:6px 4px; }
+  .recent-box img { width:30px; height:30px; }
+  .recent-box .score { font-size:15px; }
+}
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {

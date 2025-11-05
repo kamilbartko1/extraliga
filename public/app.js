@@ -235,73 +235,119 @@ async function showTeamRecent(teamCode, rowEl) {
     return;
   }
 
-  // Loader
+  // Loader riadok
   const loadingRow = document.createElement("tr");
   loadingRow.className = "team-recent-row";
-  loadingRow.innerHTML = `<td colspan="2" style="text-align:center;">⏳ Načítavam zápasy...</td>`;
+  loadingRow.innerHTML = `<td colspan="2" style="text-align:center; padding:14px;">⏳ Načítavam zápasy...</td>`;
   rowEl.insertAdjacentElement("afterend", loadingRow);
 
   try {
     const resp = await fetch(`/api/teamSchedule?team=${encodeURIComponent(teamCode)}`, { cache: "no-store" });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
     const data = await resp.json();
-    if (!data.games || !Array.isArray(data.games)) throw new Error("Neplatná odpoveď z API");
 
-    const recent = data.games
-      .filter(g => g.gameState === "FINAL")
-      .slice(-10)
-      .reverse();
+    // Pokus nájsť pole games v rôznych variantách odpovede
+    const gamesRaw = Array.isArray(data.games)
+      ? data.games
+      : Array.isArray(data?.club?.games)
+      ? data.club.games
+      : Array.isArray(data?.clubSchedule?.games)
+      ? data.clubSchedule.games
+      : [];
 
+    if (!gamesRaw.length) {
+      // ak nie sú žiadne games, ukáž užívateľovi jasnú správu
+      loadingRow.outerHTML = `
+        <tr class="team-recent-row">
+          <td colspan="2" style="text-align:center; padding:12px; color:#99c;">
+            ⚠️ Pre tento tím neboli nájdené žiadne zápasy v odpovedi API.
+            Skontroluj konzolu backendu alebo endpoint /api/teamSchedule.
+          </td>
+        </tr>`;
+      console.warn("showTeamRecent: prázdny games array z /api/teamSchedule", data);
+      return;
+    }
+
+    // vezmi posledných 10 (ak majú dátum / id) — zoradíme podľa gameDate alebo id
+    const recent = gamesRaw
+      .slice() // kópia
+      .sort((a, b) => {
+        const da = a.gameDate || a.startTimeUTC || a.id || 0;
+        const db = b.gameDate || b.startTimeUTC || b.id || 0;
+        return new Date(db) - new Date(da);
+      })
+      .slice(0, 10)
+      .reverse(); // chceme chronologicky staršie → novšie vpravo
+
+    // vytvor boxy
     const boxes = recent.map(g => {
-      const home = g.homeTeam;
-      const away = g.awayTeam;
+      const home = g.homeTeam || g.home || {};
+      const away = g.awayTeam || g.away || {};
 
-      const homeAbbrev = home.abbrev || "";
-      const awayAbbrev = away.abbrev || "";
+      // rôzne možné polia pre logo/abbrev
+      const homeLogo = home.logo || home.darkLogo || home.teamLogo || "";
+      const awayLogo = away.logo || away.darkLogo || away.teamLogo || "";
 
-      const homeLogo = home.logo || `/icons/nhl_placeholder.svg`;
-      const awayLogo = away.logo || `/icons/nhl_placeholder.svg`;
+      // fallback na NHL assets ak máme abbrev
+      const homeCode = (home.abbrev || home.triCode || "").toString().trim();
+      const awayCode = (away.abbrev || away.triCode || "").toString().trim();
+      const homeLogoFinal = homeLogo || (homeCode ? `https://assets.nhle.com/logos/nhl/svg/${homeCode}_light.svg` : "/icons/nhl_placeholder.svg");
+      const awayLogoFinal = awayLogo || (awayCode ? `https://assets.nhle.com/logos/nhl/svg/${awayCode}_light.svg` : "/icons/nhl_placeholder.svg");
 
-      const hs = home.score ?? "-";
-      const as = away.score ?? "-";
+      const hs = Number(home.score ?? home.scoreDisplay ?? g.homeScore ?? g.home_score ?? "-");
+      const as = Number(away.score ?? away.scoreDisplay ?? g.awayScore ?? g.away_score ?? "-");
 
-      // určí výhru/prehru z pohľadu kliknutého tímu
-      const isTeamHome = teamCode.toUpperCase() === homeAbbrev.toUpperCase();
+      // urč výsledok z pohľadu kliknutého tímu (teamCode je trojpísmenko)
+      const teamUp = (teamCode || "").toString().toUpperCase();
+      const homeUp = (homeCode || "").toString().toUpperCase();
+      const awayUp = (awayCode || "").toString().toUpperCase();
+
       let result = "draw";
-      if (hs > as) result = isTeamHome ? "win" : "loss";
-      if (hs < as) result = isTeamHome ? "loss" : "win";
+      if (!isNaN(hs) && !isNaN(as)) {
+        if (hs > as) result = teamUp === homeUp ? "win" : teamUp === awayUp ? "loss" : (teamUp === "" ? "win" : "other");
+        if (hs < as) result = teamUp === homeUp ? "loss" : teamUp === awayUp ? "win" : (teamUp === "" ? "loss" : "other");
+      }
 
-      const resultIcon = result === "win"
-        ? `<span class="game-result win">✔</span>`
-        : result === "loss"
-        ? `<span class="game-result loss">✖</span>`
-        : `<span class="game-result draw">-</span>`;
+      const icon = result === "win" ? `<span class="game-result win">✔</span>` :
+                   result === "loss" ? `<span class="game-result loss">✖</span>` :
+                   `<span class="game-result draw">–</span>`;
+
+      // zobraz stručne názvy tímov / skratky ak sú
+      const homeLabel = homeCode || (home.placeName?.default ? `${home.placeName.default.split(" ").slice(-1).join(" ")}` : (home.commonName?.default || ""));
+      const awayLabel = awayCode || (away.placeName?.default ? `${away.placeName.default.split(" ").slice(-1).join(" ")}` : (away.commonName?.default || ""));
 
       return `
-        <div class="recent-box">
+        <div class="recent-box" data-gameid="${g.id || ''}">
           <div class="teams">
-            <img src="${homeLogo}" alt="${homeAbbrev}" title="${homeAbbrev}" 
-                 onerror="this.src='/icons/nhl_placeholder.svg'">
-            <img src="${awayLogo}" alt="${awayAbbrev}" title="${awayAbbrev}" 
-                 onerror="this.src='/icons/nhl_placeholder.svg'">
+            <img src="${escapeHtml(homeLogoFinal)}" alt="${escapeHtml(homeLabel)}" title="${escapeHtml(homeLabel)}" onerror="this.src='/icons/nhl_placeholder.svg'">
+            <img src="${escapeHtml(awayLogoFinal)}" alt="${escapeHtml(awayLabel)}" title="${escapeHtml(awayLabel)}" onerror="this.src='/icons/nhl_placeholder.svg'">
           </div>
-          <div class="score">${hs} : ${as}</div>
-          ${resultIcon}
+          <div class="score">${isNaN(hs) ? '-' : hs} : ${isNaN(as) ? '-' : as}</div>
+          ${icon}
         </div>
       `;
     }).join("");
 
+    // vlož výsledok ako horizontálny scroll
     loadingRow.outerHTML = `
       <tr class="team-recent-row">
-        <td colspan="2">
+        <td colspan="2" style="padding:8px 12px;">
           <div class="recent-row-wrapper">
-            ${boxes || "<div class='no-games'>Žiadne zápasy</div>"}
+            ${boxes}
           </div>
         </td>
       </tr>
     `;
+
   } catch (err) {
-    loadingRow.innerHTML = `<td colspan="2" style="color:red;">❌ ${err.message}</td>`;
+    console.error("❌ Chyba v showTeamRecent:", err);
+    loadingRow.innerHTML = `<td colspan="2" style="color:red;">❌ Chyba: ${escapeHtml(err.message || String(err))}</td>`;
+  }
+
+  // malá ochrana proti XSS / neočakávaným reťazcom
+  function escapeHtml(s) {
+    return String(s || "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
   }
 }
 
