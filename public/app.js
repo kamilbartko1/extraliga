@@ -731,7 +731,9 @@ async function displayShootingLeaders() {
   } catch (err) {
     container.innerHTML = `<p>❌ Chyba: ${err.message}</p>`;
   }
-}// === Prepínanie sekcií a načítanie dát dynamicky ===
+}
+
+// === Prepínanie sekcií a načítanie dát dynamicky ===
 document.querySelectorAll("nav button").forEach(btn => {
   btn.addEventListener("click", async () => {
     const targetId = btn.getAttribute("onclick")?.match(/'(.*?)'/)?.[1];
