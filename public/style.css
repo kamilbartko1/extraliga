@@ -2602,67 +2602,66 @@ header * {
   text-align: center;
 }
 
-/* horizontal recent boxes */
 .recent-row-wrapper {
   display: flex;
   gap: 12px;
-  padding: 8px 4px;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  align-items: flex-start;
+  padding: 10px 6px;
   scrollbar-width: thin;
 }
 
 .recent-box {
   flex: 0 0 auto;
-  width: 96px;
-  min-width: 86px;
-  background: rgba(0, 17, 28, 0.55);
-  border: 1px solid rgba(0, 183, 255, 0.18);
+  width: 100px;
+  background: rgba(0, 25, 40, 0.6);
+  border: 1px solid rgba(0, 183, 255, 0.3);
   border-radius: 10px;
-  padding: 8px 6px;
   text-align: center;
-  color: #bfeeff;
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.12) inset;
+  padding: 8px;
+  color: #bff;
+  box-shadow: 0 0 6px rgba(0, 255, 255, 0.1);
 }
 
-.recent-box .teams {
-  display:flex;
-  justify-content:center;
-  gap:6px;
-  margin-bottom:6px;
+.recent-box .logos {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 
 .recent-box img {
-  width:34px;
-  height:34px;
-  object-fit:contain;
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
   background: rgba(255,255,255,0.02);
-  border-radius:4px;
+  border-radius: 4px;
 }
 
 .recent-box .score {
-  font-weight:700;
-  font-size:16px;
-  margin-bottom:6px;
-  color:#dff;
+  font-size: 15px;
+  font-weight: 700;
+  color: #e0faff;
+  margin-bottom: 4px;
 }
 
 .game-result {
-  display:block;
-  font-size:18px;
-  font-weight:800;
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
 }
 
-.game-result.win { color:#4fff92; }
-.game-result.loss { color:#ff6b6b; }
-.game-result.draw { color:#cfcfcf; }
+.game-result.win { color: #3cff92; }
+.game-result.loss { color: #ff5757; }
 
-/* small responsive tweak */
-@media (max-width:600px) {
-  .recent-box { width:84px; min-width:74px; padding:6px 4px; }
-  .recent-box img { width:30px; height:30px; }
-  .recent-box .score { font-size:15px; }
+@media (max-width: 768px) {
+  .recent-box {
+    width: 80px;
+    padding: 6px;
+  }
+  .recent-box img {
+    width: 28px;
+    height: 28px;
+  }
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
