@@ -2531,6 +2531,39 @@ header * {
   }
 }
 
+/* 📱 Mobilná verzia tabuľky úspešnosti */
+@media (max-width: 768px) {
+  .shooting-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .shooting-table {
+    min-width: 700px; /* aby sa neprelamovalo meno a tím */
+    width: 100%;
+  }
+
+  .shooting-table th,
+  .shooting-table td {
+    white-space: nowrap;
+    padding: 6px 10px;
+  }
+
+  .shooting-table td:nth-child(2) { /* stĺpec HRÁČ */
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .shooting-table .player-headshot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
