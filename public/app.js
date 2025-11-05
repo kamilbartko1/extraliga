@@ -746,6 +746,12 @@ document.querySelectorAll("[onclick*='shooting-section']").forEach(el => {
   });
 });
 
+document.getElementById("mobileSelect")?.addEventListener("change", (e) => {
+  if (e.target.value === "shooting") {
+    displayShootingLeaders();
+  }
+});
+
 // === Štart ===
 window.addEventListener("DOMContentLoaded",  async () => {
   await loadPlayerTeams();
