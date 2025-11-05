@@ -1,187 +1,192 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Orbitron:wght@500;600&display=swap" rel="stylesheet">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NHL 2025 - 2026</title>
-    <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Orbitron:wght@500;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NHL 2025 - 2026</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <!-- 🔹 HLAVIČKA -->
-<header>
-  <div class="header-left">
-    <img src="/nhl_logo.png" alt="NHL logo">
-    <span>NHL 2025 – 2026</span>
-  </div>
-  <div class="header-center">Tipuj NHL ako profík!</div>
-  <div class="ai-watermark">Powered by <span>AI-Logic</span></div>
-</header>
+  <!-- 🔹 HLAVIČKA -->
+  <header>
+    <div class="header-left">
+      <img src="/nhl_logo.png" alt="NHL logo">
+      <span>NHL 2025 – 2026</span>
+    </div>
+    <div class="header-center">Tipuj NHL ako profík!</div>
+    <div class="ai-watermark">Powered by <span>AI-Logic</span></div>
+  </header>
 
-<nav>
-  <button onclick="showSection('matches-section')">Výsledky</button>
-  <button onclick="showSection('teams-section')">Rating tímov</button>
-  <button onclick="showSection('players-section')">Rating hráčov</button>
-  <button onclick="showSection('mantingal-container')">Martingale</button>
-  <button onclick="showSection('predictions-section')">Predikcie</button>
-  <button onclick="showSection('shooting-section')">Strelecká úspešnosť</button>
-  <button onclick="showSection('strategies-section')">Databáza hráčov</button>
-</nav>
-    
-    <!-- 📱 mobilné menu -->
-    <div class="mobile-menu">
-        <select id="mobileSelect">
-            <option value="matches">Výsledky</option>
-            <option value="teams">Rating tímov</option>
-            <option value="players">Rating hráčov</option>
-            <option value="mantingal">Martingale</option>
-            <option value="predictions">Predikcie</option>
-            <option value="shooting">Strelecká úspešnosť</option>
-            <option value="strategies">Databáza hráčov</option>
-        </select>
+  <!-- 🔹 NAVIGÁCIA (PC) -->
+  <nav>
+    <button onclick="showSection('matches-section')">Výsledky</button>
+    <button onclick="showSection('teams-section')">Rating tímov</button>
+    <button onclick="showSection('players-section')">Rating hráčov</button>
+    <button onclick="showSection('mantingal-container')">Martingale</button>
+    <button onclick="showSection('predictions-section')">Predikcie</button>
+    <button onclick="showSection('shooting-section')">Strelecká úspešnosť</button>
+    <button onclick="showSection('strategies-section')">Databáza hráčov</button>
+  </nav>
+
+  <!-- 📱 MOBILNÉ MENU -->
+  <div class="mobile-menu">
+    <select id="mobileSelect">
+      <option value="matches">Výsledky</option>
+      <option value="teams">Rating tímov</option>
+      <option value="players">Rating hráčov</option>
+      <option value="mantingal">Martingale</option>
+      <option value="predictions">Predikcie</option>
+      <option value="shooting">Strelecká úspešnosť</option>
+      <option value="strategies">Databáza hráčov</option>
+    </select>
+  </div>
+
+  <div class="container">
+    <!-- 🏒 Výsledky -->
+    <div class="section" id="matches-section">
+      <h2>Výsledky</h2>
+      <table id="matches">
+        <thead>
+          <tr>
+            <th>Domáci</th>
+            <th>Hostia</th>
+            <th>Skóre</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
 
-    <div class="container">
-        <!-- 🏒 Zápasy -->
-        <div class="left section" id="matches-section">
-            <h2>Výsledky</h2>
-            <table id="matches">
-                <thead>
-                    <tr>
-                        <th>Domáci</th>
-                        <th>Hostia</th>
-                        <th>Skóre</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+    <div id="load-status" style="color:#aaa; font-size:14px; margin:10px 0;"></div>
 
-<div id="load-status" style="color:#aaa; font-size:14px; margin:10px 0;"></div>
-        
-        <!-- 📊 Rating tímov -->
-        <div class="middle section" id="teams-section">
-            <h2>Rating tímov</h2>
-            <table id="teamRatings">
-                <thead>
-                    <tr>
-                        <th>Tím</th>
-                        <th>Rating</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+    <!-- 📊 Rating tímov -->
+    <div class="section" id="teams-section">
+      <h2>Rating tímov</h2>
+      <table id="teamRatings">
+        <thead>
+          <tr>
+            <th>Tím</th>
+            <th>Rating</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
-        <!-- 🧑‍🚀 Rating hráčov + Mantingal (PC) -->
-        <div class="right section" id="players-section">
-            <h2>Rating hráčov</h2>
-            <table id="playerRatings">
-                <thead>
-                    <tr>
-                        <th>Hráč</th>
-                        <th>Rating</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+    <!-- 🧑‍🚀 Rating hráčov -->
+    <div class="section" id="players-section">
+      <h2>Rating hráčov</h2>
+      <table id="playerRatings">
+        <thead>
+          <tr>
+            <th>Hráč</th>
+            <th>Rating</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="mantingal-container-pc"></div>
+    </div>
 
-            <!-- Mantingal sa vloží pod rating hráčov v PC -->
-            <div id="mantingal-container-pc"></div>
-        </div>
+    <!-- 💰 Mantingal -->
+    <div class="section" id="mantingal-container"></div>
 
-        <!-- 💰 Mantingal (mobilná verzia) -->
-        <div class="mantingal-mobile section" id="mantingal-container"></div>
-        </div>
+    <!-- 🕓 História Mantingalu -->
+    <div class="section" id="mantingal-history"></div>
 
-        <!-- 🕓 História stávok Mantingalu -->
-        <div class="section" id="mantingal-history"></div>
+    <!-- 📊 Predikcie -->
+    <div class="section" id="predictions-section">
+      <h2>Predikcie – Kurzy bookmakerov</h2>
+      <div id="predictions-content"><p>Načítavam kurzy...</p></div>
+    </div>
 
-        <!-- 📊 Predikcie (kurzy bookmakerov) -->
-        <div class="section" id="predictions-section">
-        <h2>Predikcie – Kurzy bookmakerov</h2>
-        <div id="predictions-content">
-            <p>Načítavam kurzy...</p>
-        </div>
-        </div>
+    <!-- 🎯 Strelecká úspešnosť -->
+    <section id="shooting-section" class="section content-section"></section>
 
-        <!-- 📊 Najlepsia uspesnost strelby -->
-        <section id="shooting-section" class="content-section">
-        </section>
+    <!-- 💡 Databáza hráčov -->
+    <div class="section" id="strategies-section">
+      <h2>Databáza hráčov</h2>
+    </div>
+  </div>
 
-        <!-- 💡 TIPOVACIE STRATÉGIE -->
-        <div class="section" id="strategies-section" style="display:none;">
-        <h2>Databáza hráčov</h2>
+  <script src="app.js"></script>
 
-    <script src="app.js"></script>
-    <script>
-        // 📱 prepínanie sekcií na mobile
-        document.getElementById("mobileSelect").addEventListener("change", (e) => {
-            const val = e.target.value;
-            document.querySelectorAll(".section").forEach(sec => sec.style.display = "none");
+  <!-- 🧭 Riadenie sekcií (univerzálne pre PC aj mobil) -->
+  <script>
+    const sections = document.querySelectorAll(".section, .content-section");
 
-            if (val === "matches") document.getElementById("matches-section").style.display = "block";
-            if (val === "teams") document.getElementById("teams-section").style.display = "block";
-            if (val === "players") document.getElementById("players-section").style.display = "block";
-            if (val === "mantingal") document.getElementById("mantingal-container").style.display = "block";
-            if (val === "predictions") document.getElementById("predictions-section").style.display = "block";
-            if (val === "shooting") document.getElementById("shooting-section").style.display = "block";
-            if (val === "strategies") document.getElementById("strategies-section").style.display = "block";
-        });
+    function showSection(id) {
+      // Skry všetky sekcie
+      sections.forEach(sec => sec.style.display = "none");
 
-        // default – pri štarte na mobile zobraz zápasy
-        document.addEventListener("DOMContentLoaded", () => {
-            if (window.innerWidth <= 768) {
-                document.getElementById("matches-section").style.display = "block";
-            }
-        });
-    </script>
+      // Zobraz kliknutú
+      const section = document.getElementById(id);
+      if (section) {
+        section.style.display = "block";
+        section.style.opacity = 0;
+        setTimeout(() => (section.style.opacity = 1), 100);
+      }
 
-<script>
-  // 🖥️ Klikateľné menu na PC
-  const navButtons = document.querySelectorAll("nav button");
-  const sections = document.querySelectorAll(".section");
+      // Dynamické načítanie len pre danú sekciu
+      switch (id) {
+        case "shooting-section":
+          displayShootingLeaders();
+          break;
+        case "strategies-section":
+          displayStrategies();
+          break;
+        case "predictions-section":
+          displayPredictions();
+          break;
+        case "mantingal-container":
+          displayMantingal();
+          break;
+        case "players-section":
+          displayPlayerRatings();
+          break;
+        case "teams-section":
+          displayTeamRatings();
+          break;
+        case "matches-section":
+          fetchMatches();
+          break;
+      }
+    }
 
-  function showSection(id) {
-    sections.forEach(sec => sec.style.display = "none");
-    const section = document.getElementById(id);
-    if (section) section.style.display = "block";
-  }
-
-  navButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const targetId = btn.getAttribute("onclick")
-        ?.match(/'(.*?)'/)?.[1];
-      if (targetId) showSection(targetId);
+    // 📱 Mobilné menu
+    document.getElementById("mobileSelect")?.addEventListener("change", (e) => {
+      const map = {
+        matches: "matches-section",
+        teams: "teams-section",
+        players: "players-section",
+        mantingal: "mantingal-container",
+        predictions: "predictions-section",
+        shooting: "shooting-section",
+        strategies: "strategies-section"
+      };
+      const target = map[e.target.value];
+      if (target) showSection(target);
     });
-  });
 
-  // 📱 Mobile menu - ostáva pôvodná logika
-  document.getElementById("mobileSelect").addEventListener("change", (e) => {
-    const val = e.target.value;
-    document.querySelectorAll(".section").forEach(sec => sec.style.display = "none");
+    // 🖥️ Desktop menu
+    document.querySelectorAll("nav button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("onclick")?.match(/'(.*?)'/)?.[1];
+        if (targetId) showSection(targetId);
+      });
+    });
 
-    if (val === "matches") document.getElementById("matches-section").style.display = "block";
-    if (val === "teams") document.getElementById("teams-section").style.display = "block";
-    if (val === "players") document.getElementById("players-section").style.display = "block";
-    if (val === "mantingal") document.getElementById("mantingal-container").style.display = "block";
-    if (val === "predictions") document.getElementById("predictions-section").style.display = "block";
-    if (val === "shooting") document.getElementById("shooting-section").style.display = "block";
-    if (val === "strategies") document.getElementById("strategies-section").style.display = "block";
-  });
-
-  // 🧭 Predvolené zobrazenie – len Výsledky
-  document.addEventListener("DOMContentLoaded", () => {
-    // všetky sekcie skry
-    sections.forEach(sec => sec.style.display = "none");
-
-    // zobraz iba Výsledky
-    document.getElementById("matches-section").style.display = "block";
-  });
-</script>
+    // 🔹 Po načítaní stránky zobraz iba „Výsledky“
+    document.addEventListener("DOMContentLoaded", () => {
+      sections.forEach(sec => sec.style.display = "none");
+      document.getElementById("matches-section").style.display = "block";
+    });
+  </script>
 
 </body>
 </html>
