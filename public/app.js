@@ -226,7 +226,7 @@ function displayMatches(matches) {
   });
 }
 
-// === Klik na tím: posledných 10 zápasov – vodorovné karty s oboma logami ===
+// === Kliknutie na tím – načítaj posledných 10 zápasov z /api/teamSchedule ===
 async function showTeamRecent(teamCode, rowEl) {
   const existing = rowEl.nextElementSibling;
   if (existing && existing.classList.contains("team-recent-row")) {
@@ -234,6 +234,7 @@ async function showTeamRecent(teamCode, rowEl) {
     return;
   }
 
+  // 🔹 Načítavam...
   const loadingRow = document.createElement("tr");
   loadingRow.className = "team-recent-row";
   loadingRow.innerHTML = `<td colspan="2" style="text-align:center;">⏳ Načítavam posledných 10 zápasov...</td>`;
@@ -247,36 +248,36 @@ async function showTeamRecent(teamCode, rowEl) {
 
     const games = data.games.slice(-10).reverse();
 
-    const html = games.map(g => {
+    const cards = games.map(g => {
+      const homeLogo = g.homeLogo || `/icons/nhl_placeholder.svg`;
+      const awayLogo = g.awayLogo || `/icons/nhl_placeholder.svg`;
       const homeAbbr = g.homeAbbr || g.home || "";
       const awayAbbr = g.awayAbbr || g.away || "";
-      const homeLogo = g.homeLogo || g.home?.logo || "/icons/nhl_placeholder.svg";
-      const awayLogo = g.awayLogo || g.away?.logo || "/icons/nhl_placeholder.svg";
       const score = `${g.homeScore} : ${g.awayScore}`;
-      const resultIcon = g.result === "W" ? "✅" : "❌";
+      const result = g.result === "W" ? "✅" : "❌";
 
       return `
-        <div class="recent-card">
-          <div class="badge-logos">
+        <div class="game-card">
+          <div class="logos">
             <img src="${homeLogo}" alt="${homeAbbr}" title="${homeAbbr}">
             <span class="score">${score}</span>
             <img src="${awayLogo}" alt="${awayAbbr}" title="${awayAbbr}">
           </div>
-          <div class="abbrs">${homeAbbr} &nbsp;–&nbsp; ${awayAbbr}</div>
-          <div class="result ${g.result === "W" ? "win" : "loss"}">${resultIcon}</div>
+          <div class="abbr">${homeAbbr} – ${awayAbbr}</div>
+          <div class="res ${g.result === "W" ? "win" : "loss"}">${result}</div>
         </div>`;
     }).join("");
 
     loadingRow.outerHTML = `
       <tr class="team-recent-row">
         <td colspan="2">
-          <div class="recent-row">
-            ${html}
+          <div class="games-row">
+            ${cards}
           </div>
         </td>
       </tr>`;
   } catch (err) {
-    loadingRow.innerHTML = `<td colspan="2" style="color:#f66; text-align:center;">❌ ${err.message}</td>`;
+    loadingRow.innerHTML = `<td colspan="2" style="color:red;">❌ ${err.message}</td>`;
   }
 }
 
