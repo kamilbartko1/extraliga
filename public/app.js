@@ -731,38 +731,101 @@ async function displayShootingLeaders() {
   } catch (err) {
     container.innerHTML = `<p>❌ Chyba: ${err.message}</p>`;
   }
-}
+}// === Prepínanie sekcií a načítanie dát dynamicky ===
+document.querySelectorAll("nav button").forEach(btn => {
+  btn.addEventListener("click", async () => {
+    const targetId = btn.getAttribute("onclick")?.match(/'(.*?)'/)?.[1];
+    if (!targetId) return;
 
-// 🔁 Načítaj predikcie, keď sa otvorí sekcia
-document
-  .querySelector("button[onclick*='predictions-section']")
-  ?.addEventListener("click", displayPredictions);
+    // 🔹 Skry všetky sekcie
+    document.querySelectorAll(".section, .content-section").forEach(sec => sec.style.display = "none");
 
-  // 🔁 Načítaj statistiky streleckej uspesnosti, keď sa otvorí sekcia
-document.querySelectorAll("[onclick*='shooting-section']").forEach(el => {
-  el.addEventListener("click", () => {
-    console.log("📊 Otváram sekciu strelecká úspešnosť...");
-    displayShootingLeaders();
+    // 🔹 Zobraz len tú vybranú
+    const section = document.getElementById(targetId);
+    if (section) section.style.display = "block";
+
+    // 🔹 Spusti len dané dáta podľa sekcie
+    switch (targetId) {
+      case "matches-section":
+        await fetchMatches();
+        break;
+      case "teams-section":
+        await displayTeamRatings();
+        break;
+      case "players-section":
+        await displayPlayerRatings();
+        break;
+      case "mantingal-container":
+        await displayMantingal();
+        await displayMantingalHistory();
+        break;
+      case "predictions-section":
+        await displayPredictions();
+        break;
+      case "shooting-section":
+        await displayShootingLeaders();
+        break;
+      case "strategies-section":
+        await displayStrategies();
+        break;
+      default:
+        break;
+    }
   });
 });
 
-document.getElementById("mobileSelect")?.addEventListener("change", (e) => {
-  if (e.target.value === "shooting") {
-    displayShootingLeaders();
+// === Mobile select menu ===
+document.getElementById("mobileSelect")?.addEventListener("change", async (e) => {
+  const val = e.target.value;
+
+  // 🔹 Skry všetko
+  document.querySelectorAll(".section, .content-section").forEach(sec => sec.style.display = "none");
+
+  let targetId = "";
+  switch (val) {
+    case "matches": targetId = "matches-section"; break;
+    case "teams": targetId = "teams-section"; break;
+    case "players": targetId = "players-section"; break;
+    case "mantingal": targetId = "mantingal-container"; break;
+    case "predictions": targetId = "predictions-section"; break;
+    case "shooting": targetId = "shooting-section"; break;
+    case "strategies": targetId = "strategies-section"; break;
+  }
+
+  const section = document.getElementById(targetId);
+  if (section) section.style.display = "block";
+
+  // 🔹 Dynamické načítanie obsahu podľa výberu
+  switch (targetId) {
+    case "matches-section":
+      await fetchMatches();
+      break;
+    case "teams-section":
+      await displayTeamRatings();
+      break;
+    case "players-section":
+      await displayPlayerRatings();
+      break;
+    case "mantingal-container":
+      await displayMantingal();
+      await displayMantingalHistory();
+      break;
+    case "predictions-section":
+      await displayPredictions();
+      break;
+    case "shooting-section":
+      await displayShootingLeaders();
+      break;
+    case "strategies-section":
+      await displayStrategies();
+      break;
+    default:
+      break;
   }
 });
 
-// 🔁 Načítaj databázu hráčov po kliknutí
-document
-  .querySelector("button[onclick*='strategies-section']")
-  ?.addEventListener("click", displayStrategies);
-
-// === Štart ===
-window.addEventListener("DOMContentLoaded",  async () => {
+// === Štart stránky ===
+window.addEventListener("DOMContentLoaded", async () => {
   await loadPlayerTeams();
-  fetchMatches();
-  displayPredictions(); // 🔹 pridaj túto funkciu
-  displayStrategies();
-  displayMantingal(); 
-  displayMantingalHistory();
+  await fetchMatches();
 });
