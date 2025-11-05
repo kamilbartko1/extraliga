@@ -752,6 +752,11 @@ document.getElementById("mobileSelect")?.addEventListener("change", (e) => {
   }
 });
 
+// 🔁 Načítaj databázu hráčov po kliknutí
+document
+  .querySelector("button[onclick*='strategies-section']")
+  ?.addEventListener("click", displayStrategies);
+
 // === Štart ===
 window.addEventListener("DOMContentLoaded",  async () => {
   await loadPlayerTeams();
