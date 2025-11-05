@@ -2531,36 +2531,48 @@ header * {
   }
 }
 
-/* 📱 Mobilná verzia tabuľky úspešnosti */
+/* 📱 Oprava pre mobil – sekcia Strelecká úspešnosť */
 @media (max-width: 768px) {
-  .shooting-table-wrapper {
+  #shooting-section {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
   }
 
   .shooting-table {
-    min-width: 700px; /* aby sa neprelamovalo meno a tím */
-    width: 100%;
+    width: 720px; /* pevná šírka – aby sa nič nelámalo */
+    border-collapse: collapse;
   }
 
   .shooting-table th,
   .shooting-table td {
-    white-space: nowrap;
+    white-space: nowrap !important;
     padding: 6px 10px;
+    font-size: 14px;
   }
 
-  .shooting-table td:nth-child(2) { /* stĺpec HRÁČ */
-    text-align: left;
-    display: flex;
+  /* Stĺpec HRÁČ – meno a fotka vedľa seba */
+  .shooting-table td:nth-child(2) {
+    display: flex !important;
     align-items: center;
+    justify-content: flex-start;
     gap: 8px;
+    text-align: left;
   }
 
   .shooting-table .player-headshot {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     flex-shrink: 0;
+    box-shadow: 0 0 4px rgba(0, 255, 255, 0.5);
+  }
+
+  /* Zabezpeči, že tím bude mať oddelený priestor */
+  .shooting-table td:nth-child(3) {
+    padding-left: 6px;
+    min-width: 45px;
+    text-align: center;
   }
 }
 
