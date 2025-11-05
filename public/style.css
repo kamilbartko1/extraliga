@@ -679,9 +679,9 @@ nav button {
   padding: 8px 18px;
   border-radius: 8px;
   cursor: pointer;
-  font-family:  'Inter' /* 🔹 tenšie a elegantné */
-  font-weight: 350; /* výrazne tenšie písmo */
-  font-size: 1rem;
+  font-family:  'Inter'; /* 🔹 tenšie a elegantné */
+  font-weight: 250; /* výrazne tenšie písmo */
+  font-size: 0,5rem;
   letter-spacing: 0.4px;
   text-shadow: 0 0 4px rgba(0, 255, 255, 0.4); /* jemný svietiaci tieň */
   transition: all 0.3s ease;
