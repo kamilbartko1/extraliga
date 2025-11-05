@@ -727,7 +727,7 @@ async function displayShootingLeaders() {
     });
 
     html += `</tbody></table>`;
-    container.innerHTML = html;
+    container.innerHTML = `<div class="shooting-table-wrapper">${html}</div>`;
   } catch (err) {
     container.innerHTML = `<p>❌ Chyba: ${err.message}</p>`;
   }
