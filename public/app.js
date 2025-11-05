@@ -294,7 +294,7 @@ async function displayTeamRatings() {
   // 3️⃣ Zoradenie tímov podľa ratingu (zostupne)
   const sorted = Object.entries(teamRatings).sort((a, b) => b[1] - a[1]);
 
-  // 4️⃣ Render tabuľky
+    // 4️⃣ Render tabuľky
   sorted.forEach(([team, rating]) => {
     const fullName = fullTeamNames[team] || team;
     const logoUrl = getTeamLogo(fullName);
@@ -310,6 +310,17 @@ async function displayTeamRatings() {
       <td style="text-align:center; font-weight:600;">${rating}</td>
     `;
     tableBody.appendChild(row);
+
+    // 🟦⬇️ TU pridaj túto logiku (kliknutie na tím)
+    const teamCode =
+      teamCodes[Object.keys(teamCodes).find(key => fullName.includes(key))] ||
+      teamCodes[team] ||
+      null;
+
+    if (teamCode) {
+      row.style.cursor = "pointer";
+      row.addEventListener("click", () => showTeamRecent(teamCode, row));
+    }
   });
 
   // 💫 Hover efekt pre logá
@@ -317,6 +328,50 @@ async function displayTeamRatings() {
     img.addEventListener("mouseenter", () => img.style.transform = "scale(1.15)");
     img.addEventListener("mouseleave", () => img.style.transform = "scale(1)");
   });
+}
+
+// === Kliknutie na tím – načítaj posledných 10 zápasov ===
+async function showTeamRecent(teamCode, rowEl) {
+  // ak už je otvorené, zavri
+  const existing = rowEl.nextElementSibling;
+  if (existing && existing.classList.contains("team-recent-row")) {
+    existing.remove();
+    return;
+  }
+
+  // načítanie
+  const loadingRow = document.createElement("tr");
+  loadingRow.className = "team-recent-row";
+  loadingRow.innerHTML = `<td colspan="2" style="text-align:center;">Načítavam posledných 10 zápasov...</td>`;
+  rowEl.insertAdjacentElement("afterend", loadingRow);
+
+  try {
+    const resp = await fetch(`/api/team-recent?team=${teamCode}`);
+    const data = await resp.json();
+    if (!data.ok) throw new Error(data.error);
+
+    const games = data.games;
+    const rows = games.map(g => `
+      <tr class="mini-game">
+        <td colspan="2" style="display:flex; align-items:center; justify-content:center; gap:10px;">
+          <img src="${g.opponentLogo}" alt="${g.opponent}" style="width:20px;height:20px;">
+          ${g.home} ${g.homeScore} : ${g.awayScore} ${g.away} 
+          <span style="color:${g.result === 'W' ? 'limegreen' : 'red'}; font-weight:600; margin-left:8px;">
+            ${g.result}
+          </span>
+        </td>
+      </tr>`).join("");
+
+    loadingRow.outerHTML = `<tr class="team-recent-row">
+      <td colspan="2">
+        <table class="recent-table">
+          ${rows}
+        </table>
+      </td>
+    </tr>`;
+  } catch (err) {
+    loadingRow.innerHTML = `<td colspan="2" style="color:red;">❌ Chyba: ${err.message}</td>`;
+  }
 }
 
 // Načítaj lokálnu databázu hráčov
