@@ -2602,72 +2602,88 @@ header * {
   text-align: center;
 }
 
-/* Rad zápasov vedľa seba */
-.games-row {
+/* -------- Team recent horizontal boxes -------- */
+.recent-row-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: flex-start;
-  margin-top: 10px;
+  flex-direction: row;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 8px;
+  -webkit-overflow-scrolling: touch;
+  align-items: flex-start;
 }
 
-/* Každý zápas ako malý box */
-.game-card {
-  background: rgba(0, 25, 45, 0.85);
-  border: 1px solid rgba(0, 183, 255, 0.35);
+/* Single match box */
+.recent-box {
+  min-width: 128px;
+  max-width: 160px;
+  background: linear-gradient(180deg, rgba(6,26,34,0.35), rgba(6,26,34,0.15));
+  border: 1px solid rgba(0,183,255,0.12);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.25) inset;
   border-radius: 10px;
-  padding: 6px 10px;
-  width: 120px;
-  text-align: center;
-  box-shadow: 0 0 5px rgba(0, 183, 255, 0.15);
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.game-card:hover {
-  transform: scale(1.05);
-  background: rgba(0, 50, 80, 0.9);
-}
-
-/* Logá tímov */
-.game-card .logos {
+  padding: 10px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: 5px;
+  gap: 6px;
+  color: #dff9ff;
+  text-align: center;
+  white-space: nowrap;
 }
 
-.game-card img {
-  width: 24px;
-  height: 24px;
+/* logos row inside box */
+.recent-box .team-logos {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.recent-box .team-logos img {
+  width: 34px;
+  height: 34px;
   object-fit: contain;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(0,0,0,0.15);
 }
 
-/* Skóre */
-.game-card .score {
+/* score row */
+.recent-box .score-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-weight: 700;
-  color: #eaf8ff;
+  font-size: 1.05rem;
+  color: #e6ffff;
+}
+.recent-box .score-line .abbr {
+  font-size: 0.78rem;
+  opacity: 0.9;
+  color: #bfefff;
+}
+.recent-box .score-line .score {
+  font-size: 1.05rem;
+  min-width: 48px;
 }
 
-/* Skratky tímov */
-.game-card .abbr {
-  color: #9fd9ff;
-  font-size: 0.8rem;
-  margin-bottom: 4px;
+/* result icon */
+.result-wrap { margin-top: 4px; }
+.result-icon {
+  display:inline-block;
+  font-size:1.15rem;
+  padding:2px 6px;
+  border-radius:6px;
 }
+.result-icon.win { color:#0f6; background: rgba(0,128,0,0.06); border: 1px solid rgba(0,255,128,0.08); }
+.result-icon.loss { color:#ff5b5b; background: rgba(255,0,0,0.04); border: 1px solid rgba(255,0,0,0.06); }
+.result-icon.draw { color:#ccc; }
 
-/* Výsledok */
-.game-card .res {
-  font-size: 1.1rem;
-  font-weight: bold;
-}
-.game-card .res.win { color: limegreen; }
-.game-card .res.loss { color: red; }
-
-/* Na mobile nech sa zalamujú pekne */
+/* ensure horizontal boxes show nicely on mobile too */
 @media (max-width: 768px) {
-  .game-card {
-    width: 45%;
-  }
+  .recent-box { min-width: 120px; max-width: 140px; padding:8px; }
+  .recent-box .team-logos img { width:28px; height:28px; }
+  .recent-row-container { gap:10px; }
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
