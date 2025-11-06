@@ -300,8 +300,14 @@ async function displayTeamRatings() {
       <td style="text-align:center; font-weight:400;">${rating}</td>
     `;
 
-    row.style.setProperty("--logo-bg", `url(${logoUrl})`);
-    
+    row.style.backgroundImage = `url(${logoUrl})`;
+    row.style.backgroundRepeat = "no-repeat";
+    row.style.backgroundPosition = "center";
+    row.style.backgroundSize = "150px auto";
+    row.style.opacity = "0.9";
+    row.style.setProperty("--logo-opacity", "0.06");
+    row.style.setProperty("--hover-opacity", "0.12");
+
     tableBody.appendChild(row);
   });
 

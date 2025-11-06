@@ -2730,28 +2730,28 @@ header * {
 
 #teamRatings tbody tr {
   position: relative;
-  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.3); /* alebo tvoj tmavý odtieň */
+  background-blend-mode: lighten;
+  color: #fff;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
-#teamRatings tbody tr::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-repeat: no-repeat;
-  background-position: right 20px center;
-  background-size: 120px auto;
-  opacity: 0.06; /* jemné pozadie */
-  transition: opacity 0.3s ease;
-  z-index: 0;
+#teamRatings tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  transform: scale(1.01);
 }
 
-#teamRatings tbody tr:hover::before {
-  opacity: 0.12; /* jemne zvýrazní logo pri prechode myšou */
+#teamRatings tbody tr {
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 150px auto !important;
+  opacity: 0.95;
 }
 
-#teamRatings tbody td {
-  position: relative;
-  z-index: 1; /* aby bol text nad logom */
+@media (max-width: 768px) {
+  #teamRatings tbody tr {
+    background-size: 90px auto !important;
+  }
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
