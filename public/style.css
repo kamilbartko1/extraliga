@@ -113,7 +113,7 @@ th, td {
 th {
   background: #0f1419;
   color: #00b7ff;
-  font-weight: 600;
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -994,7 +994,7 @@ nav button:hover::after {
 
 .team-name {
   color: #00eaff;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* --- Jednotný štýl nadpisov pre všetky sekcie --- */
@@ -1145,7 +1145,7 @@ nav button:hover::after {
   /* Tímové a hráčske mená mierne menšie, ale čitateľné */
   table td:first-child,
   table td:nth-child(2) {
-    font-weight: 600;
+    font-weight: 400;
     font-size: 0.8rem;
   }
 
@@ -1441,7 +1441,7 @@ nav button:hover::after {
 
   table th {
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 400;
     text-shadow: 0 0 2px rgba(0, 255, 255, 0.2);
   }
 
@@ -1521,8 +1521,8 @@ nav button:hover::after {
   #matches thead th,
   #strategiesTable thead th,
   .section table thead th {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 10px;
+    font-weight: 400;
     white-space: nowrap;
     letter-spacing: 0.5px;
     text-shadow: 0 0 2px rgba(0,255,255,.25);
@@ -1532,7 +1532,7 @@ nav button:hover::after {
   #matches tbody td,
   #strategiesTable tbody td,
   .section table tbody td {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     line-height: 1.25;
     padding: 8px 6px;
