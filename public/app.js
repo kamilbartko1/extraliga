@@ -670,80 +670,81 @@ async function displayPredictions() {
   }
 }
 
-// === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy + dynamické tabuľky) ===
-async function displayShootingLeaders() {
+// === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
+async function displayStatsSection() {
   const grid = document.getElementById("stats-grid");
   const detail = document.getElementById("stats-detail");
   if (!grid || !detail) return;
 
-  // Po kliknutí na box
   grid.querySelectorAll(".stat-box").forEach(box => {
     box.addEventListener("click", async () => {
       const type = box.dataset.type;
-      if (!type) {
-        detail.innerHTML = `<p style="color:#999;text-align:center;">📊 Sekcia ešte nie je napojená.</p>`;
-        return;
-      }
-
-      // Zvýrazni vybraný box
-      grid.querySelectorAll(".stat-box").forEach(b => b.classList.remove("active"));
-      box.classList.add("active");
-
-      detail.innerHTML = `<p style="text-align:center;">⏳ Načítavam štatistiky...</p>`;
+      detail.innerHTML = `<p style="text-align:center;">⏳ Načítavam dáta...</p>`;
 
       try {
         const resp = await fetch("/api/statistics", { cache: "no-store" });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const data = await resp.json();
 
-        if (!data.ok || !Array.isArray(data.top)) {
-          throw new Error("Neplatná odpoveď z API");
-        }
+        if (!data.ok) throw new Error(data.error || "Neplatná odpoveď z API.");
 
+        // Vyber správne pole podľa kliknutého boxu
         let players = [];
-        if (type === "shootingPctg") {
-          // podľa percenta úspešnosti
-          players = data.top.slice(0, 50);
-        } else if (type === "shots" && Array.isArray(data.mostShots)) {
-          // podľa najviac striel
-          players = data.mostShots.slice(0, 50);
+        let title = "";
+        if (type === "accuracy") {
+          players = data.topAccuracy || [];
+          title = "🎯 Najlepšia strelecká úspešnosť";
+        } else if (type === "shots") {
+          players = data.topShots || [];
+          title = "🔥 Najviac striel";
         } else {
-          detail.innerHTML = `<p>⚠️ Pre túto štatistiku zatiaľ nie sú dáta.</p>`;
+          detail.innerHTML = `<p style="text-align:center;">⚠️ Táto štatistika ešte nie je dostupná.</p>`;
           return;
         }
 
-        // Vykresli tabuľku
+        // Skontroluj dáta
+        if (!players.length) {
+          detail.innerHTML = `<p style="text-align:center;">⚠️ Žiadne dáta pre ${title}</p>`;
+          return;
+        }
+
+        // Render tabuľky
         let html = `
-          <h3 style="text-align:center;color:#00eaff;margin-bottom:10px;">
-            ${type === "shootingPctg" ? "🎯 Najvyššie % streľby" : "🔥 Najviac striel"}
-          </h3>
-          <table>
+          <h3 style="text-align:center;color:#00eaff;margin-bottom:10px;">${title}</h3>
+          <table class="shooting-table">
             <thead>
               <tr>
                 <th>#</th>
                 <th>Hráč</th>
                 <th>Tím</th>
-                <th>${type === "shootingPctg" ? "Góly" : "Strieľ"} </th>
-                ${type === "shootingPctg" ? "<th>Strely</th><th>Úspešnosť</th>" : ""}
+                ${
+                  type === "accuracy"
+                    ? "<th>G</th><th>S</th><th>%</th>"
+                    : "<th>Strely</th>"
+                }
               </tr>
             </thead>
             <tbody>
         `;
 
-        players.forEach((p, i) => {
+        players.slice(0, 50).forEach((p, i) => {
+          const img = `<img src="${p.headshot}" alt="${p.name}" style="width:24px;height:24px;border-radius:50%;margin-right:6px;vertical-align:middle;">`;
           html += `
             <tr>
               <td>${i + 1}</td>
-              <td><img src="${p.headshot}" alt="${p.name}" style="width:24px;height:24px;border-radius:50%;vertical-align:middle;margin-right:6px;"> ${p.name}</td>
+              <td>${img}${p.name}</td>
               <td>${p.team}</td>
-              <td>${p.goals || p.shots}</td>
-              ${type === "shootingPctg" ? `<td>${p.shots}</td><td>${p.shootingPctg.toFixed(1)}%</td>` : ""}
+              ${
+                type === "accuracy"
+                  ? `<td>${p.goals}</td><td>${p.shots}</td><td>${p.shootingPctg.toFixed(1)}%</td>`
+                  : `<td>${p.shots}</td>`
+              }
             </tr>
           `;
         });
 
         html += `</tbody></table>`;
         detail.innerHTML = html;
-
       } catch (err) {
         detail.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba: ${err.message}</p>`;
       }
