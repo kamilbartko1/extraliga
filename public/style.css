@@ -1159,7 +1159,7 @@ nav button:hover::after {
 @media (max-width: 768px) {
   /* Všetky sekcie */
   body {
-    font-size: 0.9rem;
+    font-size: 0.7rem;
   }
 
   /* Nadpisy sekcií (VÝSLEDKY, RATING TÍMOV...) */
