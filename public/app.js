@@ -226,13 +226,21 @@ function displayMatches(matches) {
   });
 }
 
-// === RATING TÍMOV – vrátane kliknutia na tím ===
+// === RATING TÍMOV ===
 async function displayTeamRatings() {
   const tableBody = document.querySelector("#teamRatings tbody");
   if (!tableBody) return;
+
+  // 🧹 najskôr vyčisti tabuľku
   tableBody.innerHTML = "";
 
-  // načítaj celé názvy
+  // 🔹 odstráň duplicity
+  const uniqueRatings = {};
+  for (const [team, rating] of Object.entries(teamRatings)) {
+    uniqueRatings[team] = rating;
+  }
+
+  // načítaj celé názvy (ak existuje databáza)
   let fullTeamNames = {};
   try {
     const resp = await fetch("/data/nhl_players.json", { cache: "no-store" });
@@ -268,10 +276,10 @@ async function displayTeamRatings() {
     return "";
   }
 
-  // zoradenie
-  const sorted = Object.entries(teamRatings).sort((a, b) => b[1] - a[1]);
+  // zoradenie bez duplikátov
+  const sorted = Object.entries(uniqueRatings).sort((a, b) => b[1] - a[1]);
 
-  // renderovanie
+  // render
   sorted.forEach(([team, rating]) => {
     const fullName = fullTeamNames[team] || team;
     const code = resolveTeamCode(fullName);
@@ -284,35 +292,18 @@ async function displayTeamRatings() {
     row.dataset.code = code;
 
     row.innerHTML = `
-      <td style="display:flex; align-items:center; gap:10px; min-width:220px; cursor:pointer;">
+      <td style="display:flex; align-items:center; gap:10px; min-width:220px;">
         <img src="${logoUrl}" alt="${fullName}" title="${fullName}"
              onerror="this.src='/icons/nhl_placeholder.svg'"
-             style="width:26px; height:26px; object-fit:contain; transition:transform 0.2s ease;">
+             style="width:26px; height:26px; object-fit:contain;">
         <span>${fullName}</span>
       </td>
       <td style="text-align:center; font-weight:600;">${rating}</td>
     `;
     tableBody.appendChild(row);
-
-    // 👇 kliknutie na riadok – zobrazí/zavrie posledné zápasy
-    row.addEventListener("click", () => {
-      const existing = row.nextElementSibling;
-      if (existing && existing.classList.contains("team-recent-row")) {
-        existing.remove();
-      } else if (code) {
-        showTeamRecent(code, row);
-      } else {
-        const warn = document.createElement("tr");
-        warn.className = "team-recent-row";
-        warn.innerHTML = `<td colspan="2" style="text-align:center;color:#f66;">
-          ⚠️ Nepodarilo sa určiť kód pre ${fullName}
-        </td>`;
-        row.insertAdjacentElement("afterend", warn);
-      }
-    });
   });
 
-  // hover efekt na logá
+  // hover efekt
   document.querySelectorAll("#teamRatings img").forEach((img) => {
     img.addEventListener("mouseenter", () => (img.style.transform = "scale(1.15)"));
     img.addEventListener("mouseleave", () => (img.style.transform = "scale(1)"));
