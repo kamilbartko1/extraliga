@@ -165,7 +165,6 @@ async function fetchMatches() {
     displayMatches(allMatches);
     teamRatings = data.teamRatings || {};
     playerRatings = data.playerRatings || {};
-    displayTeamRatings();
     displayPlayerRatings();
     displayMantingal();
 
@@ -255,7 +254,7 @@ async function displayTeamRatings() {
   } catch (err) {
     console.warn("⚠️ Nepodarilo sa načítať nhl_players.json:", err);
   }
-  
+
   // mapy triCode
   const nickToCode = {
     "Ducks": "ANA", "Coyotes": "ARI", "Bruins": "BOS", "Sabres": "BUF", "Flames": "CGY",
