@@ -307,6 +307,7 @@ async function displayTeamRatings() {
     row.style.opacity = "0.9";
     row.style.setProperty("--logo-opacity", "0.06");
     row.style.setProperty("--hover-opacity", "0.12");
+    
 
     tableBody.appendChild(row);
   });
