@@ -671,7 +671,7 @@ async function displayPredictions() {
 }
 
 // === Štatistiky hráčov (úspešnosť + počet striel) ===
-async function displayStatistics() {
+async function displayShootingLeaders() {
   const container = document.getElementById("shooting-section");
   if (!container) return;
 
