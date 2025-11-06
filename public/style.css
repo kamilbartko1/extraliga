@@ -2728,6 +2728,32 @@ header * {
   color: red;
 }
 
+#teamRatings tbody tr {
+  position: relative;
+  overflow: hidden;
+}
+
+#teamRatings tbody tr::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: right 20px center;
+  background-size: 120px auto;
+  opacity: 0.06; /* jemné pozadie */
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+#teamRatings tbody tr:hover::before {
+  opacity: 0.12; /* jemne zvýrazní logo pri prechode myšou */
+}
+
+#teamRatings tbody td {
+  position: relative;
+  z-index: 1; /* aby bol text nad logom */
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {

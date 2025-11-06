@@ -299,6 +299,9 @@ async function displayTeamRatings() {
       </td>
       <td style="text-align:center; font-weight:400;">${rating}</td>
     `;
+
+    row.style.setProperty("--logo-bg", `url(${logoUrl})`);
+    
     tableBody.appendChild(row);
   });
 
