@@ -297,7 +297,7 @@ async function displayTeamRatings() {
              style="width:26px; height:26px; object-fit:contain;">
         <span>${fullName}</span>
       </td>
-      <td style="text-align:center; font-weight:600;">${rating}</td>
+      <td style="text-align:center; font-weight:400;">${rating}</td>
     `;
     tableBody.appendChild(row);
   });
