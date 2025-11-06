@@ -2868,103 +2868,49 @@ header * {
   }
 }
 
-/* SEKCIÁ STRELECKÉ ŠTATISTIKY */
-#shooting-section {
-  width: 100vw; /* roztiahni na celú šírku obrazovky */
-  margin-left: calc(-50vw + 50%); /* vycentrovanie pri centrálnom layoute */
-  background: rgba(0, 0, 0, 0.2);
-  padding: 20px 0;
-}
-
-/* GRID pre dve tabuľky */
-.stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* dve rovnaké polovice */
-  gap: 25px;
-  width: 95%;
-  margin: 0 auto;
-}
-
-/* Boxy pre každú tabuľku */
-.stats-table {
-  background: rgba(0, 0, 0, 0.35);
-  border-radius: 10px;
-  padding: 12px 10px;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
-  color: #c8faff;
-  overflow-x: auto;
-}
-
-/* Tabuľky vo vnútri */
-.stats-table table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed; /* rovnaké stĺpce */
-}
-
-.stats-table th,
-.stats-table td {
-  text-align: center;
-  padding: 6px 8px;
-  font-size: 14px;
-  white-space: nowrap;
-}
-
-/* prispôsobenie na menšie obrazovky */
-@media (max-width: 1024px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-  #shooting-section {
-    width: 100%;
-    margin-left: 0;
-    padding: 10px;
-  }
-}
-
 /* === ŠTATISTIKY HRÁČOV NHL === */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 12px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 18px;
   justify-items: center;
   align-items: center;
+  margin: 20px 0;
   width: 100%;
   box-sizing: border-box;
 }
 
 .stat-box {
-  width: 100%;
-  max-width: 120px;
-  min-width: 80px;
-  height: 60px;
+  width: 160px;
+  height: 100px;
   background: rgba(0, 234, 255, 0.1);
   border: 1px solid rgba(0, 234, 255, 0.3);
-  border-radius: 10px;
-  text-align: center;
-  padding: 8px;
-  color: #00eaff;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  font-size: 0.85rem;
+  border-radius: 14px;
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  color: #00eaff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
   user-select: none;
+  box-sizing: border-box;
 }
 
 .stat-box:hover {
   background: rgba(0, 234, 255, 0.25);
   transform: scale(1.05);
+  border-color: rgba(0, 234, 255, 0.5);
 }
 
 /* 🔹 detailná tabuľka */
 .stats-detail {
   width: 100%;
   overflow-x: auto;
-  margin-top: 10px;
-  padding: 10px;
+  margin-top: 14px;
+  padding: 14px;
   background: rgba(0, 234, 255, 0.05);
   border-radius: 10px;
 }
@@ -2972,12 +2918,12 @@ header * {
 .stats-detail table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 400px; /* aby bola scrollovateľná na mobile */
+  min-width: 500px;
 }
 
 .stats-detail th,
 .stats-detail td {
-  padding: 6px 8px;
+  padding: 8px 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   text-align: left;
   white-space: nowrap;
@@ -2991,23 +2937,23 @@ header * {
 /* === RESPONSIVE – MOBIL === */
 @media (max-width: 768px) {
   .stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-    gap: 10px;
-    padding: 0 10px;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    padding: 0 8px;
   }
 
   .stat-box {
-    font-size: 0.75rem;
-    height: 55px;
-    max-width: none;
+    width: 130px;
+    height: 85px;
+    font-size: 0.8rem;
   }
 
   .stats-detail {
-    padding: 6px;
+    padding: 8px;
   }
 
   .stats-detail table {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
 }
 
