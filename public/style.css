@@ -763,9 +763,9 @@ nav button {
   background: none;
   border: none;
   color: #00eaff;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-family: "Roboto Condensed", sans-serif;
-  font-weight: 200;
+  font-weight: 300;
   cursor: pointer;
   padding: 0.3rem 0.5rem;
   position: relative;
