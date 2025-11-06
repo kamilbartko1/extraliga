@@ -2340,7 +2340,7 @@ header * {
 /* Hlavička tabuľky */
 #teamRatings thead th {
   color: #00ffff;
-  font-weight: 600;
+  font-weight: 400;
   padding: 10px 0;
   text-align: center;
 }
@@ -2362,7 +2362,7 @@ header * {
 /* 🟢 Nadpis Tím – presne nad názvami, nie nad logami */
 #teamRatings thead th:first-child {
   text-align: left;
-  padding-left: 200px;
+  padding-left: 177px;
 }
 
 /* 🟢 Stĺpec Rating – zarovnaný presne nad číslami */
@@ -2374,7 +2374,7 @@ header * {
 
 #teamRatings thead th:last-child {
   text-align: right;
-  padding-right: 115px;
+  padding-right: 144px;
 }
 
 /* Hover efekt pre riadky */
