@@ -2868,6 +2868,60 @@ header * {
   }
 }
 
+/* SEKCIÁ STRELECKÉ ŠTATISTIKY */
+#shooting-section {
+  width: 100vw; /* roztiahni na celú šírku obrazovky */
+  margin-left: calc(-50vw + 50%); /* vycentrovanie pri centrálnom layoute */
+  background: rgba(0, 0, 0, 0.2);
+  padding: 20px 0;
+}
+
+/* GRID pre dve tabuľky */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* dve rovnaké polovice */
+  gap: 25px;
+  width: 95%;
+  margin: 0 auto;
+}
+
+/* Boxy pre každú tabuľku */
+.stats-table {
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 10px;
+  padding: 12px 10px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+  color: #c8faff;
+  overflow-x: auto;
+}
+
+/* Tabuľky vo vnútri */
+.stats-table table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* rovnaké stĺpce */
+}
+
+.stats-table th,
+.stats-table td {
+  text-align: center;
+  padding: 6px 8px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* prispôsobenie na menšie obrazovky */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  #shooting-section {
+    width: 100%;
+    margin-left: 0;
+    padding: 10px;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
