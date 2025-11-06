@@ -2923,72 +2923,92 @@ header * {
 }
 
 /* === ŠTATISTIKY HRÁČOV NHL === */
-#stats-section {
-  text-align: center;
-  padding: 20px;
-}
-
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 20px;
-  justify-content: center;
-  margin: 30px auto;
-  max-width: 1000px;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+  justify-items: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .stat-box {
-  background: rgba(0, 30, 60, 0.4);
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: 12px;
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.1);
-  padding: 15px;
+  width: 100%;
+  max-width: 120px;
+  min-width: 80px;
+  height: 60px;
+  background: rgba(0, 234, 255, 0.1);
+  border: 1px solid rgba(0, 234, 255, 0.3);
+  border-radius: 10px;
+  text-align: center;
+  padding: 8px;
   color: #00eaff;
   cursor: pointer;
   transition: all 0.25s ease;
+  font-size: 0.85rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
 }
 
 .stat-box:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.25);
-  background: rgba(0, 50, 80, 0.5);
+  background: rgba(0, 234, 255, 0.25);
+  transform: scale(1.05);
 }
 
-.stat-box h3 {
-  font-size: 0.95rem;
-  font-weight: 500;
-  margin: 0;
+/* 🔹 detailná tabuľka */
+.stats-detail {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(0, 234, 255, 0.05);
+  border-radius: 10px;
 }
 
-.stat-detail {
-  margin-top: 40px;
-  text-align: left;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.stat-detail table {
+.stats-detail table {
   width: 100%;
   border-collapse: collapse;
-  background: rgba(0, 25, 40, 0.5);
-  border: 1px solid rgba(0, 255, 255, 0.15);
-  border-radius: 12px;
-  overflow: hidden;
+  min-width: 400px; /* aby bola scrollovateľná na mobile */
 }
 
-.stat-detail th, .stat-detail td {
-  padding: 8px 12px;
+.stats-detail th,
+.stats-detail td {
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   text-align: left;
+  white-space: nowrap;
 }
 
-.stat-detail th {
-  background: rgba(0, 255, 255, 0.1);
+.stats-detail th {
   color: #00eaff;
+  font-weight: 600;
 }
 
-.stat-detail tr:nth-child(even) {
-  background: rgba(255, 255, 255, 0.03);
+/* === RESPONSIVE – MOBIL === */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 10px;
+    padding: 0 10px;
+  }
+
+  .stat-box {
+    font-size: 0.75rem;
+    height: 55px;
+    max-width: none;
+  }
+
+  .stats-detail {
+    padding: 6px;
+  }
+
+  .stats-detail table {
+    font-size: 0.8rem;
+  }
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
