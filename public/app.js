@@ -532,7 +532,7 @@ async function displayStrategies() {
     }
 
     wrap.innerHTML = `
-      <h2>Databáza hráčov NHL</h2>
+      <h1>Databáza hráčov NHL</h1>
       <p>Počet hráčov v databáze: <b>${data.count}</b></p>
       <p>Zobrazených prvých 300 hráčov:</p>
     `;
