@@ -1001,8 +1001,8 @@ nav button:hover::after {
 .section h2 {
   text-align: center;
   color: #00ffff; /* tyrkysová */
-  font-size: 1.3rem;
-  font-weight: bold;
+  font-size: 0.85rem;
+  font-weight: normal;
   margin: 10px 0 20px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1102,7 +1102,7 @@ nav button:hover::after {
 
   /* Nadpisy sekcií (napr. VÝSLEDKY, RATING TÍMOV...) */
   h2 {
-    font-size: 1.1rem;
+    font-size: 0.85rem;
     text-align: center;
     letter-spacing: 1px;
   }
