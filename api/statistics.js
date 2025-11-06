@@ -12,7 +12,6 @@ export default async function handler(req, res) {
     const allPlayers = [];
     const baseUrl = `https://api-web.nhle.com/v1/club-stats`;
 
-    // 🔹 Bezpečný fetch s timeoutom a error-handlingom
     const safeFetch = async (url) => {
       try {
         const ctrl = new AbortController();
@@ -28,52 +27,46 @@ export default async function handler(req, res) {
       }
     };
 
-    // 🔹 Načítaj štatistiky všetkých tímov
     for (const team of teamCodes) {
-      const url = `${baseUrl}/${team}/${season}/2`; // správny endpoint
+      const url = `${baseUrl}/${team}/${season}/2`;
       const data = await safeFetch(url);
 
-      if (!data || !data.skaters || !Array.isArray(data.skaters)) {
-        console.warn(`⚠️ ${team}: žiadni hráči`);
-        continue;
-      }
+      if (!data || !data.skaters || !Array.isArray(data.skaters)) continue;
 
-      const skaters = data.skaters.filter(
-        (p) =>
-          typeof p.shootingPctg === "number" &&
-          p.shots > 0 &&
-          p.gamesPlayed > 0
-      );
+      data.skaters.forEach((p) => {
+        if (!p.gamesPlayed || !p.shots) return;
 
-      skaters.forEach((p) => {
         allPlayers.push({
           id: p.playerId,
           name: `${p.firstName?.default || ""} ${p.lastName?.default || ""}`.trim(),
           team,
           goals: p.goals ?? 0,
           shots: p.shots ?? 0,
-          shootingPctg: Math.round((p.shootingPctg || 0) * 1000) / 10, // napr. 0.171429 → 17.1 %
+          shootingPctg: Math.round((p.shootingPctg || 0) * 1000) / 10,
           gamesPlayed: p.gamesPlayed ?? 0,
           headshot:
             p.headshot ||
             `https://assets.nhle.com/mugs/nhl/${season}/${team}/${p.playerId}.png`,
         });
       });
-
-      console.log(`✅ ${team}: ${skaters.length} hráčov spracovaných`);
     }
 
-    // 🔹 Zoradíme podľa úspešnosti streľby
-    const top = allPlayers
+    // 🔹 Dva rebríčky
+    const topAccuracy = [...allPlayers]
+      .filter(p => p.shootingPctg > 0 && p.shots > 0)
       .sort((a, b) => b.shootingPctg - a.shootingPctg)
       .slice(0, 50);
 
-    console.log(`🏒 Spolu hráčov: ${allPlayers.length}, TOP 50 pripravené.`);
+    const topShots = [...allPlayers]
+      .filter(p => p.shots > 0)
+      .sort((a, b) => b.shots - a.shots)
+      .slice(0, 50);
 
     return res.status(200).json({
       ok: true,
       count: allPlayers.length,
-      top,
+      topAccuracy,
+      topShots,
     });
   } catch (err) {
     console.error("❌ Chyba v /api/statistics:", err);

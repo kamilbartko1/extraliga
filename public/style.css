@@ -2757,6 +2757,55 @@ header * {
   background-image: attr(data-logo url);
 }
 
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.stats-table {
+  background: rgba(0,0,0,0.25);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.4);
+}
+
+.stats-table h3 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #00eaff;
+}
+
+.stats-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.stats-table th,
+.stats-table td {
+  text-align: center;
+  padding: 6px 8px;
+}
+
+.stats-table tr:nth-child(even) {
+  background: rgba(255,255,255,0.05);
+}
+
+.player-headshot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
