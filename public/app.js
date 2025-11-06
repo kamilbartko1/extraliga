@@ -671,7 +671,7 @@ async function displayPredictions() {
 }
 
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
-async function displayStatsSection() {
+async function displayShootingLeaders() {
   const grid = document.getElementById("stats-grid");
   const detail = document.getElementById("stats-detail");
   if (!grid || !detail) return;
