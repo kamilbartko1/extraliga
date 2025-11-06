@@ -2806,6 +2806,68 @@ header * {
   }
 }
 
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* dva rovnako široké stĺpce */
+  gap: 20px;
+  align-items: start;
+}
+
+/* Každý box má rovnakú minimálnu výšku */
+.stats-table {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+}
+
+/* Tabuľka sa roztiahne na celú šírku boxu */
+.stats-table table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* ✨ kľúčové – rovnaká šírka buniek */
+}
+
+/* Hlavičky a bunky budú mať pevné pomery */
+.stats-table th,
+.stats-table td {
+  text-align: center;
+  padding: 6px 8px;
+  word-wrap: break-word;
+  font-size: 14px;
+}
+
+/* Rovnaká šírka v hlavičkách */
+.stats-table th:nth-child(1),
+.stats-table td:nth-child(1) { width: 8%; }
+.stats-table th:nth-child(2),
+.stats-table td:nth-child(2) { width: 32%; }
+.stats-table th:nth-child(3),
+.stats-table td:nth-child(3) { width: 15%; }
+.stats-table th:nth-child(4),
+.stats-table td:nth-child(4) { width: 15%; }
+.stats-table th:nth-child(5),
+.stats-table td:nth-child(5) { width: 15%; }
+.stats-table th:nth-child(6),
+.stats-table td:nth-child(6) { width: 15%; }
+
+/* menšie písmo pre mená hráčov, aby sa vošli */
+.stats-table td:nth-child(2) {
+  font-size: 13px;
+  text-align: left;
+}
+
+/* responzívne pre mobily */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
