@@ -2411,7 +2411,7 @@ header * {
 /* Hlavička tabuľky */
 #playerRatings thead th {
   color: #00ffff;
-  font-weight: 600;
+  font-weight: 400;
   padding: 10px 0;
   text-align: center;
 }
