@@ -255,6 +255,26 @@ async function displayTeamRatings() {
   } catch (err) {
     console.warn("⚠️ Nepodarilo sa načítať nhl_players.json:", err);
   }
+  
+  // mapy triCode
+  const nickToCode = {
+    "Ducks": "ANA", "Coyotes": "ARI", "Bruins": "BOS", "Sabres": "BUF", "Flames": "CGY",
+    "Hurricanes": "CAR", "Blackhawks": "CHI", "Avalanche": "COL", "Blue Jackets": "CBJ",
+    "Stars": "DAL", "Red Wings": "DET", "Oilers": "EDM", "Panthers": "FLA", "Kings": "LAK",
+    "Wild": "MIN", "Canadiens": "MTL", "Predators": "NSH", "Devils": "NJD", "Islanders": "NYI",
+    "Rangers": "NYR", "Senators": "OTT", "Flyers": "PHI", "Penguins": "PIT", "Sharks": "SJS",
+    "Kraken": "SEA", "Blues": "STL", "Lightning": "TBL", "Maple Leafs": "TOR", "Canucks": "VAN",
+    "Golden Knights": "VGK", "Capitals": "WSH", "Jets": "WPG", "Mammoth": "UTA", "Mammoths": "UTA"
+  };
+
+  function resolveTeamCode(fullName) {
+    if (!fullName) return "";
+    const norm = fullName.replace(/\./g, "").replace(/\s+/g, " ").trim();
+    for (const [nick, code] of Object.entries(nickToCode)) {
+      if (norm.toLowerCase().includes(nick.toLowerCase())) return code;
+    }
+    return "";
+  }
 
   // zoradenie bez duplikátov
   const sorted = Object.entries(uniqueRatings).sort((a, b) => b[1] - a[1]);
