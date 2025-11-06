@@ -2753,6 +2753,10 @@ header * {
   }
 }
 
+#teamRatings tbody tr::before {
+  background-image: attr(data-logo url);
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
