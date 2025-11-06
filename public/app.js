@@ -670,64 +670,85 @@ async function displayPredictions() {
   }
 }
 
-// === Štatistiky hráčov (úspešnosť + počet striel) ===
+// === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy + dynamické tabuľky) ===
 async function displayShootingLeaders() {
-  const container = document.getElementById("shooting-section");
-  if (!container) return;
+  const grid = document.getElementById("stats-grid");
+  const detail = document.getElementById("stats-detail");
+  if (!grid || !detail) return;
 
-  container.innerHTML = `<p>⏳ Načítavam štatistiky hráčov...</p>`;
+  // Po kliknutí na box
+  grid.querySelectorAll(".stat-box").forEach(box => {
+    box.addEventListener("click", async () => {
+      const type = box.dataset.type;
+      if (!type) {
+        detail.innerHTML = `<p style="color:#999;text-align:center;">📊 Sekcia ešte nie je napojená.</p>`;
+        return;
+      }
 
-  try {
-    const resp = await fetch("/api/statistics", { cache: "no-store" });
-    const data = await resp.json();
+      // Zvýrazni vybraný box
+      grid.querySelectorAll(".stat-box").forEach(b => b.classList.remove("active"));
+      box.classList.add("active");
 
-    if (!data.ok) throw new Error("Nepodarilo sa načítať štatistiky");
+      detail.innerHTML = `<p style="text-align:center;">⏳ Načítavam štatistiky...</p>`;
 
-    const { topAccuracy, topShots } = data;
+      try {
+        const resp = await fetch("/api/statistics", { cache: "no-store" });
+        const data = await resp.json();
 
-    const makeTable = (players, title, cols) => `
-      <div class="stats-table">
-        <h3>${title}</h3>
-        <table>
-          <thead>
-            <tr>${cols.map(c => `<th>${c}</th>`).join("")}</tr>
-          </thead>
-          <tbody>
-            ${players
-              .map(
-                (p, i) => `
-                <tr>
-                  <td>${i + 1}</td>
-                  <td style="white-space:nowrap;">
-                    <img src="${p.headshot}" class="player-headshot" alt="${p.name}">
-                    ${p.name}
-                  </td>
-                  <td>${p.team}</td>
-                  <td>${p.goals}</td>
-                  <td>${p.shots}</td>
-                  <td>${p.shootingPctg?.toFixed(1) ?? "0.0"}%</td>
-                </tr>`
-              )
-              .join("")}
-          </tbody>
-        </table>
-      </div>
-    `;
+        if (!data.ok || !Array.isArray(data.top)) {
+          throw new Error("Neplatná odpoveď z API");
+        }
 
-    container.innerHTML = `
-      <h2>Štatistiky hráčov NHL</h2>
-      <div class="stats-grid">
-        ${makeTable(topAccuracy, "Najlepšia strelecká úspešnosť", [
-          "#", "Hráč", "Tím", "G", "S", "%"
-        ])}
-        ${makeTable(topShots, "Najviac striel", [
-          "#", "Hráč", "Tím", "G", "S", "%"
-        ])}
-      </div>
-    `;
-  } catch (err) {
-    container.innerHTML = `<p style="color:red;">❌ Chyba: ${err.message}</p>`;
-  }
+        let players = [];
+        if (type === "shootingPctg") {
+          // podľa percenta úspešnosti
+          players = data.top.slice(0, 50);
+        } else if (type === "shots" && Array.isArray(data.mostShots)) {
+          // podľa najviac striel
+          players = data.mostShots.slice(0, 50);
+        } else {
+          detail.innerHTML = `<p>⚠️ Pre túto štatistiku zatiaľ nie sú dáta.</p>`;
+          return;
+        }
+
+        // Vykresli tabuľku
+        let html = `
+          <h3 style="text-align:center;color:#00eaff;margin-bottom:10px;">
+            ${type === "shootingPctg" ? "🎯 Najvyššie % streľby" : "🔥 Najviac striel"}
+          </h3>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Hráč</th>
+                <th>Tím</th>
+                <th>${type === "shootingPctg" ? "Góly" : "Strieľ"} </th>
+                ${type === "shootingPctg" ? "<th>Strely</th><th>Úspešnosť</th>" : ""}
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        players.forEach((p, i) => {
+          html += `
+            <tr>
+              <td>${i + 1}</td>
+              <td><img src="${p.headshot}" alt="${p.name}" style="width:24px;height:24px;border-radius:50%;vertical-align:middle;margin-right:6px;"> ${p.name}</td>
+              <td>${p.team}</td>
+              <td>${p.goals || p.shots}</td>
+              ${type === "shootingPctg" ? `<td>${p.shots}</td><td>${p.shootingPctg.toFixed(1)}%</td>` : ""}
+            </tr>
+          `;
+        });
+
+        html += `</tbody></table>`;
+        detail.innerHTML = html;
+
+      } catch (err) {
+        detail.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba: ${err.message}</p>`;
+      }
+    });
+  });
 }
 
 // === Prepínanie sekcií a načítanie dát dynamicky ===

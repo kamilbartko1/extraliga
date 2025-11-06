@@ -31,7 +31,7 @@
     <button onclick="showSection('players-section')">Rating hráčov</button>
     <button onclick="showSection('mantingal-container')">Martingale</button>
     <button onclick="showSection('predictions-section')">Predikcie</button>
-    <button onclick="showSection('shooting-section')">Strelecké štatistiky</button>
+    <button onclick="showSection('stats-section')">Strelecké štatistiky</button>
     <button onclick="showSection('strategies-section')">Databáza hráčov</button>
   </nav>
 
@@ -43,7 +43,7 @@
       <option value="players">Rating hráčov</option>
       <option value="mantingal">Martingale</option>
       <option value="predictions">Predikcie</option>
-      <option value="shooting">Strelecké štatistiky</option>
+      <option value="stats">Strelecké štatistiky</option>
       <option value="strategies">Databáza hráčov</option>
     </select>
   </div>
@@ -108,8 +108,26 @@
       <div id="predictions-content"><p>Načítavam kurzy...</p></div>
     </div>
 
-    <!-- 🎯 Strelecká úspešnosť -->
-    <section id="shooting-section" class="section content-section"></section>
+   <section id="stats-section" class="content-section" style="display:none;">
+  <h2>📊 ŠTATISTIKY HRÁČOV NHL</h2>
+  <div id="stats-grid" class="stats-grid">
+    <div class="stat-box" data-type="shootingPctg">
+      <h3>🎯 Najvyššie % streľby</h3>
+    </div>
+    <div class="stat-box" data-type="shots">
+      <h3>🔥 Najviac striel</h3>
+    </div>
+    <div class="stat-box"><h3>🥅 Góly</h3></div>
+    <div class="stat-box"><h3>🎩 Hetriky</h3></div>
+    <div class="stat-box"><h3>⚡ Body na zápas</h3></div>
+    <div class="stat-box"><h3>🧊 Plus / Mínus</h3></div>
+    <div class="stat-box"><h3>🧱 Zblokované strely</h3></div>
+    <div class="stat-box"><h3>⛸️ Odohrané minúty</h3></div>
+    <div class="stat-box"><h3>🏒 Vylúčenia</h3></div>
+  </div>
+
+  <div id="stats-detail" class="stat-detail"></div>
+</section>
 
     <!-- 💡 Databáza hráčov -->
     <div class="section" id="strategies-section">
@@ -137,7 +155,7 @@
 
       // Dynamické načítanie len pre danú sekciu
       switch (id) {
-        case "shooting-section":
+        case "stats-section":
           displayShootingLeaders();
           break;
         case "strategies-section":
@@ -166,7 +184,7 @@
         players: "players-section",
         mantingal: "mantingal-container",
         predictions: "predictions-section",
-        shooting: "shooting-section",
+        shooting: "stats-section",
         strategies: "strategies-section"
       };
       const target = map[e.target.value];
