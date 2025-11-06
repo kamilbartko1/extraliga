@@ -1656,7 +1656,7 @@ nav button:hover::after {
   /* Nadpisy tabuľky */
   #matches thead th {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 400;
     white-space: nowrap;
     text-shadow: 0 0 2px rgba(0,255,255,0.25);
     letter-spacing: 0.5px;
@@ -1734,7 +1734,7 @@ nav button:hover::after {
 
   #matches thead th {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 400;
     text-align: center;
     letter-spacing: 0.3px;
     padding: 6px 2px;
@@ -1812,7 +1812,7 @@ nav button:hover::after {
 
   #matches thead th {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 400;
     padding: 6px 4px;
     text-align: center;
     white-space: nowrap;
@@ -1879,7 +1879,7 @@ nav button:hover::after {
 
   #matches thead th {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 400;
     padding: 6px 4px;
     text-align: center;
     white-space: nowrap;
@@ -1961,7 +1961,7 @@ nav button:hover::after {
 
   #matches thead th {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 400;
     padding: 6px 4px;
     text-align: center;
     white-space: nowrap;
@@ -2044,7 +2044,7 @@ nav button:hover::after {
     background: linear-gradient(90deg, rgba(0,255,255,0.05), rgba(0,255,255,0.1));
     border-radius: 4px;
     color: #32e0ff;
-    font-weight: 600;
+    font-weight: 400;
     margin: 0;
   }
 
@@ -2122,7 +2122,7 @@ nav button:hover::after {
   background: rgba(0, 60, 80, 0.8);
   color: #00ffff;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 13px;
 }
 
