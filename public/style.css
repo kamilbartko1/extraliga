@@ -2290,7 +2290,7 @@ nav button:hover::after {
 #teamRatings td:last-child {
   text-align: left;         /* zľava, nie doprava */
   width: 25%;               /* nech nie je úplne pri okraji */
-  padding-left: 40px;       /* posun bližšie k tímom */
+  padding-left: 50px;       /* posun bližšie k tímom */
 }
 
 /* Jemný efekt pre prehľadnosť */
