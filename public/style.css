@@ -681,7 +681,7 @@ nav button {
   cursor: pointer;
   font-family:  'Poppins', sans-serif; /* 🔹 tenšie a elegantné */
   font-weight: 150; /* výrazne tenšie písmo */
-  font-size: 1rem;
+  font-size: 2rem;
   letter-spacing: 0.4px;
   text-shadow: 0 0 4px rgba(0, 255, 255, 0.4); /* jemný svietiaci tieň */
   transition: all 0.3s ease;
