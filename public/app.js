@@ -676,10 +676,13 @@ async function displayShootingLeaders() {
   const detail = document.getElementById("stats-detail");
   if (!grid || !detail) return;
 
-  grid.querySelectorAll(".stat-box").forEach(box => {
+  grid.querySelectorAll(".stat-box").forEach((box) => {
     box.addEventListener("click", async () => {
       const type = box.dataset.type;
-      detail.innerHTML = `<p style="text-align:center;">⏳ Načítavam dáta...</p>`;
+      detail.innerHTML = `<p style="text-align:center;color:#00eaff;font-size:1.1rem;">⏳ Načítavam dáta...</p>`;
+
+      // 🔹 Scrollni stránku k výsledkom (hladký prechod)
+      detail.scrollIntoView({ behavior: "smooth", block: "start" });
 
       try {
         const resp = await fetch("/api/statistics", { cache: "no-store" });
@@ -688,82 +691,87 @@ async function displayShootingLeaders() {
 
         if (!data.ok) throw new Error(data.error || "Neplatná odpoveď z API.");
 
-        // Vyber správne pole podľa kliknutého boxu
+        // 🔹 Vyber správny rebríček podľa kliknutého boxu
         let players = [];
         let title = "";
-        if (type === "accuracy") {
-          players = data.topAccuracy || [];
-          title = "🎯 Najlepšia strelecká úspešnosť";
-        } else if (type === "shots") {
-          players = data.topShots || [];
-          title = "🔥 Najviac striel";
-        } else if (type === "goals") {
-          players = data.topGoals || [];
-          title = "🔥 Najviac gólov";
-        } else if (type === "assists") {
-          players = data.topAssists || [];
-          title = "🔥 Najviac asistencií";
-        }
-        else {
-          detail.innerHTML = `<p style="text-align:center;">⚠️ Táto štatistika ešte nie je dostupná.</p>`;
-          return;
+
+        switch (type) {
+          case "accuracy":
+            players = data.topAccuracy || [];
+            title = "🎯 Najlepšia strelecká úspešnosť";
+            break;
+          case "shots":
+            players = data.topShots || [];
+            title = "🔥 Najviac striel";
+            break;
+          case "goals":
+            players = data.topGoals || [];
+            title = "🥅 Najviac gólov";
+            break;
+          case "assists":
+            players = data.topAssists || [];
+            title = "🎩 Najviac asistencií";
+            break;
+          default:
+            detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Táto štatistika ešte nie je dostupná.</p>`;
+            return;
         }
 
-        // Skontroluj dáta
+        // 🔹 Over dáta
         if (!players.length) {
-          detail.innerHTML = `<p style="text-align:center;">⚠️ Žiadne dáta pre ${title}</p>`;
+          detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Žiadne dáta pre ${title}</p>`;
           return;
         }
 
-        // Render tabuľky
-let html = `
-  <h3 style="text-align:center;color:#00eaff;margin-bottom:10px;">${title}</h3>
-  <table class="shooting-table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Hráč</th>
-        <th>Tím</th>
-        ${
-          type === "accuracy"
-            ? "<th>G</th><th>S</th><th>%</th>"
-            : type === "shots"
-            ? "<th>Strely</th>"
-            : type === "goals"
-            ? "<th>Góly</th>"
-            : type === "assists"
-            ? "<th>Asistencie</th>"
-            : ""
-        }
-      </tr>
-    </thead>
-    <tbody>
-`;
+        // 🔹 Vykresli tabuľku
+        let html = `
+          <h3 style="text-align:center;color:#00eaff;margin-bottom:10px;">${title}</h3>
+          <table class="shooting-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Hráč</th>
+                <th>Tím</th>
+                ${
+                  type === "accuracy"
+                    ? "<th>G</th><th>S</th><th>%</th>"
+                    : type === "shots"
+                    ? "<th>Strely</th>"
+                    : type === "goals"
+                    ? "<th>Góly</th>"
+                    : type === "assists"
+                    ? "<th>Asistencie</th>"
+                    : ""
+                }
+              </tr>
+            </thead>
+            <tbody>
+        `;
 
-players.slice(0, 50).forEach((p, i) => {
-  const img = `<img src="${p.headshot}" alt="${p.name}" style="width:24px;height:24px;border-radius:50%;margin-right:6px;vertical-align:middle;">`;
-  html += `
-    <tr>
-      <td>${i + 1}</td>
-      <td>${img}${p.name}</td>
-      <td>${p.team}</td>
-      ${
-        type === "accuracy"
-          ? `<td>${p.goals}</td><td>${p.shots}</td><td>${p.shootingPctg.toFixed(1)}%</td>`
-          : type === "shots"
-          ? `<td>${p.shots}</td>`
-          : type === "goals"
-          ? `<td>${p.goals}</td>`
-          : type === "assists"
-          ? `<td>${p.assists}</td>`
-          : ""
-      }
-    </tr>
-  `;
-});
+        players.slice(0, 50).forEach((p, i) => {
+          const img = `<img src="${p.headshot}" alt="${p.name}" style="width:24px;height:24px;border-radius:50%;margin-right:6px;vertical-align:middle;">`;
+          html += `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${img}${p.name}</td>
+              <td>${p.team}</td>
+              ${
+                type === "accuracy"
+                  ? `<td>${p.goals}</td><td>${p.shots}</td><td>${p.shootingPctg.toFixed(1)}%</td>`
+                  : type === "shots"
+                  ? `<td>${p.shots}</td>`
+                  : type === "goals"
+                  ? `<td>${p.goals}</td>`
+                  : type === "assists"
+                  ? `<td>${p.assists}</td>`
+                  : ""
+              }
+            </tr>
+          `;
+        });
 
-html += `</tbody></table>`;
-detail.innerHTML = html;
+        html += `</tbody></table>`;
+        detail.innerHTML = html;
       } catch (err) {
         detail.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba: ${err.message}</p>`;
       }
