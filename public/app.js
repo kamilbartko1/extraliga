@@ -716,42 +716,54 @@ async function displayShootingLeaders() {
         }
 
         // Render tabuľky
-        let html = `
-          <h3 style="text-align:center;color:#00eaff;margin-bottom:10px;">${title}</h3>
-          <table class="shooting-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Hráč</th>
-                <th>Tím</th>
-                ${
-                  type === "accuracy"
-                    ? "<th>G</th><th>S</th><th>%</th>"
-                    : "<th>Strely</th>"
-                }
-              </tr>
-            </thead>
-            <tbody>
-        `;
+let html = `
+  <h3 style="text-align:center;color:#00eaff;margin-bottom:10px;">${title}</h3>
+  <table class="shooting-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Hráč</th>
+        <th>Tím</th>
+        ${
+          type === "accuracy"
+            ? "<th>G</th><th>S</th><th>%</th>"
+            : type === "shots"
+            ? "<th>Strely</th>"
+            : type === "goals"
+            ? "<th>Góly</th>"
+            : type === "assists"
+            ? "<th>Asistencie</th>"
+            : ""
+        }
+      </tr>
+    </thead>
+    <tbody>
+`;
 
-        players.slice(0, 50).forEach((p, i) => {
-          const img = `<img src="${p.headshot}" alt="${p.name}" style="width:24px;height:24px;border-radius:50%;margin-right:6px;vertical-align:middle;">`;
-          html += `
-            <tr>
-              <td>${i + 1}</td>
-              <td>${img}${p.name}</td>
-              <td>${p.team}</td>
-              ${
-                type === "accuracy"
-                  ? `<td>${p.goals}</td><td>${p.shots}</td><td>${p.shootingPctg.toFixed(1)}%</td>`
-                  : `<td>${p.shots}</td>`
-              }
-            </tr>
-          `;
-        });
+players.slice(0, 50).forEach((p, i) => {
+  const img = `<img src="${p.headshot}" alt="${p.name}" style="width:24px;height:24px;border-radius:50%;margin-right:6px;vertical-align:middle;">`;
+  html += `
+    <tr>
+      <td>${i + 1}</td>
+      <td>${img}${p.name}</td>
+      <td>${p.team}</td>
+      ${
+        type === "accuracy"
+          ? `<td>${p.goals}</td><td>${p.shots}</td><td>${p.shootingPctg.toFixed(1)}%</td>`
+          : type === "shots"
+          ? `<td>${p.shots}</td>`
+          : type === "goals"
+          ? `<td>${p.goals}</td>`
+          : type === "assists"
+          ? `<td>${p.assists}</td>`
+          : ""
+      }
+    </tr>
+  `;
+});
 
-        html += `</tbody></table>`;
-        detail.innerHTML = html;
+html += `</tbody></table>`;
+detail.innerHTML = html;
       } catch (err) {
         detail.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba: ${err.message}</p>`;
       }
