@@ -3046,10 +3046,10 @@ header * {
 
 .stat-players h4 {
   font-family: "Roboto Condensed", sans-serif;
-  font-size: 1.6rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 350;
   letter-spacing: 2px;
-  color: #00eaff;
+  color: #0051ff;
   text-transform: uppercase;
   display: inline-block;
   border-bottom: 2px solid rgba(0, 234, 255, 0.5);
