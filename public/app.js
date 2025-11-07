@@ -697,7 +697,14 @@ async function displayShootingLeaders() {
         } else if (type === "shots") {
           players = data.topShots || [];
           title = "🔥 Najviac striel";
-        } else {
+        } else if (type === "goals") {
+          players = data.topGoals || [];
+          title = "🔥 Najviac gólov";
+        } else if (type === "assists") {
+          players = data.topAssists || [];
+          title = "🔥 Najviac asistencií";
+        }
+        else {
           detail.innerHTML = `<p style="text-align:center;">⚠️ Táto štatistika ešte nie je dostupná.</p>`;
           return;
         }
