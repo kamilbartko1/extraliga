@@ -734,7 +734,7 @@ async function displayShootingLeaders() {
                 <th>Tím</th>
                 ${
                   type === "goals"
-                    ? "<th>Góly</th><th>S</th><th>%</th>"
+                    ? "<th>Góly</th>"
                     : type === "assists"
                     ? "<th>Asistencie</th>"
                     : type === "accuracy"
