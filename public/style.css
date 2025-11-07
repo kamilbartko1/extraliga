@@ -2482,7 +2482,7 @@ header * {
 .shooting-table th,
 .shooting-table td {
   padding: 8px 10px;
-  text-align: center;
+  text-align: left;
   white-space: nowrap; /* nezalamuj text */
 }
 
