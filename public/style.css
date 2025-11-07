@@ -3037,6 +3037,25 @@ header * {
   }
 }
 
+/* Nadpis sekcie ŠTATISTIKY HRÁČOV NHL */
+.stat-players {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.stat-players h4 {
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: #00eaff;
+  text-transform: uppercase;
+  display: inline-block;
+  border-bottom: 2px solid rgba(0, 234, 255, 0.5);
+  padding-bottom: 4px;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
