@@ -2880,31 +2880,32 @@ header * {
   box-sizing: border-box;
 }
 
+/* === Moderné boxy štatistík === */
 .stat-box {
-  width: 160px;
-  height: 100px;
+  width: 180px;
+  height: 110px;
   border-radius: 14px;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
 
-  /* === Farby a 3D efekt === */
+  /* Farby a 3D efekt */
   background: linear-gradient(145deg, #031a24 0%, #063544 100%);
   border: 1px solid rgba(0, 234, 255, 0.25);
   box-shadow:
     4px 4px 12px rgba(0, 0, 0, 0.6),
     -3px -3px 10px rgba(0, 234, 255, 0.1);
 
-  /* === Text === */
-  font-family: 'Roboto Condensed', sans-serif;
+  /* Text */
+  font-family: 'Roboto Condensed', sans-serif !important;
   font-size: 0.95rem;
   font-weight: 400;
   text-transform: uppercase;
   color: #00eaff;
   letter-spacing: 0.5px;
 
-  /* === Interakcia === */
+  /* Interakcia */
   cursor: pointer;
   transition: all 0.25s ease;
   user-select: none;
@@ -2920,10 +2921,13 @@ header * {
   color: #a8f4ff;
 }
 
-.stat-box:hover {
-  background: rgba(0, 234, 255, 0.25);
-  transform: scale(1.05);
-  border-color: rgba(0, 234, 255, 0.5);
+/* Pre mobilné zobrazenie */
+@media (max-width: 768px) {
+  .stat-box {
+    width: 130px;
+    height: 85px;
+    font-size: 0.8rem;
+  }
 }
 
 /* 🔹 detailná tabuľka */
