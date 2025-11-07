@@ -738,7 +738,7 @@ async function displayShootingLeaders() {
                     : type === "assists"
                     ? "<th>Asistencie</th>"
                     : type === "accuracy"
-                    ? "<th>Percento</th>"
+                    ? "<th>Góly</th><th>Strely</th><th>Percentá</th>"
                     : type === "shots"
                     ? "<th>Strely</th>"
                     : ""
