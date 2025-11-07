@@ -712,6 +712,10 @@ async function displayShootingLeaders() {
             players = data.topAssists || [];
             title = "🎩 Najviac asistencií";
             break;
+          case "points":
+            players = data.topPoints || [];
+            title = "⚡ Najviac kanadských bodov";
+            break;
           default:
             detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Táto štatistika ešte nie je dostupná.</p>`;
             return;
@@ -737,6 +741,8 @@ async function displayShootingLeaders() {
                     ? "<th>Góly</th>"
                     : type === "assists"
                     ? "<th>Asistencie</th>"
+                    : type === "points"
+                    ? "<th>Kanadské body</th>"
                     : type === "accuracy"
                     ? "<th>Góly</th><th>Strely</th><th>Percentá</th>"
                     : type === "shots"
@@ -764,6 +770,8 @@ async function displayShootingLeaders() {
                   ? `<td>${p.goals}</td>`
                   : type === "assists"
                   ? `<td>${p.assists}</td>`
+                  : type === "points"
+                  ? `<td>${p.points}</td>`
                   : ""
               }
             </tr>
