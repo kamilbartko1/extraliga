@@ -733,13 +733,13 @@ async function displayShootingLeaders() {
                 <th>Hráč</th>
                 <th>Tím</th>
                 ${
-                  type === "accuracy"
+                  type === "goals"
                     ? "<th>G</th><th>S</th><th>%</th>"
-                    : type === "shots"
-                    ? "<th>Strely</th>"
-                    : type === "goals"
-                    ? "<th>Góly</th>"
                     : type === "assists"
+                    ? "<th>Strely</th>"
+                    : type === "accuracy"
+                    ? "<th>Góly</th>"
+                    : type === "shots"
                     ? "<th>Asistencie</th>"
                     : ""
                 }
