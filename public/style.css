@@ -2883,25 +2883,41 @@ header * {
 .stat-box {
   width: 160px;
   height: 100px;
-  background: rgba(0, 234, 255, 0.1);
-  border: 1px solid rgba(0, 234, 255, 0.3);
   border-radius: 14px;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
 
-  /* 🔹 nový font a vzhľad textu */
+  /* === Farby a 3D efekt === */
+  background: linear-gradient(145deg, #031a24 0%, #063544 100%);
+  border: 1px solid rgba(0, 234, 255, 0.25);
+  box-shadow:
+    4px 4px 12px rgba(0, 0, 0, 0.6),
+    -3px -3px 10px rgba(0, 234, 255, 0.1);
+
+  /* === Text === */
   font-family: 'Roboto Condensed', sans-serif;
   font-size: 0.95rem;
   font-weight: 400;
   text-transform: uppercase;
   color: #00eaff;
-  
+  letter-spacing: 0.5px;
+
+  /* === Interakcia === */
   cursor: pointer;
   transition: all 0.25s ease;
   user-select: none;
   box-sizing: border-box;
+}
+
+.stat-box:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    6px 6px 14px rgba(0, 0, 0, 0.7),
+    -4px -4px 12px rgba(0, 234, 255, 0.2);
+  background: linear-gradient(145deg, #042433 0%, #09586f 100%);
+  color: #a8f4ff;
 }
 
 .stat-box:hover {
