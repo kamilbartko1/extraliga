@@ -688,40 +688,64 @@ async function displayShootingLeaders() {
         const resp = await fetch("/api/statistics", { cache: "no-store" });
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const data = await resp.json();
-
         if (!data.ok) throw new Error(data.error || "Neplatná odpoveď z API.");
 
         // 🔹 Vyber správny rebríček podľa kliknutého boxu
         let players = [];
         let title = "";
+        let columns = "";
 
         switch (type) {
           case "accuracy":
             players = data.topAccuracy || [];
             title = "🎯 Najlepšia strelecká úspešnosť";
+            columns = "<th>Góly</th><th>Strely</th><th>Percentá</th>";
             break;
           case "shots":
             players = data.topShots || [];
             title = "🔥 Najviac striel";
+            columns = "<th>Strely</th>";
             break;
           case "goals":
             players = data.topGoals || [];
             title = "🥅 Najviac gólov";
+            columns = "<th>Góly</th>";
             break;
           case "assists":
             players = data.topAssists || [];
             title = "🎩 Najviac asistencií";
+            columns = "<th>Asistencie</th>";
             break;
           case "points":
             players = data.topPoints || [];
             title = "⚡ Najviac kanadských bodov";
+            columns = "<th>Kanadské body</th>";
+            break;
+          case "plusminus":
+            players = data.topPlusMinus || [];
+            title = "➕➖ Najlepšie plus/mínus";
+            columns = "<th>+ / −</th>";
+            break;
+          case "pim":
+            players = data.topPIM || [];
+            title = "⛓️ Najviac trestných minút";
+            columns = "<th>Trestné minúty</th>";
+            break;
+          case "toi":
+            players = data.topTOI || [];
+            title = "🕒 Najviac času na ľade (min/zápas)";
+            columns = "<th>Min/zápas</th>";
+            break;
+          case "twoGoals":
+            players = data.topTwoGoalGames || [];
+            title = "🥈 Najviac 2-gólových zápasov";
+            columns = "<th>2G zápasy</th>";
             break;
           default:
             detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Táto štatistika ešte nie je dostupná.</p>`;
             return;
         }
 
-        // 🔹 Over dáta
         if (!players.length) {
           detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Žiadne dáta pre ${title}</p>`;
           return;
@@ -736,19 +760,7 @@ async function displayShootingLeaders() {
                 <th>#</th>
                 <th>Hráč</th>
                 <th>Tím</th>
-                ${
-                  type === "goals"
-                    ? "<th>Góly</th>"
-                    : type === "assists"
-                    ? "<th>Asistencie</th>"
-                    : type === "points"
-                    ? "<th>Kanadské body</th>"
-                    : type === "accuracy"
-                    ? "<th>Góly</th><th>Strely</th><th>Percentá</th>"
-                    : type === "shots"
-                    ? "<th>Strely</th>"
-                    : ""
-                }
+                ${columns}
               </tr>
             </thead>
             <tbody>
@@ -756,24 +768,46 @@ async function displayShootingLeaders() {
 
         players.slice(0, 50).forEach((p, i) => {
           const img = `<img src="${p.headshot}" alt="${p.name}" style="width:24px;height:24px;border-radius:50%;margin-right:6px;vertical-align:middle;">`;
+
+          let statCell = "";
+          switch (type) {
+            case "accuracy":
+              statCell = `<td>${p.goals}</td><td>${p.shots}</td><td>${p.shootingPctg.toFixed(1)}%</td>`;
+              break;
+            case "shots":
+              statCell = `<td>${p.shots}</td>`;
+              break;
+            case "goals":
+              statCell = `<td>${p.goals}</td>`;
+              break;
+            case "assists":
+              statCell = `<td>${p.assists}</td>`;
+              break;
+            case "points":
+              statCell = `<td>${p.points}</td>`;
+              break;
+            case "plusminus":
+              statCell = `<td>${p.plusMinus}</td>`;
+              break;
+            case "pim":
+              statCell = `<td>${p.pim}</td>`;
+              break;
+            case "toi":
+              statCell = `<td>${p.toi}</td>`;
+              break;
+            case "twoGoals":
+              statCell = `<td>${p.twoGoalGames}</td>`;
+              break;
+            default:
+              statCell = "";
+          }
+
           html += `
             <tr>
               <td>${i + 1}</td>
               <td>${img}${p.name}</td>
               <td>${p.team}</td>
-              ${
-                type === "accuracy"
-                  ? `<td>${p.goals}</td><td>${p.shots}</td><td>${p.shootingPctg.toFixed(1)}%</td>`
-                  : type === "shots"
-                  ? `<td>${p.shots}</td>`
-                  : type === "goals"
-                  ? `<td>${p.goals}</td>`
-                  : type === "assists"
-                  ? `<td>${p.assists}</td>`
-                  : type === "points"
-                  ? `<td>${p.points}</td>`
-                  : ""
-              }
+              ${statCell}
             </tr>
           `;
         });
