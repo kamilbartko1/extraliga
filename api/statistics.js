@@ -48,7 +48,7 @@ export default async function handler(req, res) {
           plusMinus: p.plusMinus ?? 0,
           pim: p.penaltyMinutes ?? 0,
           toi: Math.round((p.avgTimeOnIcePerGame ?? 0) / 60 * 10) / 10, // sekundy → minúty
-          twoGoalGames: p.multiGoalGames ?? 0,
+          powerPlayGoals: p.powerPlayGoals ?? 0,
           gamesPlayed: p.gamesPlayed ?? 0,
           headshot:
             p.headshot ||
@@ -92,7 +92,7 @@ export default async function handler(req, res) {
       .slice(0, 50);
 
     const topTwoGoalGames = [...allPlayers]
-      .sort((a, b) => b.twoGoalGames - a.twoGoalGames)
+      .sort((a, b) => b.powerPlayGoals - a.powerPlayGoals)
       .slice(0, 50);
 
     // 🔹 Odpoveď
@@ -107,7 +107,7 @@ export default async function handler(req, res) {
       topPlusMinus,
       topPIM,
       topTOI,
-      topTwoGoalGames,
+      topPowerPlayGoals,
     });
   } catch (err) {
     console.error("❌ Chyba v /api/statistics:", err);

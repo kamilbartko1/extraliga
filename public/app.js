@@ -737,8 +737,8 @@ async function displayShootingLeaders() {
             columns = "<th>Min/zápas</th>";
             break;
           case "twoGoals":
-            players = data.topTwoGoalGames || [];
-            title = "🥈 Najviac 2-gólových zápasov";
+            players = data.topPowerPlayGoals || [];
+            title = "🥈 Najviac power play gólov";
             columns = "<th>2G zápasy</th>";
             break;
           default:
@@ -796,7 +796,7 @@ async function displayShootingLeaders() {
               statCell = `<td>${p.toi}</td>`;
               break;
             case "twoGoals":
-              statCell = `<td>${p.twoGoalGames}</td>`;
+              statCell = `<td>${p.powerPlayGoals}</td>`;
               break;
             default:
               statCell = "";
