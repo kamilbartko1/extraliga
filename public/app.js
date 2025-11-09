@@ -109,11 +109,11 @@ async function displayHome() {
                 .map(
                   (m) => `
               <div class="match-row">
-                <img src="${m.homeLogo}" alt="${m.homeName}">
+                <img src="${m.homeLogo}" alt="${m.homeName}" class="team-logo">
                 <span>${m.homeName}</span>
                 <span style="color:#00eaff;">vs</span>
                 <span>${m.awayName}</span>
-                <img src="${m.awayLogo}" alt="${m.awayName}">
+                <img src="${m.awayLogo}" alt="${m.awayName}" class="team-logo">
                 <div class="time">🕒 ${m.startTime}</div>
               </div>
             `
