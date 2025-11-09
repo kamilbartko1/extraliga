@@ -739,7 +739,7 @@ async function displayShootingLeaders() {
           case "powerPlayGoals":
             players = data.topPowerPlayGoals || [];
             title = "🥈 Najviac power play gólov";
-            columns = "<th>2G zápasy</th>";
+            columns = "<th>PP goals</th>";
             break;
           default:
             detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Táto štatistika ešte nie je dostupná.</p>`;
