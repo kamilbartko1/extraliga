@@ -76,79 +76,97 @@ function normalizeNhlGame(game, day) {
 async function displayHome() {
   const home = document.getElementById("home-section");
   if (!home) return;
-  home.innerHTML = `<p style="text-align:center;color:#00eaff;">⏳ Načítavam domovskú stránku...</p>`;
+
+  home.innerHTML = `
+    <p style="text-align:center;color:#00eaff;">
+      ⏳ Načítavam domovskú stránku...
+    </p>
+  `;
 
   try {
     const resp = await fetch("/api/home", { cache: "no-store" });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
 
-    // 🔹 AI TIP DŇA + ZÁPASY DNES
+    // Bezpečné fallbacky
+    const matches = Array.isArray(data.matchesToday) ? data.matchesToday : [];
+    const aiTip = data.aiTip || {};
+    const stats = data.stats || {};
+    const dateStr = data.date
+      ? new Date(data.date).toLocaleDateString("sk-SK", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : "Dátum neznámy";
+
+    // === HTML štruktúra domovskej stránky ===
     let html = `
       <div class="home-hero">
         <h1>🏒 NHLPRO.sk</h1>
         <h2>AI hokejové predikcie</h2>
-        <p>📅 ${new Date(data.date).toLocaleDateString("sk-SK", { weekday:"long", day:"numeric", month:"long", year:"numeric" })}</p>
+        <p>📅 ${dateStr}</p>
+
         <div class="ai-tip-box">
           <h3>🎯 AI TIP DŇA</h3>
-          <p><b>${data.aiTip.home}</b> vs <b>${data.aiTip.away}</b></p>
-          <p>💡 ${data.aiTip.prediction} | kurz ${data.aiTip.odds} | dôvera ${data.aiTip.confidence}%</p>
+          <p><b>${aiTip.home || "Domáci"}</b> vs <b>${aiTip.away || "Hostia"}</b></p>
+          <p>💡 ${aiTip.prediction || "Dáta sa načítavajú..."} 
+             | kurz ${aiTip.odds || "-"} 
+             | dôvera ${aiTip.confidence ?? 0}%</p>
         </div>
       </div>
+
       <div class="home-matches">
         <h3>📅 Dnešné zápasy NHL</h3>
-        ${data.matchesToday.map(m => `
-          <div class="match-card">
-            <span>🕒 ${m.time}</span>
-            <div class="teams">
-              <img src="${m.homeLogo}" alt="${m.home}" />
-              <p>${m.homeName} vs ${m.awayName}</p>
-              <img src="${m.awayLogo}" alt="${m.away}" />
-            </div>
-          </div>`).join("")}
+        ${
+          matches.length > 0
+            ? matches
+                .map(
+                  (m) => `
+            <div class="match-card">
+              <div class="match-header">
+                <span class="match-time">🕒 ${m.startTime || "??:??"}</span>
+              </div>
+              <div class="teams">
+                <div class="team">
+                  <img src="${m.homeLogo}" alt="${m.homeName}" class="team-logo">
+                  <span>${m.homeName}</span>
+                </div>
+                <span class="vs">vs</span>
+                <div class="team">
+                  <img src="${m.awayLogo}" alt="${m.awayName}" class="team-logo">
+                  <span>${m.awayName}</span>
+                </div>
+              </div>
+            </div>`
+                )
+                .join("")
+            : `<p style="text-align:center;color:#aaa;">⚠️ Žiadne zápasy dnes</p>`
+        }
       </div>
+
       <div class="home-stats-mini">
         <h3>📊 Rýchle štatistiky</h3>
         <div class="mini-grid">
-          <div class="mini-card">🔥 ${data.stats.topScorer}</div>
-          <div class="mini-card">🎯 ${data.stats.bestShooter}</div>
-          <div class="mini-card">⛓️ ${data.stats.mostPenalties}</div>
+          <div class="mini-card">🔥 ${stats.topScorer || "-"}</div>
+          <div class="mini-card">🎯 ${stats.bestShooter || "-"}</div>
+          <div class="mini-card">⛓️ ${stats.mostPenalties || "-"}</div>
         </div>
       </div>
-      <footer class="home-footer">© 2025 NHLPRO.sk | AI hokejové predikcie</footer>
+
+      <footer class="home-footer">
+        © 2025 NHLPRO.sk | AI hokejové predikcie
+      </footer>
     `;
+
     home.innerHTML = html;
-
   } catch (err) {
-    home.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba pri načítaní domovskej stránky: ${err.message}</p>`;
+    console.error("❌ Chyba pri načítaní domovskej stránky:", err);
+    home.innerHTML = `<p style="color:red;text-align:center;">
+      ❌ Chyba pri načítaní domovskej stránky: ${err.message}
+    </p>`;
   }
-}
-
-// === Fetch schedule od 8.10.2025 do dnes ===
-async function fetchNhlSchedule() {
-  const games = [];
-  for (const day of dateRange(START_DATE, TODAY)) {
-    try {
-      const url = `https://api-web.nhle.com/v1/schedule/${day}`;
-      const resp = await fetch(url);
-      if (!resp.ok) continue;
-      const data = await resp.json();
-      const groups = Array.isArray(data.gameWeek) ? data.gameWeek : [];
-      groups.forEach(g => {
-        const dayGames = Array.isArray(g.games) ? g.games : [];
-        dayGames.forEach(game => {
-          if (["FINAL", "OFF"].includes(String(game.gameState || "").toUpperCase())) {
-            games.push(normalizeNhlGame(game, day));
-          }
-        });
-      });
-      console.log(`✅ ${day} – načítané ${games.length} zápasov`);
-    } catch (e) {
-      console.warn(`⚠️ Chyba pri dni ${day}: ${e.message}`);
-    }
-  }
-  console.log(`🔹 Spolu odohraných zápasov: ${games.length}`);
-  return games;
 }
 
 // === Výpočet ratingov tímov ===

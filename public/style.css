@@ -3056,6 +3056,131 @@ header * {
   padding-bottom: 4px;
 }
 
+/* === DOMOVSKÁ STRÁNKA === */
+
+.home-hero {
+  text-align: center;
+  color: #00eaff;
+  margin-bottom: 25px;
+}
+
+.home-hero h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.4rem;
+  margin-bottom: 5px;
+}
+
+.home-hero h2 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 1.1rem;
+  color: #b8e9ff;
+  margin-bottom: 10px;
+}
+
+.ai-tip-box {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid #00eaff55;
+  border-radius: 10px;
+  padding: 12px;
+  margin: 0 auto;
+  max-width: 420px;
+  color: #fff;
+  box-shadow: 0 0 10px #00eaff22;
+}
+
+/* === ZÁPASY === */
+
+.home-matches {
+  margin-top: 25px;
+}
+
+.match-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid #00eaff33;
+  margin: 10px auto;
+  padding: 10px;
+  max-width: 520px;
+  text-align: center;
+  color: #fff;
+  transition: background 0.3s ease;
+}
+
+.match-card:hover {
+  background: rgba(0, 234, 255, 0.1);
+}
+
+.match-header {
+  margin-bottom: 8px;
+  color: #ccc;
+}
+
+.teams {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.team-logo {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px #00eaff66);
+}
+
+.vs {
+  color: #ccc;
+  font-weight: 500;
+}
+
+/* === MINI ŠTATISTIKY === */
+
+.home-stats-mini {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.mini-grid {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.mini-card {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid #00eaff33;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  color: #fff;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.mini-card:hover {
+  background: rgba(0, 234, 255, 0.1);
+  transform: scale(1.05);
+}
+
+/* === FOOTER === */
+
+.home-footer {
+  text-align: center;
+  margin-top: 30px;
+  color: #aaa;
+  font-size: 0.85rem;
+  padding-bottom: 20px;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
