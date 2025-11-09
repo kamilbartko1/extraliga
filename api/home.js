@@ -128,7 +128,7 @@ export default async function handler(req, res) {
     try {
       const baseUrl = getBaseUrl(req);
       const ratingsResp = await axios.get(`${baseUrl}/api/matches`, {
-        timeout: 12000,
+        timeout: 1500,
       });
 
       const teamRatings = ratingsResp.data?.teamRatings || {};
