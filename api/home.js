@@ -1,7 +1,6 @@
 // /api/home.js
 import axios from "axios";
 
-// Pomocná funkcia na logo tímu
 const logo = (code) =>
   code ? `https://assets.nhle.com/logos/nhl/svg/${code}_light.svg` : "";
 
@@ -12,16 +11,14 @@ export default async function handler(req, res) {
   try {
     console.log("🔹 [/api/home] Volanie endpointu...");
 
-    // 👉 ak budeš chcieť testovať iný dátum:
-    // const date = "2025-11-09";
     const date = new Date().toISOString().slice(0, 10);
     const scoreUrl = `https://api-web.nhle.com/v1/score/${date}`;
 
     // === 1️⃣ Získanie zápasov z NHL API ===
     const resp = await axios.get(scoreUrl, { timeout: 10000 });
     const data = resp.data || {};
-
     const gamesRaw = Array.isArray(data.games) ? data.games : [];
+
     const games = gamesRaw.map((g) => ({
       id: g.id,
       date: g.gameDate || date,
@@ -43,7 +40,7 @@ export default async function handler(req, res) {
 
     console.log(`✅ Načítaných zápasov: ${games.length}`);
 
-    // === 2️⃣ AI TIP DŇA (partner-game API) ===
+    // === 2️⃣ AI TIP DŇA – výpočet podľa ratingov tímov ===
     let aiTip = {
       home: "N/A",
       away: "N/A",
@@ -53,26 +50,41 @@ export default async function handler(req, res) {
     };
 
     try {
-      const predResp = await axios.get(
-        "https://api-web.nhle.com/v1/partner-game/CZ/now",
-        { timeout: 8000 }
-      );
-      const predGames = Array.isArray(predResp.data?.games)
-        ? predResp.data.games
-        : [];
+      // Načítaj ratingy z tvojho backendu
+      const baseUrl =
+        process.env.VERCEL_URL ||
+        "https://nhlpro.sk"; // uprav ak máš inú doménu
+      const ratingsResp = await axios.get(`${baseUrl}/api/matches`, {
+        timeout: 10000,
+      });
 
-      if (predGames.length > 0) {
-        const g = predGames[0];
+      const teamRatings = ratingsResp.data?.teamRatings || {};
+      if (!Object.keys(teamRatings).length)
+        throw new Error("Žiadne ratingy tímov");
+
+      // Pre každý zápas spočítaj skóre
+      const scored = games.map((g) => {
+        const homeR = teamRatings[g.homeName] || 1500;
+        const awayR = teamRatings[g.awayName] || 1500;
+        const diff = homeR - awayR + 5; // malý bonus za domáce prostredie
+        return { ...g, score: diff };
+      });
+
+      // Najväčší ratingový rozdiel = AI tip dňa
+      const best = scored.sort((a, b) => b.score - a.score)[0];
+      if (best) {
         aiTip = {
-          home: g.homeTeamName?.default || "Domáci",
-          away: g.awayTeamName?.default || "Hostia",
-          prediction: "Výhra domáceho tímu",
-          confidence: 75 + Math.floor(Math.random() * 10),
-          odds: (1.6 + Math.random() * 0.8).toFixed(2),
+          home: best.homeName,
+          away: best.awayName,
+          prediction: `Výhra ${best.homeName}`,
+          confidence: Math.min(95, 60 + Math.abs(best.score) / 15),
+          odds: (1.5 + Math.random() * 0.8).toFixed(2),
         };
+      } else {
+        aiTip.prediction = "Žiadne zápasy pre dnešný deň.";
       }
     } catch (err) {
-      console.warn("⚠️ Partner-game API nedostupné:", err.message);
+      console.warn("⚠️ AI tip – výpočet zlyhal:", err.message);
     }
 
     // === 3️⃣ Mini štatistiky (dočasne statické) ===
