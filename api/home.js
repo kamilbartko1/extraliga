@@ -13,7 +13,7 @@ const logo = (code) =>
 router.get("/", async (req, res) => {
   try {
     const scheduleUrl = "https://api-web.nhle.com/v1/schedule/now";
-    const resp = await axios.get(scheduleUrl, { timeout: 10000 });
+    const resp = await axios.get(scheduleUrl, { timeout: 100000 });
 
     const games = [];
     const data = resp.data || {};
