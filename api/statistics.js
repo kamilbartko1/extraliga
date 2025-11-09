@@ -91,7 +91,7 @@ export default async function handler(req, res) {
       .sort((a, b) => b.toi - a.toi)
       .slice(0, 50);
 
-    const topTwoGoalGames = [...allPlayers]
+    const topPowerPlayGoals = [...allPlayers]
       .sort((a, b) => b.powerPlayGoals - a.powerPlayGoals)
       .slice(0, 50);
 

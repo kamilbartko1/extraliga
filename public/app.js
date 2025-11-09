@@ -795,7 +795,7 @@ async function displayShootingLeaders() {
             case "toi":
               statCell = `<td>${p.toi}</td>`;
               break;
-            case "twoGoals":
+            case "powerPlayGoals":
               statCell = `<td>${p.powerPlayGoals}</td>`;
               break;
             default:
