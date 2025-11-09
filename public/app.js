@@ -736,7 +736,7 @@ async function displayShootingLeaders() {
             title = "🕒 Najviac času na ľade (min/zápas)";
             columns = "<th>Min/zápas</th>";
             break;
-          case "twoGoals":
+          case "powerPlayGoals":
             players = data.topPowerPlayGoals || [];
             title = "🥈 Najviac power play gólov";
             columns = "<th>2G zápasy</th>";
