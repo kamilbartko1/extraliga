@@ -991,33 +991,39 @@ document.getElementById("mobileSelect")?.addEventListener("change", async (e) =>
 
 // === Štart stránky ===
 window.addEventListener("DOMContentLoaded", async () => {
+  console.log("🚀 Spúšťam NHLPRO...");
+
+  // 1️⃣ Načítaj databázu hráčov
   await loadPlayerTeams();
 
-  // 🔹 Spusti prednačítanie výsledkov a ratingov na pozadí
-  preloadMatchesData(); // ⚡ spustí sa paralelne bez čakania
-
-  // 🔹 Skry všetky sekcie
+  // 2️⃣ Skry všetky sekcie
   document.querySelectorAll(".section, .content-section").forEach(sec => {
     sec.style.display = "none";
   });
 
-  // 🔹 Zobraz DOMOV
+  // 3️⃣ Zobraz DOMOV a paralelne načítaj všetky dáta (ratingy, zápasy, AI tip)
   const home = document.getElementById("home-section");
   if (home) {
     home.style.display = "block";
     home.style.opacity = 0;
     setTimeout(() => (home.style.opacity = 1), 100);
-    await displayHome(); // načítaj domovskú stránku
+
+    // ⚡ načítaj všetko paralelne
+    await Promise.all([
+      fetchMatches(),   // načíta zápasy + ratingy (aj playerRatings, teamRatings)
+      displayHome()     // zobrazí AI tip, štatistiky, zápasy dňa
+    ]);
   } else {
-    // 🔸 fallback – ak by sekcia home chýbala
+    // fallback ak chýba home
     await fetchMatches();
   }
 
-  // 🔹 Po načítaní domova môžeš ešte raz spustiť update (neblokuje)
+  // 4️⃣ Po 3 sekundách ešte raz zaktualizuj cache (len pre istotu)
   setTimeout(() => {
     console.log("🔁 Aktualizujem dáta po načítaní...");
-    preloadMatchesData(); // druhé volanie, istota že sa cache načíta
+    fetchMatches(); // načíta znovu, ak boli dáta neúplné
   }, 3000);
 });
+
 
 
