@@ -72,6 +72,58 @@ function normalizeNhlGame(game, day) {
   };
 }
 
+// === DOMOVSKÁ STRÁNKA ===
+async function displayHome() {
+  const home = document.getElementById("home-section");
+  if (!home) return;
+  home.innerHTML = `<p style="text-align:center;color:#00eaff;">⏳ Načítavam domovskú stránku...</p>`;
+
+  try {
+    const resp = await fetch("/api/home", { cache: "no-store" });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+
+    // 🔹 AI TIP DŇA + ZÁPASY DNES
+    let html = `
+      <div class="home-hero">
+        <h1>🏒 NHLPRO.sk</h1>
+        <h2>AI hokejové predikcie</h2>
+        <p>📅 ${new Date(data.date).toLocaleDateString("sk-SK", { weekday:"long", day:"numeric", month:"long", year:"numeric" })}</p>
+        <div class="ai-tip-box">
+          <h3>🎯 AI TIP DŇA</h3>
+          <p><b>${data.aiTip.home}</b> vs <b>${data.aiTip.away}</b></p>
+          <p>💡 ${data.aiTip.prediction} | kurz ${data.aiTip.odds} | dôvera ${data.aiTip.confidence}%</p>
+        </div>
+      </div>
+      <div class="home-matches">
+        <h3>📅 Dnešné zápasy NHL</h3>
+        ${data.matchesToday.map(m => `
+          <div class="match-card">
+            <span>🕒 ${m.time}</span>
+            <div class="teams">
+              <img src="${m.homeLogo}" alt="${m.home}" />
+              <p>${m.homeName} vs ${m.awayName}</p>
+              <img src="${m.awayLogo}" alt="${m.away}" />
+            </div>
+          </div>`).join("")}
+      </div>
+      <div class="home-stats-mini">
+        <h3>📊 Rýchle štatistiky</h3>
+        <div class="mini-grid">
+          <div class="mini-card">🔥 ${data.stats.topScorer}</div>
+          <div class="mini-card">🎯 ${data.stats.bestShooter}</div>
+          <div class="mini-card">⛓️ ${data.stats.mostPenalties}</div>
+        </div>
+      </div>
+      <footer class="home-footer">© 2025 NHLPRO.sk | AI hokejové predikcie</footer>
+    `;
+    home.innerHTML = html;
+
+  } catch (err) {
+    home.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba pri načítaní domovskej stránky: ${err.message}</p>`;
+  }
+}
+
 // === Fetch schedule od 8.10.2025 do dnes ===
 async function fetchNhlSchedule() {
   const games = [];
@@ -836,6 +888,9 @@ document.querySelectorAll("nav button").forEach(btn => {
 
     // 🔹 Spusti len dané dáta podľa sekcie
     switch (targetId) {
+        case "home-section":
+        await displayHome();
+        break;
       case "matches-section":
         await fetchMatches();
         break;
@@ -917,5 +972,20 @@ document.getElementById("mobileSelect")?.addEventListener("change", async (e) =>
 // === Štart stránky ===
 window.addEventListener("DOMContentLoaded", async () => {
   await loadPlayerTeams();
-  await fetchMatches();
+
+  // skry všetky sekcie
+  document.querySelectorAll(".section, .content-section").forEach(sec => sec.style.display = "none");
+
+  // zobraz DOMOV
+  const home = document.getElementById("home-section");
+  if (home) {
+    home.style.display = "block";
+    home.style.opacity = 0;
+    setTimeout(() => home.style.opacity = 1, 100);
+    await displayHome(); // ⚡ nové volanie
+  } else {
+    // fallback, ak by sekcia chýbala
+    await fetchMatches();
+  }
 });
+

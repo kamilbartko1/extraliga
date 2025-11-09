@@ -26,6 +26,7 @@
 
   <!-- 🔹 NAVIGÁCIA (PC) -->
   <nav>
+    <button onclick="showSection('home-section')">Domov</button>
     <button onclick="showSection('matches-section')">Výsledky</button>
     <button onclick="showSection('teams-section')">Rating tímov</button>
     <button onclick="showSection('players-section')">Rating hráčov</button>
@@ -38,6 +39,7 @@
   <!-- 📱 MOBILNÉ MENU -->
   <div class="mobile-menu">
     <select id="mobileSelect">
+      <option value="home">Domov</option>
       <option value="matches">Výsledky</option>
       <option value="teams">Rating tímov</option>
       <option value="players">Rating hráčov</option>
@@ -48,7 +50,13 @@
     </select>
   </div>
 
-  <div class="container">
+    <!-- Domovska stranka -->
+    <div class="container">
+      <div id="home-section" class="section" style="display:none;">
+      <h2>Domov</h2>
+      <div id="home-content"></div>
+    </div>
+
     <!-- 🏒 Výsledky -->
     <div class="section" id="matches-section">
       <h2>Výsledky</h2>
@@ -214,6 +222,9 @@
 
       // Dynamické načítanie len pre danú sekciu
       switch (id) {
+        case "home-section":
+          displayHome();
+          break;
         case "stats-section":
           displayShootingLeaders();
           break;
@@ -238,6 +249,7 @@
     // 📱 Mobilné menu
     document.getElementById("mobileSelect")?.addEventListener("change", (e) => {
       const map = {
+        home: "home-section",
         matches: "matches-section",
         teams: "teams-section",
         players: "players-section",
