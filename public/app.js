@@ -72,6 +72,19 @@ function normalizeNhlGame(game, day) {
   };
 }
 
+// === Prednačítanie výsledkov a ratingov (spustí sa hneď po otvorení stránky) ===
+async function preloadMatchesData() {
+  try {
+    console.log("🔹 Prednačítavam výsledky a ratingy...");
+    const resp = await fetch("/api/matches", { cache: "no-store" });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    console.log(`✅ Prednačítané ${data.allMatches?.length || 0} zápasov.`);
+  } catch (err) {
+    console.warn("⚠️ Prednačítanie /api/matches zlyhalo:", err.message);
+  }
+}
+
 // === DOMOVSKÁ STRÁNKA (moderný 3-panelový layout) ===
 async function displayHome() {
   const home = document.getElementById("home-section");
@@ -989,7 +1002,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     home.style.display = "block";
     home.style.opacity = 0;
     setTimeout(() => home.style.opacity = 1, 100);
-    await displayHome(); // ⚡ nové volanie
+    await 
+    preloadMatchesData(); // nech sa spustí hneď pri domovskej stránke
+    displayHome(); // ⚡ nové volanie
   } else {
     // fallback, ak by sekcia chýbala
     await fetchMatches();
