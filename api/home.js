@@ -6,51 +6,44 @@ const logo = (code) =>
   code ? `https://assets.nhle.com/logos/nhl/svg/${code}_light.svg` : "";
 
 // ========================================================
-// SERVERLESS HANDLER – 100 % kompatibilný s Vercelom
+// SERVERLESS HANDLER – kompatibilný s Vercelom
 // ========================================================
 export default async function handler(req, res) {
   try {
     console.log("🔹 [/api/home] Volanie endpointu...");
 
-    const today = new Date().toISOString().slice(0, 10);
-    const scheduleUrl = "https://api-web.nhle.com/v1/schedule/now";
+    // 👉 ak budeš chcieť testovať iný dátum:
+    // const date = "2025-11-09";
+    const date = new Date().toISOString().slice(0, 10);
+    const scoreUrl = `https://api-web.nhle.com/v1/score/${date}`;
 
-    // === 1️⃣ Dnešné alebo najbližšie zápasy ===
-    const resp = await axios.get(scheduleUrl, { timeout: 10000 });
+    // === 1️⃣ Získanie zápasov z NHL API ===
+    const resp = await axios.get(scoreUrl, { timeout: 10000 });
     const data = resp.data || {};
-    const gameWeeks = Array.isArray(data.gameWeek) ? data.gameWeek : [];
 
-    const games = [];
-
-    for (const week of gameWeeks) {
-      for (const g of week.games || []) {
-        if (!g?.homeTeam || !g?.awayTeam) continue;
-
-        const homeName = `${g.homeTeam.placeName?.default || ""} ${g.homeTeam.commonName?.default || ""}`.trim();
-        const awayName = `${g.awayTeam.placeName?.default || ""} ${g.awayTeam.commonName?.default || ""}`.trim();
-
-        games.push({
-          id: g.id,
-          date: week.date || g.startTimeUTC?.split("T")[0] || today,
-          homeName,
-          awayName,
-          homeLogo: g.homeTeam.logo || logo(g.homeTeam.abbrev),
-          awayLogo: g.awayTeam.logo || logo(g.awayTeam.abbrev),
-          startTime: g.startTimeUTC
-            ? new Date(g.startTimeUTC).toLocaleTimeString("sk-SK", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })
-            : "??:??",
-          venue: g.venue?.default || "",
-          status: g.gameState || "FUT",
-        });
-      }
-    }
+    const gamesRaw = Array.isArray(data.games) ? data.games : [];
+    const games = gamesRaw.map((g) => ({
+      id: g.id,
+      date: g.gameDate || date,
+      homeName: g.homeTeam?.name?.default || "Domáci",
+      awayName: g.awayTeam?.name?.default || "Hostia",
+      homeLogo: g.homeTeam?.logo || logo(g.homeTeam?.abbrev),
+      awayLogo: g.awayTeam?.logo || logo(g.awayTeam?.abbrev),
+      homeCode: g.homeTeam?.abbrev || "",
+      awayCode: g.awayTeam?.abbrev || "",
+      startTime: g.startTimeUTC
+        ? new Date(g.startTimeUTC).toLocaleTimeString("sk-SK", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        : "??:??",
+      venue: g.venue?.default || "",
+      status: g.gameState || "FUT",
+    }));
 
     console.log(`✅ Načítaných zápasov: ${games.length}`);
 
-    // === 2️⃣ AI TIP DŇA (z partner-game API) ===
+    // === 2️⃣ AI TIP DŇA (partner-game API) ===
     let aiTip = {
       home: "N/A",
       away: "N/A",
@@ -60,8 +53,13 @@ export default async function handler(req, res) {
     };
 
     try {
-      const predResp = await axios.get("https://api-web.nhle.com/v1/partner-game/CZ/now", { timeout: 8000 });
-      const predGames = Array.isArray(predResp.data?.games) ? predResp.data.games : [];
+      const predResp = await axios.get(
+        "https://api-web.nhle.com/v1/partner-game/CZ/now",
+        { timeout: 8000 }
+      );
+      const predGames = Array.isArray(predResp.data?.games)
+        ? predResp.data.games
+        : [];
 
       if (predGames.length > 0) {
         const g = predGames[0];
@@ -74,20 +72,20 @@ export default async function handler(req, res) {
         };
       }
     } catch (err) {
-      console.warn("⚠️ partner-game API nedostupné:", err.message);
+      console.warn("⚠️ Partner-game API nedostupné:", err.message);
     }
 
-    // === 3️⃣ Rýchle štatistiky (statické placeholders) ===
+    // === 3️⃣ Mini štatistiky (dočasne statické) ===
     const stats = {
       topScorer: "Connor McDavid – 12 gólov",
       bestShooter: "Auston Matthews – 22 % streľba",
       mostPenalties: "Tom Wilson – 29 trestných minút",
     };
 
-    // === 4️⃣ Úspešná odpoveď pre frontend ===
+    // === 4️⃣ Odpoveď pre frontend ===
     return res.status(200).json({
       ok: true,
-      date: today,
+      date,
       count: games.length,
       matchesToday: games,
       aiTip,
@@ -95,8 +93,6 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     console.error("❌ [/api/home] Chyba:", err.message);
-
-    // Ak sa niečo pokazí, pošleme prázdne, ale validné JSON
     return res.status(200).json({
       ok: false,
       date: new Date().toISOString().slice(0, 10),
