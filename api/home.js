@@ -81,7 +81,7 @@ export default async function handler(req, res) {
     const scoreUrl = `https://api-web.nhle.com/v1/score/${date}`;
 
     // === 1️⃣ Získanie zápasov z NHL API ===
-    const resp = await axios.get(scoreUrl, { timeout: 3000 });
+    const resp = await axios.get(scoreUrl, { timeout: 1500 });
     const data = resp.data || {};
     const gamesRaw = Array.isArray(data.games) ? data.games : [];
 
