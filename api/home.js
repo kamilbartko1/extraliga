@@ -1,8 +1,53 @@
 // /api/home.js
 import axios from "axios";
 
+// Pomocná funkcia na logo tímu
 const logo = (code) =>
   code ? `https://assets.nhle.com/logos/nhl/svg/${code}_light.svg` : "";
+
+// Mapovanie skratiek na plné názvy (takto ich máš v /api/matches)
+const CODE_TO_FULL = {
+  ANA: "Anaheim Ducks",
+  ARI: "Arizona Coyotes",
+  BOS: "Boston Bruins",
+  BUF: "Buffalo Sabres",
+  CGY: "Calgary Flames",
+  CAR: "Carolina Hurricanes",
+  CHI: "Chicago Blackhawks",
+  COL: "Colorado Avalanche",
+  CBJ: "Columbus Blue Jackets",
+  DAL: "Dallas Stars",
+  DET: "Detroit Red Wings",
+  EDM: "Edmonton Oilers",
+  FLA: "Florida Panthers",
+  LAK: "Los Angeles Kings",
+  MIN: "Minnesota Wild",
+  MTL: "Montréal Canadiens",
+  NSH: "Nashville Predators",
+  NJD: "New Jersey Devils",
+  NYI: "New York Islanders",
+  NYR: "New York Rangers",
+  OTT: "Ottawa Senators",
+  PHI: "Philadelphia Flyers",
+  PIT: "Pittsburgh Penguins",
+  SEA: "Seattle Kraken",
+  SJS: "San Jose Sharks",
+  STL: "St. Louis Blues",
+  TBL: "Tampa Bay Lightning",
+  TOR: "Toronto Maple Leafs",
+  VAN: "Vancouver Canucks",
+  VGK: "Vegas Golden Knights",
+  WPG: "Winnipeg Jets",
+  WSH: "Washington Capitals",
+  UTA: "Utah Mammoth"
+};
+
+// Bezpečne získa URL backendu pre lokál + Vercel
+const getBaseUrl = (req) => {
+  const proto = req.headers["x-forwarded-proto"] || "https";
+  const host = req.headers.host;
+  return `${proto}://${host}`;
+};
 
 // ========================================================
 // SERVERLESS HANDLER – kompatibilný s Vercelom
@@ -50,10 +95,7 @@ export default async function handler(req, res) {
     };
 
     try {
-      // Načítaj ratingy z tvojho backendu
-      const baseUrl =
-        process.env.VERCEL_URL ||
-        "https://nhlpro.sk"; // uprav ak máš inú doménu
+      const baseUrl = getBaseUrl(req);
       const ratingsResp = await axios.get(`${baseUrl}/api/matches`, {
         timeout: 10000,
       });
@@ -62,23 +104,30 @@ export default async function handler(req, res) {
       if (!Object.keys(teamRatings).length)
         throw new Error("Žiadne ratingy tímov");
 
-      // Pre každý zápas spočítaj skóre
+      // Pre každý zápas spočítaj skóre podľa ratingu (rating domáceho - hosťujúceho)
       const scored = games.map((g) => {
-        const homeR = teamRatings[g.homeName] || 1500;
-        const awayR = teamRatings[g.awayName] || 1500;
+        const homeFull = CODE_TO_FULL[g.homeCode] || g.homeName;
+        const awayFull = CODE_TO_FULL[g.awayCode] || g.awayName;
+
+        const homeR = teamRatings[homeFull] || 1500;
+        const awayR = teamRatings[awayFull] || 1500;
+
         const diff = homeR - awayR + 5; // malý bonus za domáce prostredie
-        return { ...g, score: diff };
+        return { ...g, homeFull, awayFull, score: diff };
       });
 
-      // Najväčší ratingový rozdiel = AI tip dňa
+      // Vyber zápas s najväčším ratingovým rozdielom = AI tip dňa
       const best = scored.sort((a, b) => b.score - a.score)[0];
       if (best) {
+        const confidence = Math.min(95, 60 + Math.abs(best.score) / 15);
+        const odds = (1 / (confidence / 100)).toFixed(2);
+
         aiTip = {
-          home: best.homeName,
-          away: best.awayName,
-          prediction: `Výhra ${best.homeName}`,
-          confidence: Math.min(95, 60 + Math.abs(best.score) / 15),
-          odds: (1.5 + Math.random() * 0.8).toFixed(2),
+          home: best.homeFull,
+          away: best.awayFull,
+          prediction: `Výhra ${best.homeFull}`,
+          confidence: Math.round(confidence),
+          odds,
         };
       } else {
         aiTip.prediction = "Žiadne zápasy pre dnešný deň.";
@@ -87,7 +136,7 @@ export default async function handler(req, res) {
       console.warn("⚠️ AI tip – výpočet zlyhal:", err.message);
     }
 
-    // === 3️⃣ Mini štatistiky (dočasne statické) ===
+    // === 3️⃣ Mini štatistiky (zatiaľ statické) ===
     const stats = {
       topScorer: "Connor McDavid – 12 gólov",
       bestShooter: "Auston Matthews – 22 % streľba",
