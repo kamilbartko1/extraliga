@@ -3260,11 +3260,11 @@ body {
   top: 50%;
   transform: translateY(-50%);
   font-family: "Pacifico", cursive; /* alebo môžeš použiť napr. 'Satisfy' */
-  font-size: 1.4rem;
-  color: #ffda44; /* jemne žltá ako v slogane */
-  text-shadow: 0 0 6px rgba(255, 218, 68, 0.5);
+  font-size: 1.1rem;
+  color: #fffb00; /* jemne žltá ako v slogane */
+  text-shadow: 0 1px 4px rgba(255, 218, 68, 0.5);
   pointer-events: none;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 .top-player {
   position: relative;

@@ -152,19 +152,19 @@ async function displayHome() {
           <div class="top-player">
             <img src="${topGoal.headshot || "/icons/nhl_placeholder.svg"}" alt="${topGoal.name}">
             <div><b>${topGoal.name || "-"}</b><br>🥅 ${topGoal.goals || 0} gólov</div>
-            <span class="stat-label">góly</span>
+            <span class="stat-label">Góly</span>
           </div>
 
           <div class="top-player">
             <img src="${topPoints.headshot || "/icons/nhl_placeholder.svg"}" alt="${topPoints.name}">
             <div><b>${topPoints.name || "-"}</b><br>⚡ ${topPoints.points || 0} bodov</div>
-            <span class="stat-label">body</span>
+            <span class="stat-label">Body</span>
           </div>
 
           <div class="top-player">
             <img src="${topShots.headshot || "/icons/nhl_placeholder.svg"}" alt="${topShots.name}">
             <div><b>${topShots.name || "-"}</b><br>🎯 ${topShots.shots || 0} striel</div>
-            <span class="stat-label">strely</span>
+            <span class="stat-label">Strely</span>
           </div>
         </div>
       </div>
