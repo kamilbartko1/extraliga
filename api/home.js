@@ -1,41 +1,34 @@
 // /api/home.js
-import express from "express";
 import axios from "axios";
-
-const router = express.Router();
 
 const logo = (code) =>
   code ? `https://assets.nhle.com/logos/nhl/svg/${code}_light.svg` : "";
 
 // ========================================================
-// GET /api/home – dnešné alebo nadchádzajúce zápasy z endpointu /schedule/now
+// SERVERLESS HANDLER – funkčný na Verceli
 // ========================================================
-router.get("/", async (req, res) => {
+export default async function handler(req, res) {
   try {
-    const scheduleUrl = "https://api-web.nhle.com/v1/schedule/now";
-    const resp = await axios.get(scheduleUrl, { timeout: 100000 });
+    console.log("🔹 [/api/home] volanie...");
 
-    const games = [];
+    const scheduleUrl = "https://api-web.nhle.com/v1/schedule/now";
+    const resp = await axios.get(scheduleUrl, { timeout: 10000 });
     const data = resp.data || {};
 
-    // 🧩 podporuje oba typy štruktúr — gameWeek aj games
     const gameWeeks = Array.isArray(data.gameWeek) ? data.gameWeek : [];
-    const flatGames = Array.isArray(data.games) ? data.games : [];
+    const games = [];
 
-    if (flatGames.length > 0) {
-      // novšia štruktúra API
-      flatGames.forEach((g) => {
-        if (!g?.homeTeam || !g?.awayTeam) return;
+    for (const week of gameWeeks) {
+      for (const g of week.games || []) {
+        if (!g?.homeTeam || !g?.awayTeam) continue;
+
         games.push({
           id: g.id,
-          date: g.startTimeUTC?.split("T")[0] || "",
+          date: week.date || g.startTimeUTC?.split("T")[0] || "",
           homeName: `${g.homeTeam.placeName?.default || ""} ${g.homeTeam.commonName?.default || ""}`.trim(),
           awayName: `${g.awayTeam.placeName?.default || ""} ${g.awayTeam.commonName?.default || ""}`.trim(),
           homeLogo: g.homeTeam.logo || logo(g.homeTeam.abbrev),
           awayLogo: g.awayTeam.logo || logo(g.awayTeam.abbrev),
-          homeCode: g.homeTeam.abbrev,
-          awayCode: g.awayTeam.abbrev,
-          venue: g.venue?.default || "",
           startTime: g.startTimeUTC
             ? new Date(g.startTimeUTC).toLocaleTimeString("sk-SK", {
                 hour: "2-digit",
@@ -44,35 +37,10 @@ router.get("/", async (req, res) => {
             : "??:??",
           status: g.gameState || "FUT",
         });
-      });
-    } else {
-      // staršia štruktúra s gameWeek
-      gameWeeks.forEach((week) => {
-        (week.games || []).forEach((g) => {
-          if (!g?.homeTeam || !g?.awayTeam) return;
-          games.push({
-            id: g.id,
-            date: week.date || g.startTimeUTC?.split("T")[0] || "",
-            homeName: `${g.homeTeam.placeName?.default || ""} ${g.homeTeam.commonName?.default || ""}`.trim(),
-            awayName: `${g.awayTeam.placeName?.default || ""} ${g.awayTeam.commonName?.default || ""}`.trim(),
-            homeLogo: g.homeTeam.logo || logo(g.homeTeam.abbrev),
-            awayLogo: g.awayTeam.logo || logo(g.awayTeam.abbrev),
-            homeCode: g.homeTeam.abbrev,
-            awayCode: g.awayTeam.abbrev,
-            venue: g.venue?.default || "",
-            startTime: g.startTimeUTC
-              ? new Date(g.startTimeUTC).toLocaleTimeString("sk-SK", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : "??:??",
-            status: g.gameState || "FUT",
-          });
-        });
-      });
+      }
     }
 
-    // 🔸 AI TIP DŇA – bezpečne ošetrené
+    // === AI TIP DŇA ===
     let aiTip = {
       home: "N/A",
       away: "N/A",
@@ -80,6 +48,7 @@ router.get("/", async (req, res) => {
       confidence: 0,
       odds: "-",
     };
+
     try {
       const predResp = await axios.get("https://api-web.nhle.com/v1/partner-game/CZ/now", { timeout: 8000 });
       const predGames = Array.isArray(predResp.data?.games) ? predResp.data.games : [];
@@ -94,10 +63,9 @@ router.get("/", async (req, res) => {
         };
       }
     } catch (err) {
-      console.warn("⚠️ Partner-game API nedostupné:", err.message);
+      console.warn("⚠️ partner-game API nedostupné:", err.message);
     }
 
-    // 🔸 Mini štatistiky
     const stats = {
       topScorer: "Connor McDavid – 12 gólov",
       bestShooter: "Auston Matthews – 22 % streľba",
@@ -112,12 +80,11 @@ router.get("/", async (req, res) => {
       stats,
     });
   } catch (err) {
-    console.error("❌ Chyba /api/home:", err.message);
-    return res.status(500).json({
+    console.error("❌ [/api/home] Chyba:", err.message);
+    return res.status(200).json({
       ok: false,
-      error: err.message || "Neznáma chyba pri spracovaní /api/home",
+      error: err.message,
+      matchesToday: [],
     });
   }
-});
-
-export default router;
+}
