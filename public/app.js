@@ -72,74 +72,91 @@ function normalizeNhlGame(game, day) {
   };
 }
 
+// === DOMOVSKÁ STRÁNKA (moderný 3-panelový layout) ===
 async function displayHome() {
   const home = document.getElementById("home-section");
   if (!home) return;
 
-  home.innerHTML = `<p style="text-align:center;color:#00eaff;">⏳ Načítavam domovskú stránku...</p>`;
+  home.innerHTML = `
+    <p style="text-align:center;color:#00eaff;">⏳ Načítavam domovskú stránku...</p>
+  `;
 
   try {
-    const resp = await fetch("/api/home", { cache: "no-store" });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const data = await resp.json();
+    // 1️⃣ Načítaj zápasy + AI tip
+    const [homeResp, statsResp] = await Promise.all([
+      fetch("/api/home", { cache: "no-store" }),
+      fetch("/api/statistics", { cache: "no-store" })
+    ]);
 
-    const aiTip = data.aiTip || {};
-    const matches = data.matchesToday || [];
-    const date = new Date(data.date).toLocaleDateString("sk-SK", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
+    if (!homeResp.ok) throw new Error(`HTTP ${homeResp.status}`);
+    const homeData = await homeResp.json();
 
-    home.innerHTML = `
-      <div class="home-header">
-        <h1>NHLPRO.sk</h1>
-        <h2>AI hokejové predikcie</h2>
-        <p>📅 ${date}</p>
-      </div>
+    const statsData = statsResp.ok ? await statsResp.json() : {};
+    const topGoal = statsData?.topGoals?.[0] || {};
+    const topPoints = statsData?.topPoints?.[0] || {};
+    const topShots = statsData?.topShots?.[0] || {};
 
-      <div class="home-main-grid">
-        <!-- AI TIP -->
-        <div class="home-box" onclick="showSection('predictions-section')">
-          <h3>🎯 AI TIP DŇA</h3>
-          <p>${aiTip.home} vs ${aiTip.away}</p>
-          <p>${aiTip.prediction}</p>
-          <p>📊 ${aiTip.odds} | ${aiTip.confidence}%</p>
+    // 2️⃣ HTML štruktúra layoutu
+    let html = `
+      <div class="home-container">
+        
+        <!-- 🏒 Dnešné zápasy -->
+        <div class="home-panel matches-panel" onclick="showSection('matches-section')">
+          <h3>🏒 Dnešné zápasy NHL</h3>
+          ${homeData.matchesToday.length === 0
+            ? `<p style="color:#aaa;">Žiadne zápasy dnes</p>`
+            : homeData.matchesToday
+                .map(
+                  (m) => `
+              <div class="match-row">
+                <img src="${m.homeLogo}" alt="${m.homeName}">
+                <span>${m.homeName}</span>
+                <span style="color:#00eaff;">vs</span>
+                <span>${m.awayName}</span>
+                <img src="${m.awayLogo}" alt="${m.awayName}">
+                <div class="time">🕒 ${m.startTime}</div>
+              </div>
+            `
+                )
+                .join("")}
         </div>
 
-        <!-- DNEŠNÉ ZÁPASY -->
-        <div class="home-box" onclick="showSection('matches-section')">
-          <h3>📅 Dnešné zápasy</h3>
-          <div class="mini-matches">
-            ${matches
-              .slice(0, 3)
-              .map(
-                (m) => `
-                <div class="mini-match">
-                  <img src="${m.homeLogo}" alt="${m.homeName}">
-                  <img src="${m.awayLogo}" alt="${m.awayName}">
-                  <span>${m.startTime}</span>
-                </div>`
-              )
-              .join("")}
-            ${matches.length > 3 ? `<p class="more">+${matches.length - 3} ďalších...</p>` : ""}
+        <!-- 🎯 AI TIP DŇA -->
+        <div class="home-panel ai-panel" onclick="showSection('predictions-section')">
+          <h3>🎯 AI Tip Dňa</h3>
+          <p><b>${homeData.aiTip.home}</b> vs <b>${homeData.aiTip.away}</b></p>
+          <p style="color:#00eaff;">${homeData.aiTip.prediction}</p>
+          <p>💶 kurz <b>${homeData.aiTip.odds}</b></p>
+          <p>🧠 dôvera <b>${homeData.aiTip.confidence}%</b></p>
+        </div>
+
+        <!-- 📊 TOP ŠTATISTIKY -->
+        <div class="home-panel stats-panel" onclick="showSection('stats-section')">
+          <h3>📊 Top štatistiky hráčov</h3>
+          <div class="top-player">
+            <img src="${topGoal.headshot || "/icons/nhl_placeholder.svg"}" alt="${topGoal.name}">
+            <div><b>${topGoal.name || "-"}</b><br>🥅 ${topGoal.goals || 0} gólov</div>
           </div>
-        </div>
-
-        <!-- ŠTATISTIKY -->
-        <div class="home-box" onclick="showSection('stats-section')">
-          <h3>📊 Štatistiky</h3>
-          <p>Najlepšie góly<br>Kanadské body<br>Presilovky</p>
+          <div class="top-player">
+            <img src="${topPoints.headshot || "/icons/nhl_placeholder.svg"}" alt="${topPoints.name}">
+            <div><b>${topPoints.name || "-"}</b><br>⚡ ${topPoints.points || 0} bodov</div>
+          </div>
+          <div class="top-player">
+            <img src="${topShots.headshot || "/icons/nhl_placeholder.svg"}" alt="${topShots.name}">
+            <div><b>${topShots.name || "-"}</b><br>🎯 ${topShots.shots || 0} striel</div>
+          </div>
         </div>
       </div>
 
       <footer class="home-footer">© 2025 NHLPRO.sk | AI hokejové predikcie</footer>
     `;
+
+    home.innerHTML = html;
   } catch (err) {
+    console.error("❌ Chyba domov:", err);
     home.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba: ${err.message}</p>`;
   }
-}
+}s
 
 // === Výpočet ratingov tímov ===
 function computeTeamRatings(matches) {
