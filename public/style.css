@@ -3253,6 +3253,23 @@ body {
   }
 }
 
+/* === Dekoratívny nápis vo veľkom písanom štýle pre box "Top štatistiky hráčov" === */
+.stat-label {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "Pacifico", cursive; /* alebo môžeš použiť napr. 'Satisfy' */
+  font-size: 1.4rem;
+  color: #ffda44; /* jemne žltá ako v slogane */
+  text-shadow: 0 0 6px rgba(255, 218, 68, 0.5);
+  pointer-events: none;
+  opacity: 0.8;
+}
+.top-player {
+  position: relative;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {

@@ -116,11 +116,12 @@ async function displayHome() {
         <!-- 🏒 Dnešné zápasy -->
         <div class="home-panel matches-panel" onclick="showSection('matches-section')">
           <h3>🏒 Dnešné zápasy NHL</h3>
-          ${homeData.matchesToday.length === 0
-            ? `<p style="color:#aaa;">Žiadne zápasy dnes</p>`
-            : homeData.matchesToday
-                .map(
-                  (m) => `
+          ${
+            homeData.matchesToday.length === 0
+              ? `<p style="color:#aaa;">Žiadne zápasy dnes</p>`
+              : homeData.matchesToday
+                  .map(
+                    (m) => `
               <div class="match-row">
                 <img src="${m.homeLogo}" alt="${m.homeName}" class="team-logo">
                 <span>${m.homeName}</span>
@@ -130,8 +131,9 @@ async function displayHome() {
                 <div class="time">🕒 ${m.startTime}</div>
               </div>
             `
-                )
-                .join("")}
+                  )
+                  .join("")
+          }
         </div>
 
         <!-- 🎯 AI TIP DŇA -->
@@ -146,17 +148,23 @@ async function displayHome() {
         <!-- 📊 TOP ŠTATISTIKY -->
         <div class="home-panel stats-panel" onclick="showSection('stats-section')">
           <h3>📊 Top štatistiky hráčov</h3>
+          
           <div class="top-player">
             <img src="${topGoal.headshot || "/icons/nhl_placeholder.svg"}" alt="${topGoal.name}">
             <div><b>${topGoal.name || "-"}</b><br>🥅 ${topGoal.goals || 0} gólov</div>
+            <span class="stat-label">góly</span>
           </div>
+
           <div class="top-player">
             <img src="${topPoints.headshot || "/icons/nhl_placeholder.svg"}" alt="${topPoints.name}">
             <div><b>${topPoints.name || "-"}</b><br>⚡ ${topPoints.points || 0} bodov</div>
+            <span class="stat-label">body</span>
           </div>
+
           <div class="top-player">
             <img src="${topShots.headshot || "/icons/nhl_placeholder.svg"}" alt="${topShots.name}">
             <div><b>${topShots.name || "-"}</b><br>🎯 ${topShots.shots || 0} striel</div>
+            <span class="stat-label">strely</span>
           </div>
         </div>
       </div>
