@@ -3087,62 +3087,104 @@ header * {
   }
 }
 
-/* === BOX ŠTÝLY === */
-.home-box {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid #00eaff33;
-  border-radius: 12px;
-  padding: 15px;
-  color: #fff;
+/* === HLAVIČKA DOMOVSKEJ STRÁNKY === */
+.home-header {
   text-align: center;
-  cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  color: #fff;
+  margin-top: 30px;
 }
-.home-box:hover {
-  transform: scale(1.03);
-  background: rgba(0, 234, 255, 0.08);
-  box-shadow: 0 0 10px #00eaff44;
+.home-header h1 {
+  font-family: "Orbitron", sans-serif;
+  font-size: 2.2rem;
+  color: #00eaff;
+  margin-bottom: 0.3rem;
+}
+.home-header h2 {
+  font-size: 1.1rem;
+  color: #bbb;
+  margin-bottom: 0.2rem;
+}
+.home-header p {
+  font-size: 0.9rem;
+  color: #aaa;
 }
 
-/* === ZÁPASY V MINI FORMÁTE === */
-.match-mini {
+/* === GRID 3 BOXOV === */
+.home-main-grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin: 40px auto;
+  flex-wrap: wrap;
+  max-width: 700px;
+}
+
+.home-box {
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid #00eaff44;
+  border-radius: 12px;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.home-box:hover {
+  background: rgba(0, 234, 255, 0.15);
+  transform: scale(1.06);
+}
+.home-box h3 {
+  font-size: 0.95rem;
+  margin-bottom: 5px;
+  color: #00eaff;
+}
+.home-box p {
+  font-size: 0.8rem;
+  color: #ccc;
+  margin: 3px 0;
+}
+
+/* === MINI ZÁPASY V BOXE === */
+.mini-matches {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 5px;
+}
+.mini-match {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  font-size: 0.9rem;
-  color: #eee;
-  margin-top: 6px;
+  gap: 4px;
 }
-.match-mini img {
+.mini-match img {
   width: 26px;
   height: 26px;
   object-fit: contain;
 }
-.match-mini .vs {
-  color: #999;
-  margin: 0 4px;
+.mini-match span {
+  font-size: 0.75rem;
+  color: #bbb;
 }
-.match-mini .time {
-  color: #aaa;
-  font-size: 0.8rem;
-}
-
-/* === MINI ŠTATISTIKY === */
-.mini-stat {
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: 8px;
-  padding: 6px;
-  margin: 6px 0;
+.more {
+  font-size: 0.7rem;
+  color: #888;
+  margin-top: 3px;
 }
 
 /* === FOOTER === */
 .home-footer {
   text-align: center;
-  margin-top: 25px;
-  color: #aaa;
-  font-size: 0.85rem;
+  color: #666;
+  font-size: 0.8rem;
+  margin-top: 20px;
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */

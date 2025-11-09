@@ -72,81 +72,71 @@ function normalizeNhlGame(game, day) {
   };
 }
 
-// === DOMOVSKÁ STRÁNKA ===
 async function displayHome() {
   const home = document.getElementById("home-section");
   if (!home) return;
 
-  home.innerHTML = `
-    <p style="text-align:center;color:#00eaff;">⏳ Načítavam domovskú stránku...</p>
-  `;
+  home.innerHTML = `<p style="text-align:center;color:#00eaff;">⏳ Načítavam domovskú stránku...</p>`;
 
   try {
     const resp = await fetch("/api/home", { cache: "no-store" });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
 
-    const matches = Array.isArray(data.matchesToday) ? data.matchesToday : [];
     const aiTip = data.aiTip || {};
-    const stats = data.stats || {};
-    const dateStr = new Date().toLocaleDateString("sk-SK", {
+    const matches = data.matchesToday || [];
+    const date = new Date(data.date).toLocaleDateString("sk-SK", {
       weekday: "long",
       day: "numeric",
       month: "long",
       year: "numeric",
     });
 
-    // === HTML ===
     home.innerHTML = `
-      <div class="home-hero">
+      <div class="home-header">
         <h1>NHLPRO.sk</h1>
         <h2>AI hokejové predikcie</h2>
-        <p>📅 ${dateStr}</p>
+        <p>📅 ${date}</p>
       </div>
 
       <div class="home-main-grid">
         <!-- AI TIP -->
-        <div class="home-box" id="box-tip" onclick="showSection('predictions-section')">
+        <div class="home-box" onclick="showSection('predictions-section')">
           <h3>🎯 AI TIP DŇA</h3>
-          <p><b>${aiTip.home}</b> vs <b>${aiTip.away}</b></p>
-          <p>💡 ${aiTip.prediction} | kurz ${aiTip.odds} | dôvera ${aiTip.confidence}%</p>
+          <p>${aiTip.home} vs ${aiTip.away}</p>
+          <p>${aiTip.prediction}</p>
+          <p>📊 ${aiTip.odds} | ${aiTip.confidence}%</p>
         </div>
 
-        <!-- DNESNÉ ZÁPASY -->
-        <div class="home-box" id="box-matches" onclick="showSection('matches-section')">
-          <h3>📅 Dnešné zápasy NHL</h3>
-          ${
-            matches.length
-              ? matches
-                  .map(
-                    (m) => `
-              <div class="match-mini">
-                <img src="${m.homeLogo}" alt="${m.homeName}">
-                <span>${m.homeName}</span>
-                <span class="vs">vs</span>
-                <span>${m.awayName}</span>
-                <img src="${m.awayLogo}" alt="${m.awayName}">
-                <span class="time">🕒 ${m.startTime}</span>
-              </div>`
-                  )
-                  .join("")
-              : `<p style="color:#aaa;text-align:center;">Žiadne zápasy dnes</p>`
-          }
+        <!-- DNEŠNÉ ZÁPASY -->
+        <div class="home-box" onclick="showSection('matches-section')">
+          <h3>📅 Dnešné zápasy</h3>
+          <div class="mini-matches">
+            ${matches
+              .slice(0, 3)
+              .map(
+                (m) => `
+                <div class="mini-match">
+                  <img src="${m.homeLogo}" alt="${m.homeName}">
+                  <img src="${m.awayLogo}" alt="${m.awayName}">
+                  <span>${m.startTime}</span>
+                </div>`
+              )
+              .join("")}
+            ${matches.length > 3 ? `<p class="more">+${matches.length - 3} ďalších...</p>` : ""}
+          </div>
         </div>
 
         <!-- ŠTATISTIKY -->
-        <div class="home-box" id="box-stats" onclick="showSection('stats-section')">
-          <h3>📊 Rýchle štatistiky</h3>
-          <div class="mini-stat">🔥 ${stats.topScorer}</div>
-          <div class="mini-stat">🎯 ${stats.bestShooter}</div>
-          <div class="mini-stat">⛓️ ${stats.mostPenalties}</div>
+        <div class="home-box" onclick="showSection('stats-section')">
+          <h3>📊 Štatistiky</h3>
+          <p>Najlepšie góly<br>Kanadské body<br>Presilovky</p>
         </div>
       </div>
 
       <footer class="home-footer">© 2025 NHLPRO.sk | AI hokejové predikcie</footer>
     `;
   } catch (err) {
-    console.error("❌ Chyba pri načítaní domovskej stránky:", err);
     home.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba: ${err.message}</p>`;
   }
 }
