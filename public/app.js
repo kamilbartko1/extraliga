@@ -993,21 +993,31 @@ document.getElementById("mobileSelect")?.addEventListener("change", async (e) =>
 window.addEventListener("DOMContentLoaded", async () => {
   await loadPlayerTeams();
 
-  // skry všetky sekcie
-  document.querySelectorAll(".section, .content-section").forEach(sec => sec.style.display = "none");
+  // 🔹 Spusti prednačítanie výsledkov a ratingov na pozadí
+  preloadMatchesData(); // ⚡ spustí sa paralelne bez čakania
 
-  // zobraz DOMOV
+  // 🔹 Skry všetky sekcie
+  document.querySelectorAll(".section, .content-section").forEach(sec => {
+    sec.style.display = "none";
+  });
+
+  // 🔹 Zobraz DOMOV
   const home = document.getElementById("home-section");
   if (home) {
     home.style.display = "block";
     home.style.opacity = 0;
-    setTimeout(() => home.style.opacity = 1, 100);
-    await 
-    preloadMatchesData(); // nech sa spustí hneď pri domovskej stránke
-    displayHome(); // ⚡ nové volanie
+    setTimeout(() => (home.style.opacity = 1), 100);
+    await displayHome(); // načítaj domovskú stránku
   } else {
-    // fallback, ak by sekcia chýbala
+    // 🔸 fallback – ak by sekcia home chýbala
     await fetchMatches();
   }
+
+  // 🔹 Po načítaní domova môžeš ešte raz spustiť update (neblokuje)
+  setTimeout(() => {
+    console.log("🔁 Aktualizujem dáta po načítaní...");
+    preloadMatchesData(); // druhé volanie, istota že sa cache načíta
+  }, 3000);
 });
+
 
