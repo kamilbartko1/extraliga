@@ -3056,103 +3056,200 @@ header * {
   padding-bottom: 4px;
 }
 
-/* === HOME LAYOUT === */
-.home-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 30px;
-  margin: 40px auto;
-  max-width: 1200px;
-  padding: 10px;
+/* === 🌌 GLOBÁLNY LAYOUT PRE DOMOV === */
+body {
+  background: radial-gradient(circle at 20% 20%, #07121f, #03080f 70%);
+  color: #e6f1ff;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
+#home-section {
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 1.2s ease-in-out;
+}
+
+/* === 🏠 HLAVNÝ KONTEJNER – 3 PANELY === */
+.home-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 1.8rem;
+  margin: 1rem auto;
+  max-width: 1300px;
+  text-align: center;
+  animation: fadeUp 1s ease forwards;
+}
+
+/* === 🧊 VŠETKY PANELY === */
 .home-panel {
-  flex: 1 1 320px;
-  background: linear-gradient(145deg, #0d1b2a, #1b263b);
-  border: 1px solid #00eaff33;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 234, 255, 0.1);
-  padding: 20px;
-  color: #fff;
-  min-height: 320px;
+  flex: 1 1 350px;
+  min-height: 260px;
+  background: linear-gradient(145deg, rgba(10, 20, 35, 0.9), rgba(5, 10, 20, 0.95));
+  border: 1px solid rgba(0, 234, 255, 0.25);
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.12);
+  border-radius: 20px;
+  padding: 1.5rem;
   transition: all 0.3s ease;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
+
+.home-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(0, 234, 255, 0.2), rgba(255, 255, 255, 0.05));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.home-panel:hover::before {
+  opacity: 1;
+}
+
 .home-panel:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 25px rgba(0, 234, 255, 0.25);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 0 35px rgba(0, 234, 255, 0.4);
 }
 
 .home-panel h3 {
   color: #00eaff;
-  text-align: center;
-  margin-bottom: 16px;
-  font-size: 1.2rem;
-  text-shadow: 0 0 10px #00eaff55;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
 }
 
-/* 🏒 Dnešné zápasy */
+/* === 🏒 ZÁPASY PANEL === */
+.matches-panel {
+  background: linear-gradient(160deg, rgba(5, 25, 45, 0.9), rgba(3, 15, 25, 0.95));
+}
+
 .match-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  font-size: 0.85rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 6px 0;
-}
-.match-row img {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-}
-.match-row .time {
-  font-size: 0.75rem;
-  color: #aaa;
+  justify-content: space-around;
+  padding: 0.4rem 0.3rem;
+  color: #d7eaff;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
 }
 
-/* 📊 Štatistiky */
+.match-row:hover {
+  background: rgba(0, 234, 255, 0.05);
+  border-radius: 10px;
+}
+
+.match-row .team-logo {
+  width: 28px;
+  height: 28px;
+  vertical-align: middle;
+  filter: drop-shadow(0 0 2px rgba(0, 234, 255, 0.3));
+}
+
+.match-row .time {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+/* === 🎯 AI TIP PANEL === */
+.ai-panel {
+  background: linear-gradient(160deg, rgba(10, 25, 40, 0.95), rgba(0, 0, 0, 0.95));
+  text-align: center;
+}
+
+.ai-panel p {
+  margin: 0.3rem 0;
+}
+
+.ai-panel .ai-prediction {
+  color: #00eaff;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.3px;
+}
+
+/* === 📊 ŠTATISTIKY PANEL === */
+.stats-panel {
+  background: linear-gradient(160deg, rgba(15, 25, 45, 0.9), rgba(5, 10, 25, 0.9));
+}
+
 .top-player {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 8px 0;
-  background: rgba(255, 255, 255, 0.04);
-  padding: 8px;
-  border-radius: 10px;
+  gap: 0.6rem;
+  margin: 0.4rem 0;
+  color: #cdefff;
+  background: rgba(0, 234, 255, 0.05);
+  padding: 0.4rem 0.6rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
 }
+
+.top-player:hover {
+  background: rgba(0, 234, 255, 0.1);
+  transform: scale(1.02);
+}
+
 .top-player img {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  border: 1px solid #00eaff44;
-  object-fit: cover;
+  border: 1px solid rgba(0, 234, 255, 0.25);
+  box-shadow: 0 0 8px rgba(0, 234, 255, 0.25);
 }
 
-/* 🎯 AI tip */
-.ai-panel p {
-  text-align: center;
-  font-size: 0.9rem;
-  margin: 5px 0;
-}
-
+/* === 🧠 FOOTER === */
 .home-footer {
   text-align: center;
-  color: #888;
-  font-size: 0.8rem;
-  margin-top: 40px;
+  margin-top: 2rem;
+  color: #7ba0b8;
+  font-size: 0.85rem;
+  letter-spacing: 0.3px;
 }
 
-/* 📱 Responzívne zobrazenie */
+/* === 💫 ANIMÁCIE === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === 📱 RESPONSIVE === */
 @media (max-width: 900px) {
   .home-container {
     flex-direction: column;
     align-items: center;
   }
+
   .home-panel {
     width: 90%;
+    margin: 0 auto;
   }
 }
 

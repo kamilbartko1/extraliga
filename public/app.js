@@ -156,7 +156,7 @@ async function displayHome() {
     console.error("❌ Chyba domov:", err);
     home.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba: ${err.message}</p>`;
   }
-}s
+}
 
 // === Výpočet ratingov tímov ===
 function computeTeamRatings(matches) {
