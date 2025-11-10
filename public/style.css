@@ -3332,18 +3332,39 @@ body {
   text-align: right;
 }
 
-/* Mobilné zarovnanie */
+/* === Dnešné zápasy (mobilné zarovnanie) === */
 @media (max-width: 768px) {
-  .match-row {
+  .matches-panel {
     gap: 8px;
-    padding: 5px 6px;
   }
+
+  .match-row {
+    display: grid;
+    grid-template-columns: 34px 1fr auto 1fr 34px 45px;
+    align-items: center;
+    padding: 6px 8px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
   .match-row img.team-logo {
     width: 28px;
     height: 28px;
+    object-fit: contain;
   }
+
   .match-row span {
+    text-align: center;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 400;
+  }
+
+  .match-row .time {
+    text-align: right;
+    color: #00eaff;
     font-size: 0.8rem;
+    font-weight: 300;
   }
 }
 

@@ -100,11 +100,12 @@ export default async function handler(req, res) {
         homeCode: g.homeTeam?.abbrev || "",
         awayCode: g.awayTeam?.abbrev || "",
         startTime: g.startTimeUTC
-          ? new Date(g.startTimeUTC).toLocaleTimeString("sk-SK", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })
-          : "??:??",
+        ? new Date(g.startTimeUTC).toLocaleTimeString("sk-SK", {
+        timeZone: "Europe/Bratislava", // ✅ slovenský čas
+        hour: "2-digit",
+        minute: "2-digit",
+        })
+        : "??:??",
         venue: g.venue?.default || "",
         status: g.gameState || "FUT",
         homeOdds,
