@@ -266,27 +266,27 @@ async function displayMatches(matches) {
     return;
   }
 
-  // Zoskup zápasy podľa dátumu
+  // Zoskupenie podľa dátumu
   const grouped = {};
-  matches.forEach((m) => {
+  for (const m of matches) {
     const date =
       m.date ||
       new Date(m.sport_event?.start_time || "").toISOString().slice(0, 10);
     if (!grouped[date]) grouped[date] = [];
     grouped[date].push(m);
-  });
+  }
 
   const days = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
 
+  // 🧱 Krok 1: Vytvor HTML tabuľku bez fetchu
+  let html = "";
   for (const day of days) {
-    const dateRow = document.createElement("tr");
     const formatted = new Date(day).toLocaleDateString("sk-SK", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
     });
-    dateRow.innerHTML = `<td colspan="4" class="date-header">${formatted}</td>`;
-    tableBody.appendChild(dateRow);
+    html += `<tr><td colspan="4" class="date-header">${formatted}</td></tr>`;
 
     for (const match of grouped[day]) {
       const home =
@@ -303,42 +303,51 @@ async function displayMatches(matches) {
         match.away_score ?? match.sport_event_status?.away_score ?? "-";
       const status = (match.status || match.sport_event_status?.status || "")
         .toLowerCase();
-
       const recapId = `recap-${match.id}`;
 
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${home}</td>
-        <td>${away}</td>
-        <td>${hs} : ${as}</td>
-        <td id="${recapId}" class="highlight-cell" style="text-align:center;color:#ccc;">⏳</td>
-      `;
-      tableBody.appendChild(row);
+      html += `
+        <tr>
+          <td>${home}</td>
+          <td>${away}</td>
+          <td>${hs} : ${as}</td>
+          <td id="${recapId}" class="highlight-cell" style="text-align:center;color:#999;">${
+        status === "closed" ? "⏳" : "—"
+      }</td>
+        </tr>`;
+    }
+  }
 
-      // 🎥 Doplnenie zostrihu pre odohrané zápasy
-      if (status === "closed") {
-        try {
-          const resp = await fetch(
-            `/api/highlights?team=${encodeURIComponent(home)}&id=${match.id}`,
-            { cache: "no-store" }
-          );
-          const data = await resp.json();
-          const cell = document.getElementById(recapId);
-          if (!cell) continue;
+  tableBody.innerHTML = html;
 
-          if (data.ok && data.highlight) {
-            cell.innerHTML = `<a href="${data.highlight}" target="_blank" class="highlight-link">🎥 Zostrih</a>`;
-          } else {
-            cell.innerHTML = `<span style="color:#777;">—</span>`;
-          }
-        } catch (err) {
-          console.warn("❌ Chyba pri načítaní zostrihu:", err);
-          const cell = document.getElementById(recapId);
-          if (cell) cell.innerHTML = `<span style="color:red;">❌</span>`;
+  // 🎥 Krok 2: Postupne doplň zostrihy (sekvenčne = žiadne duplikáty)
+  for (const day of days) {
+    for (const match of grouped[day]) {
+      const status = (match.status || "").toLowerCase();
+      if (status !== "closed") continue;
+
+      const home =
+        match.home_team ||
+        match.sport_event?.competitors?.[0]?.name ||
+        "Home";
+
+      try {
+        const resp = await fetch(
+          `/api/highlights?team=${encodeURIComponent(home)}&id=${match.id}`,
+          { cache: "no-store" }
+        );
+        const data = await resp.json();
+        const cell = document.getElementById(`recap-${match.id}`);
+        if (!cell) continue;
+
+        if (data.ok && data.highlight) {
+          cell.innerHTML = `<a href="${data.highlight}" target="_blank" class="highlight-link">🎥 Zostrih</a>`;
+        } else {
+          cell.innerHTML = `<span style="color:#777;">—</span>`;
         }
-      } else {
-        const cell = document.getElementById(recapId);
-        if (cell) cell.innerHTML = `<span style="color:#777;">—</span>`;
+      } catch (err) {
+        console.warn("⚠️ Chyba zostrihu:", err);
+        const cell = document.getElementById(`recap-${match.id}`);
+        if (cell) cell.innerHTML = `<span style="color:red;">❌</span>`;
       }
     }
   }
