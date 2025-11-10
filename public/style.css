@@ -3332,31 +3332,38 @@ body {
   text-align: right;
 }
 
-/* === Oprava rozloženia mobilnej verzie "Dnešné zápasy NHL" === */
+/* === Mobilné opravy zarovnania a overflow textu pre dnešné zápasy === */
 @media (max-width: 768px) {
   .matches-panel {
-    padding: 12px 10px; /* vnútorné odsadenie boxu */
+    padding: 14px;
+    box-sizing: border-box;
   }
 
   .match-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 8px;
+    flex-wrap: nowrap;
     margin: 8px 0;
-    padding: 6px 10px;
-    border-radius: 8px;
+    padding: 8px 12px;
+    border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
-  }
-
-  .match-row img.team-logo {
-    width: 26px;
-    height: 26px;
+    overflow: hidden;
   }
 
   .match-row span {
     font-size: 0.9rem;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80px; /* nech sa dlhé názvy nepretlačia */
+  }
+
+  .match-row img.team-logo {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
   }
 
   .match-row .time {
@@ -3365,13 +3372,7 @@ body {
     color: #ccc;
     margin-left: auto;
     text-align: right;
-    min-width: 42px;
-  }
-
-  .matches-panel h3 {
-    text-align: center;
-    font-size: 1rem;
-    margin-bottom: 12px;
+    min-width: 45px;
   }
 }
 
