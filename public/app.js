@@ -138,9 +138,9 @@ async function displayHome() {
           }
         </div>
 
-        <!-- 🎯 AI STRELEC DŇA -->
+        <!-- 🎯 AI STRELCI DŇA -->
         <div class="home-panel ai-panel" onclick="showSection('stats-section')">
-          <h3>🎯 AI Strelec Dňa</h3>
+          <h3>🎯 AI Strelci Dňa</h3>
           ${
             aiScorer
               ? `
