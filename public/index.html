@@ -31,7 +31,6 @@
     <button onclick="showSection('matches-section')">Výsledky</button>
     <button onclick="showSection('teams-section')">Rating tímov</button>
     <button onclick="showSection('players-section')">Rating hráčov</button>
-    <button onclick="showSection('mantingal-container')">Martingale</button>
     <button onclick="showSection('predictions-section')">Predikcie</button>
     <button onclick="showSection('stats-section')">Štatistiky hráčov</button>
     <button onclick="showSection('strategies-section')">Databáza hráčov</button>
@@ -44,7 +43,6 @@
       <option value="matches">Výsledky</option>
       <option value="teams">Rating tímov</option>
       <option value="players">Rating hráčov</option>
-      <option value="mantingal">Martingale</option>
       <option value="predictions">Predikcie</option>
       <option value="stats">Štatistiky hráčov</option>
       <option value="strategies">Databáza hráčov</option>
@@ -104,12 +102,6 @@
       </table>
       <div id="mantingal-container-pc"></div>
     </div>
-
-    <!-- 💰 Mantingal -->
-    <div class="section" id="mantingal-container"></div>
-
-    <!-- 🕓 História Mantingalu -->
-    <div class="section" id="mantingal-history"></div>
 
     <!-- 📊 Predikcie -->
     <div class="section" id="predictions-section">
@@ -235,9 +227,6 @@
         case "predictions-section":
           displayPredictions();
           break;
-        case "mantingal-container":
-          displayMantingal();
-          break;
         case "players-section":
           displayPlayerRatings();
           break;
@@ -254,7 +243,6 @@
         matches: "matches-section",
         teams: "teams-section",
         players: "players-section",
-        mantingal: "mantingal-container",
         predictions: "predictions-section",
         stats: "stats-section",
         strategies: "strategies-section"
