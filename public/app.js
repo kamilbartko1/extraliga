@@ -157,15 +157,6 @@ async function displayHome() {
           }
         </div>
 
-        <!-- 🧩 AI TIP DŇA (pôvodný zápasový tip) -->
-        <div class="home-panel ai-tip-panel" onclick="showSection('predictions-section')">
-          <h3>🧩 AI Tip na Zápas</h3>
-          <p><b>${homeData.aiTip?.home || "N/A"}</b> vs <b>${homeData.aiTip?.away || "N/A"}</b></p>
-          <p style="color:#00eaff;">${homeData.aiTip?.prediction || "Načítavam..."}</p>
-          <p>💶 kurz <b>${homeData.aiTip?.odds || "-"}</b></p>
-          <p>🧠 dôvera <b>${homeData.aiTip?.confidence || 0}%</b></p>
-        </div>
-
         <!-- 📊 TOP ŠTATISTIKY -->
         <div class="home-panel stats-panel" onclick="showSection('stats-section')">
           <h3>📊 Top štatistiky hráčov</h3>
