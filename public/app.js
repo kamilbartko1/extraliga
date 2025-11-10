@@ -256,42 +256,57 @@ async function fetchMatches() {
 }
 
 // === Zápasy ===
-function displayMatches(matches) {
+async function displayMatches(matches) {
   const tableBody = document.querySelector("#matches tbody");
   if (!tableBody) return;
   tableBody.innerHTML = "";
 
   if (!matches || matches.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="4">Žiadne odohrané zápasy</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="5">Žiadne odohrané zápasy</td></tr>`;
     return;
   }
 
   // Zoskup zápasy podľa dátumu
   const grouped = {};
-  matches.forEach(m => {
-    const date = m.date || new Date(m.sport_event?.start_time || "").toISOString().slice(0, 10);
+  matches.forEach((m) => {
+    const date =
+      m.date ||
+      new Date(m.sport_event?.start_time || "").toISOString().slice(0, 10);
     if (!grouped[date]) grouped[date] = [];
     grouped[date].push(m);
   });
 
   const days = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
 
-  days.forEach(day => {
+  for (const day of days) {
     const dateRow = document.createElement("tr");
     const formatted = new Date(day).toLocaleDateString("sk-SK", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
     });
-    dateRow.innerHTML = `<td colspan="4" class="date-header">${formatted}</td>`;
+    dateRow.innerHTML = `<td colspan="5" class="date-header">${formatted}</td>`;
     tableBody.appendChild(dateRow);
 
-    grouped[day].forEach(match => {
-      const home = match.home_team || match.sport_event?.competitors?.[0]?.name || "Home";
-      const away = match.away_team || match.sport_event?.competitors?.[1]?.name || "Away";
-      const hs = match.home_score ?? match.sport_event_status?.home_score ?? "-";
-      const as = match.away_score ?? match.sport_event_status?.away_score ?? "-";
-      const status = (match.status || match.sport_event_status?.status || "").toLowerCase();
+    // Pre každý zápas
+    for (const match of grouped[day]) {
+      const home =
+        match.home_team ||
+        match.sport_event?.competitors?.[0]?.name ||
+        "Home";
+      const away =
+        match.away_team ||
+        match.sport_event?.competitors?.[1]?.name ||
+        "Away";
+      const hs =
+        match.home_score ?? match.sport_event_status?.home_score ?? "-";
+      const as =
+        match.away_score ?? match.sport_event_status?.away_score ?? "-";
+      const status = (match.status || match.sport_event_status?.status || "")
+        .toLowerCase();
+
+      // unikátne ID bunky pre zostrih
+      const recapId = `recap-${match.id}`;
 
       const row = document.createElement("tr");
       row.innerHTML = `
@@ -299,10 +314,35 @@ function displayMatches(matches) {
         <td>${away}</td>
         <td>${hs} : ${as}</td>
         <td>${status === "closed" ? "✅" : status === "ap" ? "🟡" : "..."}</td>
+        <td id="${recapId}" class="highlight-cell" style="text-align:center;color:#ccc;">⏳</td>
       `;
       tableBody.appendChild(row);
-    });
-  });
+
+      // --- 🔹 Doplnenie zostrihu po načítaní zápasu ---
+      if (status === "closed") {
+        try {
+          const resp = await fetch(
+            `/api/highlights?team=${encodeURIComponent(home)}&id=${match.id}`,
+            { cache: "no-store" }
+          );
+          const data = await resp.json();
+
+          const cell = document.getElementById(recapId);
+          if (!cell) continue;
+
+          if (data.ok && data.highlight) {
+            cell.innerHTML = `<a href="${data.highlight}" target="_blank" class="highlight-link">🎥 Zostrih</a>`;
+          } else {
+            cell.innerHTML = `<span style="color:#777;">—</span>`;
+          }
+        } catch (err) {
+          console.warn("❌ Chyba pri načítaní zostrihu:", err);
+          const cell = document.getElementById(recapId);
+          if (cell) cell.innerHTML = `<span style="color:red;">❌</span>`;
+        }
+      }
+    }
+  }
 }
 
 // === RATING TÍMOV ===

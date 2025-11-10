@@ -3270,6 +3270,22 @@ body {
   position: relative;
 }
 
+.highlight-link {
+  color: #ffcc00;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.highlight-link:hover {
+  color: #fff176;
+  text-shadow: 0 0 6px #ffcc00;
+}
+
+.highlight-cell {
+  min-width: 100px;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
