@@ -262,7 +262,7 @@ async function displayMatches(matches) {
   tableBody.innerHTML = "";
 
   if (!matches || matches.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="5">Žiadne odohrané zápasy</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="4">Žiadne odohrané zápasy</td></tr>`;
     return;
   }
 
@@ -285,10 +285,9 @@ async function displayMatches(matches) {
       month: "2-digit",
       year: "numeric",
     });
-    dateRow.innerHTML = `<td colspan="5" class="date-header">${formatted}</td>`;
+    dateRow.innerHTML = `<td colspan="4" class="date-header">${formatted}</td>`;
     tableBody.appendChild(dateRow);
 
-    // Pre každý zápas
     for (const match of grouped[day]) {
       const home =
         match.home_team ||
@@ -305,7 +304,6 @@ async function displayMatches(matches) {
       const status = (match.status || match.sport_event_status?.status || "")
         .toLowerCase();
 
-      // unikátne ID bunky pre zostrih
       const recapId = `recap-${match.id}`;
 
       const row = document.createElement("tr");
@@ -313,12 +311,11 @@ async function displayMatches(matches) {
         <td>${home}</td>
         <td>${away}</td>
         <td>${hs} : ${as}</td>
-        <td>${status === "closed" ? "✅" : status === "ap" ? "🟡" : "..."}</td>
         <td id="${recapId}" class="highlight-cell" style="text-align:center;color:#ccc;">⏳</td>
       `;
       tableBody.appendChild(row);
 
-      // --- 🔹 Doplnenie zostrihu po načítaní zápasu ---
+      // 🎥 Doplnenie zostrihu pre odohrané zápasy
       if (status === "closed") {
         try {
           const resp = await fetch(
@@ -326,7 +323,6 @@ async function displayMatches(matches) {
             { cache: "no-store" }
           );
           const data = await resp.json();
-
           const cell = document.getElementById(recapId);
           if (!cell) continue;
 
@@ -340,6 +336,9 @@ async function displayMatches(matches) {
           const cell = document.getElementById(recapId);
           if (cell) cell.innerHTML = `<span style="color:red;">❌</span>`;
         }
+      } else {
+        const cell = document.getElementById(recapId);
+        if (cell) cell.innerHTML = `<span style="color:#777;">—</span>`;
       }
     }
   }
