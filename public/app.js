@@ -95,7 +95,7 @@ async function displayHome() {
   `;
 
   try {
-    // 1️⃣ Načítaj zápasy + AI tip
+    // 1️⃣ Načítaj zápasy + AI tip + štatistiky
     const [homeResp, statsResp] = await Promise.all([
       fetch("/api/home", { cache: "no-store" }),
       fetch("/api/statistics", { cache: "no-store" })
@@ -108,6 +108,8 @@ async function displayHome() {
     const topGoal = statsData?.topGoals?.[0] || {};
     const topPoints = statsData?.topPoints?.[0] || {};
     const topShots = statsData?.topShots?.[0] || {};
+
+    const aiScorer = homeData.aiScorerTip || null;
 
     // 2️⃣ HTML štruktúra layoutu
     let html = `
@@ -136,13 +138,32 @@ async function displayHome() {
           }
         </div>
 
-        <!-- 🎯 AI TIP DŇA -->
-        <div class="home-panel ai-panel" onclick="showSection('predictions-section')">
-          <h3>🎯 AI Tip Dňa</h3>
-          <p><b>${homeData.aiTip.home}</b> vs <b>${homeData.aiTip.away}</b></p>
-          <p style="color:#00eaff;">${homeData.aiTip.prediction}</p>
-          <p>💶 kurz <b>${homeData.aiTip.odds}</b></p>
-          <p>🧠 dôvera <b>${homeData.aiTip.confidence}%</b></p>
+        <!-- 🎯 AI STRELEC DŇA -->
+        <div class="home-panel ai-panel" onclick="showSection('stats-section')">
+          <h3>🎯 AI Strelec Dňa</h3>
+          ${
+            aiScorer
+              ? `
+              <div class="ai-scorer-box">
+                <img src="${aiScorer.headshot || "/icons/nhl_placeholder.svg"}" alt="${aiScorer.player}" class="player-headshot">
+                <div class="ai-scorer-info">
+                  <p><b>${aiScorer.player}</b> (${aiScorer.team})</p>
+                  <p style="color:#00eaff;">${aiScorer.match}</p>
+                  <p>🥅 Góly: <b>${aiScorer.goals}</b> | 🎯 Strely: <b>${aiScorer.shots}</b> | ⚡ PP: <b>${aiScorer.powerPlayGoals}</b></p>
+                  <p>🧠 Pravdepodobnosť gólu: <b style="color:#ffcc00;">${aiScorer.probability}%</b></p>
+                </div>
+              </div>`
+              : `<p style="color:#aaa;">Dáta sa načítavajú...</p>`
+          }
+        </div>
+
+        <!-- 🧩 AI TIP DŇA (pôvodný zápasový tip) -->
+        <div class="home-panel ai-tip-panel" onclick="showSection('predictions-section')">
+          <h3>🧩 AI Tip na Zápas</h3>
+          <p><b>${homeData.aiTip?.home || "N/A"}</b> vs <b>${homeData.aiTip?.away || "N/A"}</b></p>
+          <p style="color:#00eaff;">${homeData.aiTip?.prediction || "Načítavam..."}</p>
+          <p>💶 kurz <b>${homeData.aiTip?.odds || "-"}</b></p>
+          <p>🧠 dôvera <b>${homeData.aiTip?.confidence || 0}%</b></p>
         </div>
 
         <!-- 📊 TOP ŠTATISTIKY -->

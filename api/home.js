@@ -5,7 +5,7 @@ import axios from "axios";
 const logo = (code) =>
   code ? `https://assets.nhle.com/logos/nhl/svg/${code}_light.svg` : "";
 
-// Mapovanie skratiek na plné názvy (takto ich máš v /api/matches)
+// Mapovanie skratiek na plné názvy
 const CODE_TO_FULL = {
   ANA: "Anaheim Ducks",
   ARI: "Arizona Coyotes",
@@ -42,24 +42,21 @@ const CODE_TO_FULL = {
   UTA: "Utah Mammoth",
 };
 
-// Bezpečne získa URL backendu pre lokál + Vercel
+// Bezpečne získa URL backendu
 const getBaseUrl = (req) => {
   const proto = req.headers["x-forwarded-proto"] || "https";
   const host = req.headers.host;
   return `${proto}://${host}`;
 };
 
-// vyber preferovaný kurz z odds poľa
+// Pomocná funkcia – vyber najlepší kurz
 function pickBestDecimalOdd(oddsArray = []) {
-  // priorita: Doxxbet (10) -> Tipsport (3) -> FanDuel (7) -> DraftKings (9) -> Sportradar (8) -> Veikkaus (6)
   const prio = [10, 3, 7, 9, 8, 6];
   for (const pid of prio) {
     const o = oddsArray.find((x) => x.providerId === pid && x.value != null);
     if (o) {
       const v = String(o.value).trim();
-      // ak je to decimal (1.87, 2.49, 3.05…)
       if (/^\d+(\.\d+)?$/.test(v)) return parseFloat(v);
-      // ak je to americký kurz (+135 / -185) → premeníme na decimal
       if (/^[+-]\d+$/.test(v)) {
         const n = parseInt(v, 10);
         if (n > 0) return 1 + n / 100;
@@ -68,6 +65,30 @@ function pickBestDecimalOdd(oddsArray = []) {
     }
   }
   return null;
+}
+
+// === AI výpočet pravdepodobnosti gólu ===
+function computeGoalProbability(player, teamRating, oppRating, isHome) {
+  const rPlayer = Math.tanh(((player.rating ?? 1500) - 1500) / 300);
+  const rGoals = player.goals && player.gamesPlayed ? player.goals / player.gamesPlayed : 0;
+  const rShots = player.shots && player.gamesPlayed ? player.shots / player.gamesPlayed / 4.5 : 0;
+  const rPP = player.powerPlayGoals && player.goals ? player.powerPlayGoals / player.goals : 0;
+  const rTOI = Math.min(1, (player.toi || 0) / 20);
+  const rMatchup = Math.tanh((teamRating - oppRating) / 100);
+  const rHome = isHome ? 0.05 : 0;
+
+  const logit =
+    -2.2 +
+    0.9 * rPlayer +
+    1.0 * rShots +
+    0.6 * rGoals +
+    0.5 * rPP +
+    0.3 * rTOI +
+    0.4 * rMatchup +
+    0.2 * rHome;
+
+  const p = 1 / (1 + Math.exp(-logit));
+  return Math.max(0.05, Math.min(0.6, p)); // orez na 5–60 %
 }
 
 // ========================================================
@@ -85,7 +106,6 @@ export default async function handler(req, res) {
     const data = resp.data || {};
     const gamesRaw = Array.isArray(data.games) ? data.games : [];
 
-    // Rozšír: zober aj kurzy (homeOdds/awayOdds)
     const games = gamesRaw.map((g) => {
       const homeOdds = pickBestDecimalOdd(g.homeTeam?.odds || []);
       const awayOdds = pickBestDecimalOdd(g.awayTeam?.odds || []);
@@ -100,12 +120,12 @@ export default async function handler(req, res) {
         homeCode: g.homeTeam?.abbrev || "",
         awayCode: g.awayTeam?.abbrev || "",
         startTime: g.startTimeUTC
-        ? new Date(g.startTimeUTC).toLocaleTimeString("sk-SK", {
-        timeZone: "Europe/Bratislava", // ✅ slovenský čas
-        hour: "2-digit",
-        minute: "2-digit",
-        })
-        : "??:??",
+          ? new Date(g.startTimeUTC).toLocaleTimeString("sk-SK", {
+              timeZone: "Europe/Bratislava",
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          : "??:??",
         venue: g.venue?.default || "",
         status: g.gameState || "FUT",
         homeOdds,
@@ -115,110 +135,78 @@ export default async function handler(req, res) {
 
     console.log(`✅ Načítaných zápasov: ${games.length}`);
 
-    // === 2️⃣ AI TIP DŇA – ratingy -> fallback na kurzy -> fallback na prvý zápas
-    let aiTip = {
-      home: "N/A",
-      away: "N/A",
-      prediction: "Dáta sa načítavajú...",
-      confidence: 0,
-      odds: "-",
-    };
+    // === 2️⃣ AI STRELEC DŇA ===
+    let aiScorerTip = null;
+    const baseUrl = getBaseUrl(req);
 
-    // 2a) Skús podľa ratingov
-    let bestByRatings = null;
     try {
-      const baseUrl = getBaseUrl(req);
-      const ratingsResp = await axios.get(`${baseUrl}/api/matches`, {
-        timeout: 10000,
+      const [statsResp, ratingsResp] = await Promise.all([
+        axios.get(`${baseUrl}/api/statistics`, { timeout: 15000 }),
+        axios.get(`${baseUrl}/api/matches`, { timeout: 15000 }),
+      ]);
+
+      const stats = statsResp.data || {};
+      const teamRatings = ratingsResp.data?.teamRatings || {};
+      const playerRatings = ratingsResp.data?.playerRatings || {};
+
+      const allPlayers = [
+        ...(stats.topGoals || []),
+        ...(stats.topShots || []),
+        ...(stats.topPowerPlayGoals || []),
+      ];
+
+      // odstráň duplicity
+      const seen = new Set();
+      const uniquePlayers = allPlayers.filter((p) => {
+        if (seen.has(p.id)) return false;
+        seen.add(p.id);
+        return true;
       });
 
-      const teamRatings = ratingsResp.data?.teamRatings || {};
-      if (Object.keys(teamRatings).length) {
-        const scored = games.map((g) => {
-          const homeFull = CODE_TO_FULL[g.homeCode] || g.homeName;
-          const awayFull = CODE_TO_FULL[g.awayCode] || g.awayName;
-          const homeR = teamRatings[homeFull] ?? 1500;
-          const awayR = teamRatings[awayFull] ?? 1500;
-          const diff = (homeR - awayR) + 5; // malé HFA
-          return { ...g, homeFull, awayFull, score: diff };
-        });
-        bestByRatings = scored.sort((a, b) => b.score - a.score)[0] || null;
+      const candidates = [];
+
+      for (const game of games) {
+        const homeRating = teamRatings[game.homeName] ?? 1500;
+        const awayRating = teamRatings[game.awayName] ?? 1500;
+
+        const homePlayers = uniquePlayers.filter((p) => p.team === game.homeCode);
+        const awayPlayers = uniquePlayers.filter((p) => p.team === game.awayCode);
+
+        for (const p of [...homePlayers, ...awayPlayers]) {
+          const playerRating = playerRatings[p.name] ?? 1500;
+          const prob = computeGoalProbability(
+            { ...p, rating: playerRating },
+            p.team === game.homeCode ? homeRating : awayRating,
+            p.team === game.homeCode ? awayRating : homeRating,
+            p.team === game.homeCode
+          );
+
+          candidates.push({
+            ...p,
+            match: `${game.homeName} vs ${game.awayName}`,
+            prob,
+          });
+        }
       }
-    } catch (e) {
-      console.warn("⚠️ AI tip (ratingy) – zlyhalo:", e.message);
-    }
 
-    // 2b) Ak ratingy nevyšli, fallback na kurzy
-    let bestByOdds = null;
-    if (!bestByRatings) {
-      const viable = games
-        .map((g) => {
-          // Preferujeme favorita: menší kurz
-          let pickSide = null;
-          let pickOdds = null;
-
-          if (g.homeOdds && g.awayOdds) {
-            if (g.homeOdds <= g.awayOdds) {
-              pickSide = "home";
-              pickOdds = g.homeOdds;
-            } else {
-              pickSide = "away";
-              pickOdds = g.awayOdds;
-            }
-          } else if (g.homeOdds) {
-            pickSide = "home";
-            pickOdds = g.homeOdds;
-          } else if (g.awayOdds) {
-            pickSide = "away";
-            pickOdds = g.awayOdds;
-          }
-
-          return pickSide
-            ? { ...g, pickSide, pickOdds }
-            : null;
-        })
-        .filter(Boolean);
-
-      if (viable.length) {
-        // vyber najnižší kurz (najväčší favorit)
-        bestByOdds = viable.sort((a, b) => a.pickOdds - b.pickOdds)[0];
+      // najlepší hráč podľa pravdepodobnosti
+      const best = candidates.sort((a, b) => b.prob - a.prob)[0];
+      if (best) {
+        aiScorerTip = {
+          player: best.name,
+          team: best.team,
+          match: best.match,
+          probability: Math.round(best.prob * 100),
+          headshot: best.headshot,
+          goals: best.goals,
+          shots: best.shots,
+          powerPlayGoals: best.powerPlayGoals,
+        };
       }
-    }
 
-    if (bestByRatings) {
-      const confidence = Math.min(95, 60 + Math.abs(bestByRatings.score) / 15);
-      // odhad "férového" kurzu z dôvery (nie je dokonalý, ale stabilný)
-      const fairOdds = (1 / Math.max(0.51, confidence / 100)).toFixed(2);
-      aiTip = {
-        home: bestByRatings.homeFull,
-        away: bestByRatings.awayFull,
-        prediction: `Výhra ${bestByRatings.homeFull}`,
-        confidence: Math.round(confidence),
-        odds: fairOdds,
-      };
-    } else if (bestByOdds) {
-      const isHome = bestByOdds.pickSide === "home";
-      const pickName = isHome ? bestByOdds.homeName : bestByOdds.awayName;
-      const odds = bestByOdds.pickOdds?.toFixed(2) ?? "-";
-      // jednoduchý mapping kurzu na dôveru
-      const conf = Math.max(55, Math.min(90, 120 - (bestByOdds.pickOdds * 20)));
-      aiTip = {
-        home: bestByOdds.homeName,
-        away: bestByOdds.awayName,
-        prediction: `Výhra ${pickName}`,
-        confidence: Math.round(conf),
-        odds,
-      };
-    } else if (games.length) {
-      // 2c) Posledná záchrana
-      const g = games[0];
-      aiTip = {
-        home: g.homeName,
-        away: g.awayName,
-        prediction: `Výhra ${g.homeName}`,
-        confidence: 60,
-        odds: "-",
-      };
+      console.log("🎯 AI Strelec Dňa:", aiScorerTip?.player || "n/a", aiScorerTip?.probability || 0, "%");
+    } catch (err) {
+      console.warn("⚠️ AI strelec dňa – zlyhal:", err.message);
     }
 
     // === 3️⃣ Mini štatistiky (zatiaľ statické)
@@ -234,7 +222,7 @@ export default async function handler(req, res) {
       date,
       count: games.length,
       matchesToday: games,
-      aiTip,
+      aiScorerTip, // 🎯 nový výstup
       stats,
     });
   } catch (err) {
@@ -244,13 +232,7 @@ export default async function handler(req, res) {
       date: new Date().toISOString().slice(0, 10),
       error: err.message,
       matchesToday: [],
-      aiTip: {
-        home: "N/A",
-        away: "N/A",
-        prediction: "Nepodarilo sa načítať dáta.",
-        confidence: 0,
-        odds: "-",
-      },
+      aiScorerTip: null,
       stats: {
         topScorer: "-",
         bestShooter: "-",
