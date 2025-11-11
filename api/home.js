@@ -163,6 +163,29 @@ export default async function handler(req, res) {
         return true;
       });
 
+      // 🔹 Funkcia: hľadá správny rating pre akýkoľvek tvar mena
+      function findPlayerRating(playerName) {
+        if (!playerName) return 1500;
+        const lower = playerName.toLowerCase().trim();
+        const clean = lower.replace(/\./g, "");
+        const [first, last] = clean.split(" ");
+        const variants = [
+          clean,                        // celé meno
+          `${first?.charAt(0)} ${last}`, // iniciála + priezvisko
+          `${first?.charAt(0)}. ${last}`, // bodka + priezvisko
+          `${first?.charAt(0)}${last}`,  // bez medzery
+          last,                         // len priezvisko
+        ].filter(Boolean);
+
+        for (const [key, rating] of Object.entries(playerRatings)) {
+          const keyLower = key.toLowerCase().replace(/\./g, "").trim();
+          if (variants.some(v => keyLower === v)) {
+            return rating;
+          }
+        }
+        return 1500;
+      }
+
       const candidates = [];
 
       for (const game of games) {
@@ -173,7 +196,8 @@ export default async function handler(req, res) {
         const awayPlayers = uniquePlayers.filter((p) => p.team === game.awayCode);
 
         for (const p of [...homePlayers, ...awayPlayers]) {
-          const playerRating = playerRatings[p.name] ?? 1500;
+          const playerRating = findPlayerRating(p.name);
+
           const prob = computeGoalProbability(
             { ...p, rating: playerRating },
             p.team === game.homeCode ? homeRating : awayRating,
@@ -204,7 +228,9 @@ export default async function handler(req, res) {
         };
       }
 
-      console.log("🎯 AI Strelec Dňa:", aiScorerTip?.player || "n/a", aiScorerTip?.probability || 0, "%");
+      console.log(
+        `🎯 AI Strelec Dňa: ${aiScorerTip?.player || "n/a"} (${aiScorerTip?.probability || 0}%)`
+      );
     } catch (err) {
       console.warn("⚠️ AI strelec dňa – zlyhal:", err.message);
     }
