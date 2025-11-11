@@ -3332,65 +3332,62 @@ body {
   text-align: right;
 }
 
-/* === Mobilné opravy zarovnania a overflow textu pre dnešné zápasy === */
-@media (max-width: 768px) {
-  .matches-panel {
-    padding: 14px;
-    box-sizing: border-box;
-  }
+/* --- 1) Box "DNEŠNÉ ZÁPASY NHL" nech má vždy výšku podľa obsahu --- */
+.matches-panel,
+.home-panel.matches-panel {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
 
+/* --- 2) Každý riadok zápasu: responzívna mriežka --- */
+.match-row {
+  display: grid;
+  grid-template-columns: 24px minmax(0,1fr) auto minmax(0,1fr) 24px auto; 
+  /*  logo  názov        vs   názov         logo  čas  */
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 14px;
+}
+
+/* Názvy tímov – nech sa môžu zalomiť a nikdy nepretiahnu box */
+.match-row span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.2;
+}
+
+/* Logá – nech sú malé a konzistentné */
+.match-row .team-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* Čas vpravo */
+.match-row .time {
+  justify-self: end;
+  white-space: nowrap;
+}
+
+/* --- 3) Mobilné doladenie --- */
+@media (max-width: 480px) {
   .match-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    flex-wrap: nowrap;
-    margin: 8px 0;
-    padding: 8px 12px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    overflow: hidden;
+    grid-template-columns: 20px minmax(0,1fr) auto minmax(0,1fr) 20px; 
+    /* čas dáme na nový riadok, úplne doprava */
+    grid-auto-rows: auto;
   }
-
-  .match-row span {
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 80px; /* nech sa dlhé názvy nepretlačia */
-  }
-
-  .match-row img.team-logo {
-    width: 24px;
-    height: 24px;
-    flex-shrink: 0;
-  }
-
   .match-row .time {
-    flex-shrink: 0;
-    font-size: 0.85rem;
-    color: #ccc;
-    margin-left: auto;
-    text-align: right;
-    min-width: 45px;
+    grid-column: 1 / -1;
+    margin-top: 0.2rem;
   }
 }
 
-/* === Oprava boxu Dnešné zápasy pre mobil === */
-.matches-panel {
-  height: auto !important;          /* nech sa výška prispôsobí obsahu */
-  max-height: 90vh;                 /* maximálne 90 % výšky obrazovky */
-  overflow-y: auto;                 /* ak je veľmi dlhý, zobraz scroll */
-  padding-bottom: 1rem;             /* medzera pod posledným zápasom */
-}
-
-/* Len pre mobil (šírka do 768px) */
-@media (max-width: 768px) {
-  .matches-panel {
-    max-height: none;               /* na mobile nech sa úplne rozbalí */
-    overflow: visible;              /* žiadny scroll */
-  }
-}
+/* (voliteľné) Ak máš niekde staršie globálne nastavené fixné výšky: */
+/* .home-panel { height: auto !important; } */
+/* .home-container { overflow: visible !important; } */
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
