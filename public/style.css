@@ -3384,69 +3384,6 @@ body {
     margin-top: 0.2rem;
   }
 }
-/* === BOX DNEŠNÉ ZÁPASY – fixnutá verzia === */
-.home-panel.matches-panel {
-  height: auto !important;
-  max-height: none !important;
-  overflow: visible !important;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-}
-
-/* Každý riadok zápasu */
-.match-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: nowrap;
-  gap: 8px;
-  padding: 0.5rem 0.7rem;
-  margin-bottom: 6px;
-  border-radius: 12px;
-}
-
-/* Logá tímov */
-.match-row .team-logo {
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-  object-fit: contain;
-}
-
-/* Názvy tímov */
-.match-row span {
-  flex: 1 1 auto;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Čas vpravo */
-.match-row .time {
-  flex-shrink: 0;
-  white-space: nowrap;
-  font-size: 0.9rem;
-  opacity: 0.9;
-}
-
-/* === Mobilné doladenie === */
-@media (max-width: 480px) {
-  .match-row {
-    padding: 0.45rem 0.5rem;
-    gap: 4px;
-  }
-  .match-row span {
-    font-size: 0.9rem;
-    white-space: normal;
-    text-overflow: clip;
-  }
-  .match-row .team-logo {
-    width: 20px;
-    height: 20px;
-  }
-}
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
