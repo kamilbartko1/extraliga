@@ -3393,6 +3393,26 @@ body {
   border-radius: 4px;
 }
 
+/* Zarovnanie skóre, suffix nalepený hneď vedľa */
+.score-cell {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.score-value {
+  font-weight: 600;
+  letter-spacing: 1px;
+  min-width: 52px; /* drží zarovnanie stĺpca */
+}
+
+.score-suffix {
+  font-size: 0.8rem;
+  color: #aaa;
+  text-transform: lowercase;
+  padding-left: 0; /* žiadna medzera */
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
