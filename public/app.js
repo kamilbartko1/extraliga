@@ -816,8 +816,14 @@ async function displayShootingLeaders() {
   const detail = document.getElementById("stats-detail");
   if (!grid || !detail) return;
 
+  // 🔹 Jednoduchá 30-sekundová cache, aby sa štatistiky nevolali stále znova
+  let lastStats = null;
+  let lastFetchTime = 0;
+
   // 🔹 Pomocná funkcia pre spracovanie dát
   function renderStats(data, type) {
+    detail.innerHTML = `<p style="text-align:center;color:#00eaff;">📊 Načítavam štatistiky, prosím čakajte...</p>`;
+
     let players = [];
     let title = "";
     let columns = "";
@@ -878,10 +884,11 @@ async function displayShootingLeaders() {
       return;
     }
 
-    // 🔹 Vykreslenie tabuľky
+    // 🔹 Vykreslenie tabuľky s horizontálnym scrollom pre mobily
     let html = `
       <h3 style="text-align:center;color:#00eaff;margin-bottom:10px;">${title}</h3>
-      <table class="shooting-table">
+      <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+      <table class="shooting-table" style="min-width:600px;">
         <thead>
           <tr>
             <th>#</th>
@@ -937,14 +944,8 @@ async function displayShootingLeaders() {
       `;
     });
 
-    html += `</tbody></table>`;
-
-    // 🔹 PRIDANÉ: obalíme tabuľku do scrollovateľného kontajnera
-    detail.innerHTML = `
-      <div class="table-scroll">
-        ${html}
-      </div>
-    `;
+    html += `</tbody></table></div>`;
+    detail.innerHTML = html;
   }
 
   // 🔹 Hlavný listener na kliknutie
@@ -952,17 +953,23 @@ async function displayShootingLeaders() {
     box.addEventListener("click", async () => {
       const type = box.dataset.type;
       detail.innerHTML = `<p style="text-align:center;color:#00eaff;font-size:1.1rem;">⏳ Načítavam dáta...</p>`;
-
       detail.scrollIntoView({ behavior: "smooth", block: "start" });
-      await new Promise(r => setTimeout(r, 7000)); // krátke oneskorenie pre mobilné Safari
 
       try {
+        const now = Date.now();
+
+        // použijeme cache, ak je mladšia než 30 sekúnd
+        if (lastStats && now - lastFetchTime < 30000) {
+          renderStats(lastStats, type);
+          return;
+        }
+
+        // načítaj nové dáta
         let resp = await fetch("/api/statistics", { cache: "no-store" }).catch(() => null);
 
-        // 🔹 Retry ak fetch zlyhá
         if (!resp || !resp.ok) {
           console.warn("⚠️ Prvé volanie zlyhalo, opakujem...");
-          await new Promise(r => setTimeout(r, 7000));
+          await new Promise((r) => setTimeout(r, 3000));
           resp = await fetch("/api/statistics", { cache: "no-store" }).catch(() => null);
         }
 
@@ -976,6 +983,10 @@ async function displayShootingLeaders() {
           detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Dáta nie sú dostupné.</p>`;
           return;
         }
+
+        // uložíme do cache
+        lastStats = data;
+        lastFetchTime = now;
 
         renderStats(data, type);
       } catch (err) {
