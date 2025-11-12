@@ -816,144 +816,162 @@ async function displayShootingLeaders() {
   const detail = document.getElementById("stats-detail");
   if (!grid || !detail) return;
 
+  // 🔹 Pomocná funkcia pre spracovanie dát
+  function renderStats(data, type) {
+    let players = [];
+    let title = "";
+    let columns = "";
+
+    switch (type) {
+      case "accuracy":
+        players = data.topAccuracy || [];
+        title = "🎯 Najlepšia strelecká úspešnosť";
+        columns = "<th>Góly</th><th>Strely</th><th>Percentá</th>";
+        break;
+      case "shots":
+        players = data.topShots || [];
+        title = "🔥 Najviac striel";
+        columns = "<th>Strely</th>";
+        break;
+      case "goals":
+        players = data.topGoals || [];
+        title = "🥅 Najviac gólov";
+        columns = "<th>Góly</th>";
+        break;
+      case "assists":
+        players = data.topAssists || [];
+        title = "🎩 Najviac asistencií";
+        columns = "<th>Asistencie</th>";
+        break;
+      case "points":
+        players = data.topPoints || [];
+        title = "⚡ Najviac kanadských bodov";
+        columns = "<th>Kanadské body</th>";
+        break;
+      case "plusminus":
+        players = data.topPlusMinus || [];
+        title = "➕➖ Najlepšie plus/mínus";
+        columns = "<th>+ / −</th>";
+        break;
+      case "pim":
+        players = data.topPIM || [];
+        title = "⛓️ Najviac trestných minút";
+        columns = "<th>Trestné minúty</th>";
+        break;
+      case "toi":
+        players = data.topTOI || [];
+        title = "🕒 Najviac času na ľade (min/zápas)";
+        columns = "<th>Min/zápas</th>";
+        break;
+      case "powerPlayGoals":
+        players = data.topPowerPlayGoals || [];
+        title = "🥈 Najviac power play gólov";
+        columns = "<th>PP goals</th>";
+        break;
+      default:
+        detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Táto štatistika ešte nie je dostupná.</p>`;
+        return;
+    }
+
+    if (!players.length) {
+      detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Žiadne dáta pre ${title}</p>`;
+      return;
+    }
+
+    // 🔹 Vykreslenie tabuľky
+    let html = `
+      <h3 style="text-align:center;color:#00eaff;margin-bottom:10px;">${title}</h3>
+      <table class="shooting-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Hráč</th>
+            <th>Tím</th>
+            ${columns}
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    players.slice(0, 50).forEach((p, i) => {
+      const img = `<img src="${p.headshot}" alt="${p.name}" style="width:24px;height:24px;border-radius:50%;margin-right:6px;vertical-align:middle;">`;
+
+      let statCell = "";
+      switch (type) {
+        case "accuracy":
+          statCell = `<td>${p.goals}</td><td>${p.shots}</td><td>${p.shootingPctg.toFixed(1)}%</td>`;
+          break;
+        case "shots":
+          statCell = `<td>${p.shots}</td>`;
+          break;
+        case "goals":
+          statCell = `<td>${p.goals}</td>`;
+          break;
+        case "assists":
+          statCell = `<td>${p.assists}</td>`;
+          break;
+        case "points":
+          statCell = `<td>${p.points}</td>`;
+          break;
+        case "plusminus":
+          statCell = `<td>${p.plusMinus}</td>`;
+          break;
+        case "pim":
+          statCell = `<td>${p.pim}</td>`;
+          break;
+        case "toi":
+          statCell = `<td>${p.toi}</td>`;
+          break;
+        case "powerPlayGoals":
+          statCell = `<td>${p.powerPlayGoals}</td>`;
+          break;
+      }
+
+      html += `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${img}${p.name}</td>
+          <td>${p.team}</td>
+          ${statCell}
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+    detail.innerHTML = html;
+  }
+
+  // 🔹 Hlavný listener na kliknutie
   grid.querySelectorAll(".stat-box").forEach((box) => {
     box.addEventListener("click", async () => {
       const type = box.dataset.type;
       detail.innerHTML = `<p style="text-align:center;color:#00eaff;font-size:1.1rem;">⏳ Načítavam dáta...</p>`;
 
-      // 🔹 Scrollni stránku k výsledkom (hladký prechod)
       detail.scrollIntoView({ behavior: "smooth", block: "start" });
+      await new Promise(r => setTimeout(r, 200)); // krátke oneskorenie pre mobilné Safari
 
       try {
-        const resp = await fetch("/api/statistics", { cache: "no-store" });
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const data = await resp.json();
-        if (!data.ok) throw new Error(data.error || "Neplatná odpoveď z API.");
+        let resp = await fetch("/api/statistics", { cache: "no-store" }).catch(() => null);
 
-        // 🔹 Vyber správny rebríček podľa kliknutého boxu
-        let players = [];
-        let title = "";
-        let columns = "";
-
-        switch (type) {
-          case "accuracy":
-            players = data.topAccuracy || [];
-            title = "🎯 Najlepšia strelecká úspešnosť";
-            columns = "<th>Góly</th><th>Strely</th><th>Percentá</th>";
-            break;
-          case "shots":
-            players = data.topShots || [];
-            title = "🔥 Najviac striel";
-            columns = "<th>Strely</th>";
-            break;
-          case "goals":
-            players = data.topGoals || [];
-            title = "🥅 Najviac gólov";
-            columns = "<th>Góly</th>";
-            break;
-          case "assists":
-            players = data.topAssists || [];
-            title = "🎩 Najviac asistencií";
-            columns = "<th>Asistencie</th>";
-            break;
-          case "points":
-            players = data.topPoints || [];
-            title = "⚡ Najviac kanadských bodov";
-            columns = "<th>Kanadské body</th>";
-            break;
-          case "plusminus":
-            players = data.topPlusMinus || [];
-            title = "➕➖ Najlepšie plus/mínus";
-            columns = "<th>+ / −</th>";
-            break;
-          case "pim":
-            players = data.topPIM || [];
-            title = "⛓️ Najviac trestných minút";
-            columns = "<th>Trestné minúty</th>";
-            break;
-          case "toi":
-            players = data.topTOI || [];
-            title = "🕒 Najviac času na ľade (min/zápas)";
-            columns = "<th>Min/zápas</th>";
-            break;
-          case "powerPlayGoals":
-            players = data.topPowerPlayGoals || [];
-            title = "🥈 Najviac power play gólov";
-            columns = "<th>PP goals</th>";
-            break;
-          default:
-            detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Táto štatistika ešte nie je dostupná.</p>`;
-            return;
+        // 🔹 Retry ak fetch zlyhá
+        if (!resp || !resp.ok) {
+          console.warn("⚠️ Prvé volanie zlyhalo, opakujem...");
+          await new Promise(r => setTimeout(r, 1000));
+          resp = await fetch("/api/statistics", { cache: "no-store" }).catch(() => null);
         }
 
-        if (!players.length) {
-          detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Žiadne dáta pre ${title}</p>`;
+        if (!resp || !resp.ok) {
+          detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Dáta sa nepodarilo načítať. Skúste obnoviť stránku.</p>`;
           return;
         }
 
-        // 🔹 Vykresli tabuľku
-        let html = `
-          <h3 style="text-align:center;color:#00eaff;margin-bottom:10px;">${title}</h3>
-          <table class="shooting-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Hráč</th>
-                <th>Tím</th>
-                ${columns}
-              </tr>
-            </thead>
-            <tbody>
-        `;
+        const data = await resp.json();
+        if (!data.ok) {
+          detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Dáta nie sú dostupné.</p>`;
+          return;
+        }
 
-        players.slice(0, 50).forEach((p, i) => {
-          const img = `<img src="${p.headshot}" alt="${p.name}" style="width:24px;height:24px;border-radius:50%;margin-right:6px;vertical-align:middle;">`;
-
-          let statCell = "";
-          switch (type) {
-            case "accuracy":
-              statCell = `<td>${p.goals}</td><td>${p.shots}</td><td>${p.shootingPctg.toFixed(1)}%</td>`;
-              break;
-            case "shots":
-              statCell = `<td>${p.shots}</td>`;
-              break;
-            case "goals":
-              statCell = `<td>${p.goals}</td>`;
-              break;
-            case "assists":
-              statCell = `<td>${p.assists}</td>`;
-              break;
-            case "points":
-              statCell = `<td>${p.points}</td>`;
-              break;
-            case "plusminus":
-              statCell = `<td>${p.plusMinus}</td>`;
-              break;
-            case "pim":
-              statCell = `<td>${p.pim}</td>`;
-              break;
-            case "toi":
-              statCell = `<td>${p.toi}</td>`;
-              break;
-            case "powerPlayGoals":
-              statCell = `<td>${p.powerPlayGoals}</td>`;
-              break;
-            default:
-              statCell = "";
-          }
-
-          html += `
-            <tr>
-              <td>${i + 1}</td>
-              <td>${img}${p.name}</td>
-              <td>${p.team}</td>
-              ${statCell}
-            </tr>
-          `;
-        });
-
-        html += `</tbody></table>`;
-        detail.innerHTML = html;
+        renderStats(data, type);
       } catch (err) {
         detail.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba: ${err.message}</p>`;
       }
