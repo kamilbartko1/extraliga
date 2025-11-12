@@ -69,7 +69,7 @@ function pickBestDecimalOdd(oddsArray = []) {
 
 // === AI výpočet pravdepodobnosti gólu ===
 function computeGoalProbability(player, teamRating, oppRating, isHome) {
-  const rPlayer = Math.tanh(((player.rating) - 2000) / 300);
+  const rPlayer = Math.tanh(((player.rating) - 2400) / 300);
   const rGoals = player.goals && player.gamesPlayed ? player.goals / player.gamesPlayed : 0;
   const rShots = player.shots && player.gamesPlayed ? player.shots / player.gamesPlayed / 4.5 : 0;
   const rPP = player.powerPlayGoals && player.goals ? player.powerPlayGoals / player.goals : 0;
