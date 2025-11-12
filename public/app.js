@@ -317,11 +317,12 @@ async function displayMatches(matches) {
         .toLowerCase();
       const recapId = `recap-${match.id}`;
 
-            // 🔹 Získaj OT / SO z backendu (matches.js ukladá match.outcome)
+     // 🔹 Získaj označenie zápasu (OT → pp, SO → sn)
       let suffix = "";
       if (match.outcome) {
-        suffix = ` (${match.outcome})`;  // OT alebo SO
-      }
+      if (match.outcome === "OT") suffix = " pp";
+      else if (match.outcome === "SO") suffix = " sn";
+    }
 
       html += `
         <tr>
