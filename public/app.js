@@ -317,14 +317,26 @@ async function displayMatches(matches) {
         .toLowerCase();
       const recapId = `recap-${match.id}`;
 
+      // 🔹 Získaj označenie zápasu z údajov NHL API (ak existuje)
+      let suffix = "";
+      if (match.gameOutcome?.lastPeriodType) {
+        const type = match.gameOutcome.lastPeriodType;
+        if (type === "OT") suffix = " (OT)";
+        else if (type === "SO") suffix = " (SO)";
+      }
+      // ak nemáme gameOutcome, pokúsime sa zistiť z počtu period
+      else if (match.periodDescriptor?.periodType === "OT") {
+        suffix = " (OT)";
+      }
+
       html += `
         <tr>
           <td>${home}</td>
           <td>${away}</td>
-          <td>${hs} : ${as}</td>
-          <td id="${recapId}" class="highlight-cell" style="text-align:center;color:#999;">${
-        status === "closed" ? "⏳" : "—"
-      }</td>
+          <td>${hs} : ${as}${suffix}</td>
+          <td id="${recapId}" class="highlight-cell" style="text-align:center;color:#999;">
+            ${status === "closed" ? "⏳" : "—"}
+          </td>
         </tr>`;
     }
   }
