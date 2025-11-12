@@ -938,7 +938,13 @@ async function displayShootingLeaders() {
     });
 
     html += `</tbody></table>`;
-    detail.innerHTML = html;
+
+    // 🔹 PRIDANÉ: obalíme tabuľku do scrollovateľného kontajnera
+    detail.innerHTML = `
+      <div class="table-scroll">
+        ${html}
+      </div>
+    `;
   }
 
   // 🔹 Hlavný listener na kliknutie
