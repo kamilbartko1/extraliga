@@ -230,12 +230,21 @@ async function fetchMatches() {
   if (statusEl) statusEl.textContent = "⏳ Načítavam zápasy a ratingy...";
 
   try {
-    const response = await fetch(`${API_BASE}/api/matches`);
+    // ✅ vždy čerstvé dáta (žiadna cache)
+    const response = await fetch(`${API_BASE}/api/matches?t=${Date.now()}`, {
+      cache: "no-store",
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    });
 
     if (!response.ok) {
       const txt = await response.text();
       console.error("❌ Server vrátil chybu:", txt);
-      if (statusEl) statusEl.textContent = "❌ Server vrátil chybu pri načítaní dát.";
+      if (statusEl)
+        statusEl.textContent = "❌ Server vrátil chybu pri načítaní dát.";
       return;
     }
 
@@ -243,7 +252,10 @@ async function fetchMatches() {
     console.log("✅ Dáta z backendu:", data);
 
     const totalGames = Array.isArray(data.matches) ? data.matches.length : 0;
-    const totalPlayers = data.playerRatings ? Object.keys(data.playerRatings).length : 0;
+    const totalPlayers = data.playerRatings
+      ? Object.keys(data.playerRatings).length
+      : 0;
+
     if (statusEl)
       statusEl.textContent = `✅ Dokončené: ${totalGames} zápasov | ${totalPlayers} hráčov v rebríčku`;
 
@@ -254,6 +266,7 @@ async function fetchMatches() {
       if (statusEl) statusEl.textContent = "⚠️ Žiadne odohrané zápasy";
     }
 
+    // 🔹 aktualizácia zobrazovania
     displayMatches(allMatches);
     teamRatings = data.teamRatings || {};
     playerRatings = data.playerRatings || {};
@@ -263,7 +276,8 @@ async function fetchMatches() {
   } catch (err) {
     console.error("❌ Chyba pri načítaní zápasov:", err);
     if (statusEl)
-      statusEl.textContent = "❌ Chyba pri načítaní dát. Skús obnoviť stránku.";
+      statusEl.textContent =
+        "❌ Chyba pri načítaní dát. Skús obnoviť stránku alebo skontroluj pripojenie.";
   }
 }
 
