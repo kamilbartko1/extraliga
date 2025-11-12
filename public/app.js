@@ -948,7 +948,7 @@ async function displayShootingLeaders() {
       detail.innerHTML = `<p style="text-align:center;color:#00eaff;font-size:1.1rem;">⏳ Načítavam dáta...</p>`;
 
       detail.scrollIntoView({ behavior: "smooth", block: "start" });
-      await new Promise(r => setTimeout(r, 51000)); // krátke oneskorenie pre mobilné Safari
+      await new Promise(r => setTimeout(r, 7000)); // krátke oneskorenie pre mobilné Safari
 
       try {
         let resp = await fetch("/api/statistics", { cache: "no-store" }).catch(() => null);
@@ -956,7 +956,7 @@ async function displayShootingLeaders() {
         // 🔹 Retry ak fetch zlyhá
         if (!resp || !resp.ok) {
           console.warn("⚠️ Prvé volanie zlyhalo, opakujem...");
-          await new Promise(r => setTimeout(r, 51000));
+          await new Promise(r => setTimeout(r, 7000));
           resp = await fetch("/api/statistics", { cache: "no-store" }).catch(() => null);
         }
 
