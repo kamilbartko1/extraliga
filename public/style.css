@@ -3403,14 +3403,14 @@ body {
 .score-value {
   font-weight: 600;
   letter-spacing: 1px;
-  min-width: 52px; /* drží zarovnanie stĺpca */
+  min-width: 52px; /* drží pekné zarovnanie */
 }
 
 .score-suffix {
   font-size: 0.8rem;
   color: #aaa;
   text-transform: lowercase;
-  padding-left: 0; /* žiadna medzera */
+  margin-left: -2px; /* odstráni vizuálnu medzeru */
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
