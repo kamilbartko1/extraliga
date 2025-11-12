@@ -317,16 +317,10 @@ async function displayMatches(matches) {
         .toLowerCase();
       const recapId = `recap-${match.id}`;
 
-      // 🔹 Získaj označenie zápasu z údajov NHL API (ak existuje)
+            // 🔹 Získaj OT / SO z backendu (matches.js ukladá match.outcome)
       let suffix = "";
-      if (match.gameOutcome?.lastPeriodType) {
-        const type = match.gameOutcome.lastPeriodType;
-        if (type === "OT") suffix = " (OT)";
-        else if (type === "SO") suffix = " (SO)";
-      }
-      // ak nemáme gameOutcome, pokúsime sa zistiť z počtu period
-      else if (match.periodDescriptor?.periodType === "OT") {
-        suffix = " (OT)";
+      if (match.outcome) {
+        suffix = ` (${match.outcome})`;  // OT alebo SO
       }
 
       html += `

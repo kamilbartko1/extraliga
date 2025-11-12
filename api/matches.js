@@ -105,6 +105,12 @@ app.get("/api/matches", async (req, res) => {
             const hs = g.homeTeam?.score ?? 0;
             const as = g.awayTeam?.score ?? 0;
 
+            // zisti OT / SO z API
+            let outcome = null;
+            if (g.gameOutcome?.lastPeriodType === "OT") outcome = "OT";
+            if (g.gameOutcome?.lastPeriodType === "SO") outcome = "SO";
+
+            // uložíme zápas aj s outcome
             matches.push({
               id: g.id,
               date: day,
@@ -113,6 +119,7 @@ app.get("/api/matches", async (req, res) => {
               away_team: away,
               home_score: hs,
               away_score: as,
+              outcome,  // 🔥 pridali sme OT / SO / null
             });
 
             // rating tímov
