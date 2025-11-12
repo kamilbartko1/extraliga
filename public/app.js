@@ -329,8 +329,7 @@ async function displayMatches(matches) {
           <td>${home}</td>
           <td>${away}</td>
           <td class="score-cell">
-          <span class="score-value">${hs} : ${as}</span>
-          <span class="score-suffix">${suffix.toLowerCase()}</span>
+           ${hs} : ${as}${suffix.toLowerCase()}
           </td>
           <td id="${recapId}" class="highlight-cell" style="text-align:center;color:#999;">
             ${status === "closed" ? "⏳" : "—"}

@@ -3395,9 +3395,9 @@ body {
 
 /* Zarovnanie skóre, suffix nalepený hneď vedľa */
 .score-cell {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
+  white-space: nowrap;
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 
 .score-value {
