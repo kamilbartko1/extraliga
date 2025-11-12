@@ -69,7 +69,7 @@ function pickBestDecimalOdd(oddsArray = []) {
 
 // === AI výpočet pravdepodobnosti gólu ===
 function computeGoalProbability(player, teamRating, oppRating, isHome) {
-  const rPlayer = Math.tanh(((player.rating ?? 1400) - 1400) / 300);
+  const rPlayer = Math.tanh(((player.rating ?? 2000) - 2000) / 300);
   const rGoals = player.goals && player.gamesPlayed ? player.goals / player.gamesPlayed : 0;
   const rShots = player.shots && player.gamesPlayed ? player.shots / player.gamesPlayed / 4.5 : 0;
   const rPP = player.powerPlayGoals && player.goals ? player.powerPlayGoals / player.goals : 0;
@@ -102,7 +102,7 @@ export default async function handler(req, res) {
     const scoreUrl = `https://api-web.nhle.com/v1/score/${date}`;
 
     // === 1️⃣ Získanie zápasov z NHL API ===
-    const resp = await axios.get(scoreUrl, { timeout: 10000 });
+    const resp = await axios.get(scoreUrl, { timeout: 20000 });
     const data = resp.data || {};
     const gamesRaw = Array.isArray(data.games) ? data.games : [];
 
