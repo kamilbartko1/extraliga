@@ -85,26 +85,30 @@ async function preloadMatchesData() {
   }
 }
 
-// === DOMOVSKÁ STRÁNKA (rýchle načítanie) ===
+// === DOMOVSKÁ STRÁNKA (rýchle načítanie + auto-update AI strelca) ===
 async function displayHome() {
   const home = document.getElementById("home-section");
   if (!home) return;
 
-  // 🔹 Minimal loading text
   home.innerHTML = `
     <p style="text-align:center;color:#00eaff;">⏳ Načítavam domovskú stránku...</p>
   `;
 
   try {
-    // 1️⃣ Najprv stiahneme iba /api/home (rýchle)
+    // 1️⃣ Rýchle načítanie /api/home
     const homeResp = await fetch("/api/home", { cache: "no-store" });
     if (!homeResp.ok) throw new Error(`HTTP ${homeResp.status}`);
     const homeData = await homeResp.json();
 
-    // 2️⃣ RÝCHLE vykreslenie domovskej stránky (bez čakania na štatistiky)
+    // 2️⃣ Okamžitý rýchly render
     renderHomeQuick(homeData);
 
-    // 3️⃣ Asynchrónne (na pozadí) stiahneme štatistiky
+    // 🔥 Hneď doplníme AI strelca ak existuje
+    if (homeData.aiScorerTip) {
+      updateHomeAIScorer(homeData.aiScorerTip);
+    }
+
+    // 3️⃣ Asynchrónne stiahneme /api/statistics (pozadie)
     fetch("/api/statistics", { cache: "no-store" })
       .then(resp => resp.ok ? resp.json() : null)
       .then(stats => {
@@ -119,12 +123,11 @@ async function displayHome() {
 }
 
 
-// ===============================================
-// 🔥 1. RÝCHLY RENDER (okamžite po načítaní /api/home)
-// ===============================================
+// =======================================================
+// 🔥 1. RÝCHLY RENDER DOMOVSKEJ STRÁNKY
+// =======================================================
 function renderHomeQuick(homeData) {
   const home = document.getElementById("home-section");
-
   const ai = homeData.aiScorerTip;
 
   home.innerHTML = `
@@ -155,23 +158,27 @@ function renderHomeQuick(homeData) {
       <!-- 🎯 AI STRELCI DŇA -->
       <div class="home-panel ai-panel" onclick="showSection('stats-section')">
         <h3>🎯 AI Strelci Dňa</h3>
-        ${
-          ai
-            ? `
-            <div class="ai-scorer-box">
-              <img src="${ai.headshot || "/icons/nhl_placeholder.svg"}" class="player-headshot">
-              <div class="ai-scorer-info">
-                <p><b>${ai.player}</b> (${ai.team})</p>
-                <p style="color:#00eaff;">${ai.match}</p>
-                <p>🥅 Góly: <b>${ai.goals}</b> | 🎯 ${ai.shots} | ⚡ PP: ${ai.powerPlayGoals}</p>
-                <p>🧠 Pravdepodobnosť gólu: <b style="color:#ffcc00;">${ai.probability}%</b></p>
-              </div>
-            </div>`
-            : `<p style="color:#aaa;">⏳ Počítam AI strelca...</p>`
-        }
+
+        <div id="ai-scorer-box">
+          ${
+            ai
+              ? `
+              <div class="ai-scorer-box">
+                <img src="${ai.headshot || "/icons/nhl_placeholder.svg"}" class="player-headshot">
+                <div class="ai-scorer-info">
+                  <p><b>${ai.player}</b> (${ai.team})</p>
+                  <p style="color:#00eaff;">${ai.match}</p>
+                  <p>🥅 Góly: <b>${ai.goals}</b> | 🎯 ${ai.shots} | ⚡ PP: ${ai.powerPlayGoals}</p>
+                  <p>🧠 Pravdepodobnosť gólu: <b style="color:#ffcc00;">${ai.probability}%</b></p>
+                </div>
+              </div>`
+              : `<p style="color:#aaa;">⏳ Počítam AI strelca...</p>`
+          }
+        </div>
+
       </div>
 
-      <!-- 📊 TOP ŠTATISTIKY (načítajú sa až neskôr) -->
+      <!-- 📊 TOP ŠTATISTIKY -->
       <div class="home-panel stats-panel" onclick="showSection('stats-section')">
         <h3>📊 Top štatistiky hráčov</h3>
 
@@ -186,6 +193,7 @@ function renderHomeQuick(homeData) {
         <div id="top-shots-placeholder" class="top-player">
           <span style="color:#aaa;">⏳ Načítavam...</span>
         </div>
+
       </div>
 
     </div>
@@ -195,9 +203,30 @@ function renderHomeQuick(homeData) {
 }
 
 
-// ===============================================
-// 🔥 2. UPDATE ŠTATISTÍK (volá sa až po získaní /api/statistics)
-// ===============================================
+// =======================================================
+// 🔥 2. UPDATE AI STRELCA (po načítaní /api/home)
+// =======================================================
+function updateHomeAIScorer(ai) {
+  const box = document.getElementById("ai-scorer-box");
+  if (!box || !ai) return;
+
+  box.innerHTML = `
+    <div class="ai-scorer-box">
+      <img src="${ai.headshot || "/icons/nhl_placeholder.svg"}" class="player-headshot">
+      <div class="ai-scorer-info">
+        <p><b>${ai.player}</b> (${ai.team})</p>
+        <p style="color:#00eaff;">${ai.match}</p>
+        <p>🥅 Góly: <b>${ai.goals}</b> | 🎯 ${ai.shots} | ⚡ PP: ${ai.powerPlayGoals}</p>
+        <p>🧠 Pravdepodobnosť gólu: <b style="color:#ffcc00;">${ai.probability}%</b></p>
+      </div>
+    </div>
+  `;
+}
+
+
+// =======================================================
+// 🔥 3. UPDATE ŠTATISTÍK (po načítaní /api/statistics)
+// =======================================================
 function updateHomeStats(stats) {
   const topGoal = stats.topGoals?.[0];
   const topPoints = stats.topPoints?.[0];
@@ -227,7 +256,6 @@ function updateHomeStats(stats) {
     `;
   }
 }
-
 
 // === Výpočet ratingov tímov ===
 function computeTeamRatings(matches) {
