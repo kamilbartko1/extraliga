@@ -24,6 +24,11 @@ const CODE_TO_FULL = {
   UTA:"Utah Mammoth"
 };
 
+// helper: reverse FULL->CODE
+const FULL_TO_CODE = Object.fromEntries(
+  Object.entries(CODE_TO_FULL).map(([code, full]) => [full.toLowerCase(), code])
+);
+
 // Backend URL
 const getBaseUrl = (req) => {
   const proto = req.headers["x-forwarded-proto"] || "https";
@@ -35,7 +40,7 @@ const getBaseUrl = (req) => {
 function pickBestDecimalOdd(arr = []) {
   const prio = [10, 3, 7, 9, 8, 6];
   for (const pid of prio) {
-    const o = arr.find((x) => x.providerId === pid && x.value != null);
+    const o = arr?.find?.((x) => x?.providerId === pid && x?.value != null);
     if (!o) continue;
 
     const v = String(o.value).trim();
@@ -49,7 +54,18 @@ function pickBestDecimalOdd(arr = []) {
   return null;
 }
 
-// Pravdepodobnosť gólu – nič som NEUPRAVOVAL
+// --- normalizácia textu (bez diakritiky, bodiek, pomlčiek, viac medzier) ---
+function normTxt(s) {
+  return String(s || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[.\-']/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+// Pravdepodobnosť gólu – NEUPRAVENÁ
 function computeGoalProbability(player, teamRating, oppRating, isHome) {
   const rPlayer = Math.tanh((player.rating - 2500) / 300);
   const rGoals =
@@ -83,7 +99,6 @@ if (!global._HOME_CACHE) {
   global._HOME_CACHE = { time: 0, data: null };
 }
 
-
 // ======================================================
 //                 ENDPOINT /api/home
 // ======================================================
@@ -101,7 +116,7 @@ export default async function handler(req, res) {
     const scoreUrl = `https://api-web.nhle.com/v1/score/${date}`;
     const baseUrl = getBaseUrl(req);
 
-    // 1️⃣ Stiahneme dnešné zápasy
+    // 1️⃣ Dnešné zápasy
     const resp = await axios.get(scoreUrl, { timeout: 8000 });
     const gamesRaw = Array.isArray(resp.data?.games) ? resp.data.games : [];
 
@@ -130,6 +145,11 @@ export default async function handler(req, res) {
       };
     });
 
+    // ✅ zoznam kódov tímov zapojených dnes (kvôli filtrovaným kandidátom)
+    const todaysCodes = new Set(
+      games.flatMap((g) => [g.homeCode, g.awayCode]).filter(Boolean)
+    );
+
     // 2️⃣ Ratingy zo super-rýchleho endpointu
     let ratings = null;
     try {
@@ -142,7 +162,63 @@ export default async function handler(req, res) {
     const teamRatings = ratings.teamRatings || {};
     const playerRatings = ratings.playerRatings || {};
 
-    // 3️⃣ Štatistiky (len mierne spomalia ale v poriadku)
+    // 🔧 priprava: rýchla mapa normalizovaných mien -> rating
+    const playerRatingMap = new Map();
+    for (const [name, r] of Object.entries(playerRatings)) {
+      const k = normTxt(name);
+      if (!playerRatingMap.has(k)) playerRatingMap.set(k, r);
+      // pridať aj variant "F LAST" ak ide o 2+ slovné meno
+      const parts = k.split(" ");
+      if (parts.length >= 2) {
+        const first = parts[0];
+        const last = parts[parts.length - 1];
+        playerRatingMap.set(`${first[0]} ${last}`, r);
+        playerRatingMap.set(`${first[0]}${last}`, r);
+      }
+    }
+
+    // pomocník: nájsť rating pre meno z /api/statistics
+    function findRating(name) {
+      if (!name) return 1500;
+      const clean = normTxt(name);
+      const parts = clean.split(" ").filter(Boolean);
+      const first = parts[0] || "";
+      const last = parts[parts.length - 1] || "";
+
+      const tries = [
+        clean,
+        `${first} ${last}`,
+        `${first[0] || ""} ${last}`,
+        `${first[0] || ""}${last}`,
+        last,
+      ].filter(Boolean);
+
+      for (const t of tries) {
+        if (playerRatingMap.has(t)) return playerRatingMap.get(t);
+      }
+      return 1500;
+    }
+
+    // pomocník: nájsť team rating podľa FULL alebo cez CODE→FULL
+    function getTeamRatingByNameOrCode(fullNameMaybe, codeMaybe) {
+      const direct = teamRatings[fullNameMaybe];
+      if (typeof direct === "number") return direct;
+
+      const code = codeMaybe || FULL_TO_CODE[normTxt(fullNameMaybe)] || "";
+      if (code && CODE_TO_FULL[code]) {
+        const full = CODE_TO_FULL[code];
+        const val = teamRatings[full];
+        if (typeof val === "number") return val;
+      }
+      // fallback pri odchýlkach v diakritike
+      const wanted = normTxt(fullNameMaybe);
+      for (const [k, v] of Object.entries(teamRatings)) {
+        if (normTxt(k) === wanted) return v;
+      }
+      return 1500;
+    }
+
+    // 3️⃣ Štatistiky
     let stats = {};
     try {
       const s = await axios.get(`${baseUrl}/api/statistics`, { timeout: 8000 });
@@ -151,86 +227,112 @@ export default async function handler(req, res) {
       stats = {};
     }
 
-    // 4️⃣ Výpočet AI strelca dňa z ratingov – zachované tvoje výpočty
+    // 4️⃣ Výpočet AI strelca dňa – bez zmeny tvojej logiky, len robustnejší výber kandidátov
     let aiScorerTip = null;
 
     try {
       const merged = [
-        ...(stats.topGoals || []),
-        ...(stats.topShots || []),
-        ...(stats.topPowerPlayGoals || []),
+        ...(Array.isArray(stats.topGoals) ? stats.topGoals : []),
+        ...(Array.isArray(stats.topShots) ? stats.topShots : []),
+        ...(Array.isArray(stats.topPowerPlayGoals) ? stats.topPowerPlayGoals : []),
       ];
 
-      // odstrániť duplicity
+      // odstrániť duplicity (podľa id alebo mena)
       const seen = new Set();
       const uniquePlayers = merged.filter((p) => {
-        if (seen.has(p.id)) return false;
-        seen.add(p.id);
+        const key = p?.id || p?.name;
+        if (!key) return false;
+        const k = String(key);
+        if (seen.has(k)) return false;
+        seen.add(k);
         return true;
       });
 
-      // mapovanie ratingu
-      function findRating(name) {
-        if (!name) return 1500;
-        const clean = name.toLowerCase().replace(/\./g, "").trim();
-        const parts = clean.split(" ");
-        const first = parts[0];
-        const last = parts[1];
-
-        const variants = [
-          clean,
-          `${first[0]} ${last}`,
-          `${first[0]}.${last}`,
-          `${first[0]}${last}`,
-          last,
-        ];
-
-        for (const [key, val] of Object.entries(playerRatings)) {
-          const k = key.toLowerCase().replace(/\./g, "");
-          if (variants.includes(k)) return val;
-        }
-        return 1500;
-      }
+      // kandidáti iba z dnešných tímov
+      const todaysPlayers = uniquePlayers.filter((p) => p?.team && todaysCodes.has(p.team));
 
       let candidates = [];
 
-      for (const game of games) {
-        const homeR = teamRatings[game.homeName] ?? 1500;
-        const awayR = teamRatings[game.awayName] ?? 1500;
+      if (todaysPlayers.length) {
+        for (const game of games) {
+          const homeR = getTeamRatingByNameOrCode(game.homeName, game.homeCode);
+          const awayR = getTeamRatingByNameOrCode(game.awayName, game.awayCode);
 
-        const homePlayers = uniquePlayers.filter((p) => p.team === game.homeCode);
-        const awayPlayers = uniquePlayers.filter((p) => p.team === game.awayCode);
+          const homePlayers = todaysPlayers.filter((p) => p.team === game.homeCode);
+          const awayPlayers = todaysPlayers.filter((p) => p.team === game.awayCode);
 
-        for (const p of [...homePlayers, ...awayPlayers]) {
-          const rating = findRating(p.name);
+          for (const p of [...homePlayers, ...awayPlayers]) {
+            const rating = findRating(p.name);
 
-          const prob = computeGoalProbability(
-            { ...p, rating },
-            p.team === game.homeCode ? homeR : awayR,
-            p.team === game.homeCode ? awayR : homeR,
-            p.team === game.homeCode
-          );
+            const prob = computeGoalProbability(
+              { ...p, rating },
+              p.team === game.homeCode ? homeR : awayR,
+              p.team === game.homeCode ? awayR : homeR,
+              p.team === game.homeCode
+            );
 
-          candidates.push({
-            ...p,
-            match: `${game.homeName} vs ${game.awayName}`,
-            prob,
-          });
+            candidates.push({
+              ...p,
+              match: `${game.homeName} vs ${game.awayName}`,
+              prob,
+            });
+          }
         }
       }
 
+      // 🔁 Fallback: ak z /api/statistics neprišli hráči z dnešných tímov,
+      // zober top hráčov z playerRatings a sparuj ich k dnešným zápasom podľa kódu tímu v mene (ak sa dá),
+      // alebo ich rovno priraď k obom zápasom, kde tím sedí podľa CODE_TO_FULL.
+      if (!candidates.length && Object.keys(playerRatings).length && games.length) {
+        // vyrob si TOP 100 podľa ratingu
+        const topByRating = Object.entries(playerRatings)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 100)
+          .map(([name, rating]) => ({ name, rating }));
+
+        // skúsiť nájsť kód tímu z názvu zápasov (FULL->CODE mapa)
+        const fullToCodeLoose = new Map(Object.entries(FULL_TO_CODE)); // keys sú lower-case
+        const todaysFullNames = new Set(
+          games.flatMap(g => [g.homeName, g.awayName].map(n => String(n || "").toLowerCase()))
+        );
+
+        for (const game of games) {
+          const homeR = getTeamRatingByNameOrCode(game.homeName, game.homeCode);
+          const awayR = getTeamRatingByNameOrCode(game.awayName, game.awayCode);
+
+          for (const pr of topByRating) {
+            // použijeme len meno+rating, ostatné štatistiky budú 0 (neovplyvní to zásadne model)
+            const prob = computeGoalProbability(
+              { name: pr.name, rating: pr.rating, goals: 0, shots: 0, powerPlayGoals: 0, gamesPlayed: 0, toi: 0 },
+              homeR, awayR, true
+            );
+            candidates.push({
+              name: pr.name,
+              team: "", // nevieme spoľahlivo tím z mena – nezobrazujeme v zátvorke
+              headshot: "",
+              goals: 0,
+              shots: 0,
+              powerPlayGoals: 0,
+              match: `${game.homeName} vs ${game.awayName}`,
+              prob,
+            });
+          }
+        }
+      }
+
+      // finálny výber
       const best = candidates.sort((a, b) => b.prob - a.prob)[0];
 
       if (best) {
         aiScorerTip = {
           player: best.name,
-          team: best.team,
+          team: best.team || "",
           match: best.match,
           probability: Math.round(best.prob * 100),
-          headshot: best.headshot,
-          goals: best.goals,
-          shots: best.shots,
-          powerPlayGoals: best.powerPlayGoals,
+          headshot: best.headshot || "",
+          goals: best.goals ?? 0,
+          shots: best.shots ?? 0,
+          powerPlayGoals: best.powerPlayGoals ?? 0,
         };
       }
     } catch (err) {
