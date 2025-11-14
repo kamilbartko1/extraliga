@@ -228,6 +228,7 @@ function updateHomeStats(stats) {
   }
 }
 
+
 // === Výpočet ratingov tímov ===
 function computeTeamRatings(matches) {
   const START_RATING = 1500;
