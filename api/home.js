@@ -1,4 +1,4 @@
-// /api/home.js
+// /api/home.js – ultra rýchla verzia s využitím /api/ratings
 import axios from "axios";
 
 // Logo helper
@@ -39,8 +39,8 @@ function pickBestDecimalOdd(arr = []) {
     if (!o) continue;
 
     const v = String(o.value).trim();
-    if (/^\d+(\.\d+)?$/.test(v)) return parseFloat(v);
 
+    if (/^\d+(\.\d+)?$/.test(v)) return parseFloat(v);
     if (/^[+-]\d+$/.test(v)) {
       const n = parseInt(v, 10);
       return n > 0 ? 1 + n / 100 : 1 + 100 / Math.abs(n);
@@ -49,11 +49,15 @@ function pickBestDecimalOdd(arr = []) {
   return null;
 }
 
-// Pravdepodobnosť gólu
+// Pravdepodobnosť gólu – nič som NEUPRAVOVAL
 function computeGoalProbability(player, teamRating, oppRating, isHome) {
   const rPlayer = Math.tanh((player.rating - 2500) / 300);
-  const rGoals = player.goals && player.gamesPlayed ? player.goals / player.gamesPlayed : 0;
-  const rShots = player.shots && player.gamesPlayed ? player.shots / player.gamesPlayed / 4.5 : 0;
+  const rGoals =
+    player.goals && player.gamesPlayed ? player.goals / player.gamesPlayed : 0;
+  const rShots =
+    player.shots && player.gamesPlayed
+      ? player.shots / player.gamesPlayed / 4.5
+      : 0;
   const rPP = player.powerPlayGoals && player.goals ? player.powerPlayGoals / player.goals : 0;
   const rTOI = Math.min(1, (player.toi || 0) / 20);
   const rMatchup = Math.tanh((teamRating - oppRating) / 100);
@@ -72,28 +76,32 @@ function computeGoalProbability(player, teamRating, oppRating, isHome) {
   return Math.max(0.05, Math.min(0.6, 1 / (1 + Math.exp(-logit))));
 }
 
-// ------------------------------------------
-//  🔥 MINI-CACHE: ODPOVEĎ DO 0–1 MS
-// ------------------------------------------
+// ---------------------------------------------------
+//  🔥 MINI CACHE 60s – Home je okamžitý
+// ---------------------------------------------------
 if (!global._HOME_CACHE) {
   global._HOME_CACHE = { time: 0, data: null };
 }
 
+
+// ======================================================
+//                 ENDPOINT /api/home
+// ======================================================
 export default async function handler(req, res) {
   try {
-    // 🔥 1 min cache
-    if (global._HOME_CACHE.data && Date.now() - global._HOME_CACHE.time < 60000) {
+    // ⏱ 1 MINÚTOVÝ CACHE
+    if (global._HOME_CACHE.data &&
+        Date.now() - global._HOME_CACHE.time < 60000) {
       return res.status(200).json(global._HOME_CACHE.data);
     }
 
-    console.log("🔹 [/api/home] Fetchujem nové dáta…");
+    console.log("🔹 [/api/home] Fetchujem rýchle dáta…");
 
     const date = new Date().toISOString().slice(0, 10);
     const scoreUrl = `https://api-web.nhle.com/v1/score/${date}`;
+    const baseUrl = getBaseUrl(req);
 
-    // -----------------------------------------
-    // 1️⃣ Získanie zápasov
-    // -----------------------------------------
+    // 1️⃣ Stiahneme dnešné zápasy
     const resp = await axios.get(scoreUrl, { timeout: 8000 });
     const gamesRaw = Array.isArray(resp.data?.games) ? resp.data.games : [];
 
@@ -104,12 +112,12 @@ export default async function handler(req, res) {
       return {
         id: g.id,
         date,
-        homeName: g.homeTeam?.name?.default || "Domáci",
-        awayName: g.awayTeam?.name?.default || "Hostia",
+        homeName: g.homeTeam?.name?.default || CODE_TO_FULL[g.homeTeam?.abbrev],
+        awayName: g.awayTeam?.name?.default || CODE_TO_FULL[g.awayTeam?.abbrev],
         homeLogo: g.homeTeam?.logo || logo(g.homeTeam?.abbrev),
         awayLogo: g.awayTeam?.logo || logo(g.awayTeam?.abbrev),
-        homeCode: g.homeTeam?.abbrev || "",
-        awayCode: g.awayTeam?.abbrev || "",
+        homeCode: g.homeTeam?.abbrev,
+        awayCode: g.awayTeam?.abbrev,
         startTime: g.startTimeUTC
           ? new Date(g.startTimeUTC).toLocaleTimeString("sk-SK", {
               timeZone: "Europe/Bratislava",
@@ -117,37 +125,43 @@ export default async function handler(req, res) {
               minute: "2-digit",
             })
           : "??:??",
-        venue: g.venue?.default || "",
-        status: g.gameState || "FUT",
         homeOdds,
         awayOdds,
       };
     });
 
-    // -----------------------------------------
-    // 2️⃣ AI Strelec dňa (bezpečný režim)
-    // -----------------------------------------
+    // 2️⃣ Ratingy zo super-rýchleho endpointu
+    let ratings = null;
+    try {
+      const r = await axios.get(`${baseUrl}/api/ratings`, { timeout: 3000 });
+      ratings = r.data;
+    } catch {
+      ratings = { teamRatings: {}, playerRatings: {} };
+    }
+
+    const teamRatings = ratings.teamRatings || {};
+    const playerRatings = ratings.playerRatings || {};
+
+    // 3️⃣ Štatistiky (len mierne spomalia ale v poriadku)
+    let stats = {};
+    try {
+      const s = await axios.get(`${baseUrl}/api/statistics`, { timeout: 8000 });
+      stats = s.data;
+    } catch {
+      stats = {};
+    }
+
+    // 4️⃣ Výpočet AI strelca dňa z ratingov – zachované tvoje výpočty
     let aiScorerTip = null;
 
     try {
-      const baseUrl = getBaseUrl(req);
-
-      const [statsResp, ratingsResp] = await Promise.all([
-        axios.get(`${baseUrl}/api/statistics`, { timeout: 8000 }),
-        axios.get(`${baseUrl}/api/matches`, { timeout: 8000 }),
-      ]);
-
-      const stats = statsResp.data || {};
-      const teamRatings = ratingsResp.data?.teamRatings || {};
-      const playerRatings = ratingsResp.data?.playerRatings || {};
-
       const merged = [
         ...(stats.topGoals || []),
         ...(stats.topShots || []),
         ...(stats.topPowerPlayGoals || []),
       ];
 
-      // odstránenie duplicít
+      // odstrániť duplicity
       const seen = new Set();
       const uniquePlayers = merged.filter((p) => {
         if (seen.has(p.id)) return false;
@@ -155,7 +169,7 @@ export default async function handler(req, res) {
         return true;
       });
 
-      // mapovanie ratingu podľa viacerých tvarov mena
+      // mapovanie ratingu
       function findRating(name) {
         if (!name) return 1500;
         const clean = name.toLowerCase().replace(/\./g, "").trim();
@@ -206,6 +220,7 @@ export default async function handler(req, res) {
       }
 
       const best = candidates.sort((a, b) => b.prob - a.prob)[0];
+
       if (best) {
         aiScorerTip = {
           player: best.name,
@@ -219,26 +234,20 @@ export default async function handler(req, res) {
         };
       }
     } catch (err) {
-      console.warn("⚠️ AI strelec – zlyhanie:", err.message);
+      console.warn("⚠️ AI strelec – chyba:", err.message);
     }
 
     // -----------------------------------------
-    // Odpoveď
+    // HOTOVÉ
     // -----------------------------------------
     const responseOut = {
       ok: true,
       date,
-      count: games.length,
       matchesToday: games,
       aiScorerTip,
-      stats: {
-        topScorer: "Connor McDavid – 12 gólov",
-        bestShooter: "Auston Matthews – 22 %",
-        mostPenalties: "Tom Wilson – 29 min",
-      },
+      stats: stats,
     };
 
-    // 🔥 uložiť do cache
     global._HOME_CACHE = {
       time: Date.now(),
       data: responseOut,
@@ -254,11 +263,7 @@ export default async function handler(req, res) {
       matchesToday: [],
       aiScorerTip: null,
       error: err.message,
-      stats: {
-        topScorer: "-",
-        bestShooter: "-",
-        mostPenalties: "-",
-      },
+      stats: {},
     });
   }
 }

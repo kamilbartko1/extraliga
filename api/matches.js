@@ -78,6 +78,15 @@ if (!global._MATCHES_CACHE) {
 }
 
 
+// =========================================================
+//  🔥 Ukladanie posledných spočítaných ratingov pre /api/ratings
+// =========================================================
+let LAST_RATINGS = {
+  teamRatings: {},
+  playerRatings: {}
+};
+
+
 // ======================================================
 //   ENDPOINT /api/matches (Zrýchlená verzia)
 // ======================================================
@@ -163,7 +172,7 @@ app.get("/api/matches", async (req, res) => {
         })
       );
 
-      results.forEach((r, i) => {
+      results.forEach((r) => {
         if (r.status === "rejected")
           console.warn(`⚠️ batch error:`, r.reason?.message || r.reason);
       });
@@ -174,7 +183,7 @@ app.get("/api/matches", async (req, res) => {
     // ==================================================
     // 2️⃣ BOX SCORE (ultra optimalizované workery)
     // ==================================================
-    const CONCURRENCY = 8;  // 🔥 zrýchlené z 6 → 8
+    const CONCURRENCY = 8;
     let index = 0;
 
     async function worker() {
@@ -220,7 +229,6 @@ app.get("/api/matches", async (req, res) => {
       }
     }
 
-    // spusti paralelne workery
     await Promise.all(Array(CONCURRENCY).fill(0).map(() => worker()));
 
     // top hráči
@@ -245,6 +253,12 @@ app.get("/api/matches", async (req, res) => {
       data: result,
     };
 
+    // 🔥 Uložiť posledné ratingy pre ultra-rýchly endpoint
+    LAST_RATINGS = {
+      teamRatings: { ...teamRatings },
+      playerRatings: { ...topPlayers },
+    };
+
     console.log("🏒 /api/matches – HOTOVO!");
     return res.json(result);
 
@@ -255,6 +269,30 @@ app.get("/api/matches", async (req, res) => {
       detail: err.message,
     });
   }
+});
+
+
+// ======================================================
+//  🔥 ULTRA RÝCHLY ENDPOINT – IBA RATINGY
+// ======================================================
+app.get("/api/ratings", (req, res) => {
+  if (
+    !Object.keys(LAST_RATINGS.teamRatings || {}).length ||
+    !Object.keys(LAST_RATINGS.playerRatings || {}).length
+  ) {
+    return res.status(503).json({
+      ok: false,
+      message: "Ratingy ešte nie sú pripravené. Najprv je potrebné spočítať /api/matches.",
+      teamRatings: {},
+      playerRatings: {},
+    });
+  }
+
+  return res.json({
+    ok: true,
+    teamRatings: LAST_RATINGS.teamRatings,
+    playerRatings: LAST_RATINGS.playerRatings,
+  });
 });
 
 
