@@ -102,7 +102,7 @@ export default async function handler(req, res) {
     const scoreUrl = `https://api-web.nhle.com/v1/score/${date}`;
 
     // === 1️⃣ Získanie zápasov z NHL API ===
-    const resp = await axios.get(scoreUrl, { timeout: 20000 });
+    const resp = await axios.get(scoreUrl, { timeout: 10000 });
     const data = resp.data || {};
     const gamesRaw = Array.isArray(data.games) ? data.games : [];
 
@@ -141,8 +141,8 @@ export default async function handler(req, res) {
 
     try {
       const [statsResp, ratingsResp] = await Promise.all([
-        axios.get(`${baseUrl}/api/statistics`, { timeout: 15000 }),
-        axios.get(`${baseUrl}/api/matches`, { timeout: 15000 }),
+        axios.get(`${baseUrl}/api/statistics`, { timeout: 10000 }),
+        axios.get(`${baseUrl}/api/matches`, { timeout: 10000 }),
       ]);
 
       const stats = statsResp.data || {};
