@@ -1,173 +1,269 @@
-// /api/home.js – fixnutá verzia pre Vercel bez /api/ratings.js
+// /api/home.js
 import axios from "axios";
 
-// Logo helper
+// Pomocná funkcia na logo tímu
 const logo = (code) =>
   code ? `https://assets.nhle.com/logos/nhl/svg/${code}_light.svg` : "";
 
-// Plné názvy tímov
+// Mapovanie skratiek na plné názvy
 const CODE_TO_FULL = {
-  ANA: "Anaheim Ducks", ARI: "Arizona Coyotes", BOS: "Boston Bruins",
-  BUF: "Buffalo Sabres", CGY: "Calgary Flames", CAR: "Carolina Hurricanes",
-  CHI: "Chicago Blackhawks", COL: "Colorado Avalanche",
-  CBJ: "Columbus Blue Jackets", DAL: "Dallas Stars", DET: "Detroit Red Wings",
-  EDM: "Edmonton Oilers", FLA: "Florida Panthers", LAK: "Los Angeles Kings",
-  MIN: "Minnesota Wild", MTL: "Montréal Canadiens",
-  NSH: "Nashville Predators", NJD: "New Jersey Devils",
-  NYI: "New York Islanders", NYR: "New York Rangers",
-  OTT: "Ottawa Senators", PHI: "Philadelphia Flyers",
-  PIT: "Pittsburgh Penguins", SEA: "Seattle Kraken",
-  SJS: "San Jose Sharks", STL: "St. Louis Blues",
-  TBL: "Tampa Bay Lightning", TOR: "Toronto Maple Leafs",
-  VAN: "Vancouver Canucks", VGK: "Vegas Golden Knights",
-  WPG: "Winnipeg Jets", WSH: "Washington Capitals",
-  UTA: "Utah Mammoth"
+  ANA: "Anaheim Ducks",
+  ARI: "Arizona Coyotes",
+  BOS: "Boston Bruins",
+  BUF: "Buffalo Sabres",
+  CGY: "Calgary Flames",
+  CAR: "Carolina Hurricanes",
+  CHI: "Chicago Blackhawks",
+  COL: "Colorado Avalanche",
+  CBJ: "Columbus Blue Jackets",
+  DAL: "Dallas Stars",
+  DET: "Detroit Red Wings",
+  EDM: "Edmonton Oilers",
+  FLA: "Florida Panthers",
+  LAK: "Los Angeles Kings",
+  MIN: "Minnesota Wild",
+  MTL: "Montréal Canadiens",
+  NSH: "Nashville Predators",
+  NJD: "New Jersey Devils",
+  NYI: "New York Islanders",
+  NYR: "New York Rangers",
+  OTT: "Ottawa Senators",
+  PHI: "Philadelphia Flyers",
+  PIT: "Pittsburgh Penguins",
+  SEA: "Seattle Kraken",
+  SJS: "San Jose Sharks",
+  STL: "St. Louis Blues",
+  TBL: "Tampa Bay Lightning",
+  TOR: "Toronto Maple Leafs",
+  VAN: "Vancouver Canucks",
+  VGK: "Vegas Golden Knights",
+  WPG: "Winnipeg Jets",
+  WSH: "Washington Capitals",
+  UTA: "Utah Mammoth",
 };
 
-// Backend URL
+// Bezpečne získa URL backendu
 const getBaseUrl = (req) => {
   const proto = req.headers["x-forwarded-proto"] || "https";
   const host = req.headers.host;
   return `${proto}://${host}`;
 };
 
-// Normalizácia textu
-const norm = (s) => String(s || "").normalize("NFD")
-  .replace(/[\u0300-\u036f]/g, "")
-  .replace(/[.\-']/g, " ").replace(/\s+/g, " ")
-  .trim().toLowerCase();
+// Pomocná funkcia – vyber najlepší kurz
+function pickBestDecimalOdd(oddsArray = []) {
+  const prio = [10, 3, 7, 9, 8, 6];
+  for (const pid of prio) {
+    const o = oddsArray.find((x) => x.providerId === pid && x.value != null);
+    if (o) {
+      const v = String(o.value).trim();
+      if (/^\d+(\.\d+)?$/.test(v)) return parseFloat(v);
+      if (/^[+-]\d+$/.test(v)) {
+        const n = parseInt(v, 10);
+        if (n > 0) return 1 + n / 100;
+        if (n < 0) return 1 + 100 / Math.abs(n);
+      }
+    }
+  }
+  return null;
+}
 
-// Pravdepodobnosť gólu
+// === AI výpočet pravdepodobnosti gólu ===
 function computeGoalProbability(player, teamRating, oppRating, isHome) {
-  const rPlayer = Math.tanh((player.rating - 2500) / 300);
+  const rPlayer = Math.tanh(((player.rating) - 2400) / 300);
   const rGoals = player.goals && player.gamesPlayed ? player.goals / player.gamesPlayed : 0;
   const rShots = player.shots && player.gamesPlayed ? player.shots / player.gamesPlayed / 4.5 : 0;
   const rPP = player.powerPlayGoals && player.goals ? player.powerPlayGoals / player.goals : 0;
   const rTOI = Math.min(1, (player.toi || 0) / 20);
   const rMatchup = Math.tanh((teamRating - oppRating) / 100);
   const rHome = isHome ? 0.05 : 0;
-  const logit = -2.2 + 0.9 * rPlayer + 1.0 * rShots + 0.6 * rGoals +
-    0.5 * rPP + 0.3 * rTOI + 0.4 * rMatchup + 0.2 * rHome;
-  return Math.max(0.05, Math.min(0.6, 1 / (1 + Math.exp(-logit))));
+
+  const logit =
+    -2.2 +
+    0.9 * rPlayer +
+    1.0 * rShots +
+    0.6 * rGoals +
+    0.5 * rPP +
+    0.3 * rTOI +
+    0.4 * rMatchup +
+    0.2 * rHome;
+
+  const p = 1 / (1 + Math.exp(-logit));
+  return Math.max(0.05, Math.min(0.6, p)); // orez na 5–60 %
 }
 
-// Cache
-if (!global._HOME_CACHE) global._HOME_CACHE = { time: 0, data: null };
-
-// ==============================================
-// ENDPOINT
-// ==============================================
+// ========================================================
+// SERVERLESS HANDLER – kompatibilný s Vercelom
+// ========================================================
 export default async function handler(req, res) {
   try {
-    if (global._HOME_CACHE.data && Date.now() - global._HOME_CACHE.time < 60000)
-      return res.status(200).json(global._HOME_CACHE.data);
+    console.log("🔹 [/api/home] Volanie endpointu...");
 
-    console.log("🏠 [/api/home] Spúšťam výpočet...");
-
-    const baseUrl = getBaseUrl(req);
     const date = new Date().toISOString().slice(0, 10);
     const scoreUrl = `https://api-web.nhle.com/v1/score/${date}`;
-    const gamesResp = await axios.get(scoreUrl, { timeout: 8000 });
-    const gamesRaw = Array.isArray(gamesResp.data?.games) ? gamesResp.data.games : [];
 
-    const games = gamesRaw.map(g => ({
-      id: g.id,
-      date,
-      homeName: g.homeTeam?.name?.default || CODE_TO_FULL[g.homeTeam?.abbrev],
-      awayName: g.awayTeam?.name?.default || CODE_TO_FULL[g.awayTeam?.abbrev],
-      homeLogo: g.homeTeam?.logo || logo(g.homeTeam?.abbrev),
-      awayLogo: g.awayTeam?.logo || logo(g.awayTeam?.abbrev),
-      homeCode: g.homeTeam?.abbrev,
-      awayCode: g.awayTeam?.abbrev,
-      startTime: g.startTimeUTC
-        ? new Date(g.startTimeUTC).toLocaleTimeString("sk-SK", {
-            timeZone: "Europe/Bratislava",
-            hour: "2-digit",
-            minute: "2-digit"
-          })
-        : "??:??"
-    }));
+    // === 1️⃣ Získanie zápasov z NHL API ===
+    const resp = await axios.get(scoreUrl, { timeout: 10000 });
+    const data = resp.data || {};
+    const gamesRaw = Array.isArray(data.games) ? data.games : [];
 
-    // 🧠 Získaj ratingy priamo z /api/matches
-    let ratings = { teamRatings: {}, playerRatings: {} };
-    try {
-      const r = await axios.get(`${baseUrl}/api/matches?ratingsOnly=1`, { timeout: 5000 });
-      ratings = r.data;
-    } catch (err) {
-      console.warn("⚠️ /api/matches ratingsOnly fallback:", err.message);
-    }
+    const games = gamesRaw.map((g) => {
+      const homeOdds = pickBestDecimalOdd(g.homeTeam?.odds || []);
+      const awayOdds = pickBestDecimalOdd(g.awayTeam?.odds || []);
 
-    const teamRatings = ratings.teamRatings || {};
-    const playerRatings = ratings.playerRatings || {};
+      return {
+        id: g.id,
+        date: g.gameDate || date,
+        homeName: g.homeTeam?.name?.default || "Domáci",
+        awayName: g.awayTeam?.name?.default || "Hostia",
+        homeLogo: g.homeTeam?.logo || logo(g.homeTeam?.abbrev),
+        awayLogo: g.awayTeam?.logo || logo(g.awayTeam?.abbrev),
+        homeCode: g.homeTeam?.abbrev || "",
+        awayCode: g.awayTeam?.abbrev || "",
+        startTime: g.startTimeUTC
+          ? new Date(g.startTimeUTC).toLocaleTimeString("sk-SK", {
+              timeZone: "Europe/Bratislava",
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          : "??:??",
+        venue: g.venue?.default || "",
+        status: g.gameState || "FUT",
+        homeOdds,
+        awayOdds,
+      };
+    });
 
-    // 📊 Ak existuje /api/statistics, pridaj štatistiky
-    let stats = {};
-    try {
-      const s = await axios.get(`${baseUrl}/api/statistics`, { timeout: 8000 });
-      stats = s.data;
-    } catch {}
+    console.log(`✅ Načítaných zápasov: ${games.length}`);
 
-    // 🎯 Výpočet AI strelca dňa
+    // === 2️⃣ AI STRELEC DŇA ===
     let aiScorerTip = null;
+    const baseUrl = getBaseUrl(req);
 
     try {
+      const [statsResp, ratingsResp] = await Promise.all([
+        axios.get(`${baseUrl}/api/statistics`, { timeout: 10000 }),
+        axios.get(`${baseUrl}/api/matches`, { timeout: 10000 }),
+      ]);
+
+      const stats = statsResp.data || {};
+      const teamRatings = ratingsResp.data?.teamRatings || {};
+      const playerRatings = ratingsResp.data?.playerRatings || {};
+
       const allPlayers = [
         ...(stats.topGoals || []),
         ...(stats.topShots || []),
         ...(stats.topPowerPlayGoals || []),
       ];
 
-      const unique = [];
+      // odstráň duplicity
       const seen = new Set();
-      for (const p of allPlayers) {
-        if (!p?.name || seen.has(p.name)) continue;
-        seen.add(p.name);
-        unique.push(p);
+      const uniquePlayers = allPlayers.filter((p) => {
+        if (seen.has(p.id)) return false;
+        seen.add(p.id);
+        return true;
+      });
+
+      // 🔹 Funkcia: hľadá správny rating pre akýkoľvek tvar mena
+      function findPlayerRating(playerName) {
+        if (!playerName) return 1500;
+        const lower = playerName.toLowerCase().trim();
+        const clean = lower.replace(/\./g, "");
+        const [first, last] = clean.split(" ");
+        const variants = [
+          clean,                        // celé meno
+          `${first?.charAt(0)} ${last}`, // iniciála + priezvisko
+          `${first?.charAt(0)}. ${last}`, // bodka + priezvisko
+          `${first?.charAt(0)}${last}`,  // bez medzery
+          last,                         // len priezvisko
+        ].filter(Boolean);
+
+        for (const [key, rating] of Object.entries(playerRatings)) {
+          const keyLower = key.toLowerCase().replace(/\./g, "").trim();
+          if (variants.some(v => keyLower === v)) {
+            return rating;
+          }
+        }
+        return 1500;
       }
 
-      let best = null;
-      let maxProb = 0;
+      const candidates = [];
 
       for (const game of games) {
-        const homeR = teamRatings[game.homeName] ?? 1500;
-        const awayR = teamRatings[game.awayName] ?? 1500;
+        const homeRating = teamRatings[game.homeName] ?? 1500;
+        const awayRating = teamRatings[game.awayName] ?? 1500;
 
-        for (const p of unique) {
-          const clean = norm(p.name);
-          const rating = playerRatings[clean] ?? playerRatings[p.name] ?? 1500;
+        const homePlayers = uniquePlayers.filter((p) => p.team === game.homeCode);
+        const awayPlayers = uniquePlayers.filter((p) => p.team === game.awayCode);
+
+        for (const p of [...homePlayers, ...awayPlayers]) {
+          const playerRating = findPlayerRating(p.name);
+
           const prob = computeGoalProbability(
-            { ...p, rating },
-            homeR, awayR, true
+            { ...p, rating: playerRating },
+            p.team === game.homeCode ? homeRating : awayRating,
+            p.team === game.homeCode ? awayRating : homeRating,
+            p.team === game.homeCode
           );
-          if (prob > maxProb) {
-            maxProb = prob;
-            best = { ...p, match: `${game.homeName} vs ${game.awayName}`, prob };
-          }
+
+          candidates.push({
+            ...p,
+            match: `${game.homeName} vs ${game.awayName}`,
+            prob,
+          });
         }
       }
 
+      // najlepší hráč podľa pravdepodobnosti
+      const best = candidates.sort((a, b) => b.prob - a.prob)[0];
       if (best) {
         aiScorerTip = {
           player: best.name,
-          team: best.team || "",
+          team: best.team,
           match: best.match,
           probability: Math.round(best.prob * 100),
-          headshot: best.headshot || "",
-          goals: best.goals ?? 0,
-          shots: best.shots ?? 0,
-          powerPlayGoals: best.powerPlayGoals ?? 0,
+          headshot: best.headshot,
+          goals: best.goals,
+          shots: best.shots,
+          powerPlayGoals: best.powerPlayGoals,
         };
       }
+
+      console.log(
+        `🎯 AI Strelec Dňa: ${aiScorerTip?.player || "n/a"} (${aiScorerTip?.probability || 0}%)`
+      );
     } catch (err) {
-      console.warn("⚠️ AI výpočet zlyhal:", err.message);
+      console.warn("⚠️ AI strelec dňa – zlyhal:", err.message);
     }
 
-    const response = { ok: true, date, matchesToday: games, aiScorerTip, stats };
-    global._HOME_CACHE = { time: Date.now(), data: response };
-    return res.status(200).json(response);
+    // === 3️⃣ Mini štatistiky (zatiaľ statické)
+    const stats = {
+      topScorer: "Connor McDavid – 12 gólov",
+      bestShooter: "Auston Matthews – 22 % streľba",
+      mostPenalties: "Tom Wilson – 29 trestných minút",
+    };
 
+    // === 4️⃣ Odpoveď pre frontend
+    return res.status(200).json({
+      ok: true,
+      date,
+      count: games.length,
+      matchesToday: games,
+      aiScorerTip, // 🎯 nový výstup
+      stats,
+    });
   } catch (err) {
-    console.error("❌ /api/home ERROR:", err.message);
-    return res.status(500).json({ ok: false, error: err.message });
+    console.error("❌ [/api/home] Chyba:", err.message);
+    return res.status(200).json({
+      ok: false,
+      date: new Date().toISOString().slice(0, 10),
+      error: err.message,
+      matchesToday: [],
+      aiScorerTip: null,
+      stats: {
+        topScorer: "-",
+        bestShooter: "-",
+        mostPenalties: "-",
+      },
+    });
   }
 }
