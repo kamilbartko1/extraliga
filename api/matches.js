@@ -17,7 +17,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));
 
-
 // =========================
 //  KONŠTANTY PRE RATING
 // =========================
@@ -31,7 +30,6 @@ const GOAL_POINTS = 50;
 const PP_GOAL_POINTS = 30;
 const ASSIST_POINTS = 20;
 const TOI_PER_MIN = 1;
-
 
 // =========================
 //   POMOCNÉ FUNKCIE
@@ -69,7 +67,6 @@ function toiToMinutes(toi) {
   return 0;
 }
 
-
 // =========================
 //   MINI CACHE (3–10 min)
 // =========================
@@ -77,15 +74,15 @@ if (!global._MATCHES_CACHE) {
   global._MATCHES_CACHE = { key: "", time: 0, data: null };
 }
 
-
 // =========================================================
 //  🔥 Ukladanie posledných spočítaných ratingov pre /api/ratings
 // =========================================================
 let LAST_RATINGS = {
   teamRatings: {},
-  playerRatings: {}
+  playerRatings: {},
 };
-
+// sprístupni aj cez app.locals (bez novej referencie)
+app.locals.LAST_RATINGS = LAST_RATINGS;
 
 // ======================================================
 //   ENDPOINT /api/matches (Zrýchlená verzia)
@@ -102,10 +99,11 @@ app.get("/api/matches", async (req, res) => {
     const now = Date.now();
 
     // 🧡 CACHING: 3–10 min
-    if (!refresh &&
-        global._MATCHES_CACHE.key === key &&
-        now - global._MATCHES_CACHE.time < 5 * 60 * 1000) {
-
+    if (
+      !refresh &&
+      global._MATCHES_CACHE.key === key &&
+      now - global._MATCHES_CACHE.time < 5 * 60 * 1000
+    ) {
       console.log("⚡ /api/matches – CACHE HIT");
       return res.json(global._MATCHES_CACHE.data);
     }
@@ -253,15 +251,14 @@ app.get("/api/matches", async (req, res) => {
       data: result,
     };
 
-    // 🔥 Uložiť posledné ratingy pre ultra-rýchly endpoint
-    LAST_RATINGS = {
-      teamRatings: { ...teamRatings },
-      playerRatings: { ...topPlayers },
-    };
+    // 🔥 Uložiť posledné ratingy pre ultra-rýchly endpoint (bez zmeny referencie)
+    LAST_RATINGS.teamRatings = { ...teamRatings };
+    LAST_RATINGS.playerRatings = { ...topPlayers };
+    // pre istotu aj do locals (stále tá istá referencia)
+    app.locals.LAST_RATINGS = LAST_RATINGS;
 
     console.log("🏒 /api/matches – HOTOVO!");
     return res.json(result);
-
   } catch (err) {
     console.error("❌ /api/matches ERROR:", err.message);
     return res.status(500).json({
@@ -271,18 +268,22 @@ app.get("/api/matches", async (req, res) => {
   }
 });
 
-
 // ======================================================
 //  🔥 ULTRA RÝCHLY ENDPOINT – IBA RATINGY
 // ======================================================
 app.get("/api/ratings", (req, res) => {
+  const LR = app.locals?.LAST_RATINGS || LAST_RATINGS;
+
   if (
-    !Object.keys(LAST_RATINGS.teamRatings || {}).length ||
-    !Object.keys(LAST_RATINGS.playerRatings || {}).length
+    !LR.teamRatings ||
+    !Object.keys(LR.teamRatings).length ||
+    !LR.playerRatings ||
+    !Object.keys(LR.playerRatings).length
   ) {
     return res.status(503).json({
       ok: false,
-      message: "Ratingy ešte nie sú pripravené. Najprv je potrebné spočítať /api/matches.",
+      message:
+        "Ratingy ešte nie sú pripravené. Najprv je potrebné spočítať /api/matches.",
       teamRatings: {},
       playerRatings: {},
     });
@@ -290,11 +291,10 @@ app.get("/api/ratings", (req, res) => {
 
   return res.json({
     ok: true,
-    teamRatings: LAST_RATINGS.teamRatings,
-    playerRatings: LAST_RATINGS.playerRatings,
+    teamRatings: LR.teamRatings,
+    playerRatings: LR.playerRatings,
   });
 });
-
 
 // root
 app.get("/", (req, res) => {
