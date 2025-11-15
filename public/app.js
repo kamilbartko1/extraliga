@@ -860,79 +860,48 @@ async function displayShootingLeaders() {
   const detail = document.getElementById("stats-detail");
   if (!grid || !detail) return;
 
-  // 🔹 Jednoduchá 30-sekundová cache, aby sa štatistiky nevolali stále znova
   let lastStats = null;
   let lastFetchTime = 0;
 
-  // 🔹 Pomocná funkcia pre spracovanie dát
+  // 💎 Vykreslenie tabuľky v modernom kompaktnom mobile-friendly režime
   function renderStats(data, type) {
-    detail.innerHTML = `<p style="text-align:center;color:#00eaff;">📊 Načítavam štatistiky, prosím čakajte...</p>`;
+    detail.innerHTML = `<p style="text-align:center;color:#00eaff;">📊 Načítavam štatistiky...</p>`;
 
     let players = [];
     let title = "";
     let columns = "";
 
-    switch (type) {
-      case "accuracy":
-        players = data.topAccuracy || [];
-        title = "🎯 Najlepšia strelecká úspešnosť";
-        columns = "<th>Góly</th><th>Strely</th><th>Percentá</th>";
-        break;
-      case "shots":
-        players = data.topShots || [];
-        title = "🔥 Najviac striel";
-        columns = "<th>Strely</th>";
-        break;
-      case "goals":
-        players = data.topGoals || [];
-        title = "🥅 Najviac gólov";
-        columns = "<th>Góly</th>";
-        break;
-      case "assists":
-        players = data.topAssists || [];
-        title = "🎩 Najviac asistencií";
-        columns = "<th>Asistencie</th>";
-        break;
-      case "points":
-        players = data.topPoints || [];
-        title = "⚡ Najviac kanadských bodov";
-        columns = "<th>Kanadské body</th>";
-        break;
-      case "plusminus":
-        players = data.topPlusMinus || [];
-        title = "➕➖ Najlepšie plus/mínus";
-        columns = "<th>+ / −</th>";
-        break;
-      case "pim":
-        players = data.topPIM || [];
-        title = "⛓️ Najviac trestných minút";
-        columns = "<th>Trestné minúty</th>";
-        break;
-      case "toi":
-        players = data.topTOI || [];
-        title = "🕒 Najviac času na ľade (min/zápas)";
-        columns = "<th>Min/zápas</th>";
-        break;
-      case "powerPlayGoals":
-        players = data.topPowerPlayGoals || [];
-        title = "🥈 Najviac power play gólov";
-        columns = "<th>PP goals</th>";
-        break;
-      default:
-        detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Táto štatistika ešte nie je dostupná.</p>`;
-        return;
-    }
+    const TYPES = {
+      accuracy: { list: "topAccuracy", title: "🎯 Najlepšia strelecká úspešnosť", cols: "<th>Góly</th><th>Strely</th><th>%</th>" },
+      shots: { list: "topShots", title: "🔥 Najviac striel", cols: "<th>Strely</th>" },
+      goals: { list: "topGoals", title: "🥅 Najviac gólov", cols: "<th>Góly</th>" },
+      assists: { list: "topAssists", title: "🎩 Najviac asistencií", cols: "<th>A</th>" },
+      points: { list: "topPoints", title: "⚡ Najviac bodov", cols: "<th>Body</th>" },
+      plusminus: { list: "topPlusMinus", title: "➕➖ Najlepšie +/-", cols: "<th>+/-</th>" },
+      pim: { list: "topPIM", title: "⛓️ Najviac trestov", cols: "<th>PIM</th>" },
+      toi: { list: "topTOI", title: "🕒 Najviac TOI (min)", cols: "<th>Min</th>" },
+      powerPlayGoals: { list: "topPowerPlayGoals", title: "🥈 Najviac PP gólov", cols: "<th>PP</th>" }
+    };
 
-    if (!players.length) {
-      detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Žiadne dáta pre ${title}</p>`;
+    const sel = TYPES[type];
+    if (!sel) {
+      detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Štatistika nie je dostupná.</p>`;
       return;
     }
 
-    // 🔹 Vykreslenie tabuľky s horizontálnym scrollom pre mobily
+    players = data[sel.list] || [];
+    title = sel.title;
+    columns = sel.cols;
+
+    if (!players.length) {
+      detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Žiadne dáta.</p>`;
+      return;
+    }
+
+    // 💎 Kompaktná tabuľka – žiadny min-width, všetko sa zmestí
     let html = `
       <h3 style="text-align:center;color:#00eaff;margin-bottom:10px;">${title}</h3>
-      <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
-      <table class="shooting-table" style="min-width:600px;">
+      <table class="shooting-table">
         <thead>
           <tr>
             <th>#</th>
@@ -945,7 +914,10 @@ async function displayShootingLeaders() {
     `;
 
     players.slice(0, 50).forEach((p, i) => {
-      const img = `<img src="${p.headshot}" alt="${p.name}" style="width:24px;height:24px;border-radius:50%;margin-right:6px;vertical-align:middle;">`;
+      const img = `
+        <img src="${p.headshot}" alt="${p.name}" 
+          style="width:20px;height:20px;border-radius:50%;margin-right:4px;vertical-align:middle;">
+      `;
 
       let statCell = "";
       switch (type) {
@@ -988,53 +960,35 @@ async function displayShootingLeaders() {
       `;
     });
 
-    html += `</tbody></table></div>`;
+    html += "</tbody></table>";
     detail.innerHTML = html;
   }
 
-  // 🔹 Hlavný listener na kliknutie
+  // 📌 Listener
   grid.querySelectorAll(".stat-box").forEach((box) => {
     box.addEventListener("click", async () => {
       const type = box.dataset.type;
-      detail.innerHTML = `<p style="text-align:center;color:#00eaff;font-size:1.1rem;">⏳ Načítavam dáta...</p>`;
+      detail.innerHTML = `<p style="text-align:center;color:#00eaff;">⏳ Načítavam...</p>`;
       detail.scrollIntoView({ behavior: "smooth", block: "start" });
 
       try {
         const now = Date.now();
 
-        // použijeme cache, ak je mladšia než 30 sekúnd
         if (lastStats && now - lastFetchTime < 30000) {
           renderStats(lastStats, type);
           return;
         }
 
-        // načítaj nové dáta
-        let resp = await fetch("/api/statistics", { cache: "no-store" }).catch(() => null);
-
-        if (!resp || !resp.ok) {
-          console.warn("⚠️ Prvé volanie zlyhalo, opakujem...");
-          await new Promise((r) => setTimeout(r, 3000));
-          resp = await fetch("/api/statistics", { cache: "no-store" }).catch(() => null);
-        }
-
-        if (!resp || !resp.ok) {
-          detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Dáta sa nepodarilo načítať. Skúste obnoviť stránku.</p>`;
-          return;
-        }
-
+        let resp = await fetch("/api/statistics", { cache: "no-store" });
+        if (!resp.ok) throw new Error("Nepodarilo sa načítať dáta.");
         const data = await resp.json();
-        if (!data.ok) {
-          detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Dáta nie sú dostupné.</p>`;
-          return;
-        }
 
-        // uložíme do cache
         lastStats = data;
         lastFetchTime = now;
 
         renderStats(data, type);
       } catch (err) {
-        detail.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba: ${err.message}</p>`;
+        detail.innerHTML = `<p style="color:red;text-align:center;">❌ ${err.message}</p>`;
       }
     });
   });

@@ -3413,6 +3413,71 @@ body {
   margin-left: -2px; /* odstráni vizuálnu medzeru */
 }
 
+/* ===== MOBILNÉ TABUĽKY – NHLPRO.SK ===== */
+.shooting-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;         /* 💥 kľúčové – stĺpce majú fixnú šírku a prispôsobia sa */
+  font-size: 14px;
+}
+
+.shooting-table th,
+.shooting-table td {
+  padding: 6px 4px;            /* malé odsadenie podobne ako profi appky */
+  white-space: nowrap;         /* údaje sa nezalomia */
+  overflow: hidden;            /* ak je niečo príliš dlhé… */
+  text-overflow: ellipsis;     /* …urobí sa „…“ presne ako v profi tabuľkách */
+}
+
+.shooting-table th:nth-child(1),
+.shooting-table td:nth-child(1) {
+  width: 28px;                 /* # */
+  text-align: center;
+}
+
+.shooting-table th:nth-child(2),
+.shooting-table td:nth-child(2) {
+  width: 130px;                /* hráč – zmestí sa aj meno + ikona */
+}
+
+.shooting-table th:nth-child(3),
+.shooting-table td:nth-child(3) {
+  width: 80px;                 /* tím */
+  text-align: left;
+}
+
+.shooting-table th:nth-child(4),
+.shooting-table td:nth-child(4) {
+  width: 60px;
+  text-align: center;
+}
+
+.shooting-table th:nth-child(5),
+.shooting-table td:nth-child(5) {
+  width: 60px;
+  text-align: center;
+}
+
+/* ikona hráča */
+.shooting-table img {
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+/* Mobil špeciál */
+@media (max-width: 480px) {
+  .shooting-table {
+    font-size: 12px;
+  }
+  .shooting-table img {
+    width: 18px;
+    height: 18px;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
