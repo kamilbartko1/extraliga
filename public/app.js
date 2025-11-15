@@ -185,6 +185,36 @@ async function displayHome() {
     `;
 
     home.innerHTML = html;
+
+    // 🔄 3️⃣ Automatické obnovenie AI strelca po 2.5 sekundách
+    setTimeout(async () => {
+      try {
+        const resp = await fetch("/api/home", { cache: "no-store" });
+        if (!resp.ok) return;
+
+        const updated = await resp.json();
+        const newAI = updated.aiScorerTip;
+
+        if (newAI) {
+          const box = document.querySelector(".ai-scorer-box");
+
+          if (box) {
+            box.innerHTML = `
+              <img src="${newAI.headshot || "/icons/nhl_placeholder.svg"}" alt="${newAI.player}" class="player-headshot">
+              <div class="ai-scorer-info">
+                <p><b>${newAI.player}</b> (${newAI.team})</p>
+                <p style="color:#00eaff;">${newAI.match}</p>
+                <p>🥅 Góly: <b>${newAI.goals}</b> | 🎯 Strely: <b>${newAI.shots}</b> | ⚡ PP: <b>${newAI.powerPlayGoals}</b></p>
+                <p>🧠 Pravdepodobnosť gólu: <b style="color:#ffcc00;">${newAI.probability}%</b></p>
+              </div>
+            `;
+          }
+        }
+      } catch (err) {
+        console.warn("⚠️ AI scorer refresh failed:", err.message);
+      }
+    }, 2500);
+
   } catch (err) {
     console.error("❌ Chyba domov:", err);
     home.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba: ${err.message}</p>`;
