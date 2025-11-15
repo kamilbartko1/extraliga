@@ -1122,8 +1122,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     // ⚡ načítaj všetko paralelne
     await Promise.all([
-      displayHome()     // zobrazí AI tip, štatistiky, zápasy dňa
       fetchMatches(),   // načíta zápasy + ratingy (aj playerRatings, teamRatings)
+      displayHome()     // zobrazí AI tip, štatistiky, zápasy dňa
     ]);
   } else {
     // fallback ak chýba home
