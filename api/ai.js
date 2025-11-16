@@ -10,6 +10,11 @@ export default async function handler(req, res) {
 
   const task = req.query.task || "";
 
+  // Bezpečný baseUrl (funguje aj na localhost, aj na Verceli)
+  const proto = req.headers["x-forwarded-proto"] || "https";
+  const host = req.headers.host;
+  const baseUrl = `${proto}://${host}`;
+
   // Pomocná funkcia – skóre hráča z boxscore
   async function getGoalsFromBoxscore(gameId, playerName) {
     try {
@@ -24,11 +29,12 @@ export default async function handler(req, res) {
         ...(box?.playerByGameStats?.awayTeam?.defense || []),
       ];
 
-      const found = teams.find(
-        (p) =>
-          (p?.name?.default ||
-            `${p?.firstName?.default} ${p?.lastName?.default}`) === playerName
-      );
+      const found = teams.find((p) => {
+        const name =
+          p?.name?.default ||
+          `${p?.firstName?.default || ""} ${p?.lastName?.default || ""}`.trim();
+        return name === playerName;
+      });
 
       return found ? Number(found.goals || 0) : 0;
     } catch (err) {
@@ -39,10 +45,19 @@ export default async function handler(req, res) {
 
   // Pomocná funkcia – prepočet pravdepodobnosti
   function computeGoalProbability(player, teamRating, oppRating, isHome) {
-    const rPlayer = Math.tanh(((player.rating) - 2400) / 300);
-    const rGoals = player.goals && player.gamesPlayed ? player.goals / player.gamesPlayed : 0;
-    const rShots = player.shots && player.gamesPlayed ? player.shots / player.gamesPlayed / 4.5 : 0;
-    const rPP = player.powerPlayGoals && player.goals ? player.powerPlayGoals / player.goals : 0;
+    const rPlayer = Math.tanh((player.rating - 2400) / 300);
+    const rGoals =
+      player.goals && player.gamesPlayed
+        ? player.goals / player.gamesPlayed
+        : 0;
+    const rShots =
+      player.shots && player.gamesPlayed
+        ? player.shots / player.gamesPlayed / 4.5
+        : 0;
+    const rPP =
+      player.powerPlayGoals && player.goals
+        ? player.powerPlayGoals / player.goals
+        : 0;
     const rTOI = Math.min(1, (player.toi || 0) / 20);
     const rMatchup = Math.tanh((teamRating - oppRating) / 100);
     const rHome = isHome ? 0.05 : 0;
@@ -58,7 +73,7 @@ export default async function handler(req, res) {
       0.2 * rHome;
 
     const p = 1 / (1 + Math.exp(-logit));
-    return Math.max(0.05, Math.min(0.6, p)); // orez 5–60 %
+    return Math.max(0.05, Math.min(0.6, p)); // 5–60 %
   }
 
   // Pomocná – nájde hráča v playerRatings podľa tvaru mena
@@ -91,13 +106,15 @@ export default async function handler(req, res) {
       const date = new Date().toISOString().slice(0, 10);
       const scoreUrl = `https://api-web.nhle.com/v1/score/${date}`;
 
-      // načítaj dnešné zápasy
+      // dnešné zápasy
       const scoreResp = await axios.get(scoreUrl, { timeout: 12000 });
       const gamesRaw = scoreResp.data?.games || [];
 
-      const homeResp = await axios.get(`${req.headers.host.includes("localhost") ? "http://" : "https://"}${req.headers.host}/api/home`);
-      const statsResp = await axios.get(`${req.headers.host.includes("localhost") ? "http://" : "https://"}${req.headers.host}/api/statistics`);
-      const matchesResp = await axios.get(`${req.headers.host.includes("localhost") ? "http://" : "https://"}${req.headers.host}/api/matches`);
+      // štatistiky a ratingy
+      const [statsResp, matchesResp] = await Promise.all([
+        axios.get(`${baseUrl}/api/statistics`, { timeout: 15000 }),
+        axios.get(`${baseUrl}/api/matches`, { timeout: 60000 }),
+      ]);
 
       const stats = statsResp.data || {};
       const teamRatings = matchesResp.data?.teamRatings || {};
@@ -130,8 +147,12 @@ export default async function handler(req, res) {
         const homeR = teamRatings[game.homeName] || 1500;
         const awayR = teamRatings[game.awayName] || 1500;
 
-        const homePlayers = uniquePlayers.filter((p) => p.team === game.homeCode);
-        const awayPlayers = uniquePlayers.filter((p) => p.team === game.awayCode);
+        const homePlayers = uniquePlayers.filter(
+          (p) => p.team === game.homeCode
+        );
+        const awayPlayers = uniquePlayers.filter(
+          (p) => p.team === game.awayCode
+        );
 
         for (const p of [...homePlayers, ...awayPlayers]) {
           const r = findPlayerRating(p.name, playerRatings);
@@ -147,7 +168,7 @@ export default async function handler(req, res) {
             ...p,
             match: `${game.homeName} vs ${game.awayName}`,
             prob,
-            gameId: game.id
+            gameId: game.id,
           });
         }
       }
@@ -172,6 +193,7 @@ export default async function handler(req, res) {
         },
       });
     } catch (err) {
+      console.error("❌ ai?task=scorer:", err.message);
       return res.json({ ok: false, error: err.message, aiScorerTip: null });
     }
   }
@@ -181,7 +203,9 @@ export default async function handler(req, res) {
   // ======================================================
   if (task === "save") {
     try {
-      const scorerResp = await axios.get(`${req.headers.host.includes("localhost") ? "http://" : "https://"}${req.headers.host}/api/ai?task=scorer`);
+      const scorerResp = await axios.get(`${baseUrl}/api/ai?task=scorer`, {
+        timeout: 30000,
+      });
       const tip = scorerResp.data?.aiScorerTip;
 
       if (!tip) return res.json({ ok: false, error: "No scorer" });
@@ -196,6 +220,7 @@ export default async function handler(req, res) {
 
       return res.json({ ok: true, saved: tip });
     } catch (err) {
+      console.error("❌ ai?task=save:", err.message);
       return res.json({ ok: false, error: err.message });
     }
   }
@@ -207,13 +232,33 @@ export default async function handler(req, res) {
     try {
       const tips = await redis.hgetall("AI_TIPS_HISTORY");
       const keys = Object.keys(tips).sort();
-      if (keys.length === 0) return res.json({ ok: false, error: "No tips" });
+      if (keys.length === 0)
+        return res.json({ ok: false, error: "No tips" });
 
-      const lastKey = keys[keys.length - 1];
-      const lastTip = JSON.parse(tips[lastKey]);
+      // nájdi posledný validný JSON z konca
+      let lastKey = null;
+      let lastTip = null;
+
+      for (let i = keys.length - 1; i >= 0; i--) {
+        const k = keys[i];
+        try {
+          const parsed = JSON.parse(tips[k]);
+          lastKey = k;
+          lastTip = parsed;
+          break;
+        } catch {
+          console.warn(`⚠️ Invalid JSON in AI_TIPS_HISTORY[${k}] – preskakujem`);
+        }
+      }
+
+      if (!lastKey || !lastTip) {
+        return res.json({
+          ok: false,
+          error: "No valid tips in history",
+        });
+      }
 
       const goals = await getGoalsFromBoxscore(lastTip.gameId, lastTip.player);
-
       const result = goals > 0 ? "hit" : "miss";
 
       const updated = {
@@ -228,6 +273,7 @@ export default async function handler(req, res) {
 
       return res.json({ ok: true, updated });
     } catch (err) {
+      console.error("❌ ai?task=update:", err.message);
       return res.json({ ok: false, error: err.message });
     }
   }
@@ -240,10 +286,18 @@ export default async function handler(req, res) {
       const tips = await redis.hgetall("AI_TIPS_HISTORY");
       const dates = Object.keys(tips).sort();
 
-      const list = dates.map((d) => JSON.parse(tips[d]));
+      const list = [];
+      for (const d of dates) {
+        try {
+          const parsed = JSON.parse(tips[d]);
+          list.push(parsed);
+        } catch {
+          console.warn(`⚠️ Invalid JSON in AI_TIPS_HISTORY[${d}] – preskakujem`);
+        }
+      }
 
       let hits = list.filter((x) => x.result === "hit").length;
-      let total = list.filter((x) => x.result !== "pending").length;
+      let total = list.filter((x) => x.result && x.result !== "pending").length;
       let successRate = total === 0 ? 0 : Math.round((hits / total) * 100);
 
       return res.json({
@@ -251,9 +305,10 @@ export default async function handler(req, res) {
         total,
         hits,
         successRate,
-        history: list.reverse(),
+        history: list.reverse(), // najnovšie hore
       });
     } catch (err) {
+      console.error("❌ ai?task=get:", err.message);
       return res.json({ ok: false, error: err.message });
     }
   }
