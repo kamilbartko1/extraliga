@@ -222,27 +222,39 @@ export default async function handler(req, res) {
   // 🟦 TASK 2 — SAVE
   // =====================================================
   if (task === "save") {
-    try {
-      const scorerResp = await axios.get(`${baseUrl}/api/ai?task=scorer`);
-      const tip = scorerResp.data?.aiScorerTip;
+  try {
+    const scorerResp = await axios.get(`${baseUrl}/api/ai?task=scorer`);
+    const tip = scorerResp.data?.aiScorerTip;
 
-      if (!tip) return res.json({ ok: false, error: "No scorer" });
+    if (!tip) return res.json({ ok: false, error: "No scorer" });
 
-      await redis.hset("AI_TIPS_HISTORY", {
-        [tip.date]: JSON.stringify({
-          ...tip,
-          actualGoals: null,
-          result: "pending",
-        }),
-      });
-
-      return res.json({ ok: true, saved: tip });
-    } catch (err) {
-      console.error("❌ save:", err.message);
-      return res.json({ ok: false, error: err.message });
+    // ---- PREMENÍME "Sidney Crosby" → "S. Crosby" ----
+    function formatShortName(fullName) {
+      const parts = fullName.trim().split(" ");
+      if (parts.length < 2) return fullName; // fallback
+      const first = parts[0];
+      const last = parts.slice(1).join(" ");
+      return `${first[0].toUpperCase()}. ${last}`;
     }
-  }
 
+    const shortName = formatShortName(tip.player);
+
+    await redis.hset("AI_TIPS_HISTORY", {
+      [tip.date]: JSON.stringify({
+        ...tip,
+        player: shortName,   // 🔥 ukladaj vo formáte S. Crosby !!!
+        actualGoals: null,
+        result: "pending",
+      }),
+    });
+
+    return res.json({ ok: true, saved: { ...tip, player: shortName } });
+
+  } catch (err) {
+    console.error("❌ save:", err.message);
+    return res.json({ ok: false, error: err.message });
+  }
+}
 
   // =====================================================
   // 🟥 TASK 3 — UPDATE (Vyhodnotenie strelca)
