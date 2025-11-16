@@ -86,7 +86,6 @@ async function preloadMatchesData() {
 }
 
 // === DOMOVSKÁ STRÁNKA (moderný 3-panelový layout) ===
-// === DOMOVSKÁ STRÁNKA (moderný 3-panelový layout) ===
 async function displayHome() {
   const home = document.getElementById("home-section");
   if (!home) return;
@@ -96,20 +95,23 @@ async function displayHome() {
   `;
 
   try {
-    // 1️⃣ Načítaj zápasy + AI tip + štatistiky
+    // 1️⃣ Načítaj LEN rýchle dáta z /api/home + /api/statistics
     const [homeResp, statsResp] = await Promise.all([
       fetch("/api/home", { cache: "no-store" }),
       fetch("/api/statistics", { cache: "no-store" })
     ]);
 
     if (!homeResp.ok) throw new Error(`HTTP ${homeResp.status}`);
-    const homeData = await homeResp.json();
 
+    const homeData = await homeResp.json();
     const statsData = statsResp.ok ? await statsResp.json() : {};
+
+    // mini štatistiky (najlepší hráči)
     const topGoal = statsData?.topGoals?.[0] || {};
     const topPoints = statsData?.topPoints?.[0] || {};
     const topShots = statsData?.topShots?.[0] || {};
 
+    // AI strelec z /api/home → vždy null, zobrazíme placeholder
     const aiScorer = homeData.aiScorerTip || null;
 
     // 2️⃣ HTML štruktúra layoutu
@@ -139,23 +141,11 @@ async function displayHome() {
           }
         </div>
 
-        <!-- 🎯 AI STRELCI DŇA -->
+        <!-- 🎯 AI STRELEC DŇA -->
         <div class="home-panel ai-panel" onclick="showSection('stats-section')">
           <h3>🎯 AI Strelci Dňa</h3>
           <div class="ai-scorer-box">
-            ${
-              aiScorer
-                ? `
-                <img src="${aiScorer.headshot || "/icons/nhl_placeholder.svg"}" alt="${aiScorer.player}" class="player-headshot">
-                <div class="ai-scorer-info">
-                  <p><b>${aiScorer.player}</b> (${aiScorer.team})</p>
-                  <p style="color:#00eaff;">${aiScorer.match}</p>
-                  <p>🥅 Góly: <b>${aiScorer.goals}</b> | 🎯 Strely: <b>${aiScorer.shots}</b> | ⚡ PP: <b>${aiScorer.powerPlayGoals}</b></p>
-                  <p>🧠 Pravdepodobnosť gólu: <b style="color:#ffcc00;">${aiScorer.probability}%</b></p>
-                </div>
-              `
-                : `<p style="color:#aaa;">Prebieha AI výpočet...</p>`
-            }
+            <p style="color:#aaa;">Prebieha AI výpočet...</p>
           </div>
         </div>
 
@@ -188,37 +178,36 @@ async function displayHome() {
 
     home.innerHTML = html;
 
-    // 🔄 3️⃣ Automatické obnovenie AI strelca po 2.5 sekundách
+    // 3️⃣ Po načítaní stránky spusti AI výpočet NEBLOKUJÚCO
     setTimeout(async () => {
       try {
-        const resp = await fetch("/api/home", { cache: "no-store" });
+        const resp = await fetch("/api/ai-scorer", { cache: "no-store" });
         if (!resp.ok) return;
 
-        const updated = await resp.json();
-        const newAI = updated.aiScorerTip;
+        const data = await resp.json();
+        const ai = data.aiScorerTip;
 
         const box = document.querySelector("#home-section .ai-scorer-box");
-        if (!box) return; // bezpečnostná poistka
+        if (!box) return;
 
-        if (!newAI) {
-          // stále nič → necháme placeholder alebo dáme jemnú hlášku
+        if (!ai) {
           box.innerHTML = `<p style="color:#aaa;">AI strelca sa zatiaľ nepodarilo vypočítať.</p>`;
           return;
         }
 
         box.innerHTML = `
-          <img src="${newAI.headshot || "/icons/nhl_placeholder.svg"}" alt="${newAI.player}" class="player-headshot">
+          <img src="${ai.headshot || "/icons/nhl_placeholder.svg"}" class="player-headshot">
           <div class="ai-scorer-info">
-            <p><b>${newAI.player}</b> (${newAI.team})</p>
-            <p style="color:#00eaff;">${newAI.match}</p>
-            <p>🥅 Góly: <b>${newAI.goals}</b> | 🎯 Strely: <b>${newAI.shots}</b> | ⚡ PP: <b>${newAI.powerPlayGoals}</b></p>
-            <p>🧠 Pravdepodobnosť gólu: <b style="color:#ffcc00;">${newAI.probability}%</b></p>
+            <p><b>${ai.player}</b> (${ai.team})</p>
+            <p style="color:#00eaff;">${ai.match}</p>
+            <p>🥅 Góly: <b>${ai.goals}</b> | 🎯 Strely: <b>${ai.shots}</b> | ⚡ PP: <b>${ai.powerPlayGoals}</b></p>
+            <p>🧠 Pravdepodobnosť gólu: <b style="color:#ffcc00;">${ai.probability}%</b></p>
           </div>
         `;
       } catch (err) {
-        console.warn("⚠️ AI scorer refresh failed:", err.message);
+        console.warn("⚠️ chybný AI scorer:", err.message);
       }
-    }, 2500);
+    }, 500); // 500ms = super rýchle, stránka sa neblokuje
 
   } catch (err) {
     console.error("❌ Chyba domov:", err);
