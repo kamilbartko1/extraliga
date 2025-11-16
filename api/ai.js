@@ -226,57 +226,63 @@ export default async function handler(req, res) {
   }
 
   // ======================================================
-  // 🟥 TASK 3: UPDATE – VYHODNOTENIE POSLEDNÉHO TIPU
-  // ======================================================
-  if (task === "update") {
-    try {
-      const tips = await redis.hgetall("AI_TIPS_HISTORY");
-      const keys = Object.keys(tips).sort();
-      if (keys.length === 0)
-        return res.json({ ok: false, error: "No tips" });
+// 🟥 TASK 3: UPDATE – VYHODNOTENIE POSLEDNÉHO TIPU
+// ======================================================
+if (task === "update") {
+  try {
+    const tips = await redis.hgetall("AI_TIPS_HISTORY");
+    const keys = Object.keys(tips).sort();
 
-      // nájdi posledný validný JSON z konca
-      let lastKey = null;
-      let lastTip = null;
+    if (keys.length === 0)
+      return res.json({ ok: false, error: "No tips stored" });
 
-      for (let i = keys.length - 1; i >= 0; i--) {
-        const k = keys[i];
-        try {
-          const parsed = JSON.parse(tips[k]);
-          lastKey = k;
-          lastTip = parsed;
-          break;
-        } catch {
-          console.warn(`⚠️ Invalid JSON in AI_TIPS_HISTORY[${k}] – preskakujem`);
-        }
+    let lastKey = null;
+    let lastTip = null;
+
+    // Nájdeme posledný validný JSON
+    for (let i = keys.length - 1; i >= 0; i--) {
+      const k = keys[i];
+      let raw = tips[k];
+
+      // 💡 FIX: Upstash niekedy vracia objekt namiesto stringu
+      if (typeof raw === "object" && raw !== null) {
+        raw = raw.value ?? raw.data ?? raw.toString();
       }
 
-      if (!lastKey || !lastTip) {
-        return res.json({
-          ok: false,
-          error: "No valid tips in history",
-        });
+      try {
+        const parsed = JSON.parse(raw);
+        lastKey = k;
+        lastTip = parsed;
+        break;
+      } catch (e) {
+        console.warn(`⚠️ JSON parse fail for key ${k}:`, raw);
       }
-
-      const goals = await getGoalsFromBoxscore(lastTip.gameId, lastTip.player);
-      const result = goals > 0 ? "hit" : "miss";
-
-      const updated = {
-        ...lastTip,
-        actualGoals: goals,
-        result,
-      };
-
-      await redis.hset("AI_TIPS_HISTORY", {
-        [lastKey]: JSON.stringify(updated),
-      });
-
-      return res.json({ ok: true, updated });
-    } catch (err) {
-      console.error("❌ ai?task=update:", err.message);
-      return res.json({ ok: false, error: err.message });
     }
+
+    if (!lastKey || !lastTip)
+      return res.json({ ok: false, error: "No valid tips in history" });
+
+    // Vyhodnotenie z boxscore
+    const goals = await getGoalsFromBoxscore(lastTip.gameId, lastTip.player);
+    const result = goals > 0 ? "hit" : "miss";
+
+    const updated = {
+      ...lastTip,
+      actualGoals: goals,
+      result,
+    };
+
+    await redis.hset("AI_TIPS_HISTORY", {
+      [lastKey]: JSON.stringify(updated),
+    });
+
+    return res.json({ ok: true, updated });
+
+  } catch (err) {
+    console.error("❌ ai?task=update:", err.message);
+    return res.json({ ok: false, error: err.message });
   }
+}
 
   // ======================================================
   // 🟨 TASK 4: GET – ŠTATISTIKY AI
