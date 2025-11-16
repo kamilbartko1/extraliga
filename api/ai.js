@@ -225,7 +225,7 @@ export default async function handler(req, res) {
     }
   }
 
-  // ======================================================
+// ======================================================
 // 🟥 TASK 3: UPDATE – VYHODNOTENIE POSLEDNÉHO TIPU
 // ======================================================
 if (task === "update") {
@@ -236,33 +236,20 @@ if (task === "update") {
     if (keys.length === 0)
       return res.json({ ok: false, error: "No tips stored" });
 
-    let lastKey = null;
-    let lastTip = null;
+    // Pozrieme posledný kľúč (dátum)
+    const lastKey = keys[keys.length - 1];
 
-    // Nájdeme posledný validný JSON
-    for (let i = keys.length - 1; i >= 0; i--) {
-      const k = keys[i];
-      let raw = tips[k];
+    // Upstash vracia už objekt, nie string
+    const lastTip = tips[lastKey];
 
-      // 💡 FIX: Upstash niekedy vracia objekt namiesto stringu
-      if (typeof raw === "object" && raw !== null) {
-        raw = raw.value ?? raw.data ?? raw.toString();
-      }
-
-      try {
-        const parsed = JSON.parse(raw);
-        lastKey = k;
-        lastTip = parsed;
-        break;
-      } catch (e) {
-        console.warn(`⚠️ JSON parse fail for key ${k}:`, raw);
-      }
+    if (!lastTip || typeof lastTip !== "object") {
+      return res.json({
+        ok: false,
+        error: "Last tip is not a valid object",
+      });
     }
 
-    if (!lastKey || !lastTip)
-      return res.json({ ok: false, error: "No valid tips in history" });
-
-    // Vyhodnotenie z boxscore
+    // Vyhodnotenie
     const goals = await getGoalsFromBoxscore(lastTip.gameId, lastTip.player);
     const result = goals > 0 ? "hit" : "miss";
 
@@ -272,8 +259,9 @@ if (task === "update") {
       result,
     };
 
+    // Uložíme späť
     await redis.hset("AI_TIPS_HISTORY", {
-      [lastKey]: JSON.stringify(updated),
+      [lastKey]: updated,
     });
 
     return res.json({ ok: true, updated });
