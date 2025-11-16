@@ -10,30 +10,56 @@ export default async function handler(req, res) {
 
   const task = req.query.task || "";
 
-  // Bezpečný baseUrl (funguje aj na localhost, aj na Verceli)
+  // ============= BASE URL (lokál + vercel) =============
   const proto = req.headers["x-forwarded-proto"] || "https";
   const host = req.headers.host;
   const baseUrl = `${proto}://${host}`;
 
-  // Pomocná funkcia – skóre hráča z boxscore
+
+  // =====================================================
+  // 🔧 NORMALIZÁCIA MIEN – funguje pre všetky formáty
+  // =====================================================
+  function normalizeName(str) {
+    return String(str || "")
+      .toLowerCase()
+      .replace(/\./g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+
+  // =====================================================
+  // 🔍 ZÍSKANIE GÓLOV HRÁČA Z BOXSCORE
+  // =====================================================
   async function getGoalsFromBoxscore(gameId, playerName) {
     try {
       const url = `https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`;
       const resp = await axios.get(url, { timeout: 12000 });
       const box = resp.data;
 
-      const teams = [
+      const normalizedTarget = normalizeName(playerName);
+
+      const players = [
         ...(box?.playerByGameStats?.homeTeam?.forwards || []),
         ...(box?.playerByGameStats?.homeTeam?.defense || []),
         ...(box?.playerByGameStats?.awayTeam?.forwards || []),
         ...(box?.playerByGameStats?.awayTeam?.defense || []),
       ];
 
-      const found = teams.find((p) => {
-        const name =
-          p?.name?.default ||
-          `${p?.firstName?.default || ""} ${p?.lastName?.default || ""}`.trim();
-        return name === playerName;
+      const found = players.find((p) => {
+        const raw1 = p?.name?.default || "";
+        const raw2 = `${p?.firstName?.default || ""} ${p?.lastName?.default || ""}`;
+
+        const n1 = normalizeName(raw1);
+        const n2 = normalizeName(raw2);
+
+        // Skontrolujeme oba smery + prehodené poradie
+        return (
+          n1 === normalizedTarget ||
+          n2 === normalizedTarget ||
+          n1.split(" ").reverse().join(" ") === normalizedTarget ||
+          n2.split(" ").reverse().join(" ") === normalizedTarget
+        );
       });
 
       return found ? Number(found.goals || 0) : 0;
@@ -43,21 +69,15 @@ export default async function handler(req, res) {
     }
   }
 
-  // Pomocná funkcia – prepočet pravdepodobnosti
+
+  // =====================================================
+  // 🔢 Výpočet pravdepodobnosti
+  // =====================================================
   function computeGoalProbability(player, teamRating, oppRating, isHome) {
     const rPlayer = Math.tanh((player.rating - 2400) / 300);
-    const rGoals =
-      player.goals && player.gamesPlayed
-        ? player.goals / player.gamesPlayed
-        : 0;
-    const rShots =
-      player.shots && player.gamesPlayed
-        ? player.shots / player.gamesPlayed / 4.5
-        : 0;
-    const rPP =
-      player.powerPlayGoals && player.goals
-        ? player.powerPlayGoals / player.goals
-        : 0;
+    const rGoals = player.goals && player.gamesPlayed ? player.goals / player.gamesPlayed : 0;
+    const rShots = player.shots && player.gamesPlayed ? player.shots / player.gamesPlayed / 4.5 : 0;
+    const rPP = player.powerPlayGoals && player.goals ? player.powerPlayGoals / player.goals : 0;
     const rTOI = Math.min(1, (player.toi || 0) / 20);
     const rMatchup = Math.tanh((teamRating - oppRating) / 100);
     const rHome = isHome ? 0.05 : 0;
@@ -73,12 +93,16 @@ export default async function handler(req, res) {
       0.2 * rHome;
 
     const p = 1 / (1 + Math.exp(-logit));
-    return Math.max(0.05, Math.min(0.6, p)); // 5–60 %
+    return Math.max(0.05, Math.min(0.6, p));
   }
 
-  // Pomocná – nájde hráča v playerRatings podľa tvaru mena
+
+  // =====================================================
+  // 📌 Nájdenie ratingu hráča podľa jeho mena
+  // =====================================================
   function findPlayerRating(playerName, playerRatings) {
     if (!playerName) return 1500;
+
     const lower = playerName.toLowerCase().trim();
     const clean = lower.replace(/\./g, "");
     const [first, last] = clean.split(" ");
@@ -98,19 +122,18 @@ export default async function handler(req, res) {
     return 1500;
   }
 
-  // ======================================================
-  // 🟩 TASK 1: AI STRELEC DŇA
-  // ======================================================
+
+  // =====================================================
+  // 🟩 TASK 1 — AI STRELEC DŇA
+  // =====================================================
   if (task === "scorer") {
     try {
       const date = new Date().toISOString().slice(0, 10);
       const scoreUrl = `https://api-web.nhle.com/v1/score/${date}`;
 
-      // dnešné zápasy
       const scoreResp = await axios.get(scoreUrl, { timeout: 12000 });
       const gamesRaw = scoreResp.data?.games || [];
 
-      // štatistiky a ratingy
       const [statsResp, matchesResp] = await Promise.all([
         axios.get(`${baseUrl}/api/statistics`, { timeout: 15000 }),
         axios.get(`${baseUrl}/api/matches`, { timeout: 60000 }),
@@ -126,6 +149,7 @@ export default async function handler(req, res) {
         ...(stats.topPowerPlayGoals || []),
       ];
 
+      // Odstránenie duplicít
       const seen = new Set();
       const uniquePlayers = allPlayers.filter((p) => {
         if (seen.has(p.id)) return false;
@@ -147,12 +171,8 @@ export default async function handler(req, res) {
         const homeR = teamRatings[game.homeName] || 1500;
         const awayR = teamRatings[game.awayName] || 1500;
 
-        const homePlayers = uniquePlayers.filter(
-          (p) => p.team === game.homeCode
-        );
-        const awayPlayers = uniquePlayers.filter(
-          (p) => p.team === game.awayCode
-        );
+        const homePlayers = uniquePlayers.filter((p) => p.team === game.homeCode);
+        const awayPlayers = uniquePlayers.filter((p) => p.team === game.awayCode);
 
         for (const p of [...homePlayers, ...awayPlayers]) {
           const r = findPlayerRating(p.name, playerRatings);
@@ -174,7 +194,6 @@ export default async function handler(req, res) {
       }
 
       const best = candidates.sort((a, b) => b.prob - a.prob)[0];
-
       if (!best) return res.json({ ok: false, aiScorerTip: null });
 
       return res.json({
@@ -193,19 +212,18 @@ export default async function handler(req, res) {
         },
       });
     } catch (err) {
-      console.error("❌ ai?task=scorer:", err.message);
+      console.error("❌ scorer:", err.message);
       return res.json({ ok: false, error: err.message, aiScorerTip: null });
     }
   }
 
-  // ======================================================
-  // 🟦 TASK 2: ULOŽENIE AI STRELCA DO REDIS
-  // ======================================================
+
+  // =====================================================
+  // 🟦 TASK 2 — SAVE
+  // =====================================================
   if (task === "save") {
     try {
-      const scorerResp = await axios.get(`${baseUrl}/api/ai?task=scorer`, {
-        timeout: 30000,
-      });
+      const scorerResp = await axios.get(`${baseUrl}/api/ai?task=scorer`);
       const tip = scorerResp.data?.aiScorerTip;
 
       if (!tip) return res.json({ ok: false, error: "No scorer" });
@@ -220,92 +238,89 @@ export default async function handler(req, res) {
 
       return res.json({ ok: true, saved: tip });
     } catch (err) {
-      console.error("❌ ai?task=save:", err.message);
+      console.error("❌ save:", err.message);
       return res.json({ ok: false, error: err.message });
     }
   }
 
-// ======================================================
-// 🟥 TASK 3: UPDATE – VYHODNOTENIE POSLEDNÉHO TIPU
-// ======================================================
-if (task === "update") {
-  try {
-    const tips = await redis.hgetall("AI_TIPS_HISTORY");
-    const keys = Object.keys(tips).sort();
 
-    if (keys.length === 0)
-      return res.json({ ok: false, error: "No tips stored" });
+  // =====================================================
+  // 🟥 TASK 3 — UPDATE (Vyhodnotenie strelca)
+  // =====================================================
+  if (task === "update") {
+    try {
+      const tips = await redis.hgetall("AI_TIPS_HISTORY");
+      const keys = Object.keys(tips).sort();
+      if (keys.length === 0) return res.json({ ok: false, error: "No tips stored" });
 
-    // Pozrieme posledný kľúč (dátum)
-    const lastKey = keys[keys.length - 1];
+      const lastKey = keys[keys.length - 1];
 
-    // Upstash vracia už objekt, nie string
-    const lastTip = tips[lastKey];
+      let raw = tips[lastKey];
+      if (typeof raw === "object") raw = raw.value ?? JSON.stringify(raw);
 
-    if (!lastTip || typeof lastTip !== "object") {
-      return res.json({
-        ok: false,
-        error: "Last tip is not a valid object",
+      const lastTip = JSON.parse(raw);
+
+      const goals = await getGoalsFromBoxscore(lastTip.gameId, lastTip.player);
+      const result = goals > 0 ? "hit" : "miss";
+
+      const updated = {
+        ...lastTip,
+        actualGoals: goals,
+        result,
+      };
+
+      await redis.hset("AI_TIPS_HISTORY", {
+        [lastKey]: JSON.stringify(updated),
       });
+
+      return res.json({ ok: true, updated });
+
+    } catch (err) {
+      console.error("❌ update:", err.message);
+      return res.json({ ok: false, error: err.message });
     }
-
-    // Vyhodnotenie
-    const goals = await getGoalsFromBoxscore(lastTip.gameId, lastTip.player);
-    const result = goals > 0 ? "hit" : "miss";
-
-    const updated = {
-      ...lastTip,
-      actualGoals: goals,
-      result,
-    };
-
-    // Uložíme späť
-    await redis.hset("AI_TIPS_HISTORY", {
-      [lastKey]: updated,
-    });
-
-    return res.json({ ok: true, updated });
-
-  } catch (err) {
-    console.error("❌ ai?task=update:", err.message);
-    return res.json({ ok: false, error: err.message });
   }
-}
 
-  // ======================================================
-  // 🟨 TASK 4: GET – ŠTATISTIKY AI
-  // ======================================================
+
+  // =====================================================
+  // 🟨 TASK 4 — GET (História + úspešnosť)
+  // =====================================================
   if (task === "get") {
     try {
       const tips = await redis.hgetall("AI_TIPS_HISTORY");
-      const dates = Object.keys(tips).sort();
+      const keys = Object.keys(tips).sort();
 
       const list = [];
-      for (const d of dates) {
+
+      for (const k of keys) {
+        let raw = tips[k];
+        if (typeof raw === "object") raw = raw.value ?? JSON.stringify(raw);
+
         try {
-          const parsed = JSON.parse(tips[d]);
-          list.push(parsed);
+          list.push(JSON.parse(raw));
         } catch {
-          console.warn(`⚠️ Invalid JSON in AI_TIPS_HISTORY[${d}] – preskakujem`);
+          console.warn("⚠️ Invalid JSON:", k, raw);
         }
       }
 
-      let hits = list.filter((x) => x.result === "hit").length;
-      let total = list.filter((x) => x.result && x.result !== "pending").length;
-      let successRate = total === 0 ? 0 : Math.round((hits / total) * 100);
+      const hits = list.filter((x) => x.result === "hit").length;
+      const total = list.filter((x) => x.result !== "pending").length;
+      const successRate = total === 0 ? 0 : Math.round((hits / total) * 100);
 
       return res.json({
         ok: true,
         total,
         hits,
         successRate,
-        history: list.reverse(), // najnovšie hore
+        history: list.reverse(),
       });
     } catch (err) {
-      console.error("❌ ai?task=get:", err.message);
+      console.error("❌ get:", err.message);
       return res.json({ ok: false, error: err.message });
     }
   }
 
+
+  // =====================================================
   return res.json({ ok: false, error: "Unknown task" });
 }
