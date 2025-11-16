@@ -95,7 +95,7 @@ async function displayHome() {
   `;
 
   try {
-    // 1️⃣ Načítaj LEN rýchle dáta z /api/home + /api/statistics
+    // 1️⃣ Načítaj rýchle dáta (zápasy + mini štatistiky)
     const [homeResp, statsResp] = await Promise.all([
       fetch("/api/home", { cache: "no-store" }),
       fetch("/api/statistics", { cache: "no-store" })
@@ -106,15 +106,11 @@ async function displayHome() {
     const homeData = await homeResp.json();
     const statsData = statsResp.ok ? await statsResp.json() : {};
 
-    // mini štatistiky (najlepší hráči)
     const topGoal = statsData?.topGoals?.[0] || {};
     const topPoints = statsData?.topPoints?.[0] || {};
     const topShots = statsData?.topShots?.[0] || {};
 
-    // AI strelec z /api/home → vždy null, zobrazíme placeholder
-    const aiScorer = homeData.aiScorerTip || null;
-
-    // 2️⃣ HTML štruktúra layoutu
+    // AI strelec – DOMA ZATIAĽ PLACEHOLDER
     let html = `
       <div class="home-container">
         
@@ -178,14 +174,14 @@ async function displayHome() {
 
     home.innerHTML = html;
 
-    // 3️⃣ Po načítaní stránky spusti AI výpočet NEBLOKUJÚCO
+    // 3️⃣ NEBLOKUJÚCI AI strelec – volá náš nový endpoint
     setTimeout(async () => {
       try {
-        const resp = await fetch("/api/ai-scorer", { cache: "no-store" });
+        const resp = await fetch("/api/ai?task=scorer", { cache: "no-store" });
         if (!resp.ok) return;
 
         const data = await resp.json();
-        const ai = data.aiScorerTip;
+        const ai = data?.aiScorerTip;
 
         const box = document.querySelector("#home-section .ai-scorer-box");
         if (!box) return;
@@ -205,9 +201,9 @@ async function displayHome() {
           </div>
         `;
       } catch (err) {
-        console.warn("⚠️ chybný AI scorer:", err.message);
+        console.warn("⚠️ AI scorer failed:", err.message);
       }
-    }, 500); // 500ms = super rýchle, stránka sa neblokuje
+    }, 300); // rýchly refresh po 0.3 sekundy
 
   } catch (err) {
     console.error("❌ Chyba domov:", err);
