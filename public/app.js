@@ -154,7 +154,7 @@ async function displayHome() {
                   <p>🧠 Pravdepodobnosť gólu: <b style="color:#ffcc00;">${aiScorer.probability}%</b></p>
                 </div>
               `
-                : `<p style="color:#aaa;">Dáta sa načítavajú...</p>`
+                : `<p style="color:#aaa;">Prebieha AI výpočet...</p>`
             }
           </div>
         </div>
