@@ -3099,7 +3099,7 @@ body {
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .home-panel::before {
@@ -3597,6 +3597,70 @@ body {
 
   .ai-player {
     max-width: 95px;
+  }
+}
+
+/* AI celý panel – nech sa normálne roztiahne */
+.ai-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow: visible !important;
+}
+
+/* Box strelca dňa */
+.ai-today-box {
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+/* História – nech sa nerozpadá a NEskrýva */
+.ai-history-box {
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Riadok v histórii – prispôsobí sa mobilu */
+.ai-history-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 2px;
+  font-size: 0.95rem;
+}
+
+/* Dátum */
+.ai-date {
+  color: #aaa;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* Meno hráča */
+.ai-player {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  padding: 0 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Ikona výsledku */
+.ai-result {
+  font-size: 1.2rem;
+}
+
+/* MOBIL – jemné zmenšenie textu */
+@media (max-width: 480px) {
+  .ai-history-row {
+    font-size: 0.8rem;
+  }
+  .ai-player {
+    max-width: 140px;
   }
 }
 
