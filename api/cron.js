@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       await axios.get(`${base}/api/ai?task=update`);
       executed = "update";
     }
-    else if (utcHour === 13 && utcMinute < 5) {
+    else if (utcHour === 12 && utcMinute < 5) {
       await axios.get(`${base}/api/ai?task=scorer`);
       executed = "scorer";
     }

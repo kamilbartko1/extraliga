@@ -95,83 +95,109 @@ async function displayHome() {
   `;
 
   try {
-    // 1️⃣ Načítanie rýchlych dát: zápasy + mini štatistiky
-    const [homeResp, statsResp] = await Promise.all([
+    // 1️⃣ Načítaj rýchle dáta
+    const [homeResp, statsResp, aiGetResp] = await Promise.all([
       fetch("/api/home", { cache: "no-store" }),
-      fetch("/api/statistics", { cache: "no-store" })
+      fetch("/api/statistics", { cache: "no-store" }),
+      fetch("/api/ai?task=get", { cache: "no-store" })
     ]);
-
-    if (!homeResp.ok) throw new Error(`HTTP ${homeResp.status}`);
 
     const homeData = await homeResp.json();
     const statsData = statsResp.ok ? await statsResp.json() : {};
+    const aiData = aiGetResp.ok ? await aiGetResp.json() : { history: [] };
 
     const topGoal = statsData?.topGoals?.[0] || {};
     const topPoints = statsData?.topPoints?.[0] || {};
     const topShots = statsData?.topShots?.[0] || {};
 
-    // 2️⃣ HTML kostra celej domovskej stránky
+    // 2️⃣ Rozdelíme AI dáta
+    const history = (aiData.history || []).filter(h => h.result !== "pending");
+    const todayTip = aiData.history?.find(h => h.result === "pending");
+
     let html = `
       <div class="home-container">
         
-        <!-- 🏒 Dnešné zápasy -->
+        <!-- 🏒 ZÁPASY -->
         <div class="home-panel matches-panel" onclick="showSection('matches-section')">
           <h3>🏒 Dnešné zápasy NHL</h3>
           ${
             homeData.matchesToday.length === 0
               ? `<p style="color:#aaa;">Žiadne zápasy dnes</p>`
-              : homeData.matchesToday
-                  .map(
-                    (m) => `
+              : homeData.matchesToday.map(
+                  m => `
               <div class="match-row">
-                <img src="${m.homeLogo}" alt="${m.homeName}" class="team-logo">
+                <img src="${m.homeLogo}" class="team-logo">
                 <span>${m.homeName}</span>
                 <span style="color:#00eaff;">vs</span>
                 <span>${m.awayName}</span>
-                <img src="${m.awayLogo}" alt="${m.awayName}" class="team-logo">
+                <img src="${m.awayLogo}" class="team-logo">
                 <div class="time">🕒 ${m.startTime}</div>
               </div>
             `
-                  )
-                  .join("")
+                ).join("")
           }
         </div>
 
-        <!-- 🎯 AI STRELEC DŇA + HISTÓRIA -->
-        <div class="home-panel ai-panel" id="ai-panel">
+        <!-- 🎯 AI PANEL rozdelený -->
+        <div class="home-panel ai-panel" onclick="showSection('stats-section')">
           <h3>🎯 AI Strelci Dňa</h3>
 
-          <!-- Horná polovica: dnešný AI tip -->
           <div class="ai-today-box">
-            <p style="color:#aaa;">⏳ Načítavam AI tip...</p>
+            ${
+              todayTip
+                ? `
+              <img src="${todayTip.headshot}" class="player-headshot">
+              <div class="ai-scorer-info">
+                <p><b>${todayTip.player}</b> (${todayTip.team})</p>
+                <p style="color:#00eaff;">${todayTip.match}</p>
+                <p>🥅 Góly: <b>${todayTip.goals}</b> | 🎯 ${todayTip.shots} | ⚡ PP ${todayTip.powerPlayGoals}</p>
+                <p>🧠 Pravdepodobnosť: <b style="color:#ffcc00;">${todayTip.probability}%</b></p>
+              </div>
+            `
+                : `<p style="color:#aaa;">AI tip na dnes ešte nebol vytvorený.</p>`
+            }
           </div>
 
-          <!-- Spodná polovica: história -->
-          <div class="ai-history-box">
-            <h4>📊 História tipov</h4>
-            <div id="ai-history-list"></div>
-            <div id="ai-success-rate" class="ai-success"></div>
+          <hr style="border:0;border-bottom:1px solid #444;margin:12px 0;">
+
+          <h4 style="margin:0 0 10px 0;">📅 História AI tipov</h4>
+
+          <div class="ai-history-list">
+            ${
+              history.length === 0
+                ? `<p style="color:#777;">Žiadne vyhodnotené tipy</p>`
+                : history.map(h => `
+              <div class="ai-history-row">
+                <span>${h.date}</span>
+                <span>${h.player}</span>
+                <span style="color:${h.result === "hit" ? "#00ff77" : "#ff4444"};">
+                  ${h.result === "hit" ? "✔" : "✘"}
+                </span>
+              </div>
+            `).join("")
+            }
           </div>
+
         </div>
 
         <!-- 📊 TOP ŠTATISTIKY -->
         <div class="home-panel stats-panel" onclick="showSection('stats-section')">
           <h3>📊 Top štatistiky hráčov</h3>
-          
+
           <div class="top-player">
-            <img src="${topGoal.headshot || "/icons/nhl_placeholder.svg"}" alt="${topGoal.name}">
+            <img src="${topGoal.headshot || "/icons/nhl_placeholder.svg"}">
             <div><b>${topGoal.name || "-"}</b><br>🥅 ${topGoal.goals || 0} gólov</div>
             <span class="stat-label">Top Góly</span>
           </div>
 
           <div class="top-player">
-            <img src="${topPoints.headshot || "/icons/nhl_placeholder.svg"}" alt="${topPoints.name}">
+            <img src="${topPoints.headshot || "/icons/nhl_placeholder.svg"}">
             <div><b>${topPoints.name || "-"}</b><br>⚡ ${topPoints.points || 0} bodov</div>
             <span class="stat-label">Top Body</span>
           </div>
 
           <div class="top-player">
-            <img src="${topShots.headshot || "/icons/nhl_placeholder.svg"}" alt="${topShots.name}">
+            <img src="${topShots.headshot || "/icons/nhl_placeholder.svg"}">
             <div><b>${topShots.name || "-"}</b><br>🎯 ${topShots.shots || 0} striel</div>
             <span class="stat-label">Top Strely</span>
           </div>
@@ -183,77 +209,7 @@ async function displayHome() {
 
     home.innerHTML = html;
 
-    // 3️⃣ AI STRELEC DŇA (horná polovica)
-    setTimeout(async () => {
-      try {
-        const resp = await fetch("/api/ai?task=scorer", { cache: "no-store" });
-        if (!resp.ok) return;
-
-        const data = await resp.json();
-        const ai = data?.aiScorerTip;
-
-        const box = document.querySelector("#home-section .ai-today-box");
-        if (!box) return;
-
-        if (!ai) {
-          box.innerHTML = `<p style="color:#aaa;">AI strelca sa zatiaľ nepodarilo vypočítať.</p>`;
-          return;
-        }
-
-        box.innerHTML = `
-          <img src="${ai.headshot || "/icons/nhl_placeholder.svg"}" class="player-headshot">
-          <div class="ai-scorer-info">
-            <p><b>${ai.player}</b> (${ai.team})</p>
-            <p style="color:#00eaff;">${ai.match}</p>
-            <p>🥅 Góly: <b>${ai.goals}</b> | 🎯 Strely: <b>${ai.shots}</b> | ⚡ PP: <b>${ai.powerPlayGoals}</b></p>
-            <p>🧠 Pravdepodobnosť gólu: <b style="color:#ffcc00;">${ai.probability}%</b></p>
-          </div>
-        `;
-      } catch (err) {
-        console.warn("⚠️ AI scorer failed:", err.message);
-      }
-    }, 300);
-
-    // 4️⃣ AI HISTÓRIA TIPOV (spodná polovica)
-    setTimeout(async () => {
-      try {
-        const histResp = await fetch("/api/ai?task=get", { cache: "no-store" });
-        if (!histResp.ok) return;
-
-        const hist = await histResp.json();
-        const list = document.getElementById("ai-history-list");
-        const success = document.getElementById("ai-success-rate");
-
-        if (!list || !success) return;
-
-        list.innerHTML = "";
-        success.innerHTML = "";
-
-        hist.history.forEach((tip) => {
-          const row = document.createElement("div");
-          row.className = "ai-history-row";
-
-          const icon =
-            tip.result === "hit"
-              ? `<span class="ai-hit">✔️</span>`
-              : `<span class="ai-miss">❌</span>`;
-
-          row.innerHTML = `
-            <span>${tip.date} — ${tip.player}</span>
-            ${icon}
-          `;
-
-          list.appendChild(row);
-        });
-
-        success.innerHTML = `Úspešnosť: <b>${hist.successRate}%</b>`;
-      } catch (e) {
-        console.warn("Hist error:", e.message);
-      }
-    }, 600);
-
   } catch (err) {
-    console.error("❌ Chyba domov:", err);
     home.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba: ${err.message}</p>`;
   }
 }
