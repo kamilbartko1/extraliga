@@ -3481,7 +3481,7 @@ body {
 .ai-panel {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 13px;
 }
 
 .ai-today-box {
