@@ -3489,11 +3489,10 @@ body {
   padding-bottom: 12px;
 }
 
-/* Fix: Jednotlivé riadky histórie sa v mobile nezobrazujú */
 .ai-history-box {
-  min-height: 60px;          /* aby sa nikdy nezrútila */
-  display: block !important; /* istota, že nie je hidden */
+  min-height: 60px;
   overflow-y: auto;
+  margin-top: 10px;
 }
 
 .ai-history-row {
@@ -3577,6 +3576,12 @@ body {
     font-size: 1rem;
   }
 }
+
+.ai-panel {
+  overflow: visible !important;
+  cursor: default !important;
+}
+
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
