@@ -3489,10 +3489,11 @@ body {
   padding-bottom: 12px;
 }
 
+/* Fix: Jednotlivé riadky histórie sa v mobile nezobrazujú */
 .ai-history-box {
-  max-height: 180px;
+  min-height: 60px;          /* aby sa nikdy nezrútila */
+  display: block !important; /* istota, že nie je hidden */
   overflow-y: auto;
-  padding-top: 5px;
 }
 
 .ai-history-row {
