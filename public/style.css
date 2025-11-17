@@ -3520,6 +3520,63 @@ body {
   opacity: 0.9;
 }
 
+/* 🔧 AI história – správne zobrazenie aj v mobile */
+.ai-history-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.ai-history-row:last-child {
+  border-bottom: none;
+}
+
+.ai-date {
+  font-size: 0.9rem;
+  color: #aaa;
+  flex: 0 0 auto;
+}
+
+.ai-player {
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  flex: 1;
+  padding: 0 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ai-result {
+  font-size: 1.2rem;
+  flex: 0 0 auto;
+}
+
+/* 📱 Mobilné úpravy */
+@media (max-width: 480px) {
+  .ai-history-row {
+    padding: 6px 6px;
+  }
+
+  .ai-date {
+    font-size: 0.75rem;
+  }
+
+  .ai-player {
+    font-size: 0.8rem;
+    max-width: 120px;
+  }
+
+  .ai-result {
+    font-size: 1rem;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
