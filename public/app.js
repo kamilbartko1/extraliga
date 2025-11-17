@@ -95,7 +95,7 @@ async function displayHome() {
   `;
 
   try {
-    // 1️⃣ Načítaj rýchle dáta (zápasy + mini štatistiky)
+    // 1️⃣ Načítanie rýchlych dát: zápasy + mini štatistiky
     const [homeResp, statsResp] = await Promise.all([
       fetch("/api/home", { cache: "no-store" }),
       fetch("/api/statistics", { cache: "no-store" })
@@ -110,7 +110,7 @@ async function displayHome() {
     const topPoints = statsData?.topPoints?.[0] || {};
     const topShots = statsData?.topShots?.[0] || {};
 
-    // AI strelec – DOMA ZATIAĽ PLACEHOLDER
+    // 2️⃣ HTML kostra celej domovskej stránky
     let html = `
       <div class="home-container">
         
@@ -137,11 +137,20 @@ async function displayHome() {
           }
         </div>
 
-        <!-- 🎯 AI STRELEC DŇA -->
-        <div class="home-panel ai-panel" onclick="showSection('stats-section')">
+        <!-- 🎯 AI STRELEC DŇA + HISTÓRIA -->
+        <div class="home-panel ai-panel" id="ai-panel">
           <h3>🎯 AI Strelci Dňa</h3>
-          <div class="ai-scorer-box">
-            <p style="color:#aaa;">Prebieha AI výpočet...</p>
+
+          <!-- Horná polovica: dnešný AI tip -->
+          <div class="ai-today-box">
+            <p style="color:#aaa;">⏳ Načítavam AI tip...</p>
+          </div>
+
+          <!-- Spodná polovica: história -->
+          <div class="ai-history-box">
+            <h4>📊 História tipov</h4>
+            <div id="ai-history-list"></div>
+            <div id="ai-success-rate" class="ai-success"></div>
           </div>
         </div>
 
@@ -174,7 +183,7 @@ async function displayHome() {
 
     home.innerHTML = html;
 
-    // 3️⃣ NEBLOKUJÚCI AI strelec – volá náš nový endpoint
+    // 3️⃣ AI STRELEC DŇA (horná polovica)
     setTimeout(async () => {
       try {
         const resp = await fetch("/api/ai?task=scorer", { cache: "no-store" });
@@ -183,7 +192,7 @@ async function displayHome() {
         const data = await resp.json();
         const ai = data?.aiScorerTip;
 
-        const box = document.querySelector("#home-section .ai-scorer-box");
+        const box = document.querySelector("#home-section .ai-today-box");
         if (!box) return;
 
         if (!ai) {
@@ -203,7 +212,45 @@ async function displayHome() {
       } catch (err) {
         console.warn("⚠️ AI scorer failed:", err.message);
       }
-    }, 300); // rýchly refresh po 0.3 sekundy
+    }, 300);
+
+    // 4️⃣ AI HISTÓRIA TIPOV (spodná polovica)
+    setTimeout(async () => {
+      try {
+        const histResp = await fetch("/api/ai?task=get", { cache: "no-store" });
+        if (!histResp.ok) return;
+
+        const hist = await histResp.json();
+        const list = document.getElementById("ai-history-list");
+        const success = document.getElementById("ai-success-rate");
+
+        if (!list || !success) return;
+
+        list.innerHTML = "";
+        success.innerHTML = "";
+
+        hist.history.forEach((tip) => {
+          const row = document.createElement("div");
+          row.className = "ai-history-row";
+
+          const icon =
+            tip.result === "hit"
+              ? `<span class="ai-hit">✔️</span>`
+              : `<span class="ai-miss">❌</span>`;
+
+          row.innerHTML = `
+            <span>${tip.date} — ${tip.player}</span>
+            ${icon}
+          `;
+
+          list.appendChild(row);
+        });
+
+        success.innerHTML = `Úspešnosť: <b>${hist.successRate}%</b>`;
+      } catch (e) {
+        console.warn("Hist error:", e.message);
+      }
+    }, 600);
 
   } catch (err) {
     console.error("❌ Chyba domov:", err);

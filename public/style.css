@@ -3478,6 +3478,48 @@ body {
   }
 }
 
+.ai-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.ai-today-box {
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding-bottom: 12px;
+}
+
+.ai-history-box {
+  max-height: 180px;
+  overflow-y: auto;
+  padding-top: 5px;
+}
+
+.ai-history-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 2px;
+  border-bottom: 1px dashed rgba(255,255,255,0.1);
+  font-size: 0.9rem;
+}
+
+.ai-hit {
+  color: #00ff7f;
+  font-weight: bold;
+}
+
+.ai-miss {
+  color: #ff4d4d;
+  font-weight: bold;
+}
+
+.ai-success {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  opacity: 0.9;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
