@@ -162,6 +162,13 @@ async function displayHome() {
 
           <h4 style="margin:0 0 10px 0;">📅 História AI tipov</h4>
 
+          <div class="ai-success-box" style="margin-bottom:10px;color:#ccc;">
+            Úspešnosť AI: 
+            <b style="color:#ffcc00;">${aiData.successRate}%</b>
+            <br>
+            (<span style="color:#00ff77;">${aiData.hits} správnych</span> z ${aiData.total})
+          </div>
+
           <div class="ai-history-list">
             ${
               history.length === 0
