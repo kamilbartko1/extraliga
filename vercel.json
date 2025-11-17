@@ -10,16 +10,8 @@
   ],
   "crons": [
     {
-      "path": "/api/ai?task=update",
-      "schedule": "0 9 * * *"
-    },
-    {
-      "path": "/api/ai?task=scorer",
-      "schedule": "0 13 * * *"
-    },
-    {
-      "path": "/api/ai?task=save",
-      "schedule": "0 14 * * *"
+      "path": "/api/cron",
+      "schedule": "*/5 * * * *"
     }
   ]
 }
