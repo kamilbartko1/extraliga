@@ -7,5 +7,19 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1.js" },
     { "src": "/(.*)", "dest": "/public/$1" }
+  ],
+  "crons": [
+    {
+      "path": "/api/ai?task=update",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/ai?task=scorer",
+      "schedule": "0 13 * * *"
+    },
+    {
+      "path": "/api/ai?task=save",
+      "schedule": "0 14 * * *"
+    }
   ]
 }
