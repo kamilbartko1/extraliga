@@ -198,7 +198,7 @@ async function displayHome() {
     <span class="stat-label">Top Góly</span>
   </div>
 
-  <!-- 🅰️ Top Asistencie (NOVÉ) -->
+  <!-- 🅰️ Top Asistencie -->
   <div class="top-player">
     <img src="${(statsData?.topAssists?.[0]?.headshot) || "/icons/nhl_placeholder.svg"}">
     <div>
@@ -213,6 +213,16 @@ async function displayHome() {
     <img src="${topPoints.headshot || "/icons/nhl_placeholder.svg"}">
     <div><b>${topPoints.name || "-"}</b><br>⚡ ${topPoints.points || 0} bodov</div>
     <span class="stat-label">Top Body</span>
+  </div>
+
+  <!-- 🔌 Top Presilovkové Góly (PP Goals) – NOVÉ -->
+  <div class="top-player">
+    <img src="${(statsData?.topPowerPlayGoals?.[0]?.headshot) || "/icons/nhl_placeholder.svg"}">
+    <div>
+      <b>${statsData?.topPowerPlayGoals?.[0]?.name || "-"}</b><br>
+      🔌 ${statsData?.topPowerPlayGoals?.[0]?.powerPlayGoals || 0} PP gólov
+    </div>
+    <span class="stat-label">Top PP Góly</span>
   </div>
 
   <!-- 🎯 Top Strely -->
