@@ -3577,11 +3577,28 @@ body {
   }
 }
 
-.ai-panel {
-  overflow: visible !important;
-  cursor: default !important;
+.ai-history-box {
+  max-height: 120px;
+  overflow-y: auto;
+  margin-top: 15px;
+  padding-right: 6px;
 }
 
+.ai-scorer-box, .ai-history-box {
+  width: 100%;
+  overflow: hidden;
+}
+
+@media (max-width: 480px) {
+  .ai-history-row {
+    font-size: 0.78rem;
+    padding: 4px 4px;
+  }
+
+  .ai-player {
+    max-width: 95px;
+  }
+}
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
