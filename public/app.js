@@ -582,6 +582,16 @@ function displayPlayerRatings() {
   });
 }
 
+function openRatingModal() {
+  document.getElementById("ratingModal").style.display = "flex";
+}
+
+function closeRatingModal(e) {
+  if (!e || e.target.id === "ratingModal") {
+    document.getElementById("ratingModal").style.display = "none";
+  }
+}
+
 // === Mantingal sekcia (nová verzia) ===
 async function displayMantingal() {
   const container = document.getElementById("mantingal-container");

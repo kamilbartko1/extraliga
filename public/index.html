@@ -88,18 +88,68 @@
       </table>
     </div>
 
-    <!-- 🧑‍🚀 Rating hráčov -->
-    <div class="section" id="players-section">
-      <h2>Rating hráčov</h2>
-      <table id="playerRatings">
-        <thead>
-          <tr>
-            <th>Hráč</th>
-            <th>Rating</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+   <!-- 🧑‍🚀 Rating hráčov -->
+<div class="section" id="players-section">
+  <h2>
+    Rating hráčov
+    <span class="rating-info-btn" onclick="openRatingModal()">ℹ️</span>
+  </h2>
+
+  <table id="playerRatings">
+    <thead>
+      <tr>
+        <th>Hráč</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<!-- ⭐ MODAL: Ako funguje rating hráčov -->
+<div id="ratingModal" class="modal-overlay" onclick="closeRatingModal(event)">
+  <div class="modal-content">
+    <h2>🧠 Ako funguje NHLPRO Rating hráčov?</h2>
+
+    <p><b>NHLPRO Rating</b> je vlastný analytický index vytvorený len pre NHLPRO.sk.
+    Kombinuje góly, asistencie, strely, presilovky, formu aj dlhodobú výkonnosť hráča.
+    Tento systém je unikátny – nenájdete ho na žiadnom inom portáli.</p>
+
+    <h3>🔥 1. Produktivita</h3>
+    <ul>
+      <li>Gól = 20 bodov</li>
+      <li>Asistencia = 10 bodov</li>
+      <li>Dôležité góly majú vyššiu váhu</li>
+      <li>Presilovkové góly a asistencie majú bonus</li>
+    </ul>
+
+    <h3>🎯 2. Ofenzívna aktivita</h3>
+    <ul>
+      <li>Počet striel</li>
+      <li>Účasť na tvorbe šancí</li>
+      <li>Útočná aktivita a tlak</li>
+    </ul>
+
+    <h3>⚡ 3. Špeciálne formácie</h3>
+    <ul>
+      <li>Výkon v presilovkách (PP)</li>
+      <li>Oslabenia (PK)</li>
+      <li>Kľúčové momenty zápasov</li>
+    </ul>
+
+    <h3>📈 4. Aktuálna forma</h3>
+    <p>Rating sa mení podľa posledných zápasov – rýchlo rastie pri dobrej forme, klesá pri slabých výkonoch.</p>
+
+    <h3>🎚️ 5. Celosezónna stabilita</h3>
+    <p>Systém započítava celú sezónu, aby hodnotenie nekolísalo len podľa jedného zápasu.</p>
+
+    <p><b>NHLPRO Rating</b> je navrhnutý pre predikcie, analýzy a výber strelcov.  
+    Ide o unikátny model vyvinutý exkluzívne pre túto stránku.</p>
+
+    <button class="close-modal-btn" onclick="closeRatingModal()">Zavrieť</button>
+  </div>
+</div>
+
       <div id="mantingal-container-pc"></div>
     </div>
 
