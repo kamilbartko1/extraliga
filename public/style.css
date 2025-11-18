@@ -3617,10 +3617,7 @@ body {
 
   /* história tipov musí mať vlastný scroll */
   @media (max-width: 768px) {
-  .home-panel {
-    overflow: visible !important;
-  }
-
+  
   .ai-history-list {
     max-height: 180px;
     overflow-y: auto;
@@ -3629,7 +3626,6 @@ body {
   }
 }
 }
-
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
