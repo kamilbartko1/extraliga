@@ -3627,6 +3627,28 @@ body {
 }
 }
 
+@media (max-width: 768px) {
+
+  .home-container {
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .home-panel {
+    width: 92% !important;
+    margin-bottom: 22px !important;
+    overflow: visible !important;
+  }
+
+  .ai-history-list {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-y: auto !important;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
