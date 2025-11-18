@@ -3489,10 +3489,16 @@ body {
   padding-bottom: 12px;
 }
 
-.ai-history-box {
-  min-height: 60px;
+.ai-history-list {
+  max-height: 220px;
   overflow-y: auto;
-  margin-top: 10px;
+  margin-top: 15px;
+  padding-right: 6px;
+}
+
+.ai-scorer-box, .ai-history-list {
+  width: 100%;
+  overflow: hidden;
 }
 
 .ai-history-row {
@@ -3616,10 +3622,11 @@ body {
 
   /* história tipov musí mať vlastný scroll */
   .ai-history-list {
-    max-height: 220px;
-    overflow-y: auto;
-    padding-bottom: 10px;
-  }
+  max-height: 220px;
+  overflow-y: auto;
+  margin-top: 15px;
+  padding-right: 6px;
+}
 }
 
 
