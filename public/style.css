@@ -3600,22 +3600,25 @@ body {
   }
 }
 
-/* 📱 Mobilná verzia – AI panel so scrollom */
-@media (max-width: 480px) {
+/* 📱 MOBILNÁ VERZIA */
+@media (max-width: 768px) {
 
+  /* celý AI panel sa má zväčšovať podľa obsahu */
   .ai-panel {
-    max-height: 420px;      /* výška boxu na mobile */
-    overflow-y: auto;       /* vertikálny posuvník */
-    padding-right: 10px;    /* nech sa neoreže obsah */
+    height: auto !important;
+    overflow: visible !important;
   }
 
-  .ai-history-list {
-    max-height: 240px;      /* história tiež pekne scrollovateľná */
-    overflow-y: auto;
-  }
-
+  /* box s AI strelcom musí mať minimálnu výšku aby panel neskočil */
   .ai-today-box {
-    margin-bottom: 10px;
+    min-height: 120px;
+  }
+
+  /* história tipov musí mať vlastný scroll */
+  .ai-history-list {
+    max-height: 220px;
+    overflow-y: auto;
+    padding-bottom: 10px;
   }
 }
 
