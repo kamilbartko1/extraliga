@@ -95,29 +95,34 @@ async function displayHome() {
   `;
 
   try {
-    // 1️⃣ Načítaj rýchle dáta
-    const [homeResp, statsResp, aiGetResp] = await Promise.all([
+    // 1️⃣ Stiahneme všetky potrebné dáta
+    const [homeResp, statsResp, aiGetResp, aiScorerResp] = await Promise.all([
       fetch("/api/home", { cache: "no-store" }),
       fetch("/api/statistics", { cache: "no-store" }),
-      fetch("/api/ai?task=get", { cache: "no-store" })
+      fetch("/api/ai?task=get", { cache: "no-store" }),
+      fetch("/api/ai?task=scorer", { cache: "no-store" })
     ]);
 
     const homeData = await homeResp.json();
     const statsData = statsResp.ok ? await statsResp.json() : {};
-    const aiData = aiGetResp.ok ? await aiGetResp.json() : { history: [] };
 
+    // AI história (GET)
+    const aiData = aiGetResp.ok ? await aiGetResp.json() : { history: [], hits: 0, total: 0, successRate: 0 };
+    const history = (aiData.history || []).filter(h => h.result !== "pending");
+
+    // AI TIP NA DNES (always live)
+    const scorerData = aiScorerResp.ok ? await aiScorerResp.json() : {};
+    const todayTip = scorerData.aiScorerTip || null;
+
+    // Top štatistiky
     const topGoal = statsData?.topGoals?.[0] || {};
     const topPoints = statsData?.topPoints?.[0] || {};
     const topShots = statsData?.topShots?.[0] || {};
 
-    // 2️⃣ Rozdelíme AI dáta
-    const history = (aiData.history || []).filter(h => h.result !== "pending");
-    const todayTip = aiData.history?.find(h => h.result === "pending");
-
     let html = `
       <div class="home-container">
         
-        <!-- 🏒 ZÁPASY -->
+        <!-- 🏒 Zápasy -->
         <div class="home-panel matches-panel" onclick="showSection('matches-section')">
           <h3>🏒 Dnešné zápasy NHL</h3>
           ${
@@ -138,7 +143,7 @@ async function displayHome() {
           }
         </div>
 
-        <!-- 🎯 AI PANEL rozdelený -->
+        <!-- 🎯 AI PANEL -->
         <div class="home-panel ai-panel" onclick="showSection('stats-section')">
           <h3>🎯 AI Strelci Dňa</h3>
 
@@ -175,9 +180,9 @@ async function displayHome() {
                 ? `<p style="color:#777;">Žiadne vyhodnotené tipy</p>`
                 : history.map(h => `
               <div class="ai-history-row">
-                <span>${h.date}</span>
-                <span>${h.player}</span>
-                <span style="color:${h.result === "hit" ? "#00ff77" : "#ff4444"};">
+                <span class="ai-date">${h.date}</span>
+                <span class="ai-player">${h.player}</span>
+                <span class="ai-result" style="color:${h.result === "hit" ? "#00ff77" : "#ff4444"};">
                   ${h.result === "hit" ? "✔" : "✘"}
                 </span>
               </div>
@@ -188,50 +193,52 @@ async function displayHome() {
         </div>
 
         <!-- 📊 TOP ŠTATISTIKY -->
-<div class="home-panel stats-panel" onclick="showSection('stats-section')">
-  <h3>📊 Top štatistiky hráčov</h3>
+        <div class="home-panel stats-panel" onclick="showSection('stats-section')">
+          <h3>📊 Top štatistiky hráčov</h3>
 
-  <!-- 🥅 Top Góly -->
-  <div class="top-player">
-    <img src="${topGoal.headshot || "/icons/nhl_placeholder.svg"}">
-    <div><b>${topGoal.name || "-"}</b><br>🥅 ${topGoal.goals || 0} gólov</div>
-    <span class="stat-label">Top Góly</span>
-  </div>
+          <!-- 🥅 Top Góly -->
+          <div class="top-player">
+            <img src="${topGoal.headshot || "/icons/nhl_placeholder.svg"}">
+            <div><b>${topGoal.name || "-"}</b><br>🥅 ${topGoal.goals || 0} gólov</div>
+            <span class="stat-label">Top Góly</span>
+          </div>
 
-  <!-- 🅰️ Top Asistencie -->
-  <div class="top-player">
-    <img src="${(statsData?.topAssists?.[0]?.headshot) || "/icons/nhl_placeholder.svg"}">
-    <div>
-      <b>${statsData?.topAssists?.[0]?.name || "-"}</b><br>
-      🅰️ ${statsData?.topAssists?.[0]?.assists || 0} asistencií
-    </div>
-    <span class="stat-label">Top Asistencie</span>
-  </div>
+          <!-- 🅰️ Top Asistencie -->
+          <div class="top-player">
+            <img src="${(statsData?.topAssists?.[0]?.headshot) || "/icons/nhl_placeholder.svg"}">
+            <div>
+              <b>${statsData?.topAssists?.[0]?.name || "-"}</b><br>
+              🅰️ ${statsData?.topAssists?.[0]?.assists || 0} asistencií
+            </div>
+            <span class="stat-label">Top Asistencie</span>
+          </div>
 
-  <!-- ⚡ Top Body -->
-  <div class="top-player">
-    <img src="${topPoints.headshot || "/icons/nhl_placeholder.svg"}">
-    <div><b>${topPoints.name || "-"}</b><br>⚡ ${topPoints.points || 0} bodov</div>
-    <span class="stat-label">Top Body</span>
-  </div>
+          <!-- ⚡ Top Body -->
+          <div class="top-player">
+            <img src="${topPoints.headshot || "/icons/nhl_placeholder.svg"}">
+            <div><b>${topPoints.name || "-"}</b><br>⚡ ${topPoints.points || 0} bodov</div>
+            <span class="stat-label">Top Body</span>
+          </div>
 
-  <!-- 🔌 Top Presilovkové Góly (PP Goals) – NOVÉ -->
-  <div class="top-player">
-    <img src="${(statsData?.topPowerPlayGoals?.[0]?.headshot) || "/icons/nhl_placeholder.svg"}">
-    <div>
-      <b>${statsData?.topPowerPlayGoals?.[0]?.name || "-"}</b><br>
-      🔌 ${statsData?.topPowerPlayGoals?.[0]?.powerPlayGoals || 0} PP gólov
-    </div>
-    <span class="stat-label">Top PP Góly</span>
-  </div>
+          <!-- 🔌 Top PP Góly -->
+          <div class="top-player">
+            <img src="${(statsData?.topPowerPlayGoals?.[0]?.headshot) || "/icons/nhl_placeholder.svg"}">
+            <div>
+              <b>${statsData?.topPowerPlayGoals?.[0]?.name || "-"}</b><br>
+              🔌 ${statsData?.topPowerPlayGoals?.[0]?.powerPlayGoals || 0} PP gólov
+            </div>
+            <span class="stat-label">Top PP Góly</span>
+          </div>
 
-  <!-- 🎯 Top Strely -->
-  <div class="top-player">
-    <img src="${topShots.headshot || "/icons/nhl_placeholder.svg"}">
-    <div><b>${topShots.name || "-"}</b><br>🎯 ${topShots.shots || 0} striel</div>
-    <span class="stat-label">Top Strely</span>
-  </div>
-</div>
+          <!-- 🎯 Top Strely -->
+          <div class="top-player">
+            <img src="${topShots.headshot || "/icons/nhl_placeholder.svg"}">
+            <div><b>${topShots.name || "-"}</b><br>🎯 ${topShots.shots || 0} striel</div>
+            <span class="stat-label">Top Strely</span>
+          </div>
+
+        </div>
+      </div>
 
       <footer class="home-footer">© 2025 NHLPRO.sk | AI hokejové predikcie</footer>
     `;
