@@ -3479,10 +3479,11 @@ body {
 }
 
 .ai-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
+  display: block !important;
+  height: auto !important;
+  overflow: visible !important;
 }
+
 
 .ai-today-box {
   border-bottom: 1px solid rgba(255,255,255,0.15);
@@ -3608,12 +3609,6 @@ body {
 
 /* 📱 MOBILNÁ VERZIA */
 @media (max-width: 768px) {
-
-  /* celý AI panel sa má zväčšovať podľa obsahu */
-  .ai-panel {
-    height: auto !important;
-    overflow: visible !important;
-  }
 
   /* box s AI strelcom musí mať minimálnu výšku aby panel neskočil */
   .ai-today-box {
