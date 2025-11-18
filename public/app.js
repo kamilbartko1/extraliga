@@ -85,7 +85,7 @@ async function preloadMatchesData() {
   }
 }
 
-// === DOMOVSKÁ STRÁNKA (moderný 3-panelový layout) ===
+// === DOMOVSKÁ STRÁNKA – RÝCHLE NAČÍTANIE, AI SA DOLOŽÍ NESKÔR ===
 async function displayHome() {
   const home = document.getElementById("home-section");
   if (!home) return;
@@ -95,33 +95,32 @@ async function displayHome() {
   `;
 
   try {
-    // 1️⃣ Stiahneme všetky potrebné dáta
-    const [homeResp, statsResp, aiGetResp, aiScorerResp] = await Promise.all([
+    // 🔥 1️⃣ RÝCHLE API – len zápasy, štatistiky a AI história
+    const [homeResp, statsResp, aiGetResp] = await Promise.all([
       fetch("/api/home", { cache: "no-store" }),
       fetch("/api/statistics", { cache: "no-store" }),
-      fetch("/api/ai?task=get", { cache: "no-store" }),
-      fetch("/api/ai?task=scorer", { cache: "no-store" })
+      fetch("/api/ai?task=get", { cache: "no-store" })
     ]);
 
     const homeData = await homeResp.json();
     const statsData = statsResp.ok ? await statsResp.json() : {};
 
-    // AI história (GET)
-    const aiData = aiGetResp.ok ? await aiGetResp.json() : { history: [], hits: 0, total: 0, successRate: 0 };
+    // AI história (bez dnešného live výpočtu)
+    const aiData = aiGetResp.ok
+      ? await aiGetResp.json()
+      : { history: [], hits: 0, total: 0, successRate: 0 };
+
     const history = (aiData.history || []).filter(h => h.result !== "pending");
 
-    // AI TIP NA DNES (always live)
-    const scorerData = aiScorerResp.ok ? await aiScorerResp.json() : {};
-    const todayTip = scorerData.aiScorerTip || null;
-
-    // Top štatistiky
+    // 🔝 Štatistiky hráčov
     const topGoal = statsData?.topGoals?.[0] || {};
     const topPoints = statsData?.topPoints?.[0] || {};
     const topShots = statsData?.topShots?.[0] || {};
 
+    // 🔥 2️⃣ VŠETKO OKREM AI TIPU SA RENDERUJE HNEĎ
     let html = `
       <div class="home-container">
-        
+
         <!-- 🏒 Zápasy -->
         <div class="home-panel matches-panel" onclick="showSection('matches-section')">
           <h3>🏒 Dnešné zápasy NHL</h3>
@@ -129,7 +128,7 @@ async function displayHome() {
             homeData.matchesToday.length === 0
               ? `<p style="color:#aaa;">Žiadne zápasy dnes</p>`
               : homeData.matchesToday.map(
-                  m => `
+                  (m) => `
               <div class="match-row">
                 <img src="${m.homeLogo}" class="team-logo">
                 <span>${m.homeName}</span>
@@ -143,24 +142,12 @@ async function displayHome() {
           }
         </div>
 
-        <!-- 🎯 AI PANEL -->
-        <div class="home-panel ai-panel" onclick="showSection('stats-section')">
+        <!-- 🎯 AI STRELEC DŇA – NA ZAČIATKU LEN LOADING -->
+        <div class="home-panel ai-panel">
           <h3>🎯 AI Strelci Dňa</h3>
 
-          <div class="ai-today-box">
-            ${
-              todayTip
-                ? `
-              <img src="${todayTip.headshot}" class="player-headshot">
-              <div class="ai-scorer-info">
-                <p><b>${todayTip.player}</b> (${todayTip.team})</p>
-                <p style="color:#00eaff;">${todayTip.match}</p>
-                <p>🥅 Góly: <b>${todayTip.goals}</b> | 🎯 ${todayTip.shots} | ⚡ PP ${todayTip.powerPlayGoals}</p>
-                <p>🧠 Pravdepodobnosť: <b style="color:#ffcc00;">${todayTip.probability}%</b></p>
-              </div>
-            `
-                : `<p style="color:#aaa;">AI tip na dnes ešte nebol vytvorený.</p>`
-            }
+          <div class="ai-today-box" id="ai-today-loading">
+            <p style="color:#aaa;">⏳ Prebieha AI výpočet strelca...</p>
           </div>
 
           <hr style="border:0;border-bottom:1px solid #444;margin:12px 0;">
@@ -169,8 +156,7 @@ async function displayHome() {
 
           <div class="ai-success-box" style="margin-bottom:10px;color:#ccc;">
             Úspešnosť AI: 
-            <b style="color:#ffcc00;">${aiData.successRate}%</b>
-            <br>
+            <b style="color:#ffcc00;">${aiData.successRate}%</b><br>
             (<span style="color:#00ff77;">${aiData.hits} správnych</span> z ${aiData.total})
           </div>
 
@@ -189,54 +175,43 @@ async function displayHome() {
             `).join("")
             }
           </div>
-
         </div>
 
         <!-- 📊 TOP ŠTATISTIKY -->
         <div class="home-panel stats-panel" onclick="showSection('stats-section')">
           <h3>📊 Top štatistiky hráčov</h3>
 
-          <!-- 🥅 Top Góly -->
           <div class="top-player">
             <img src="${topGoal.headshot || "/icons/nhl_placeholder.svg"}">
             <div><b>${topGoal.name || "-"}</b><br>🥅 ${topGoal.goals || 0} gólov</div>
             <span class="stat-label">Top Góly</span>
           </div>
 
-          <!-- 🅰️ Top Asistencie -->
           <div class="top-player">
             <img src="${(statsData?.topAssists?.[0]?.headshot) || "/icons/nhl_placeholder.svg"}">
-            <div>
-              <b>${statsData?.topAssists?.[0]?.name || "-"}</b><br>
-              🅰️ ${statsData?.topAssists?.[0]?.assists || 0} asistencií
-            </div>
+            <div><b>${statsData?.topAssists?.[0]?.name || "-"}</b><br>
+            🅰️ ${statsData?.topAssists?.[0]?.assists || 0} asistencií</div>
             <span class="stat-label">Top Asistencie</span>
           </div>
 
-          <!-- ⚡ Top Body -->
           <div class="top-player">
             <img src="${topPoints.headshot || "/icons/nhl_placeholder.svg"}">
             <div><b>${topPoints.name || "-"}</b><br>⚡ ${topPoints.points || 0} bodov</div>
             <span class="stat-label">Top Body</span>
           </div>
 
-          <!-- 🔌 Top PP Góly -->
           <div class="top-player">
             <img src="${(statsData?.topPowerPlayGoals?.[0]?.headshot) || "/icons/nhl_placeholder.svg"}">
-            <div>
-              <b>${statsData?.topPowerPlayGoals?.[0]?.name || "-"}</b><br>
-              🔌 ${statsData?.topPowerPlayGoals?.[0]?.powerPlayGoals || 0} PP gólov
-            </div>
+            <div><b>${statsData?.topPowerPlayGoals?.[0]?.name || "-"}</b><br>
+            🔌 ${statsData?.topPowerPlayGoals?.[0]?.powerPlayGoals || 0} PP gólov</div>
             <span class="stat-label">Top PP Góly</span>
           </div>
 
-          <!-- 🎯 Top Strely -->
           <div class="top-player">
             <img src="${topShots.headshot || "/icons/nhl_placeholder.svg"}">
             <div><b>${topShots.name || "-"}</b><br>🎯 ${topShots.shots || 0} striel</div>
             <span class="stat-label">Top Strely</span>
           </div>
-
         </div>
       </div>
 
@@ -244,6 +219,39 @@ async function displayHome() {
     `;
 
     home.innerHTML = html;
+
+    // 🔥 3️⃣ AI STRELEC SA DOLOŽÍ EXTRA (NEBLOKUJE STRÁNKU)
+    setTimeout(async () => {
+      try {
+        const resp = await fetch("/api/ai?task=scorer", { cache: "no-store" });
+        if (!resp.ok) return;
+
+        const data = await resp.json();
+        const ai = data.aiScorerTip;
+
+        const box = document.getElementById("ai-today-loading");
+        if (!box) return;
+
+        if (!ai) {
+          box.innerHTML = `<p style="color:#aaa;">AI strelec sa nepodarilo vypočítať.</p>`;
+          return;
+        }
+
+        box.innerHTML = `
+          <img src="${ai.headshot}" class="player-headshot">
+          <div class="ai-scorer-info">
+            <p><b>${ai.player}</b> (${ai.team})</p>
+            <p style="color:#00eaff;">${ai.match}</p>
+            <p>🥅 Góly: <b>${ai.goals}</b> | 🎯 ${ai.shots} | ⚡ PP ${ai.powerPlayGoals}</p>
+            <p>🧠 Pravdepodobnosť: 
+              <b style="color:#ffcc00;">${ai.probability}%</b>
+            </p>
+          </div>
+        `;
+      } catch (err) {
+        console.warn("AI scorer load failed:", err.message);
+      }
+    }, 300);
 
   } catch (err) {
     home.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba: ${err.message}</p>`;
