@@ -3616,11 +3616,17 @@ body {
   }
 
   /* história tipov musí mať vlastný scroll */
+  @media (max-width: 768px) {
+  .home-panel {
+    overflow: visible !important;
+  }
+
   .ai-history-list {
-  max-height: 220px;
-  overflow-y: auto;
-  margin-top: 15px;
-  padding-right: 6px;
+    max-height: 180px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+    padding-bottom: 4px;
+  }
 }
 }
 
