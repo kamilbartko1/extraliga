@@ -74,19 +74,79 @@
 
     <div id="load-status" style="color:#aaa; font-size:14px; margin:10px 0;text-align:center;"></div>
 
-    <!-- 📊 Rating tímov -->
-    <div class="section" id="teams-section">
-      <h2>Rating tímov</h2>
-      <table id="teamRatings">
-        <thead>
-          <tr>
-            <th>Tím</th>
-            <th>Rating</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+   <!-- 📊 Rating tímov -->
+<div class="section" id="teams-section">
+  <h2>
+    Rating tímov
+    <span class="rating-info-btn" onclick="openTeamRatingModal()">ℹ️</span>
+  </h2>
+
+  <table id="teamRatings">
+    <thead>
+      <tr>
+        <th>Tím</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<!-- ⭐ MODAL: Ako funguje Rating tímov -->
+<div id="teamRatingModal" class="modal-overlay" onclick="closeTeamRatingModal(event)">
+  <div class="modal-content">
+
+    <h2>🧠 Ako funguje NHLPRO Rating tímov?</h2>
+
+    <p>
+      <b>NHLPRO Team Rating</b> je vlastný analytický index výkonnosti tímov,
+      ktorý kombinuje výsledky, formu, ofenzívu, defenzívu, presilovky a
+      celkovú stabilitu tímu počas celej sezóny. Ide o unikátny systém, ktorý
+      nenájdete na žiadnom inom portáli.
+    </p>
+
+    <h3>🔥 Výsledky & forma</h3>
+    <ul>
+      <li>Víťazstvo = +10 bodov</li>
+      <li>Prehra = -10 bodov</li>
+      <li>Séria výhier / prehier</li>
+      <li>Sila súperov (ťažký vs. slabý súper)</li>
+    </ul>
+
+    <h3>🎯 Ofenzíva</h3>
+    <ul>
+      <li>Počet strelených gólov</li>
+      <li>Tlak v útočnom pásme</li>
+      <li>Efektivita presiloviek (PP %)</li>
+      <li>Kvalita vytvorených šancí</li>
+    </ul>
+
+    <h3>🛡️ Defenzíva</h3>
+    <ul>
+      <li>Inkasované góly</li>
+      <li>Účinnosť oslabení (PK %)</li>
+      <li>Disciplína obranného pásma</li>
+      <li>Brankársky výkon (základný vplyv)</li>
+    </ul>
+
+    <h3>⚡ Špeciálne formácie</h3>
+    <ul>
+      <li>Presilovky (PP efektivita)</li>
+      <li>Oslabenia (PK efektivita)</li>
+      <li>Presilovkové góly</li>
+      <li>Defenzíva v oslabení</li>
+    </ul>
+
+    <h3>📈 Celková stabilita</h3>
+    <p>
+      Rating sleduje dlhodobú konzistentnosť tímu a rovnováhu medzi útokom a
+      obranou. Tímy so stabilnými výkonmi počas celej sezóny dosahujú najvyššie
+      hodnoty.
+    </p>
+
+    <button class="close-modal-btn" onclick="closeTeamRatingModal()">Zavrieť</button>
+  </div>
+</div>
 
    <!-- 🧑‍🚀 Rating hráčov -->
 <div class="section" id="players-section">

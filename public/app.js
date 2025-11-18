@@ -546,6 +546,16 @@ async function loadPlayerTeams() {
   }
 }
 
+function openTeamRatingModal() {
+  document.getElementById("teamRatingModal").style.display = "flex";
+}
+
+function closeTeamRatingModal(e) {
+  if (!e || e.target.id === "teamRatingModal") {
+    document.getElementById("teamRatingModal").style.display = "none";
+  }
+}
+
 // === Rating hráčov ===
 function displayPlayerRatings() {
   const tableBody = document.querySelector("#playerRatings tbody");
