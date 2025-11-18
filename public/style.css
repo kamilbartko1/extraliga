@@ -3089,7 +3089,7 @@ body {
 
 /* === 🧊 VŠETKY PANELY === */
 .home-panel {
-  flex: -3 1 350px;
+  flex: 0 0 430px;
   min-height: 260px;
   background: linear-gradient(145deg, rgba(10, 20, 35, 0.9), rgba(5, 10, 20, 0.95));
   border: 1px solid rgba(0, 234, 255, 0.25);
