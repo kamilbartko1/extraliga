@@ -3600,6 +3600,26 @@ body {
   }
 }
 
+/* 📱 Mobilná verzia – AI panel so scrollom */
+@media (max-width: 480px) {
+
+  .ai-panel {
+    max-height: 420px;      /* výška boxu na mobile */
+    overflow-y: auto;       /* vertikálny posuvník */
+    padding-right: 10px;    /* nech sa neoreže obsah */
+  }
+
+  .ai-history-list {
+    max-height: 240px;      /* história tiež pekne scrollovateľná */
+    overflow-y: auto;
+  }
+
+  .ai-today-box {
+    margin-bottom: 10px;
+  }
+}
+
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
