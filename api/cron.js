@@ -34,13 +34,13 @@ async function addMantingalePlayer(player) {
   await redis.set(`MANTINGAL_HISTORY:${player}`, JSON.stringify([]));
 }
 
-// Získanie boxscore gólov
+// Získanie boxscore gólov – ROZLÍŠI HRAL / NEHRAL
 async function getGoals(gameId, playerShortName) {
   try {
     const url = `https://api-web.nhle.com/v1/gamecenter/${gameId}/boxscore`;
     const res = await axios.get(url);
-
     const raw = res.data.playerByGameStats;
+
     const all = [
       ...(raw.homeTeam.forwards || []),
       ...(raw.homeTeam.defense || []),
@@ -56,10 +56,13 @@ async function getGoals(gameId, playerShortName) {
       return full === normalized || short === normalized;
     });
 
-    return found ? Number(found.goals || 0) : 0;
+    // ❗ Rozdiel: ak hráč NEHRAL → null
+    if (!found) return null;
+
+    return Number(found.goals || 0);
   } catch (err) {
     console.warn("Boxscore error:", err.message);
-    return 0;
+    return null; // Ak boxscore nedostupný → tiež SKIP
   }
 }
 
@@ -111,42 +114,73 @@ async function updateMantingalePlayers() {
     const goals = await getGoals(pending.gameId, player);
     const today = new Date().toISOString().slice(0, 10);
 
-    let profitChange = 0;
-    let result = "";
+let profitChange = 0;
+let result = "";
 
-    if (goals > 0) {
-      // HIT
-      result = "hit";
-      profitChange = Number((data.stake * 1.2).toFixed(2));
-      data.balance = Number((data.balance + profitChange).toFixed(2));
-      data.stake = 1;
-      data.streak = 0;
-    } else {
-      // MISS
-      result = "miss";
-      profitChange = -data.stake;
-      data.balance = Number((data.balance + profitChange).toFixed(2));
-      data.stake = data.stake * 2;
-      data.streak += 1;
-    }
+// --------------------------------------
+// SKIP – hráč NEHRAL
+// --------------------------------------
+if (goals === null) {
+  result = "skip";
 
-    data.lastUpdate = pending.date;
+  data.lastUpdate = pending.date;
 
-    // Uložiť hráča
-    await redis.hset(M_PLAYERS, { [player]: JSON.stringify(data) });
+  await appendHistory(player, {
+    date: pending.date,
+    gameId: pending.gameId,
+    stake: data.stake,
+    goals: null,
+    result: "skip",
+    profitChange: 0,
+    balanceAfter: data.balance
+  });
 
-    // Uložiť históriu
-    await appendHistory(player, {
-      date: pending.date,
-      gameId: pending.gameId,
-      stake: result === "hit" ? 1 : data.stake / 2,
-      goals,
-      result,
-      profitChange,
-      balanceAfter: data.balance
-    });
+  await redis.hset(M_PLAYERS, { [player]: JSON.stringify(data) });
+  console.log("Mantingale SKIP:", player);
 
-    console.log("Updated Mantingale:", player, result, profitChange);
+  continue; // ❗ preskočiť hráča, nepokračovať
+}
+
+// --------------------------------------
+// HIT (hráč dal gól)
+// --------------------------------------
+if (goals > 0) {
+  result = "hit";
+  profitChange = Number((data.stake * 1.2).toFixed(2));
+
+  data.balance = Number((data.balance + profitChange).toFixed(2));
+  data.stake = 1;
+  data.streak = 0;
+}
+
+// --------------------------------------
+// MISS (hráč hral, ale nedal gól)
+// --------------------------------------
+else if (goals === 0) {
+  result = "miss";
+  profitChange = -data.stake;
+
+  data.balance = Number((data.balance + profitChange).toFixed(2));
+  data.stake = data.stake * 2;
+  data.streak += 1;
+}
+
+data.lastUpdate = pending.date;
+
+// uložiť po vyhodnotení
+await redis.hset(M_PLAYERS, { [player]: JSON.stringify(data) });
+
+await appendHistory(player, {
+  date: pending.date,
+  gameId: pending.gameId,
+  stake: result === "hit" ? 1 : (result === "miss" ? data.stake / 2 : data.stake),
+  goals,
+  result,
+  profitChange,
+  balanceAfter: data.balance
+});
+
+console.log("Updated Mantingale:", player, result, profitChange);
   }
 }
 
