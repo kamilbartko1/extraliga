@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     token: process.env.UPSTASH_REDIS_REST_TOKEN,
   });
 
-  const task = req.query.task || "";
+   const task = req.query.task || "";
 
   // ============= BASE URL (lokál + vercel) =============
   const proto = req.headers["x-forwarded-proto"] || "https";
@@ -26,7 +26,6 @@ export default async function handler(req, res) {
       .replace(/\s+/g, " ")
       .trim();
   }
-
 
   // =====================================================
   // 🔍 ZÍSKANIE GÓLOV HRÁČA Z BOXSCORE
@@ -69,7 +68,6 @@ export default async function handler(req, res) {
     }
   }
 
-
   // =====================================================
   // 🔢 Výpočet pravdepodobnosti
   // =====================================================
@@ -96,7 +94,6 @@ export default async function handler(req, res) {
     return Math.max(0.05, Math.min(0.6, p));
   }
 
-
   // =====================================================
   // 📌 Nájdenie ratingu hráča podľa jeho mena
   // =====================================================
@@ -121,7 +118,6 @@ export default async function handler(req, res) {
     }
     return 1500;
   }
-
 
   // =====================================================
   // 🟩 TASK 1 — AI STRELEC DŇA
@@ -217,7 +213,6 @@ export default async function handler(req, res) {
     }
   }
 
-
   // =====================================================
   // 🟦 TASK 2 — SAVE
   // =====================================================
@@ -257,53 +252,41 @@ export default async function handler(req, res) {
 }
 
   // =====================================================
-// 🟥 TASK 3 — UPDATE (Vyhodnotenie strelca)
-// =====================================================
-if (task === "update") {
-  try {
-    const tips = await redis.hgetall("AI_TIPS_HISTORY");
-    const keys = Object.keys(tips).sort();
-    if (keys.length === 0) 
-      return res.json({ ok: false, error: "No tips stored" });
+  // 🟥 TASK 3 — UPDATE (Vyhodnotenie strelca)
+  // =====================================================
+  if (task === "update") {
+    try {
+      const tips = await redis.hgetall("AI_TIPS_HISTORY");
+      const keys = Object.keys(tips).sort();
+      if (keys.length === 0) return res.json({ ok: false, error: "No tips stored" });
 
-    const lastKey = keys[keys.length - 1];
+      const lastKey = keys[keys.length - 1];
 
-    let raw = tips[lastKey];
-    if (typeof raw === "object") raw = raw.value ?? JSON.stringify(raw);
+      let raw = tips[lastKey];
+      if (typeof raw === "object") raw = raw.value ?? JSON.stringify(raw);
 
-    const lastTip = JSON.parse(raw);
+      const lastTip = JSON.parse(raw);
 
-    // ❗ NAJPRV skúsime načítať boxscore
-    const goals = await getGoalsFromBoxscore(lastTip.gameId, lastTip.player);
+      const goals = await getGoalsFromBoxscore(lastTip.gameId, lastTip.player);
+      const result = goals > 0 ? "hit" : "miss";
 
-    // ❗ NOVINKA — ochrana
-    if (goals === null || goals === undefined) {
-      return res.json({
-        ok: false,
-        message: "Game not finished yet – cannot update",
-        aiPending: lastTip
+      const updated = {
+        ...lastTip,
+        actualGoals: goals,
+        result,
+      };
+
+      await redis.hset("AI_TIPS_HISTORY", {
+        [lastKey]: JSON.stringify(updated),
       });
+
+      return res.json({ ok: true, updated });
+
+    } catch (err) {
+      console.error("❌ update:", err.message);
+      return res.json({ ok: false, error: err.message });
     }
-
-    const result = goals > 0 ? "hit" : "miss";
-
-    const updated = {
-      ...lastTip,
-      actualGoals: goals,
-      result,
-    };
-
-    await redis.hset("AI_TIPS_HISTORY", {
-      [lastKey]: JSON.stringify(updated),
-    });
-
-    return res.json({ ok: true, updated });
-
-  } catch (err) {
-    console.error("❌ update:", err.message);
-    return res.json({ ok: false, error: err.message });
   }
-}
 
   // =====================================================
   // 🟨 TASK 4 — GET (História + úspešnosť)
@@ -342,7 +325,6 @@ if (task === "update") {
       return res.json({ ok: false, error: err.message });
     }
   }
-
 
   // =====================================================
   return res.json({ ok: false, error: "Unknown task" });
