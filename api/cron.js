@@ -11,27 +11,33 @@ const redis = new Redis({
 // 🔵 Mantingal – pomocné funkcie
 // ===============================
 
-// Centrálny zoznam hráčov
 const M_PLAYERS = "MANTINGAL_PLAYERS"; 
 // História hráčov: "MANTINGAL_HISTORY:<player>"
 
-// Vytvorenie nového hráča
-async function addMantingalePlayer(player) {
-  const players = (await redis.hgetall(M_PLAYERS)) || {};
+// Bezpečné parsovanie Upstash hodnoty (string alebo { value: string })
+function safeParse(raw) {
+  try {
+    if (raw && typeof raw === "object" && raw.value) {
+      return JSON.parse(raw.value);
+    }
+    if (typeof raw === "string") {
+      return JSON.parse(raw);
+    }
+    return {};
+  } catch {
+    return {};
+  }
+}
 
-  // Ak hráč už existuje, NIČ nerobíme
-  if (players[player]) return;
-
-  const entry = {
-    stake: 1,
-    streak: 0,
-    balance: 0,
-    started: new Date().toISOString().slice(0, 10),
-    lastUpdate: null
+// Garantujeme základnú štruktúru hráča
+function normalizeState(obj, startedDate = null) {
+  return {
+    stake: Number(obj.stake ?? 1),
+    streak: Number(obj.streak ?? 0),
+    balance: Number(obj.balance ?? 0),
+    started: obj.started || startedDate,
+    lastUpdate: obj.lastUpdate || null,
   };
-
-  await redis.hset(M_PLAYERS, { [player]: JSON.stringify(entry) });
-  await redis.set(`MANTINGAL_HISTORY:${player}`, JSON.stringify([]));
 }
 
 // Získanie boxscore gólov – ROZLÍŠI HRAL / NEHRAL
@@ -51,144 +57,149 @@ async function getGoals(gameId, playerShortName) {
     const normalized = playerShortName.toLowerCase();
 
     const found = all.find((p) => {
-      const full = `${p.firstName?.default} ${p.lastName?.default}`.toLowerCase();
-      const short = `${p.firstName?.default?.[0]}. ${p.lastName?.default}`.toLowerCase();
+      const full = `${p.firstName?.default} ${p.lastName?.default}`.toLowerCase();       // "Jason Robertson"
+      const short = `${p.firstName?.default?.[0]}. ${p.lastName?.default}`.toLowerCase(); // "J. Robertson"
       return full === normalized || short === normalized;
     });
 
-    // ❗ Rozdiel: ak hráč NEHRAL → null
+    // ❗ Ak hráč vôbec nie je v zozname → NEHRAL
     if (!found) return null;
 
     return Number(found.goals || 0);
   } catch (err) {
     console.warn("Boxscore error:", err.message);
-    return null; // Ak boxscore nedostupný → tiež SKIP
+    // Ak boxscore nedostupný → radšej SKIP
+    return null;
   }
 }
 
-// Zápis do histórie
+// Zápis do histórie jedného hráča
 async function appendHistory(player, entry) {
   const key = `MANTINGAL_HISTORY:${player}`;
-  let hist = await redis.get(key);
-  hist = hist ? JSON.parse(hist) : [];
+  let histRaw = await redis.get(key);
+  let hist = [];
+
+  if (histRaw) {
+    try {
+      hist = typeof histRaw === "string" ? JSON.parse(histRaw) : safeParse(histRaw);
+      if (!Array.isArray(hist)) hist = [];
+    } catch {
+      hist = [];
+    }
+  }
+
   hist.push(entry);
   await redis.set(key, JSON.stringify(hist));
 }
 
-// UPDATE pre všetkých hráčov
+// 🔥 Hlavná logika: prechádza VŠETKY AI tipy a spraví Martingale pre každého hráča
 async function updateMantingalePlayers() {
-  const players = await redis.hgetall(M_PLAYERS);
-  if (!players) return;
+  // 1️⃣ Načítame existujúci stav hráčov (MANTINGAL_PLAYERS)
+  const playersHash = (await redis.hgetall(M_PLAYERS)) || {};
+  const states = {};
 
-  // 1. Získame AI históriu – potrebujeme gameId a dátumy
-  const aiTips = await redis.hgetall("AI_TIPS_HISTORY");
-  if (!aiTips) return;
+  for (const [name, raw] of Object.entries(playersHash)) {
+    const parsed = safeParse(raw);
+    states[name] = normalizeState(parsed);
+  }
 
-  const aiList = Object.values(aiTips).map((raw) => {
-    try { return JSON.parse(typeof raw === "object" ? raw.value : raw); }
-    catch { return null; }
-  }).filter(Boolean);
+  // 2️⃣ Načítame všetky AI tipy (AI_TIPS_HISTORY)
+  const tipsHash = await redis.hgetall("AI_TIPS_HISTORY");
+  if (!tipsHash) return;
 
-  // Index pre hráča → zoznam jeho zápasov
-  const index = {};
-  for (const tip of aiList) {
-    if (!index[tip.player]) index[tip.player] = [];
-    index[tip.player].push({
+  const tipsList = Object.values(tipsHash)
+    .map((raw) => safeParse(raw))
+    .filter((t) => t && t.player && t.gameId && t.date)
+    .sort((a, b) => a.date.localeCompare(b.date)); // chronologicky
+
+  // 3️⃣ Pre každý tip (hráč + dátum) spravíme Martingale krok
+  for (const tip of tipsList) {
+    const name = tip.player; // krátke meno "J. Robertson", "S. Reinhart"
+    if (!name) continue;
+
+    // Ak hráč ešte nie je v MANTINGAL_PLAYERS → vytvoríme základný stav
+    if (!states[name]) {
+      states[name] = normalizeState({}, tip.date);
+
+      // Pripravíme prázdnu históriu, ak ešte neexistuje
+      const key = `MANTINGAL_HISTORY:${name}`;
+      const existingHist = await redis.get(key);
+      if (!existingHist) {
+        await redis.set(key, JSON.stringify([]));
+      }
+    }
+
+    const state = states[name];
+
+    // Už sme tento dátum pre tohto hráča vyhodnotili → preskoč
+    if (state.lastUpdate === tip.date) continue;
+
+    // Gól(y) z boxscore – rozlišuje HRAL / NEHRAL
+    const goals = await getGoals(tip.gameId, name);
+
+    let result = "";
+    let profitChange = 0;
+    const usedStake = state.stake; // suma, ktorú sme vsadili v daný deň
+
+    // --------------------------------------
+    // SKIP – hráč NEHRAL
+    // --------------------------------------
+    if (goals === null) {
+      result = "skip";
+      // stake, streak, balance zostávajú rovnaké
+    }
+
+    // --------------------------------------
+    // HIT – hráč dal aspoň 1 gól
+    // --------------------------------------
+    else if (goals > 0) {
+      result = "hit";
+      profitChange = Number((usedStake * 1.2).toFixed(2)); // kurz 2.2 → zisk 1.2 * stake
+      state.balance = Number((state.balance + profitChange).toFixed(2));
+      state.stake = 1;
+      state.streak = 0;
+    }
+
+    // --------------------------------------
+    // MISS – hráč hral, ale nedal gól
+    // --------------------------------------
+    else if (goals === 0) {
+      result = "miss";
+      profitChange = -usedStake;
+      state.balance = Number((state.balance + profitChange).toFixed(2));
+      state.streak += 1;
+      state.stake = usedStake * 2; // zdvojnásobenie na ďalší zápas
+    }
+
+    state.lastUpdate = tip.date;
+
+    // Zapíšeme históriu jedného kroku
+    await appendHistory(name, {
       date: tip.date,
-      gameId: tip.gameId
+      gameId: tip.gameId,
+      stake: usedStake,
+      goals,
+      result,
+      profitChange,
+      balanceAfter: state.balance,
     });
+
+    console.log("Mantingale update:", name, tip.date, result, profitChange);
   }
 
-  // 2. Prejdeme každého hráča v Mantingale
-  for (const [player, raw] of Object.entries(players)) {
-    let data;
-    try { data = JSON.parse(raw.value || raw); }
-    catch { continue; }
-
-    // Nájdeme najbližší zápas, ktorý ešte nebol updatnutý
-    const records = index[player] || [];
-    const pending = records.find(r => r.date !== data.lastUpdate);
-
-    if (!pending) continue; // nič nové
-
-    const goals = await getGoals(pending.gameId, player);
-    const today = new Date().toISOString().slice(0, 10);
-
-let profitChange = 0;
-let result = "";
-
-// --------------------------------------
-// SKIP – hráč NEHRAL
-// --------------------------------------
-if (goals === null) {
-  result = "skip";
-
-  data.lastUpdate = pending.date;
-
-  await appendHistory(player, {
-    date: pending.date,
-    gameId: pending.gameId,
-    stake: data.stake,
-    goals: null,
-    result: "skip",
-    profitChange: 0,
-    balanceAfter: data.balance
-  });
-
-  await redis.hset(M_PLAYERS, { [player]: JSON.stringify(data) });
-  console.log("Mantingale SKIP:", player);
-
-  continue; // ❗ preskočiť hráča, nepokračovať
-}
-
-// --------------------------------------
-// HIT (hráč dal gól)
-// --------------------------------------
-if (goals > 0) {
-  result = "hit";
-  profitChange = Number((data.stake * 1.2).toFixed(2));
-
-  data.balance = Number((data.balance + profitChange).toFixed(2));
-  data.stake = 1;
-  data.streak = 0;
-}
-
-// --------------------------------------
-// MISS (hráč hral, ale nedal gól)
-// --------------------------------------
-else if (goals === 0) {
-  result = "miss";
-  profitChange = -data.stake;
-
-  data.balance = Number((data.balance + profitChange).toFixed(2));
-  data.stake = data.stake * 2;
-  data.streak += 1;
-}
-
-data.lastUpdate = pending.date;
-
-// uložiť po vyhodnotení
-await redis.hset(M_PLAYERS, { [player]: JSON.stringify(data) });
-
-await appendHistory(player, {
-  date: pending.date,
-  gameId: pending.gameId,
-  stake: result === "hit" ? 1 : (result === "miss" ? data.stake / 2 : data.stake),
-  goals,
-  result,
-  profitChange,
-  balanceAfter: data.balance
-});
-
-console.log("Updated Mantingale:", player, result, profitChange);
+  // 4️⃣ Zapíšeme všetky stavy späť do MANTINGAL_PLAYERS
+  const toStore = {};
+  for (const [name, state] of Object.entries(states)) {
+    toStore[name] = JSON.stringify(state);
+  }
+  if (Object.keys(toStore).length > 0) {
+    await redis.hset(M_PLAYERS, toStore);
   }
 }
 
-//
 // ===============================================
-// 🔥 Hlavný CRON – TOTO JE TVOJ PÔVODNÝ KÓD + MARTINGAL
+// 🔥 Hlavný CRON – AI + MANTINGAL
 // ===============================================
-//
 
 export default async function handler(req, res) {
   try {
@@ -203,7 +214,9 @@ export default async function handler(req, res) {
     let executed = null;
 
     //
-    // 🔵 1) UPDATE (08:00 UTC)
+    // 🔵 1) UPDATE (09:00 CET → 08:00 UTC)
+    //    - vyhodnotí AI_TIPS_HISTORY (ai.js ?task=update)
+    //    - vyhodnotí MANTINGAL podľa tých istých zápasov
     //
     if (utcHour === 8 && utcMinute < 5) {
       await axios.get(`${base}/api/ai?task=update`);
@@ -212,7 +225,7 @@ export default async function handler(req, res) {
     }
 
     //
-    // 🔵 2) SCORER (12:00 UTC)
+    // 🔵 2) SCORER (14:00 CET → 13:00 UTC alebo ako máš nastavené)
     //
     else if (utcHour === 12 && utcMinute < 5) {
       await axios.get(`${base}/api/ai?task=scorer`);
@@ -220,17 +233,12 @@ export default async function handler(req, res) {
     }
 
     //
-    // 🔵 3) SAVE + pridanie hráča (13:00 UTC)
+    // 🔵 3) SAVE (uloží AI strelca + MANTINGAL hráča)
     //
     else if (utcHour === 13 && utcMinute < 22) {
-      const resp = await axios.get(`${base}/api/ai?task=save`);
-
-      const tip = resp.data?.saved;
-      if (tip?.player) {
-        await addMantingalePlayer(tip.player);  // <—— pridanie hráča
-      }
-
-      executed = "save + add-player";
+      await axios.get(`${base}/api/ai?task=save`);
+      // hráč sa uloží priamo v ai.js (MANTINGAL_PLAYERS + AI_TIPS_HISTORY)
+      executed = "save";
     }
 
     return res.json({
@@ -240,6 +248,7 @@ export default async function handler(req, res) {
     });
 
   } catch (err) {
+    console.error("❌ CRON ERROR:", err);
     return res.json({ ok: false, error: err.message });
   }
 }

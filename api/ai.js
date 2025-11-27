@@ -213,20 +213,20 @@ export default async function handler(req, res) {
     }
   }
 
-  // =====================================================
-  // 🟦 TASK 2 — SAVE
-  // =====================================================
-  if (task === "save") {
+// =====================================================
+// 🟦 TASK 2 — SAVE (AI + MANTINGAL)
+// =====================================================
+if (task === "save") {
   try {
     const scorerResp = await axios.get(`${baseUrl}/api/ai?task=scorer`);
     const tip = scorerResp.data?.aiScorerTip;
 
     if (!tip) return res.json({ ok: false, error: "No scorer" });
 
-    // ---- PREMENÍME "Sidney Crosby" → "S. Crosby" ----
+    // ---- PREMENÍME "Jason Robertson" → "J. Robertson" ----
     function formatShortName(fullName) {
       const parts = fullName.trim().split(" ");
-      if (parts.length < 2) return fullName; // fallback
+      if (parts.length < 2) return fullName;
       const first = parts[0];
       const last = parts.slice(1).join(" ");
       return `${first[0].toUpperCase()}. ${last}`;
@@ -234,16 +234,53 @@ export default async function handler(req, res) {
 
     const shortName = formatShortName(tip.player);
 
+    // ============================================
+    // 🔵 1) ULOŽENIE AI_TIPS_HISTORY (ako doteraz)
+    // ============================================
+    const aiEntry = {
+      ...tip,
+      player: shortName,
+      actualGoals: null,
+      result: "pending"
+    };
+
     await redis.hset("AI_TIPS_HISTORY", {
-      [tip.date]: JSON.stringify({
-        ...tip,
-        player: shortName,   // 🔥 ukladaj vo formáte S. Crosby !!!
-        actualGoals: null,
-        result: "pending",
-      }),
+      [tip.date]: JSON.stringify(aiEntry)
     });
 
-    return res.json({ ok: true, saved: { ...tip, player: shortName } });
+    // ============================================
+    // 🔵 2) ULOŽENIE MANTINGAL_PLAYER (NOVINKA)
+    // ============================================
+    const mantingaleEntry = {
+      ...tip,
+      player: shortName,
+      actualGoals: null,
+      result: "pending",
+
+      // 🔥 MARTINGALE PARAMETRE – nová sekcia
+      stake: 1,
+      streak: 0,
+      balance: 0,
+      lastUpdate: null,
+      started: tip.date
+    };
+
+    await redis.hset("MANTINGAL_PLAYERS", {
+      [shortName]: JSON.stringify(mantingaleEntry)
+    });
+
+    // ============================================
+    // 🔵 3) Vytvoríme prázdnu históriu (ak neexistuje)
+    // ============================================
+    await redis.set(
+      `MANTINGAL_HISTORY:${shortName}`,
+      JSON.stringify([])
+    );
+
+    return res.json({
+      ok: true,
+      saved: mantingaleEntry
+    });
 
   } catch (err) {
     console.error("❌ save:", err.message);
