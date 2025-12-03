@@ -602,6 +602,99 @@ function closeRatingModal(e) {
   }
 }
 
+// === Mantingal sekcia ===
+async function loadMantingal() {
+  const res = await fetch("/api/mantingal?task=all");
+  const data = await res.json();
+  if (!data.ok) return;
+
+  document.getElementById("mtg-total-profit").textContent =
+    data.totalProfit.toFixed(2);
+
+  const tbody = document.getElementById("mantingale-table-body");
+  tbody.innerHTML = "";
+
+  Object.entries(data.players).forEach(([name, p]) => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${name}</td>
+      <td>${p.stake}</td>
+      <td>${p.streak}</td>
+      <td>${p.balance.toFixed(2)}</td>
+      <td><button class="mtg-detail-btn" data-player="${name}">Detail</button></td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+  // kliknutie na detail hráča
+  document.querySelectorAll(".mtg-detail-btn").forEach((btn) => {
+    btn.addEventListener("click", () => showMantingalDetail(btn.dataset.player));
+  });
+}
+
+async function showMantingalDetail(player) {
+  const res = await fetch(`/api/mantingal?player=${encodeURIComponent(player)}`);
+  const data = await res.json();
+  if (!data.ok) return;
+
+  document.getElementById("mtg-player-name").textContent = player;
+
+  // ===================================
+  // GRAF DENNÉHO PROFITU
+  // ===================================
+  const dailyRes = await fetch("/api/mantingal?task=daily");
+  const dailyData = await dailyRes.json();
+
+  const ctx = document.getElementById("mtg-chart");
+
+  if (window.mtgChart) window.mtgChart.destroy();
+
+  window.mtgChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: dailyData.dailyProfit.map((x) => x.date),
+      datasets: [
+        {
+          label: "Denný profit (€)",
+          data: dailyData.dailyProfit.map((x) => x.profit),
+          borderColor: "yellow",
+          borderWidth: 2,
+          tension: 0.3,
+        },
+      ],
+    },
+  });
+
+  // ===================================
+  // HISTÓRIA HRÁČA
+  // ===================================
+  const tbody = document.getElementById("mtg-history-body");
+  tbody.innerHTML = "";
+
+  data.history.forEach((h) => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${h.date}</td>
+        <td>${h.gameId || "-"}</td>
+        <td>${h.goals === null ? "-" : h.goals}</td>
+        <td>${h.result}</td>
+        <td>${h.profitChange}</td>
+        <td>${h.balanceAfter}</td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("mantingale-detail").classList.remove("hidden");
+}
+
+document.getElementById("mtg-back-btn").addEventListener("click", () => {
+  document.getElementById("mantingale-detail").classList.add("hidden");
+});
+
+loadMantingal();
+
 // === Mantingal sekcia (nová verzia) ===
 async function displayMantingal() {
   const container = document.getElementById("mantingal-container");

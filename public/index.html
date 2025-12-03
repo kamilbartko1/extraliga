@@ -209,6 +209,50 @@
       <div id="mantingal-container-pc"></div>
     </div>
 
+    <!-- Martingale -->
+    <section id="mantingale-section">
+  <h2>Mantingal – vyhodnotenie strelcov</h2>
+
+  <div id="mantingale-summary">
+    <p><strong>Celkový profit:</strong> <span id="mtg-total-profit">0</span> €</p>
+  </div>
+
+  <table class="mantingale-table">
+    <thead>
+      <tr>
+        <th>Hráč</th>
+        <th>Stake</th>
+        <th>Streak</th>
+        <th>Balance (€)</th>
+        <th>Detail</th>
+      </tr>
+    </thead>
+    <tbody id="mantingale-table-body"></tbody>
+  </table>
+
+  <div id="mantingale-detail" class="hidden">
+    <h3 id="mtg-player-name"></h3>
+
+    <canvas id="mtg-chart" width="400" height="200"></canvas>
+
+    <table class="mantingale-history">
+      <thead>
+        <tr>
+          <th>Dátum</th>
+          <th>Zápas</th>
+          <th>Góly</th>
+          <th>Výsledok</th>
+          <th>Zmena (€)</th>
+          <th>Balance (€)</th>
+        </tr>
+      </thead>
+      <tbody id="mtg-history-body"></tbody>
+    </table>
+
+    <button id="mtg-back-btn">← Späť</button>
+  </div>
+</section>
+
     <!-- 📊 Predikcie -->
     <div class="section" id="predictions-section">
       <h2>Predikcie – Kurzy bookmakerov</h2>

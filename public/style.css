@@ -3764,6 +3764,47 @@ body {
   from { background: rgba(0,0,0,0.30); }
   to   { background: rgba(0,0,0,0.80); }
 }
+#mantingale-section {
+  padding: 20px;
+  margin-top: 40px;
+  background: #0f172a;
+  border-radius: 10px;
+  color: white;
+}
+
+.mantingale-table,
+.mantingale-history {
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
+}
+
+.mantingale-table th,
+.mantingale-table td,
+.mantingale-history th,
+.mantingale-history td {
+  border-bottom: 1px solid #334155;
+  padding: 8px;
+  text-align: center;
+}
+
+.mantingale-history {
+  margin-top: 30px;
+}
+
+.hidden {
+  display: none;
+}
+
+#mtg-back-btn {
+  margin-top: 20px;
+  padding: 8px 15px;
+  background: #1e293b;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
