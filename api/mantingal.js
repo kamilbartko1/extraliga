@@ -11,7 +11,6 @@ const M_PLAYERS = "MANTINGAL_PLAYERS";
 // ============================
 // 🔧 Bezpečné JSON parsovanie
 // ============================
-// bezpečné JSON
 function safeParse(raw) {
   try {
     if (!raw) return {};
@@ -45,18 +44,6 @@ function safeParse(raw) {
   }
 }
 
-// garantovaná štruktúra hráča (aj teamAbbrev)
-function normalizePlayer(obj) {
-  return {
-    stake: Number(obj.stake ?? 1),
-    streak: Number(obj.streak ?? 0),
-    balance: Number(obj.balance ?? 0),
-    started: obj.started || null,
-    lastUpdate: obj.lastUpdate || null,
-    teamAbbrev: obj.teamAbbrev || obj.team || null, // dôležité!
-  };
-}
-
 // ============================
 // 🔧 Garantujeme kompletnú štruktúru hráča
 // ============================
@@ -67,12 +54,13 @@ function normalizePlayer(obj) {
     balance: Number(obj.balance ?? 0),
     started: obj.started || null,
     lastUpdate: obj.lastUpdate || null,
+    teamAbbrev: obj.teamAbbrev || obj.team || null,
   };
 }
 
 export default async function handler(req, res) {
   try {
-    const query = req.query;
+    const query = req.query || {};
 
     // ==========================================================
     // 📌 1) DETAIL HRÁČA
@@ -80,8 +68,8 @@ export default async function handler(req, res) {
     if (query.player) {
       const player = query.player;
 
-      const players = await redis.hgetall(M_PLAYERS);
-      if (!players || !players[player]) {
+      const players = (await redis.hgetall(M_PLAYERS)) || {};
+      if (!players[player]) {
         return res.json({ ok: false, error: "Player not found" });
       }
 
@@ -93,7 +81,8 @@ export default async function handler(req, res) {
 
       if (histRaw) {
         try {
-          history = typeof histRaw === "string" ? JSON.parse(histRaw) : safeParse(histRaw);
+          history =
+            typeof histRaw === "string" ? JSON.parse(histRaw) : safeParse(histRaw);
           if (!Array.isArray(history)) history = [];
         } catch {
           history = [];
@@ -115,14 +104,14 @@ export default async function handler(req, res) {
     }
 
     // ==========================================================
-    // 📌 2) VŠETCI HRÁČI + SUMÁR
+    // 📌 2) VŠETCI HRÁČI + SUMÁR (pre tabuľku vo frontende)
     // ==========================================================
     if (query.task === "all") {
-      const players = await redis.hgetall(M_PLAYERS) || {};
+      const playersRaw = (await redis.hgetall(M_PLAYERS)) || {};
       const parsed = {};
       let totalProfit = 0;
 
-      for (const [name, raw] of Object.entries(players)) {
+      for (const [name, raw] of Object.entries(playersRaw)) {
         const obj = normalizePlayer(safeParse(raw));
         parsed[name] = obj;
         totalProfit += obj.balance;
@@ -139,16 +128,19 @@ export default async function handler(req, res) {
     // 📌 3) DENNÝ PROFIT (pre graf)
     // ==========================================================
     if (query.task === "daily") {
-      const players = await redis.hgetall(M_PLAYERS) || {};
+      const playersRaw = (await redis.hgetall(M_PLAYERS)) || {};
       const daily = {};
 
-      for (const player of Object.keys(players)) {
+      for (const player of Object.keys(playersRaw)) {
         const rawHist = await redis.get(`MANTINGAL_HISTORY:${player}`);
         let hist = [];
 
         if (rawHist) {
           try {
-            hist = typeof rawHist === "string" ? JSON.parse(rawHist) : safeParse(rawHist);
+            hist =
+              typeof rawHist === "string"
+                ? JSON.parse(rawHist)
+                : safeParse(rawHist);
             if (!Array.isArray(hist)) hist = [];
           } catch {
             hist = [];
@@ -176,13 +168,13 @@ export default async function handler(req, res) {
     }
 
     // ==========================================================
-    // 📌 DEFAULT – všetci + súhrn
+    // 📌 DEFAULT – súhrn + všetci hráči
     // ==========================================================
-    const players = await redis.hgetall(M_PLAYERS) || {};
+    const playersRaw = (await redis.hgetall(M_PLAYERS)) || {};
     const parsed = {};
     let totalProfit = 0;
 
-    for (const [name, raw] of Object.entries(players)) {
+    for (const [name, raw] of Object.entries(playersRaw)) {
       const obj = normalizePlayer(safeParse(raw));
       parsed[name] = obj;
       totalProfit += obj.balance;
@@ -196,7 +188,6 @@ export default async function handler(req, res) {
       },
       players: parsed,
     });
-
   } catch (err) {
     console.error("❌ MANTINGAL ERROR:", err);
     return res.status(500).json({
