@@ -20,8 +20,30 @@ const M_PLAYERS = "MANTINGAL_PLAYERS";
 function safeParse(raw) {
   try {
     if (!raw) return {};
-    if (typeof raw === "string") return JSON.parse(raw);
-    if (typeof raw === "object" && raw.value) return JSON.parse(raw.value);
+
+    // string -> JSON
+    if (typeof raw === "string") {
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return {};
+      }
+    }
+
+    // Upstash niekedy vracia { value: "..." }
+    if (typeof raw === "object" && raw !== null) {
+      if (raw.value && typeof raw.value === "string") {
+        try {
+          return JSON.parse(raw.value);
+        } catch {
+          return {};
+        }
+      }
+
+      // už je to normálny objekt (napr. { stake: 2, ... })
+      return raw;
+    }
+
     return {};
   } catch {
     return {};
