@@ -11,6 +11,7 @@ const M_PLAYERS = "MANTINGAL_PLAYERS";
 // ============================
 // 🔧 Bezpečné JSON parsovanie
 // ============================
+// bezpečné JSON
 function safeParse(raw) {
   try {
     if (!raw) return {};
@@ -24,8 +25,9 @@ function safeParse(raw) {
       }
     }
 
-    // Upstash niekedy vracia { value: "..." }
+    // objekt z Upstasha
     if (typeof raw === "object" && raw !== null) {
+      // prípad { value: "..." }
       if (raw.value && typeof raw.value === "string") {
         try {
           return JSON.parse(raw.value);
@@ -33,8 +35,7 @@ function safeParse(raw) {
           return {};
         }
       }
-
-      // už je to normálny objekt (napr. { stake: 2, ... })
+      // už je to normálny objekt (stake, streak, balance, teamAbbrev...)
       return raw;
     }
 
@@ -42,6 +43,18 @@ function safeParse(raw) {
   } catch {
     return {};
   }
+}
+
+// garantovaná štruktúra hráča (aj teamAbbrev)
+function normalizePlayer(obj) {
+  return {
+    stake: Number(obj.stake ?? 1),
+    streak: Number(obj.streak ?? 0),
+    balance: Number(obj.balance ?? 0),
+    started: obj.started || null,
+    lastUpdate: obj.lastUpdate || null,
+    teamAbbrev: obj.teamAbbrev || obj.team || null, // dôležité!
+  };
 }
 
 // ============================
