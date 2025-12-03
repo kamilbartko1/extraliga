@@ -231,7 +231,7 @@ export default async function handler(req, res) {
     let executed = null;
 
     // 1) UPDATE + MANTINGAL (08:00 UTC)
-    if (utcHour === 15 && utcMinute < 31) {
+    if (utcHour === 16 && utcMinute < 31) {
       await axios.get(`${base}/api/ai?task=update`);
       await updateMantingalePlayers();
       executed = "update + mantingale";
