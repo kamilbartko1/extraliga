@@ -10,26 +10,34 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
-// ===============================
-// 🔵 Mantingal – pomocné funkcie
-// ===============================
+// =======================================
+// 🔧 Pomocné funkcie pre Mantingal
+// =======================================
 
 const M_PLAYERS = "MANTINGAL_PLAYERS";
 
-// Bezpečné JSON parsovanie
+// bezpečné JSON
 function safeParse(raw) {
   try {
-    if (raw && typeof raw === "object" && raw.value) {
-      return JSON.parse(raw.value);
-    }
+    if (!raw) return {};
     if (typeof raw === "string") return JSON.parse(raw);
+    if (typeof raw === "object" && raw.value) return JSON.parse(raw.value);
     return {};
   } catch {
     return {};
   }
 }
 
-// Zápis do histórie jedného hráča
+// normalizácia mena (ako pri AI)
+function normalizeName(str) {
+  return String(str || "")
+    .toLowerCase()
+    .replace(/\./g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// uloženie do histórie
 async function appendHistory(player, entry) {
   const key = `MANTINGAL_HISTORY:${player}`;
   let hist = [];
@@ -48,9 +56,9 @@ async function appendHistory(player, entry) {
   await redis.set(key, JSON.stringify(hist));
 }
 
-// ===============================
-//  🔥 Hľadanie hráča v jednom boxscore
-// ===============================
+// ===============================================
+// 🔥 OPRAVENÉ HĽADANIE HRÁČA – podľa name.default
+// ===============================================
 function findPlayerInBoxscore(box, playerName) {
   if (!box) return null;
 
@@ -61,26 +69,25 @@ function findPlayerInBoxscore(box, playerName) {
     ...(box.playerByGameStats?.awayTeam?.defense || []),
   ];
 
-  const target = playerName.toLowerCase();
+  const target = normalizeName(playerName); // napr. "k connor"
 
   return (
     all.find((p) => {
-      const full = `${p.firstName?.default} ${p.lastName?.default}`.toLowerCase();
-      const short = `${p.firstName?.default?.[0]}. ${p.lastName?.default}`.toLowerCase();
-      return full === target || short === target;
+      const apiName = normalizeName(p.name?.default || "");
+      return apiName === target;
     }) || null
   );
 }
 
 // ===============================================
-// 🔥 NOVÝ MANTINGAL UPDATE
+// 🔥 Hlavný Mantingal update
 // ===============================================
 async function updateMantingalePlayers() {
   console.log("🔥 Spúšťam mantingale vyhodnocovanie...");
 
-  // 1️⃣ Získaj dnešné zápasy
   const today = new Date().toISOString().slice(0, 10);
 
+  // získaj dnešné zápasy
   let homeResp;
   try {
     homeResp = await axios.get(`${base}/api/home`);
@@ -95,14 +102,14 @@ async function updateMantingalePlayers() {
     return;
   }
 
-  // 2️⃣ Nájdi všetkých mantingal hráčov
+  // všetci mantingale hráči
   const players = await redis.hgetall(M_PLAYERS);
   if (!players || Object.keys(players).length === 0) {
     console.log("⚠️ Žiadni mantingale hráči.");
     return;
   }
 
-  // 3️⃣ Stiahni boxscore pre všetky zápasy
+  // stiahni všetky boxscore
   const boxscores = {};
   for (const game of games) {
     try {
@@ -114,14 +121,14 @@ async function updateMantingalePlayers() {
     }
   }
 
-  // 4️⃣ Prejdeme každého hráča mantingalu
+  // pre každého hráča
   for (const [playerName, raw] of Object.entries(players)) {
     const state = safeParse(raw);
 
     let found = null;
     let foundGameId = null;
 
-    // nájdime zápas, v ktorom hráč hral
+    // nájdi zápas, kde hráč skutočne hral
     for (const game of games) {
       const box = boxscores[game.id];
       const p = findPlayerInBoxscore(box, playerName);
@@ -132,9 +139,7 @@ async function updateMantingalePlayers() {
       }
     }
 
-    // ============================================
-    // 🟨 SKIP (hráč vôbec nehral dnes)
-    // ============================================
+    // hráč nehral
     if (!found) {
       await appendHistory(playerName, {
         date: today,
@@ -146,16 +151,13 @@ async function updateMantingalePlayers() {
       });
 
       state.lastUpdate = today;
-
       await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
 
       console.log("⏭ SKIP:", playerName);
       continue;
     }
 
-    // ============================================
-    // 🟩 HIT (dal gól)
-    // ============================================
+    // HIT
     if (found.goals > 0) {
       const profit = Number((state.stake * 1.2).toFixed(2));
       state.balance = Number((state.balance + profit).toFixed(2));
@@ -173,18 +175,15 @@ async function updateMantingalePlayers() {
       });
 
       await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
-
       console.log("🎯 HIT:", playerName, profit);
       continue;
     }
 
-    // ============================================
-    // ❌ MISS (hral ale nedal gól)
-    // ============================================
+    // MISS
     const loss = -state.stake;
     state.balance = Number((state.balance + loss).toFixed(2));
     state.stake = state.stake * 2;
-    state.streak = state.streak + 1;
+    state.streak += 1;
     state.lastUpdate = today;
 
     await appendHistory(playerName, {
@@ -203,7 +202,7 @@ async function updateMantingalePlayers() {
 }
 
 // ===============================================
-// 🔥 Hlavný CRON – AI + MANTINGAL
+// 🔥 CRON – AI + MANTINGAL
 // ===============================================
 export default async function handler(req, res) {
   try {
@@ -214,31 +213,24 @@ export default async function handler(req, res) {
     const proto = req.headers["x-forwarded-proto"] || "https";
     const host = req.headers.host;
 
-    // 👇 TERAZ je base globálne a viditeľné pre všetky funkcie
     base = `${proto}://${host}`;
 
     let executed = null;
 
-    //
-    // 🔵 1) UPDATE (09:00 CET → 08:00 UTC)
-    //
+    // 1) UPDATE + MANTINGAL (08:00 UTC)
     if (utcHour === 8 && utcMinute < 5) {
       await axios.get(`${base}/api/ai?task=update`);
       await updateMantingalePlayers();
       executed = "update + mantingale";
     }
 
-    //
-    // 🔵 2) SCORER (13:00 UTC)
-    //
+    // 2) SCORER (12:00 UTC)
     else if (utcHour === 12 && utcMinute < 5) {
       await axios.get(`${base}/api/ai?task=scorer`);
       executed = "scorer";
     }
 
-    //
-    // 🔵 3) SAVE (uloží AI strelca + MANTINGAL hráča)
-    //
+    // 3) SAVE (13:00 UTC)
     else if (utcHour === 13 && utcMinute < 22) {
       await axios.get(`${base}/api/ai?task=save`);
       executed = "save";
