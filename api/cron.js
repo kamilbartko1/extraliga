@@ -72,17 +72,6 @@ function normalizeName(str) {
     .trim();
 }
 
-// garantovaná štruktúra hráča (ako v /api/mantingal)
-function normalizePlayer(obj) {
-  return {
-    stake: Number(obj.stake ?? 1),
-    streak: Number(obj.streak ?? 0),
-    balance: Number(obj.balance ?? 0),
-    started: obj.started || null,
-    lastUpdate: obj.lastUpdate || null,
-  };
-}
-
 // uloženie do histórie
 async function appendHistory(player, entry) {
   const key = `MANTINGAL_HISTORY:${player}`;
