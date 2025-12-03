@@ -37,6 +37,17 @@ function normalizeName(str) {
     .trim();
 }
 
+// 🔧 NORMALIZÁCIA HRÁČA – CHÝBAJÚCA FUNKCIA (už doplnená!)
+function normalizePlayer(obj) {
+  return {
+    stake: Number(obj.stake ?? 1),
+    streak: Number(obj.streak ?? 0),
+    balance: Number(obj.balance ?? 0),
+    started: obj.started || null,
+    lastUpdate: obj.lastUpdate || null,
+  };
+}
+
 // uloženie do histórie
 async function appendHistory(player, entry) {
   const key = `MANTINGAL_HISTORY:${player}`;
@@ -57,30 +68,7 @@ async function appendHistory(player, entry) {
 }
 
 // ===============================================
-// 🔥 OPRAVENÉ HĽADANIE HRÁČA – podľa name.default
-// ===============================================
-function findPlayerInBoxscore(box, playerName) {
-  if (!box) return null;
-
-  const all = [
-    ...(box.playerByGameStats?.homeTeam?.forwards || []),
-    ...(box.playerByGameStats?.homeTeam?.defense || []),
-    ...(box.playerByGameStats?.awayTeam?.forwards || []),
-    ...(box.playerByGameStats?.awayTeam?.defense || []),
-  ];
-
-  const target = normalizeName(playerName); // napr. "k connor"
-
-  return (
-    all.find((p) => {
-      const apiName = normalizeName(p.name?.default || "");
-      return apiName === target;
-    }) || null
-  );
-}
-
-// ===============================================
-// 🔥 Hlavný Mantingal update
+// 🔥 Mantingal vyhodnocovanie cez SCORE API
 // ===============================================
 async function updateMantingalePlayers() {
   console.log("🔥 Mantingal: vyhodnocujem podľa SCORE API...");
@@ -230,20 +218,20 @@ export default async function handler(req, res) {
 
     let executed = null;
 
-    // 1) UPDATE + MANTINGAL (08:00 UTC)
+    // 1) UPDATE + MANTINGAL (čas si upravil na 15:00 UTC)
     if (utcHour === 15 && utcMinute < 31) {
       await axios.get(`${base}/api/ai?task=update`);
       await updateMantingalePlayers();
       executed = "update + mantingale";
     }
 
-    // 2) SCORER (12:00 UTC)
+    // 2) SCORER
     else if (utcHour === 12 && utcMinute < 5) {
       await axios.get(`${base}/api/ai?task=scorer`);
       executed = "scorer";
     }
 
-    // 3) SAVE (13:00 UTC)
+    // 3) SAVE
     else if (utcHour === 13 && utcMinute < 22) {
       await axios.get(`${base}/api/ai?task=save`);
       executed = "save";
