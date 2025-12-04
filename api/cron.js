@@ -260,7 +260,7 @@ export default async function handler(req, res) {
     }
 
     // 3) SAVE
-    else if (utcHour === 13 && utcMinute < 22) {
+    else if (utcHour === 19 && utcMinute < 22) {
       await axios.get(`${base}/api/ai?task=save`);
       executed = "save";
     }
