@@ -218,6 +218,7 @@ export default async function handler(req, res) {
 // =====================================================
 if (task === "save") {
   try {
+    // Získaj čerstvý AI tip
     const scorerResp = await axios.get(`${baseUrl}/api/ai?task=scorer`);
     const tip = scorerResp.data?.aiScorerTip;
 
@@ -235,7 +236,7 @@ if (task === "save") {
     const shortName = formatShortName(tip.player);
 
     // ============================================
-    // 🔵 1) ULOŽENIE AI_TIPS_HISTORY (ako doteraz)
+    // 1) ULOŽENIE AI_TIPS_HISTORY (bez zmien)
     // ============================================
     const aiEntry = {
       ...tip,
@@ -249,37 +250,61 @@ if (task === "save") {
     });
 
     // ============================================
-    // 🔵 2) ULOŽENIE MANTINGAL_PLAYER (NOVINKA)
+    // 2) ULOŽENIE MANTINGAL_PLAYER (BEZPEČNÉ)
     // ============================================
-    const mantingaleEntry = {
-      ...tip,
-      player: shortName,
-      actualGoals: null,
-      result: "pending",
 
-      // 🔥 MARTINGALE PARAMETRE – nová sekcia
-      stake: 1,
-      streak: 0,
-      balance: 0,
-      lastUpdate: null,
-      started: tip.date
-    };
+    // Najprv skontrolujeme, či hráč už existuje
+    const existingRaw = await redis.hget("MANTINGAL_PLAYERS", shortName);
 
-    await redis.hset("MANTINGAL_PLAYERS", {
-      [shortName]: JSON.stringify(mantingaleEntry)
-    });
+    if (!existingRaw) {
+      // ❗ VYTVORÍME HRÁČA IBA PRVÝKRÁT
+      const mantingaleEntry = {
+        ...tip,
+        player: shortName,
+        actualGoals: null,
+        result: "pending",
 
-    // ============================================
-    // 🔵 3) Vytvoríme prázdnu históriu (ak neexistuje)
-    // ============================================
-    await redis.set(
-      `MANTINGAL_HISTORY:${shortName}`,
-      JSON.stringify([])
-    );
+        // parametre mantingalu
+        stake: 1,
+        streak: 0,
+        balance: 0,
+        lastUpdate: null,
+        started: tip.date,
+
+        // doplníme team
+        teamAbbrev: tip.team || null
+      };
+
+      await redis.hset("MANTINGAL_PLAYERS", {
+        [shortName]: JSON.stringify(mantingaleEntry)
+      });
+
+      // ============================================
+      // 3) Vytvoríme históriu IBA AK NEEXISTUJE !!!
+      // ============================================
+      const histKey = `MANTINGAL_HISTORY:${shortName}`;
+      const histExists = await redis.get(histKey);
+
+      if (!histExists) {
+        await redis.set(histKey, JSON.stringify([]));
+      }
+
+      return res.json({
+        ok: true,
+        created: mantingaleEntry
+      });
+    }
+
+    // ========================================================
+    // ❗ EXISTUJÚCI HRÁČ → NIČ NEPREPÍŠEME, NIČ NEVYMAŽEME
+    // ========================================================
+    const existingObj = JSON.parse(existingRaw);
 
     return res.json({
       ok: true,
-      saved: mantingaleEntry
+      message: "Player already exists — not overwritten",
+      player: shortName,
+      state: existingObj
     });
 
   } catch (err) {
