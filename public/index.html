@@ -37,19 +37,29 @@
     <button onclick="showSection('mantingale-section')">Mantingal</button>
   </nav>
 
-  <!-- 📱 MOBILNÉ MENU -->
-  <div class="mobile-menu">
-    <select id="mobileSelect">
-      <option value="home">Domov</option>
-      <option value="matches">Výsledky</option>
-      <option value="teams">Rating tímov</option>
-      <option value="players">Rating hráčov</option>
-      <option value="predictions">Predikcie</option>
-      <option value="stats">Štatistiky hráčov</option>
-      <option value="strategies">Databáza hráčov</option>
-      <option value="mantingal">Mantingal</option>
-    </select>
-  </div>
+  <!-- 📱 NOVÉ MOBILNÉ MENU – hamburger + sidebar -->
+<div class="mobile-hamburger" onclick="toggleMobileMenu()">
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
+
+<div id="mobileSidebar" class="mobile-sidebar">
+  <ul>
+    <li onclick="showSection('home-section')">Domov</li>
+    <li onclick="showSection('matches-section')">Výsledky</li>
+    <li onclick="showSection('teams-section')">Rating tímov</li>
+    <li onclick="showSection('players-section')">Rating hráčov</li>
+    <li onclick="showSection('predictions-section')">Predikcie</li>
+    <li onclick="showSection('stats-section')">Štatistiky hráčov</li>
+    <li onclick="showSection('strategies-section')">Databáza hráčov</li>
+    <li onclick="showSection('mantingale-section')">Mantingal</li>
+  </ul>
+</div>
+
+<!-- Tmavá vrstva keď je menu otvorené -->
+<div id="menuOverlay" class="menu-overlay" onclick="toggleMobileMenu()"></div>
+
 
     <!-- Domovska stranka -->
     <div class="container">
@@ -364,6 +374,21 @@
         section.style.opacity = 0;
         setTimeout(() => (section.style.opacity = 1), 100);
       }
+
+      function toggleMobileMenu() {
+  const sidebar = document.getElementById("mobileSidebar");
+  const overlay = document.getElementById("menuOverlay");
+
+  const isOpen = sidebar.classList.contains("active");
+
+  if (isOpen) {
+    sidebar.classList.remove("active");
+    overlay.classList.remove("active");
+  } else {
+    sidebar.classList.add("active");
+    overlay.classList.add("active");
+  }
+}
 
       // Dynamické načítanie len pre danú sekciu
       switch (id) {
