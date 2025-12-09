@@ -156,101 +156,85 @@ async function updateMantingalePlayers() {
   }
 
   // PRE KAŽDÉHO MANTINGAL HRÁČA
-  for (const [playerName, raw] of Object.entries(players)) {
-    let state = normalizePlayer(safeParse(raw));
-    const normName = normalizeName(playerName);
-    const stats = goalsIndex[normName] || null;
+for (const [playerName, raw] of Object.entries(players)) {
+  let state = normalizePlayer(safeParse(raw));
+  const normName = normalizeName(playerName);
 
-    const team = state.teamAbbrev;
+  // ak hráč nie je v goalsIndex, berieme to ako 0 gólov (mohol hrať, ale neskóroval)
+  const stats = goalsIndex[normName] || { goals: 0, gameId: null };
 
-    // =====================================================
-    // ✅ 1) SKIP – hráč nemá tím alebo tím včera nehral
-    // =====================================================
-    if (!team || !teamsPlayed.has(team)) {
-      await appendHistory(playerName, {
-        date: y,
-        gameId: null,
-        goals: null,
-        result: "skip",
-        profitChange: 0,
-        balanceAfter: state.balance,
-      });
+  const team = state.teamAbbrev;
 
-      state.lastUpdate = y;
-      await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
-
-      console.log("⏭ SKIP (team did not play):", playerName, team);
-      continue;
-    }
-
-    // =====================================================
-    // ✅ 2) SKIP – hráč sa nenachádza v zápase (nie je v goalsIndex)
-    //    Toto je KRITICKÝ FIX, ktorý si doteraz NEMAL!
-    // =====================================================
-    if (!stats) {
-      await appendHistory(playerName, {
-        date: y,
-        gameId: null,
-        goals: null,
-        result: "skip",
-        profitChange: 0,
-        balanceAfter: state.balance,
-      });
-
-      state.lastUpdate = y;
-      await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
-
-      console.log("⏭ SKIP (player not in goalsIndex → not in match):", playerName);
-      continue;
-    }
-
-    // =====================================================
-    // 🎯 3) HIT – hráč dal aspoň 1 gól
-    // =====================================================
-    if (stats.goals > 0) {
-      const profit = Number((state.stake * 1.2).toFixed(2));
-      state.balance = Number((state.balance + profit).toFixed(2));
-
-      await appendHistory(playerName, {
-        date: y,
-        gameId: stats.gameId,
-        goals: stats.goals,
-        result: "hit",
-        profitChange: profit,
-        balanceAfter: state.balance,
-      });
-
-      state.stake = 1;
-      state.streak = 0;
-      state.lastUpdate = y;
-
-      await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
-      console.log("🎯 HIT:", playerName, "goals:", stats.goals);
-      continue;
-    }
-
-    // =====================================================
-    // ❌ 4) MISS – hráč hral, ale nedal gól (stats existuje = vieme že hral)
-    // =====================================================
-    const loss = -state.stake;
-    state.balance = Number((state.balance + loss).toFixed(2));
-    state.stake *= 2;
-    state.streak += 1;
-
+  // =====================================================
+  // ✅ 1) SKIP – hráč nemá tím alebo tím včera nehral
+  // =====================================================
+  if (!team || !teamsPlayed.has(team)) {
     await appendHistory(playerName, {
       date: y,
-      gameId: stats.gameId,
-      goals: 0,
-      result: "miss",
-      profitChange: loss,
+      gameId: null,
+      goals: null,
+      result: "skip",
+      profitChange: 0,
       balanceAfter: state.balance,
     });
 
     state.lastUpdate = y;
     await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
 
-    console.log("❌ MISS:", playerName, "loss:", loss);
+    console.log("⏭ SKIP (team did not play):", playerName, "team:", team);
+    continue;
   }
+
+  // =====================================================
+  // 🎯 2) HIT – hráč dal aspoň 1 gól
+  // =====================================================
+  if (stats.goals > 0) {
+    const profit = Number((state.stake * 1.2).toFixed(2));
+    const before = state.balance;
+    state.balance = Number((before + profit).toFixed(2));
+
+    await appendHistory(playerName, {
+      date: y,
+      gameId: stats.gameId,
+      goals: stats.goals,
+      result: "hit",
+      profitChange: profit,
+      balanceAfter: state.balance,
+    });
+
+    state.stake = 1;
+    state.streak = 0;
+    state.lastUpdate = y;
+
+    await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
+    console.log("🎯 HIT:", playerName, "goals:", stats.goals, "profit:", profit);
+    continue;
+  }
+
+  // =====================================================
+  // ❌ 3) MISS – tím hral, hráč nedal gól (0 v goalsIndex)
+  // =====================================================
+  const loss = -state.stake;
+  const before = state.balance;
+
+  state.balance = Number((before + loss).toFixed(2));
+  state.stake = state.stake * 2;
+  state.streak += 1;
+
+  await appendHistory(playerName, {
+    date: y,
+    gameId: stats.gameId, // môže byť null, pri 0 góloch nám nevadí
+    goals: 0,
+    result: "miss",
+    profitChange: loss,
+    balanceAfter: state.balance,
+  });
+
+  state.lastUpdate = y;
+  await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
+
+  console.log("❌ MISS:", playerName, "loss:", loss);
+ }
 }
 
 // ===============================================
