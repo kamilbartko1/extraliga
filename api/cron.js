@@ -91,24 +91,15 @@ async function appendHistory(player, entry) {
   await redis.set(key, JSON.stringify(hist));
 }
 
-// ===============================================
-// 🔥 Mantingal vyhodnocovanie cez SCORE API
-//    – iba podľa games[].goals[]
-// ===============================================
-// ===============================================
-// 🔥 Hlavný Mantingal update – SCORE + SKIP podľa klubu
-// ===============================================
 async function updateMantingalePlayers() {
-  console.log("🔥 Mantingal: vyhodnocujem podľa SCORE API...");
+  console.log("🔥 Mantingal: vyhodnocujem podľa BOXSCORE API...");
 
-  // včerajší dátum
   const y = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-  const url = `https://api-web.nhle.com/v1/score/${y}`;
 
-  // stiahni včerajšie zápasy
+  // 1️⃣ Stiahneme iba zoznam zápasov (bez hráčov)
   let games;
   try {
-    const r = await axios.get(url, { timeout: 12000 });
+    const r = await axios.get(`https://api-web.nhle.com/v1/score/${y}`, { timeout: 12000 });
     games = r.data?.games || [];
   } catch (err) {
     console.log("❌ SCORE API ERROR:", err.message);
@@ -116,125 +107,161 @@ async function updateMantingalePlayers() {
   }
 
   if (!games.length) {
-    console.log("⚠️ Včera neboli žiadne zápasy.");
+    console.log("⚠️ Včera neboli zápasy.");
     return;
   }
 
-  // načítaj mantingal hráčov
   const players = await redis.hgetall(M_PLAYERS);
-  if (!players || Object.keys(players).length === 0) {
-    console.log("⚠️ Žiadni mantingale hráči.");
-    return;
-  }
+  if (!players || Object.keys(players).length === 0) return;
 
-  // set tímov, ktoré včera hrali
+  // map tímov ktoré hrali
   const teamsPlayed = new Set();
   for (const g of games) {
-    if (g.homeTeam?.abbrev) teamsPlayed.add(g.homeTeam.abbrev);
-    if (g.awayTeam?.abbrev) teamsPlayed.add(g.awayTeam.abbrev);
+    teamsPlayed.add(g.homeTeam?.abbrev);
+    teamsPlayed.add(g.awayTeam?.abbrev);
   }
 
-  // index gólov podľa mena (normované meno -> { goals, gameId })
-  const goalsIndex = {};
-  for (const g of games) {
-    const gameId = g.id;
-    const goalsArr = g.goals || [];
+  // FUNKCIA – identická ako v ai.js
+  function normalizeName(str) {
+    return String(str || "")
+      .toLowerCase()
+      .replace(/\./g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
 
-    for (const ev of goalsArr) {
-      const nameDefault = ev.name?.default || "";
-      const norm = normalizeName(nameDefault);
-      if (!norm) continue;
+  // FUNKCIA – identická ako v ai.js
+  function findPlayerInBox(box, target) {
+    const players = [
+      ...(box?.playerByGameStats?.homeTeam?.forwards || []),
+      ...(box?.playerByGameStats?.homeTeam?.defense || []),
+      ...(box?.playerByGameStats?.awayTeam?.forwards || []),
+      ...(box?.playerByGameStats?.awayTeam?.defense || []),
+    ];
 
-      if (!goalsIndex[norm]) {
-        goalsIndex[norm] = {
-          goals: 0,
-          gameId,
-        };
-      }
-      goalsIndex[norm].goals += 1;
+    const normalizedTarget = normalizeName(target);
+
+    return players.find((p) => {
+      const raw1 = p?.name?.default || "";
+      const raw2 = `${p?.firstName?.default || ""} ${p?.lastName?.default || ""}`;
+
+      const n1 = normalizeName(raw1);
+      const n2 = normalizeName(raw2);
+
+      return (
+        n1 === normalizedTarget ||
+        n2 === normalizedTarget ||
+        n1.split(" ").reverse().join(" ") === normalizedTarget ||
+        n2.split(" ").reverse().join(" ") === normalizedTarget
+      );
+    });
+  }
+
+  // PRE KAŽDÉHO HRÁČA v MANTINGALE
+  for (const [playerName, raw] of Object.entries(players)) {
+    let state = normalizePlayer(safeParse(raw));
+    const team = state.teamAbbrev;
+
+    // 1️⃣ Tím nehral → SKIP
+    if (!team || !teamsPlayed.has(team)) {
+      await appendHistory(playerName, {
+        date: y,
+        gameId: null,
+        goals: null,
+        result: "skip",
+        profitChange: 0,
+        balanceAfter: state.balance,
+      });
+      state.lastUpdate = y;
+      await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
+      console.log("⏭ SKIP (team not played):", playerName);
+      continue;
     }
-  }
 
-  // PRE KAŽDÉHO MANTINGAL HRÁČA
-for (const [playerName, raw] of Object.entries(players)) {
-  let state = normalizePlayer(safeParse(raw));
-  const normName = normalizeName(playerName);
+    // 2️⃣ Nájdeme GAME ID kde hrá jeho tím
+    const game = games.find(
+      (g) => g.homeTeam?.abbrev === team || g.awayTeam?.abbrev === team
+    );
 
-  // ak hráč nie je v goalsIndex, berieme to ako 0 gólov (mohol hrať, ale neskóroval)
-  const stats = goalsIndex[normName] || { goals: 0, gameId: null };
+    if (!game) continue;
 
-  const team = state.teamAbbrev;
+    // 3️⃣ Stiahneme BOXSCORE
+    let box;
+    try {
+      const r = await axios.get(
+        `https://api-web.nhle.com/v1/gamecenter/${game.id}/boxscore`,
+        { timeout: 12000 }
+      );
+      box = r.data;
+    } catch (err) {
+      console.log("❌ BOX ERROR:", err.message);
+      continue;
+    }
 
-  // =====================================================
-  // ✅ 1) SKIP – hráč nemá tím alebo tím včera nehral
-  // =====================================================
-  if (!team || !teamsPlayed.has(team)) {
+    // 4️⃣ Nájdeme hráča presne ako v ai.js
+    const found = findPlayerInBox(box, playerName);
+
+    // 5️⃣ Hráč nebol na súpiske → SKIP
+    if (!found) {
+      await appendHistory(playerName, {
+        date: y,
+        gameId: game.id,
+        goals: null,
+        result: "skip",
+        profitChange: 0,
+        balanceAfter: state.balance,
+      });
+      state.lastUpdate = y;
+      await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
+      console.log("⏭ SKIP (not on roster):", playerName);
+      continue;
+    }
+
+    const goals = Number(found.goals || 0);
+
+    // 6️⃣ HIT
+    if (goals > 0) {
+      const profit = Number((state.stake * 1.2).toFixed(2));
+      state.balance = Number((state.balance + profit).toFixed(2));
+
+      await appendHistory(playerName, {
+        date: y,
+        gameId: game.id,
+        goals,
+        result: "hit",
+        profitChange: profit,
+        balanceAfter: state.balance,
+      });
+
+      state.stake = 1;
+      state.streak = 0;
+      state.lastUpdate = y;
+      await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
+
+      console.log("🎯 HIT:", playerName);
+      continue;
+    }
+
+    // 7️⃣ MISS
+    const loss = -state.stake;
+    state.balance = Number((state.balance + loss).toFixed(2));
+    state.stake *= 2;
+    state.streak += 1;
+
     await appendHistory(playerName, {
       date: y,
-      gameId: null,
-      goals: null,
-      result: "skip",
-      profitChange: 0,
+      gameId: game.id,
+      goals: 0,
+      result: "miss",
+      profitChange: loss,
       balanceAfter: state.balance,
     });
 
     state.lastUpdate = y;
     await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
 
-    console.log("⏭ SKIP (team did not play):", playerName, "team:", team);
-    continue;
+    console.log("❌ MISS:", playerName);
   }
-
-  // =====================================================
-  // 🎯 2) HIT – hráč dal aspoň 1 gól
-  // =====================================================
-  if (stats.goals > 0) {
-    const profit = Number((state.stake * 1.2).toFixed(2));
-    const before = state.balance;
-    state.balance = Number((before + profit).toFixed(2));
-
-    await appendHistory(playerName, {
-      date: y,
-      gameId: stats.gameId,
-      goals: stats.goals,
-      result: "hit",
-      profitChange: profit,
-      balanceAfter: state.balance,
-    });
-
-    state.stake = 1;
-    state.streak = 0;
-    state.lastUpdate = y;
-
-    await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
-    console.log("🎯 HIT:", playerName, "goals:", stats.goals, "profit:", profit);
-    continue;
-  }
-
-  // =====================================================
-  // ❌ 3) MISS – tím hral, hráč nedal gól (0 v goalsIndex)
-  // =====================================================
-  const loss = -state.stake;
-  const before = state.balance;
-
-  state.balance = Number((before + loss).toFixed(2));
-  state.stake = state.stake * 2;
-  state.streak += 1;
-
-  await appendHistory(playerName, {
-    date: y,
-    gameId: stats.gameId, // môže byť null, pri 0 góloch nám nevadí
-    goals: 0,
-    result: "miss",
-    profitChange: loss,
-    balanceAfter: state.balance,
-  });
-
-  state.lastUpdate = y;
-  await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
-
-  console.log("❌ MISS:", playerName, "loss:", loss);
- }
 }
 
 // ===============================================
