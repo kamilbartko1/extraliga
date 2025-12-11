@@ -642,32 +642,6 @@ async function showMantingalDetail(player) {
   document.getElementById("mtg-player-name").textContent = player;
 
   // ===================================
-  // GRAF DENNÉHO PROFITU
-  // ===================================
-  const dailyRes = await fetch("/api/mantingal?task=daily");
-  const dailyData = await dailyRes.json();
-
-  const ctx = document.getElementById("mtg-chart");
-
-  if (window.mtgChart) window.mtgChart.destroy();
-
-  window.mtgChart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: dailyData.dailyProfit.map((x) => x.date),
-      datasets: [
-        {
-          label: "Denný profit (€)",
-          data: dailyData.dailyProfit.map((x) => x.profit),
-          borderColor: "yellow",
-          borderWidth: 2,
-          tension: 0.3,
-        },
-      ],
-    },
-  });
-
-  // ===================================
   // HISTÓRIA HRÁČA
   // ===================================
   const tbody = document.getElementById("mtg-history-body");
