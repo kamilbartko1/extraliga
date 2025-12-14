@@ -254,11 +254,13 @@
   </div>
 </section>
 
-    <!-- 📊 Premium section -->
+<!-- ===============================
+     📊 NHLPRO PREMIUM SECTION
+     =============================== -->
 <section id="premium-section" class="section" style="display:none;">
   <h2>🏒 NHLPRO PREMIUM</h2>
 
-  <!-- NOT LOGGED -->
+  <!-- 🔐 NOT LOGGED -->
   <div id="premium-not-logged" style="display:none;">
     <p>Najprv sa prihlás, aby si mohol používať NHLPRO PREMIUM.</p>
 
@@ -266,36 +268,56 @@
       <input id="premium-email" type="email" placeholder="Email" />
       <input id="premium-pass" type="password" placeholder="Heslo" />
       <button id="premium-login-btn">Prihlásiť</button>
-      <button id="premium-logout-btn" style="display:none;">Odhlásiť</button>
     </div>
   </div>
 
-  <!-- LOCK MESSAGE (logged but not VIP) -->
+  <!-- 🔒 LOGGED BUT NOT VIP -->
   <div id="premium-locked" style="display:none;">
-    <p>Táto sekcia je dostupná len pre členov <strong>NHLPRO PREMIUM</strong>.</p>
-    <button id="premium-upgrade-btn">Staň sa NHLPRO PREMIUM</button>
+    <p>
+      Táto sekcia je dostupná len pre členov
+      <strong>NHLPRO PREMIUM</strong>.
+    </p>
+    <button id="premium-upgrade-btn">
+      Staň sa NHLPRO PREMIUM
+    </button>
   </div>
 
-  <!-- Odhlasenie premium -->
-  <button id="premium-logout-btn" class="logout-btn">
-  Odhlásiť sa
-  </button>
-
-
-  <!-- PREMIUM CONTENT (VIP) -->
+  <!-- 👑 PREMIUM CONTENT -->
   <div id="premium-content" style="display:none;">
+
+    <!-- LOGOUT -->
+    <button id="premium-logout-btn" class="logout-btn">
+      Odhlásiť sa
+    </button>
+
     <p>Vitaj v NHLPRO PREMIUM 👑</p>
 
     <h3>Tvoj vlastný Martingale zoznam hráčov</h3>
 
-    <div class="premium-add-player">
-      <input id="premium-add-name" placeholder="Meno hráča (napr. Connor McDavid)" />
-      <input id="premium-add-team" placeholder="Tím (abbrev, napr. EDM)" />
-      <button id="premium-add-btn">Pridať hráča</button>
+    <!-- ➕ ADD PLAYER -->
+    <div class="premium-add-player" style="margin-bottom:12px;">
+      <input
+        id="premium-player-name"
+        placeholder="Meno hráča (napr. Connor McDavid)"
+      />
+      <input
+        id="premium-player-team"
+        placeholder="Tím (napr. EDM)"
+        maxlength="3"
+        style="text-transform:uppercase;"
+      />
+      <button id="premium-add-player-btn">
+        Pridať hráča
+      </button>
     </div>
 
-    <p><strong>Celkový profit:</strong> <span id="premium-total-profit">0</span> €</p>
+    <!-- SUMMARY -->
+    <p>
+      <strong>Celkový profit:</strong>
+      <span id="premium-total-profit">0.00</span> €
+    </p>
 
+    <!-- TABLE -->
     <table class="mantingale-table">
       <thead>
         <tr>
@@ -309,7 +331,9 @@
       <tbody id="premium-players-body"></tbody>
     </table>
 
+    <!-- MSG -->
     <div id="premium-msg" style="margin-top:10px;color:#aaa;"></div>
+
   </div>
 </section>
 
