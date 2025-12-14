@@ -1,30 +1,42 @@
 // /api/vip.js
 import { Redis } from "@upstash/redis";
-import { requireAuth } from "./_auth.js";  // 🔥 dôležitý import
+import Stripe from "stripe";
+import { requireAuth } from "./_auth.js";
 
-// Redis inicializácia
+// ===============================
+// Inicializácie
+// ===============================
+
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
-// Redis kľúče pre VIP
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2023-10-16",
+});
+
+// ===============================
+// Redis kľúče
+// ===============================
+
 const VIP_USERS_KEY = "VIP_USERS";
 const vipPlayersKey = (userId) => `VIP_MTG:${userId}`;
 const vipHistoryKey = (userId, player) =>
   `VIP_MTG_HISTORY:${userId}:${player}`;
 
-// ------------------------------
+// ===============================
 // Pomocné funkcie
-// ------------------------------
+// ===============================
 
 function safeParse(raw) {
   try {
     if (!raw) return {};
     if (typeof raw === "string") return JSON.parse(raw);
     if (typeof raw === "object" && raw !== null) {
-      if (raw.value && typeof raw.value === "string")
+      if (raw.value && typeof raw.value === "string") {
         return JSON.parse(raw.value);
+      }
       return raw;
     }
     return {};
@@ -52,21 +64,67 @@ function todayISO() {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-// ------------------------------
-// Hlavný Handler
-// ------------------------------
+// Stripe potrebuje RAW body
+function getRawBody(req) {
+  return new Promise((resolve, reject) => {
+    let data = "";
+    req.on("data", (chunk) => (data += chunk));
+    req.on("end", () => resolve(data));
+    req.on("error", reject);
+  });
+}
+
+// ===============================
+// Hlavný handler
+// ===============================
 
 export default async function handler(req, res) {
   try {
     const task = req.query.task || null;
 
-    // 🔥 ZÍSKANIE REÁLNEHO USERA CEZ TOKEN
-    const userId = requireAuth(req, res);
-    if (!userId) return; // ak nemá token →Unauthorized
+    // =====================================================
+    // STRIPE WEBHOOK – MUSÍ BYŤ PRVÝ (bez requireAuth)
+    // =====================================================
+    if (task === "stripe_webhook") {
+      const sig = req.headers["stripe-signature"];
+      const rawBody = await getRawBody(req);
 
-    // ------------------------------------------
-    // 1) STATUS – je VIP? (existuje v VIP_USERS)
-    // ------------------------------------------
+      let event;
+      try {
+        event = stripe.webhooks.constructEvent(
+          rawBody,
+          sig,
+          process.env.STRIPE_WEBHOOK_SECRET
+        );
+      } catch (err) {
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+      }
+
+      if (event.type === "checkout.session.completed") {
+        const session = event.data.object;
+        const userId = session.metadata?.userId;
+
+        if (userId) {
+          await redis.sadd(VIP_USERS_KEY, userId);
+          await redis.set(
+            `VIP_EXPIRES:${userId}`,
+            Date.now() + 31 * 24 * 60 * 60 * 1000
+          );
+        }
+      }
+
+      return res.json({ received: true });
+    }
+
+    // =====================================================
+    // AUTH – všetko ostatné vyžaduje JWT
+    // =====================================================
+    const userId = requireAuth(req, res);
+    if (!userId) return;
+
+    // =====================================================
+    // 1) STATUS – je PREMIUM?
+    // =====================================================
     if (task === "status") {
       const isVip = await redis.sismember(VIP_USERS_KEY, userId);
 
@@ -77,9 +135,35 @@ export default async function handler(req, res) {
       });
     }
 
-    // ------------------------------------------
-    // 2) GET_PLAYERS – hráči používateľa
-    // ------------------------------------------
+    // =====================================================
+    // 2) STRIPE – Checkout (subscription)
+    // =====================================================
+    if (task === "create_checkout_session") {
+      const session = await stripe.checkout.sessions.create({
+        mode: "subscription",
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price: process.env.STRIPE_PRICE_ID,
+            quantity: 1,
+          },
+        ],
+        success_url: "https://www.nhlpro.sk/?premium=success",
+        cancel_url: "https://www.nhlpro.sk/?premium=cancel",
+        metadata: {
+          userId,
+        },
+      });
+
+      return res.json({
+        ok: true,
+        url: session.url,
+      });
+    }
+
+    // =====================================================
+    // 3) GET_PLAYERS
+    // =====================================================
     if (task === "get_players") {
       const key = vipPlayersKey(userId);
       const playersRaw = (await redis.hgetall(key)) || {};
@@ -101,9 +185,9 @@ export default async function handler(req, res) {
       });
     }
 
-    // ------------------------------------------
-    // 3) ADD_PLAYER – pridanie hráča
-    // ------------------------------------------
+    // =====================================================
+    // 4) ADD_PLAYER
+    // =====================================================
     if (task === "add_player") {
       const name = req.query.name || null;
       const teamAbbrev = req.query.team || null;
@@ -111,7 +195,7 @@ export default async function handler(req, res) {
       if (!name || !teamAbbrev) {
         return res.status(400).json({
           ok: false,
-          error: "Missing name or team (use ?name=...&team=...)",
+          error: "Missing name or team (?name=...&team=...)",
         });
       }
 
@@ -131,9 +215,6 @@ export default async function handler(req, res) {
         [name]: JSON.stringify(playerState),
       });
 
-      // Pridáme usera do VIP skupiny
-      await redis.sadd(VIP_USERS_KEY, userId);
-
       return res.json({
         ok: true,
         userId,
@@ -142,15 +223,15 @@ export default async function handler(req, res) {
       });
     }
 
-    // ------------------------------------------
-    // 4) HISTORY – história hráča
-    // ------------------------------------------
+    // =====================================================
+    // 5) HISTORY
+    // =====================================================
     if (task === "history") {
       const player = req.query.player;
       if (!player) {
         return res.status(400).json({
           ok: false,
-          error: "Missing player (use ?player=...)",
+          error: "Missing player (?player=...)",
         });
       }
 
@@ -171,13 +252,13 @@ export default async function handler(req, res) {
       });
     }
 
-    // ------------------------------------------
+    // =====================================================
     // DEFAULT
-    // ------------------------------------------
+    // =====================================================
     return res.json({
       ok: true,
       message:
-        "VIP endpoint ready. Use ?task=status|get_players|add_player|history",
+        "VIP API ready. Use ?task=status|create_checkout_session|get_players|add_player|history",
     });
   } catch (err) {
     console.error("❌ VIP API ERROR:", err);
