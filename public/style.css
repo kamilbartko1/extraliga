@@ -3806,6 +3806,10 @@ body {
   cursor: pointer;
 }
 
+.hidden {
+  display: none;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {

@@ -915,61 +915,32 @@ async function displayStrategies() {
   }
 }
 
-// === Predikcie – Kurzy bookmakerov ===
-async function displayPredictions() {
-  const container = document.getElementById("predictions-section");
-  if (!container) return;
+// Zistenie kto je premium user ===
+async function checkPremiumStatus() {
+  const token = localStorage.getItem("sb-access-token");
+  if (!token) return;
 
-  container.innerHTML = `
-    <h2>Predikcie – Kurzy bookmakerov</h2>
-    <p>Načítavam aktuálne kurzy...</p>
-  `;
+  const res = await fetch("/api/vip?task=status", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-  try {
-    const resp = await fetch("/api/predictions");
-    const data = await resp.json();
+  const data = await res.json();
+  if (!data.ok) return;
 
-    if (!data.games?.length) {
-      container.innerHTML = "<p>Žiadne dostupné kurzy</p>";
-      return;
-    }
+  const section = document.getElementById("premium-section");
+  const locked = document.getElementById("premium-locked");
+  const content = document.getElementById("premium-content");
 
-    const list = document.createElement("div");
-    list.className = "odds-blocks";
+  section.classList.remove("hidden");
 
-    data.games.forEach(game => {
-      const home = game.homeTeam || "-";
-      const away = game.awayTeam || "-";
-      const homeLogo = game.homeLogo || "";
-      const awayLogo = game.awayLogo || "";
-      const homeOdds = game.homeOdds ?? "-";
-      const awayOdds = game.awayOdds ?? "-";
-
-      const match = document.createElement("div");
-      match.className = "odds-match";
-      match.innerHTML = `
-        <div class="match-header">
-          <img src="${homeLogo}" alt="${home}" class="team-logo">
-          <span class="team-name">${home}</span>
-          <span class="vs">–</span>
-          <span class="team-name">${away}</span>
-          <img src="${awayLogo}" alt="${away}" class="team-logo">
-        </div>
-
-        <div class="odds-row">
-          <div class="odds-cell"><b>1</b><br>${homeOdds}</div>
-          <div class="odds-cell"><b>2</b><br>${awayOdds}</div>
-        </div>
-      `;
-      list.appendChild(match);
-    });
-
-    container.innerHTML = `<h2>Predikcie – Kurzy bookmakerov</h2>`;
-    container.appendChild(list);
-
-  } catch (err) {
-    console.error("❌ Chyba pri načítaní predikcií:", err);
-    container.innerHTML = `<p>Chyba pri načítaní kurzov: ${err.message}</p>`;
+  if (data.isVip) {
+    locked.classList.add("hidden");
+    content.classList.remove("hidden");
+  } else {
+    content.classList.add("hidden");
+    locked.classList.remove("hidden");
   }
 }
 
@@ -1120,39 +1091,49 @@ document.querySelectorAll("nav button").forEach(btn => {
     if (!targetId) return;
 
     // 🔹 Skry všetky sekcie
-    document.querySelectorAll(".section, .content-section").forEach(sec => sec.style.display = "none");
+    document.querySelectorAll(".section, .content-section").forEach(sec => {
+      sec.style.display = "none";
+    });
 
     // 🔹 Zobraz len tú vybranú
     const section = document.getElementById(targetId);
     if (section) section.style.display = "block";
 
-    // 🔹 Spusti len dané dáta podľa sekcie
+    // 🔹 Dynamické načítanie obsahu
     switch (targetId) {
-        case "home-section":
+      case "home-section":
         await displayHome();
         break;
+
       case "matches-section":
         await fetchMatches();
         break;
+
       case "teams-section":
         await displayTeamRatings();
         break;
+
       case "players-section":
         await displayPlayerRatings();
         break;
+
       case "mantingal-container":
         await displayMantingal();
         await displayMantingalHistory();
         break;
-      case "predictions-section":
-        await displayPredictions();
+
+      case "premium-section":
+        await checkPremiumStatus(); // 🔥 KĽÚČOVÉ
         break;
+
       case "shooting-section":
         await displayShootingLeaders();
         break;
+
       case "strategies-section":
         await displayStrategies();
         break;
+
       default:
         break;
     }
@@ -1164,7 +1145,9 @@ document.getElementById("mobileSelect")?.addEventListener("change", async (e) =>
   const val = e.target.value;
 
   // 🔹 Skry všetko
-  document.querySelectorAll(".section, .content-section").forEach(sec => sec.style.display = "none");
+  document.querySelectorAll(".section, .content-section").forEach(sec => {
+    sec.style.display = "none";
+  });
 
   let targetId = "";
   switch (val) {
@@ -1172,7 +1155,7 @@ document.getElementById("mobileSelect")?.addEventListener("change", async (e) =>
     case "teams": targetId = "teams-section"; break;
     case "players": targetId = "players-section"; break;
     case "mantingal": targetId = "mantingal-container"; break;
-    case "predictions": targetId = "predictions-section"; break;
+    case "premium": targetId = "premium-section"; break; // 🔥 ZMENA
     case "shooting": targetId = "shooting-section"; break;
     case "strategies": targetId = "strategies-section"; break;
   }
@@ -1180,30 +1163,36 @@ document.getElementById("mobileSelect")?.addEventListener("change", async (e) =>
   const section = document.getElementById(targetId);
   if (section) section.style.display = "block";
 
-  // 🔹 Dynamické načítanie obsahu podľa výberu
   switch (targetId) {
     case "matches-section":
       await fetchMatches();
       break;
+
     case "teams-section":
       await displayTeamRatings();
       break;
+
     case "players-section":
       await displayPlayerRatings();
       break;
+
     case "mantingal-container":
       await displayMantingal();
       await displayMantingalHistory();
       break;
-    case "predictions-section":
-      await displayPredictions();
+
+    case "premium-section":
+      await checkPremiumStatus(); // 🔥 KĽÚČOVÉ
       break;
+
     case "shooting-section":
       await displayShootingLeaders();
       break;
+
     case "strategies-section":
       await displayStrategies();
       break;
+
     default:
       break;
   }
@@ -1221,26 +1210,24 @@ window.addEventListener("DOMContentLoaded", async () => {
     sec.style.display = "none";
   });
 
-  // 3️⃣ Zobraz DOMOV a paralelne načítaj všetky dáta (ratingy, zápasy, AI tip)
+  // 3️⃣ Zobraz DOMOV
   const home = document.getElementById("home-section");
   if (home) {
     home.style.display = "block";
     home.style.opacity = 0;
     setTimeout(() => (home.style.opacity = 1), 100);
 
-    // ⚡ načítaj všetko paralelne
     await Promise.all([
-      fetchMatches(),   // načíta zápasy + ratingy (aj playerRatings, teamRatings)
-      displayHome()     // zobrazí AI tip, štatistiky, zápasy dňa
+      fetchMatches(),
+      displayHome()
     ]);
   } else {
-    // fallback ak chýba home
     await fetchMatches();
   }
 
-  // 4️⃣ Po 3 sekundách ešte raz zaktualizuj cache (len pre istotu)
+  // 4️⃣ Soft refresh po 3s
   setTimeout(() => {
     console.log("🔁 Aktualizujem dáta po načítaní...");
-    fetchMatches(); // načíta znovu, ak boli dáta neúplné
+    fetchMatches();
   }, 3000);
 });
