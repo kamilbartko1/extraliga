@@ -919,7 +919,9 @@ async function displayStrategies() {
   }
 }
 
-// Zistenie kto je premium user ===
+// ===============================
+// Zistenie kto je NHLPRO PREMIUM
+// ===============================
 async function checkPremiumStatus() {
   const section = document.getElementById("premium-section");
   const notLogged = document.getElementById("premium-not-logged");
@@ -928,43 +930,124 @@ async function checkPremiumStatus() {
 
   if (!section || !notLogged || !locked || !content) return;
 
-  // default: skry všetko
+  // 🔹 default: všetko skry
   notLogged.style.display = "none";
   locked.style.display = "none";
   content.style.display = "none";
 
-  // sekciu zobraz (showSection to robí tiež, ale nech je to safe)
+  // 🔹 sekcia musí byť viditeľná
   section.style.display = "block";
 
   const token = localStorage.getItem("sb-access-token");
   const logoutBtn = document.getElementById("premium-logout-btn");
   if (logoutBtn) logoutBtn.style.display = token ? "inline-block" : "none";
 
+  // ===============================
+  // 1️⃣ NEPRIHLÁSENÝ USER
+  // ===============================
   if (!token) {
     notLogged.style.display = "block";
     return;
   }
 
+  // ===============================
+  // 2️⃣ PRIHLÁSENÝ → ZISTI VIP
+  // ===============================
   try {
     const res = await fetch("/api/vip?task=status", {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     const data = await res.json();
+
     if (!data.ok) {
       notLogged.style.display = "block";
       return;
     }
 
+    // ===============================
+    // 3️⃣ PREMIUM USER
+    // ===============================
     if (data.isVip) {
       content.style.display = "block";
-      // v ďalšom kroku tu načítame zoznam hráčov
+
+      // 🔥 KROK 2 – načítaj vlastných PREMIUM hráčov
+      if (typeof loadPremiumPlayers === "function") {
+        await loadPremiumPlayers();
+      }
+
+    // ===============================
+    // 4️⃣ PRIHLÁSENÝ, ALE NIE PREMIUM
+    // ===============================
     } else {
       locked.style.display = "block";
     }
+
   } catch (err) {
-    console.error("PREMIUM status error:", err);
+    console.error("❌ PREMIUM status error:", err);
     notLogged.style.display = "block";
+  }
+}
+
+// Nacitanie premium hracov ===
+async function loadPremiumPlayers() {
+  const token = localStorage.getItem("sb-access-token");
+  const tbody = document.getElementById("premium-players-body");
+  const totalEl = document.getElementById("premium-total-profit");
+  const msg = document.getElementById("premium-msg");
+
+  if (!tbody || !totalEl) return;
+
+  tbody.innerHTML = "";
+  totalEl.textContent = "0.00";
+  if (msg) msg.textContent = "";
+
+  if (!token) {
+    if (msg) msg.textContent = "Nie si prihlásený.";
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/vip?task=get_players", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await res.json();
+    if (!data.ok) {
+      if (msg) msg.textContent = data.error || "Nepodarilo sa načítať hráčov.";
+      return;
+    }
+
+    const players = data.players || {};
+    const entries = Object.entries(players);
+
+    totalEl.textContent = Number(data.totalProfit || 0).toFixed(2);
+
+    if (entries.length === 0) {
+      if (msg) msg.textContent = "Zatiaľ nemáš pridaných žiadnych hráčov.";
+      return;
+    }
+
+    for (const [name, p] of entries) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${name}</td>
+        <td>${Number(p.stake || 1)}</td>
+        <td>${Number(p.streak || 0)}</td>
+        <td>${Number(p.balance || 0).toFixed(2)} €</td>
+        <td>
+          <button class="premium-del-btn" data-player="${encodeURIComponent(name)}">Vymazať</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    // delete zatiaľ len pripravené (v KROKU 4)
+  } catch (err) {
+    console.error("loadPremiumPlayers error:", err);
+    if (msg) msg.textContent = "Chyba pri načítaní hráčov.";
   }
 }
 
