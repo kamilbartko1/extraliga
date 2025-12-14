@@ -1185,7 +1185,7 @@ document.getElementById("mobileSelect")?.addEventListener("change", async (e) =>
       await checkPremiumStatus(); // 🔥 KĽÚČOVÉ
       break;
 
-    case "shooting-section":
+    case "stats-section":
       await displayShootingLeaders();
       break;
 
