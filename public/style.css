@@ -3830,6 +3830,25 @@ body {
   border-color: #00eaff;
 }
 
+/* ===========================
+   NHLPRO PREMIUM – INPUT FIX
+   (aby bolo vidno čo píšeš)
+   =========================== */
+#premium-section input {
+  background: #ffffff;
+  color: #000000;          /* 🔥 viditeľný text */
+  border: 1px solid #ccc;
+}
+
+#premium-section input::placeholder {
+  color: #777;
+}
+
+#premium-section input:focus {
+  outline: none;
+  border-color: #00eaff;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {

@@ -223,6 +223,34 @@ export default async function handler(req, res) {
       });
     }
 
+    // ------------------------------------------
+// 4) DELETE_PLAYER – vymazanie hráča
+// ------------------------------------------
+if (task === "delete_player") {
+  const player = req.query.player || null;
+
+  if (!player) {
+    return res.status(400).json({
+      ok: false,
+      error: "Missing player (use ?player=...)",
+    });
+  }
+
+  const key = vipPlayersKey(userId);
+
+  // zmaž hráča z VIP zoznamu
+  await redis.hdel(key, player);
+
+  // voliteľne: zmaž aj históriu hráča
+  await redis.del(vipHistoryKey(userId, player));
+
+  return res.json({
+    ok: true,
+    userId,
+    deleted: player,
+  });
+}
+
     // =====================================================
     // 5) HISTORY
     // =====================================================

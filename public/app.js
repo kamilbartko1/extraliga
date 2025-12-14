@@ -1110,6 +1110,44 @@ async function addPremiumPlayer() {
   }
 }
 
+// ===============================
+// PREMIUM – Vymazať hráča
+// ===============================
+async function deletePremiumPlayer(encodedName) {
+  const token = localStorage.getItem("sb-access-token");
+  const msg = document.getElementById("premium-msg");
+  if (!token) return;
+
+  const name = decodeURIComponent(encodedName || "");
+  if (!name) return;
+
+  const ok = confirm(`Naozaj chceš vymazať hráča: ${name}?`);
+  if (!ok) return;
+
+  if (msg) msg.textContent = "⏳ Mažem hráča...";
+
+  try {
+    const res = await fetch(
+      `/api/vip?task=delete_player&player=${encodeURIComponent(name)}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    const data = await res.json();
+    if (!data.ok) {
+      if (msg) msg.textContent = data.error || "Chyba pri mazaní hráča.";
+      return;
+    }
+
+    if (msg) msg.textContent = `🗑️ Hráč ${name} vymazaný.`;
+    await loadPremiumPlayers();
+  } catch (err) {
+    console.error("DELETE PREMIUM PLAYER ERROR:", err);
+    if (msg) msg.textContent = "❌ Chyba pri komunikácii so serverom.";
+  }
+}
+
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
 async function displayShootingLeaders() {
   const grid = document.getElementById("stats-grid");
@@ -1445,14 +1483,17 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// ===============================
-// PREMIUM – Event delegácia
-// ===============================
 document.addEventListener("click", (e) => {
 
   // ➕ Pridať hráča
   if (e.target && e.target.id === "premium-add-player-btn") {
     addPremiumPlayer();
+  }
+
+  // 🗑️ Vymazať hráča
+  if (e.target && e.target.classList && e.target.classList.contains("premium-del-btn")) {
+    const p = e.target.getAttribute("data-player");
+    deletePremiumPlayer(p);
   }
 
 });
