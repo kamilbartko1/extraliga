@@ -1381,8 +1381,15 @@ document.getElementById("premium-logout-btn")?.addEventListener("click", () => {
   checkPremiumStatus();
 });
 
-document.getElementById("premium-logout-btn")?.addEventListener("click", () => {
-  premiumLogout();
+// ===============================
+// PREMIUM – Logout (delegácia)
+// ===============================
+document.addEventListener("click", (e) => {
+  if (e.target && e.target.id === "premium-logout-btn") {
+    console.log("🔓 PREMIUM logout");
+    localStorage.removeItem("sb-access-token");
+    location.reload();
+  }
 });
 
   // 4️⃣ Soft refresh po 3s
