@@ -361,5 +361,79 @@
     </div>
   </div>
   <script src="app.js"></script>
+
+  <!-- 🧭 Riadenie sekcií (univerzálne pre PC aj mobil) -->
+  <script>
+    const sections = document.querySelectorAll(".section, .content-section");
+
+    function showSection(id) {
+      // Skry všetky sekcie
+      sections.forEach(sec => sec.style.display = "none");
+
+      // Zobraz kliknutú
+      const section = document.getElementById(id);
+      if (section) {
+        section.style.display = "block";
+        section.style.opacity = 0;
+        setTimeout(() => (section.style.opacity = 1), 100);
+      }
+
+      // Dynamické načítanie len pre danú sekciu
+      switch (id) {
+        case "home-section":
+          displayHome();
+          break;
+        case "stats-section":
+          displayShootingLeaders();
+          break;
+        case "strategies-section":
+          displayStrategies();
+          break;
+        case "premium-section":
+          checkPremiumStatus();
+          break;
+        case "players-section":
+          displayPlayerRatings();
+          break;
+        case "matches-section":
+          fetchMatches();
+          break;
+          case "mantingale-section":
+          loadMantingal();
+          break;
+      }
+    }
+
+    // 📱 Mobilné menu
+    document.getElementById("mobileSelect")?.addEventListener("change", (e) => {
+      const map = {
+        home: "home-section",
+        matches: "matches-section",
+        teams: "teams-section",
+        players: "players-section",
+        premium: "premium-section",
+        stats: "stats-section",
+        strategies: "strategies-section",
+        mantingal: "mantingale-section"
+      };
+      const target = map[e.target.value];
+      if (target) showSection(target);
+    });
+
+    // 🖥️ Desktop menu
+    document.querySelectorAll("nav button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("onclick")?.match(/'(.*?)'/)?.[1];
+        if (targetId) showSection(targetId);
+      });
+    });
+
+    // 🔹 Po načítaní stránky zobraz iba „Výsledky“
+    document.addEventListener("DOMContentLoaded", () => {
+      sections.forEach(sec => sec.style.display = "none");
+      document.getElementById("matches-section").style.display = "block";
+    });
+  </script>
+
 </body>
 </html>
