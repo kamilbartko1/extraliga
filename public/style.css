@@ -3810,6 +3810,26 @@ body {
   display: none;
 }
 
+/* ===========================
+   NHLPRO PREMIUM – LOGIN FIX
+   =========================== */
+
+#premium-section input[type="email"],
+#premium-section input[type="password"] {
+  background: #ffffff;   /* biele pole */
+  color: #000000;        /* 🔥 ČIERNY TEXT */
+  border: 1px solid #ccc;
+}
+
+#premium-section input::placeholder {
+  color: #777;
+}
+
+#premium-section input:focus {
+  outline: none;
+  border-color: #00eaff;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
