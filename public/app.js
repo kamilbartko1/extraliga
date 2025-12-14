@@ -1057,6 +1057,59 @@ async function loadPremiumPlayers() {
   }
 }
 
+// ===============================
+// PREMIUM – Pridanie hráča
+// ===============================
+async function addPremiumPlayer() {
+  const token = localStorage.getItem("sb-access-token");
+  const nameInput = document.getElementById("premium-player-name");
+  const teamInput = document.getElementById("premium-player-team");
+  const msg = document.getElementById("premium-msg");
+
+  if (!token || !nameInput || !teamInput || !msg) return;
+
+  const name = nameInput.value.trim();
+  const team = teamInput.value.trim().toUpperCase();
+
+  if (!name || !team) {
+    msg.textContent = "Zadaj meno hráča aj tím.";
+    return;
+  }
+
+  msg.textContent = "⏳ Pridávam hráča...";
+
+  try {
+    const res = await fetch(
+      `/api/vip?task=add_player&name=${encodeURIComponent(name)}&team=${team}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      msg.textContent = data.error || "Chyba pri pridávaní hráča.";
+      return;
+    }
+
+    msg.textContent = `✅ Hráč ${name} bol pridaný.`;
+
+    // vyčisti inputy
+    nameInput.value = "";
+    teamInput.value = "";
+
+    // 🔄 refresh tabuľky
+    await loadPremiumPlayers();
+
+  } catch (err) {
+    console.error("❌ ADD PREMIUM PLAYER ERROR:", err);
+    msg.textContent = "Chyba pri komunikácii so serverom.";
+  }
+}
+
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
 async function displayShootingLeaders() {
   const grid = document.getElementById("stats-grid");
@@ -1390,6 +1443,18 @@ document.addEventListener("click", (e) => {
     localStorage.removeItem("sb-access-token");
     location.reload();
   }
+});
+
+// ===============================
+// PREMIUM – Event delegácia
+// ===============================
+document.addEventListener("click", (e) => {
+
+  // ➕ Pridať hráča
+  if (e.target && e.target.id === "premium-add-player-btn") {
+    addPremiumPlayer();
+  }
+
 });
 
   // 4️⃣ Soft refresh po 3s
