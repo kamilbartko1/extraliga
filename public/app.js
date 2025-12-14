@@ -11,6 +11,10 @@ const BASE_STAKE = 1;
 const ODDS = 2.5;
 const API_BASE = "";
 
+// === Prihlasenie premium klientov cez supabase ===
+const SUPABASE_URL = "https://ztjyvzulbrilyzfcxogj.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_B8gvXJ59mQjIqytV8WnQqA__I3gpAat"; // ten začína sb_publishable_...
+
 // === Nastavenie dátumov pre sezónu 2025/26 ===
 const START_DATE = "2025-10-08"; // prvé zápasy novej sezóny
 const TODAY = new Date().toISOString().slice(0, 10); // dnešný dátum
@@ -917,30 +921,50 @@ async function displayStrategies() {
 
 // Zistenie kto je premium user ===
 async function checkPremiumStatus() {
-  const token = localStorage.getItem("sb-access-token");
-  if (!token) return;
-
-  const res = await fetch("/api/vip?task=status", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  const data = await res.json();
-  if (!data.ok) return;
-
   const section = document.getElementById("premium-section");
+  const notLogged = document.getElementById("premium-not-logged");
   const locked = document.getElementById("premium-locked");
   const content = document.getElementById("premium-content");
 
-  section.classList.remove("hidden");
+  if (!section || !notLogged || !locked || !content) return;
 
-  if (data.isVip) {
-    locked.classList.add("hidden");
-    content.classList.remove("hidden");
-  } else {
-    content.classList.add("hidden");
-    locked.classList.remove("hidden");
+  // default: skry všetko
+  notLogged.style.display = "none";
+  locked.style.display = "none";
+  content.style.display = "none";
+
+  // sekciu zobraz (showSection to robí tiež, ale nech je to safe)
+  section.style.display = "block";
+
+  const token = localStorage.getItem("sb-access-token");
+  const logoutBtn = document.getElementById("premium-logout-btn");
+  if (logoutBtn) logoutBtn.style.display = token ? "inline-block" : "none";
+
+  if (!token) {
+    notLogged.style.display = "block";
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/vip?task=status", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await res.json();
+    if (!data.ok) {
+      notLogged.style.display = "block";
+      return;
+    }
+
+    if (data.isVip) {
+      content.style.display = "block";
+      // v ďalšom kroku tu načítame zoznam hráčov
+    } else {
+      locked.style.display = "block";
+    }
+  } catch (err) {
+    console.error("PREMIUM status error:", err);
+    notLogged.style.display = "block";
   }
 }
 
@@ -1224,6 +1248,49 @@ window.addEventListener("DOMContentLoaded", async () => {
   } else {
     await fetchMatches();
   }
+
+  document.getElementById("premium-login-btn")?.addEventListener("click", async () => {
+  const email = document.getElementById("premium-email")?.value?.trim();
+  const pass = document.getElementById("premium-pass")?.value;
+
+  if (!email || !pass) {
+    alert("Zadaj email aj heslo");
+    return;
+  }
+
+  try {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password: pass }),
+    });
+
+    const data = await r.json();
+    if (!r.ok) {
+      alert(data?.error_description || "Login error");
+      return;
+    }
+
+    localStorage.setItem("sb-access-token", data.access_token);
+    localStorage.setItem("sb-refresh-token", data.refresh_token);
+
+    // refresh premium UI
+    checkPremiumStatus();
+  } catch (e) {
+    alert("Chyba pri prihlásení");
+    console.error(e);
+  }
+});
+
+document.getElementById("premium-logout-btn")?.addEventListener("click", () => {
+  localStorage.removeItem("sb-access-token");
+  localStorage.removeItem("sb-refresh-token");
+  checkPremiumStatus();
+});
 
   // 4️⃣ Soft refresh po 3s
   setTimeout(() => {

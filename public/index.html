@@ -255,23 +255,55 @@
 </section>
 
     <!-- 📊 Premium section -->
-    <section id="premium-section" class="section" style="display:none;">
+<section id="premium-section" class="section" style="display:none;">
   <h2>🏒 NHLPRO PREMIUM</h2>
 
-  <!-- LOCK MESSAGE -->
-  <div id="premium-locked" style="display:none;">
-    <p>
-      Táto sekcia je dostupná len pre členov <strong>NHLPRO PREMIUM</strong>.
-    </p>
-    <button id="premium-upgrade-btn">
-      Staň sa NHLPRO PREMIUM
-    </button>
+  <!-- NOT LOGGED -->
+  <div id="premium-not-logged" style="display:none;">
+    <p>Najprv sa prihlás, aby si mohol používať NHLPRO PREMIUM.</p>
+
+    <div class="premium-auth-box">
+      <input id="premium-email" type="email" placeholder="Email" />
+      <input id="premium-pass" type="password" placeholder="Heslo" />
+      <button id="premium-login-btn">Prihlásiť</button>
+      <button id="premium-logout-btn" style="display:none;">Odhlásiť</button>
+    </div>
   </div>
 
-  <!-- PREMIUM CONTENT -->
+  <!-- LOCK MESSAGE (logged but not VIP) -->
+  <div id="premium-locked" style="display:none;">
+    <p>Táto sekcia je dostupná len pre členov <strong>NHLPRO PREMIUM</strong>.</p>
+    <button id="premium-upgrade-btn">Staň sa NHLPRO PREMIUM</button>
+  </div>
+
+  <!-- PREMIUM CONTENT (VIP) -->
   <div id="premium-content" style="display:none;">
-    <!-- SEM PÔJDE TVOJ OBSAH (predikcie, mantingal, atď.) -->
     <p>Vitaj v NHLPRO PREMIUM 👑</p>
+
+    <h3>Tvoj vlastný Martingale zoznam hráčov</h3>
+
+    <div class="premium-add-player">
+      <input id="premium-add-name" placeholder="Meno hráča (napr. Connor McDavid)" />
+      <input id="premium-add-team" placeholder="Tím (abbrev, napr. EDM)" />
+      <button id="premium-add-btn">Pridať hráča</button>
+    </div>
+
+    <p><strong>Celkový profit:</strong> <span id="premium-total-profit">0</span> €</p>
+
+    <table class="mantingale-table">
+      <thead>
+        <tr>
+          <th>Hráč</th>
+          <th>Stávka</th>
+          <th>Streak</th>
+          <th>Balance</th>
+          <th>Akcie</th>
+        </tr>
+      </thead>
+      <tbody id="premium-players-body"></tbody>
+    </table>
+
+    <div id="premium-msg" style="margin-top:10px;color:#aaa;"></div>
   </div>
 </section>
 
