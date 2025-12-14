@@ -31,7 +31,7 @@
     <button onclick="showSection('matches-section')">Výsledky</button>
     <button onclick="showSection('teams-section')">Rating tímov</button>
     <button onclick="showSection('players-section')">Rating hráčov</button>
-    <button onclick="showSection('predictions-section')">Predikcie</button>
+    <button onclick="showSection('premium-section')">NHLPRO PREMIUM</button>
     <button onclick="showSection('stats-section')">Štatistiky hráčov</button>
     <button onclick="showSection('strategies-section')">Databáza hráčov</button>
     <button onclick="showSection('mantingale-section')">Mantingal</button>
@@ -44,7 +44,7 @@
       <option value="matches">Výsledky</option>
       <option value="teams">Rating tímov</option>
       <option value="players">Rating hráčov</option>
-      <option value="predictions">Predikcie</option>
+      <option value="premium">NHLPRO PREMIUM</option>
       <option value="stats">Štatistiky hráčov</option>
       <option value="strategies">Databáza hráčov</option>
       <option value="mantingal">Mantingal</option>
@@ -361,79 +361,5 @@
     </div>
   </div>
   <script src="app.js"></script>
-
-  <!-- 🧭 Riadenie sekcií (univerzálne pre PC aj mobil) -->
-  <script>
-    const sections = document.querySelectorAll(".section, .content-section");
-
-    function showSection(id) {
-      // Skry všetky sekcie
-      sections.forEach(sec => sec.style.display = "none");
-
-      // Zobraz kliknutú
-      const section = document.getElementById(id);
-      if (section) {
-        section.style.display = "block";
-        section.style.opacity = 0;
-        setTimeout(() => (section.style.opacity = 1), 100);
-      }
-
-      // Dynamické načítanie len pre danú sekciu
-      switch (id) {
-        case "home-section":
-          displayHome();
-          break;
-        case "stats-section":
-          displayShootingLeaders();
-          break;
-        case "strategies-section":
-          displayStrategies();
-          break;
-        case "predictions-section":
-          displayPredictions();
-          break;
-        case "players-section":
-          displayPlayerRatings();
-          break;
-        case "matches-section":
-          fetchMatches();
-          break;
-          case "mantingale-section":
-          loadMantingal();
-          break;
-      }
-    }
-
-    // 📱 Mobilné menu
-    document.getElementById("mobileSelect")?.addEventListener("change", (e) => {
-      const map = {
-        home: "home-section",
-        matches: "matches-section",
-        teams: "teams-section",
-        players: "players-section",
-        predictions: "predictions-section",
-        stats: "stats-section",
-        strategies: "strategies-section",
-        mantingal: "mantingale-section"
-      };
-      const target = map[e.target.value];
-      if (target) showSection(target);
-    });
-
-    // 🖥️ Desktop menu
-    document.querySelectorAll("nav button").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const targetId = btn.getAttribute("onclick")?.match(/'(.*?)'/)?.[1];
-        if (targetId) showSection(targetId);
-      });
-    });
-
-    // 🔹 Po načítaní stránky zobraz iba „Výsledky“
-    document.addEventListener("DOMContentLoaded", () => {
-      sections.forEach(sec => sec.style.display = "none");
-      document.getElementById("matches-section").style.display = "block";
-    });
-  </script>
-
 </body>
 </html>
