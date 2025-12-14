@@ -1,11 +1,8 @@
 // /api/vip.js
 import { Redis } from "@upstash/redis";
+import { requireAuth } from "./_auth.js";  // 🔥 dôležitý import
 
-// ⚠️ DOČASNÉ: kým nemáme Supabase na fronte,
-// používame jedného testovacieho používateľa.
-// Neskôr toto nahradíme skutočným userId zo Supabase.
-const DEV_USER_ID = "DEV_USER_TEST";
-
+// Redis inicializácia
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
@@ -14,17 +11,20 @@ const redis = new Redis({
 // Redis kľúče pre VIP
 const VIP_USERS_KEY = "VIP_USERS";
 const vipPlayersKey = (userId) => `VIP_MTG:${userId}`;
-const vipHistoryKey = (userId, player) => `VIP_MTG_HISTORY:${userId}:${player}`;
+const vipHistoryKey = (userId, player) =>
+  `VIP_MTG_HISTORY:${userId}:${player}`;
 
-// Bezpečné parsovanie JSON (ako v mantingal.js)
+// ------------------------------
+// Pomocné funkcie
+// ------------------------------
+
 function safeParse(raw) {
   try {
     if (!raw) return {};
     if (typeof raw === "string") return JSON.parse(raw);
     if (typeof raw === "object" && raw !== null) {
-      if (raw.value && typeof raw.value === "string") {
+      if (raw.value && typeof raw.value === "string")
         return JSON.parse(raw.value);
-      }
       return raw;
     }
     return {};
@@ -33,7 +33,6 @@ function safeParse(raw) {
   }
 }
 
-// Zabezpečí kompletnú štruktúru hráča
 function normalizePlayer(obj) {
   return {
     stake: Number(obj.stake ?? 1),
@@ -45,7 +44,6 @@ function normalizePlayer(obj) {
   };
 }
 
-// Dnešný dátum vo formáte YYYY-MM-DD
 function todayISO() {
   const d = new Date();
   const yyyy = d.getFullYear();
@@ -54,19 +52,22 @@ function todayISO() {
   return `${yyyy}-${mm}-${dd}`;
 }
 
+// ------------------------------
+// Hlavný Handler
+// ------------------------------
+
 export default async function handler(req, res) {
   try {
     const task = req.query.task || null;
 
-    // ⚠️ DOČASNE: všetko robíme pre DEV_USER_ID.
-    // Neskôr nahradíme za skutočné userId zo Supabase.
-    const userId = DEV_USER_ID;
+    // 🔥 ZÍSKANIE REÁLNEHO USERA CEZ TOKEN
+    const userId = requireAuth(req, res);
+    if (!userId) return; // ak nemá token →Unauthorized
 
-    // ===========================================
-    // 1️⃣ STATUS – je používateľ VIP?
-    // ===========================================
+    // ------------------------------------------
+    // 1) STATUS – je VIP? (existuje v VIP_USERS)
+    // ------------------------------------------
     if (task === "status") {
-      // Zatiaľ: ak existuje v sete VIP_USERS, je VIP.
       const isVip = await redis.sismember(VIP_USERS_KEY, userId);
 
       return res.json({
@@ -76,9 +77,9 @@ export default async function handler(req, res) {
       });
     }
 
-    // ===========================================
-    // 2️⃣ GET_PLAYERS – zoznam VIP hráčov pre usera
-    // ===========================================
+    // ------------------------------------------
+    // 2) GET_PLAYERS – hráči používateľa
+    // ------------------------------------------
     if (task === "get_players") {
       const key = vipPlayersKey(userId);
       const playersRaw = (await redis.hgetall(key)) || {};
@@ -100,12 +101,10 @@ export default async function handler(req, res) {
       });
     }
 
-    // ===========================================
-    // 3️⃣ ADD_PLAYER – pridať hráča do VIP mantingale
-    // ===========================================
+    // ------------------------------------------
+    // 3) ADD_PLAYER – pridanie hráča
+    // ------------------------------------------
     if (task === "add_player") {
-      // ⚠️ Aby sme nemuseli riešiť body parsing, berieme údaje z query:
-      // /api/vip?task=add_player&name=Panarin&team=NYR
       const name = req.query.name || null;
       const teamAbbrev = req.query.team || null;
 
@@ -128,12 +127,11 @@ export default async function handler(req, res) {
         teamAbbrev,
       });
 
-      // uložíme hráča do HASH-u
       await redis.hset(key, {
         [name]: JSON.stringify(playerState),
       });
 
-      // pre istotu ho pridáme aj do VIP_USERS setu, aby bol „VIP“
+      // Pridáme usera do VIP skupiny
       await redis.sadd(VIP_USERS_KEY, userId);
 
       return res.json({
@@ -144,11 +142,11 @@ export default async function handler(req, res) {
       });
     }
 
-    // ===========================================
-    // 4️⃣ HISTORY – história jedného hráča (zatiaľ prázdna)
-    // ===========================================
+    // ------------------------------------------
+    // 4) HISTORY – história hráča
+    // ------------------------------------------
     if (task === "history") {
-      const player = req.query.player || null;
+      const player = req.query.player;
       if (!player) {
         return res.status(400).json({
           ok: false,
@@ -161,8 +159,7 @@ export default async function handler(req, res) {
       let history = [];
 
       if (raw) {
-        history =
-          typeof raw === "string" ? JSON.parse(raw) : safeParse(raw);
+        history = typeof raw === "string" ? JSON.parse(raw) : safeParse(raw);
         if (!Array.isArray(history)) history = [];
       }
 
@@ -174,12 +171,13 @@ export default async function handler(req, res) {
       });
     }
 
-    // ===========================================
-    // DEFAULT – info
-    // ===========================================
+    // ------------------------------------------
+    // DEFAULT
+    // ------------------------------------------
     return res.json({
       ok: true,
-      message: "VIP endpoint pripravený. Použi ?task=status|get_players|add_player|history",
+      message:
+        "VIP endpoint ready. Use ?task=status|get_players|add_player|history",
     });
   } catch (err) {
     console.error("❌ VIP API ERROR:", err);
