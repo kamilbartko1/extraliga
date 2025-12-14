@@ -991,6 +991,12 @@ async function checkPremiumStatus() {
   }
 }
 
+// Odhlasenie pemium ===
+function premiumLogout() {
+  localStorage.removeItem("sb-access-token");
+  location.reload(); // najjednoduchšie a najistejšie
+}
+
 // Nacitanie premium hracov ===
 async function loadPremiumPlayers() {
   const token = localStorage.getItem("sb-access-token");
@@ -1373,6 +1379,10 @@ document.getElementById("premium-logout-btn")?.addEventListener("click", () => {
   localStorage.removeItem("sb-access-token");
   localStorage.removeItem("sb-refresh-token");
   checkPremiumStatus();
+});
+
+document.getElementById("premium-logout-btn")?.addEventListener("click", () => {
+  premiumLogout();
 });
 
   // 4️⃣ Soft refresh po 3s
