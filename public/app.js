@@ -1093,6 +1093,34 @@ async function loadPremiumTeams() {
 }
 
 // ===============================
+// PREMIUM – reakcia na výber klubu
+// ===============================
+document.addEventListener("change", (e) => {
+  if (e.target.id !== "premium-team-select") return;
+
+  const team = e.target.value;
+  const list = document.getElementById("premium-team-players");
+  if (!list) return;
+
+  list.innerHTML = "";
+
+  if (!team) {
+    list.innerHTML = `<p style="color:#aaa;">Vyber klub pre zobrazenie hráčov</p>`;
+    return;
+  }
+
+  const players = PREMIUM_PLAYERS_CACHE.filter(p => p.team === team);
+
+  if (!players.length) {
+    list.innerHTML = `<p style="color:#aaa;">Žiadni hráči pre tento klub</p>`;
+    return;
+  }
+
+  // 🔥 TU SA TO KONEČNE ZOBRAZÍ
+  renderPremiumPlayersForTeam(team, players);
+});
+
+// ===============================
 // PREMIUM – Zobrazenie hráčov tímu
 // ===============================
 function renderPremiumPlayersForTeam(team, players) {
@@ -1102,11 +1130,18 @@ function renderPremiumPlayersForTeam(team, players) {
   container.innerHTML = "";
 
   players.forEach(p => {
-    const chip = document.createElement("span");
-    chip.className = "premium-player-chip";
-    chip.textContent = p.name;
-    chip.onclick = () => addPremiumPlayerFromSelect(p.name, team);
-    container.appendChild(chip);
+    const btn = document.createElement("button");
+    btn.className = "premium-player-btn";
+    btn.innerHTML = `
+      <strong>${p.name}</strong>
+      <span style="opacity:.7;font-size:12px;">
+        #${p.number} • ${p.position}
+      </span>
+    `;
+
+    btn.onclick = () => addPremiumPlayerFromSelect(p.name, team);
+
+    container.appendChild(btn);
   });
 }
 
