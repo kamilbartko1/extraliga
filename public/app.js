@@ -1133,6 +1133,20 @@ document.addEventListener("change", (e) => {
 });
 
 // ===============================
+// Otvorenie modalu
+// ===============================
+document.getElementById("premium-signup-btn")?.addEventListener("click", () => {
+  document.getElementById("premium-register-modal").style.display = "flex";
+});
+
+// ===============================
+// Zatvorenie modalu
+// ===============================
+document.getElementById("premium-register-close")?.addEventListener("click", () => {
+  document.getElementById("premium-register-modal").style.display = "none";
+});
+
+// ===============================
 // PREMIUM – Pridanie hráča
 // ===============================
 async function addPremiumPlayer() {
@@ -1170,17 +1184,26 @@ async function addPremiumPlayer() {
   }
 }
 
-document.getElementById("premium-signup-btn")?.addEventListener("click", async () => {
-  const email = document.getElementById("premium-email")?.value?.trim();
-  const pass = document.getElementById("premium-pass")?.value;
-  const msg = document.getElementById("premium-auth-msg");
+// ===============================
+// Registracia na supabase
+// ===============================
+document.getElementById("premium-register-confirm")?.addEventListener("click", async () => {
+  const email = document.getElementById("reg-email").value.trim();
+  const pass = document.getElementById("reg-pass").value;
+  const pass2 = document.getElementById("reg-pass2").value;
+  const msg = document.getElementById("premium-register-msg");
 
-  if (!email || !pass) {
-    msg.textContent = "Zadaj email aj heslo.";
+  if (!email || !pass || !pass2) {
+    msg.textContent = "Vyplň všetky polia.";
     return;
   }
 
-  msg.textContent = "⏳ Registrujem používateľa...";
+  if (pass !== pass2) {
+    msg.textContent = "Heslá sa nezhodujú.";
+    return;
+  }
+
+  msg.textContent = "⏳ Registrujem účet...";
 
   try {
     const r = await fetch(
@@ -1195,7 +1218,7 @@ document.getElementById("premium-signup-btn")?.addEventListener("click", async (
         body: JSON.stringify({
           email,
           password: pass,
-          should_create_user: true   // 🔥 KĽÚČOVÉ
+          should_create_user: true
         }),
       }
     );
@@ -1207,18 +1230,19 @@ document.getElementById("premium-signup-btn")?.addEventListener("click", async (
       return;
     }
 
-    // uloženie tokenov
     localStorage.setItem("sb-access-token", data.access_token);
     localStorage.setItem("sb-refresh-token", data.refresh_token);
 
     msg.textContent = "✅ Registrácia úspešná. Nie si ešte PREMIUM.";
 
-    // refresh UI
-    checkPremiumStatus();
+    setTimeout(() => {
+      document.getElementById("premium-register-modal").style.display = "none";
+      checkPremiumStatus();
+    }, 1000);
 
   } catch (e) {
     console.error(e);
-    msg.textContent = "❌ Chyba pri registrácii.";
+    msg.textContent = "❌ Chyba servera.";
   }
 });
 

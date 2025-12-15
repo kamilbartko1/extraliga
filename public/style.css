@@ -3891,6 +3891,58 @@ body {
   color: #00131f;
 }
 
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-box {
+  background: #0f1c26;
+  padding: 24px;
+  border-radius: 12px;
+  width: 320px;
+  max-width: 90%;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 0 30px rgba(0,234,255,0.25);
+}
+
+.modal-box input {
+  width: 100%;
+  margin: 6px 0;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+}
+
+.modal-box button {
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+  background: #00eaff;
+  color: #000;
+  font-weight: bold;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  color: #aaa;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
