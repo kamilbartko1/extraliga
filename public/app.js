@@ -6,6 +6,7 @@ let playerRatings = {};
 let allMatches = [];
 let playerTeams = {}; // mapovanie priezvisko → tím
 let fullTeamNames = {};
+let NHL_PLAYERS_BY_TEAM = {};
 
 const BASE_STAKE = 1;
 const ODDS = 2.5;
@@ -973,11 +974,19 @@ async function checkPremiumStatus() {
     if (data.isVip) {
       content.style.display = "block";
 
-      // 🔥 KROK 2 – načítaj vlastných PREMIUM hráčov
+      // 🔹 Načítaj kluby a hráčov NHL (výber)
+      if (typeof loadPremiumTeams === "function") {
+        await loadPremiumTeams();
+      }
+
+      // 🔹 Načítaj už pridaných PREMIUM hráčov používateľa
       if (typeof loadPremiumPlayers === "function") {
         await loadPremiumPlayers();
       }
 
+      return;
+      }
+ 
     // ===============================
     // 4️⃣ PRIHLÁSENÝ, ALE NIE PREMIUM
     // ===============================

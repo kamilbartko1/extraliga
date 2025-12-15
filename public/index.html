@@ -285,32 +285,23 @@
   <!-- 👑 PREMIUM CONTENT -->
   <div id="premium-content" style="display:none;">
 
-    <!-- LOGOUT -->
-    <button id="premium-logout-btn" class="logout-btn">
-      Odhlásiť sa
-    </button>
-
     <p>Vitaj v NHLPRO PREMIUM 👑</p>
 
     <h3>Tvoj vlastný Martingale zoznam hráčov</h3>
 
-    <!-- ➕ ADD PLAYER -->
-    <div class="premium-add-player" style="margin-bottom:12px;">
-      <input
-        id="premium-player-name"
-        placeholder="Meno hráča (napr. Connor McDavid)"
-      />
-      <input
-        id="premium-player-team"
-        placeholder="Tím (napr. EDM)"
-        maxlength="3"
-        style="text-transform:uppercase;"
-      />
-      <button id="premium-add-player-btn">
-        Pridať hráča
-      </button>
-    </div>
+    <!-- ➕ Vyber klubu -->
+    <h3>Vyber klub</h3>
+    <div id="premium-teams" class="premium-teams"></div>
 
+    <!-- ➕ Hraci klubu -->
+    <h3>Hráči tímu</h3>
+    <div id="premium-players-list"></div>
+
+    <!-- LOGOUT -->
+    <button id="premium-logout-btn" class="logout-btn">
+      Odhlásiť sa
+    </button>
+    
     <!-- SUMMARY -->
     <p>
       <strong>Celkový profit:</strong>
