@@ -7,6 +7,7 @@ let allMatches = [];
 let playerTeams = {}; // mapovanie priezvisko → tím
 let fullTeamNames = {};
 let NHL_PLAYERS_BY_TEAM = {};
+let PREMIUM_PLAYERS_CACHE = [];
 
 const BASE_STAKE = 1;
 const ODDS = 2.5;
@@ -1054,9 +1055,6 @@ async function deletePremiumPlayer(encodedName) {
   await loadPremiumPlayers();
 }
 
-// ===============================
-// PREMIUM – Načítanie klubov a hráčov
-// ===============================
 let PREMIUM_PLAYERS_CACHE = [];
 
 async function loadPremiumTeams() {
@@ -1065,26 +1063,35 @@ async function loadPremiumTeams() {
   if (!select || !list) return;
 
   select.innerHTML = `<option value="">-- vyber klub --</option>`;
-  list.innerHTML = `<p style="color:#aaa;">Vyber klub</p>`;
+  list.innerHTML = `<p style="color:#aaa;">Vyber klub pre zobrazenie hráčov</p>`;
 
-  const res = await fetch("/data/nhl_players.json", { cache: "no-store" });
-  const data = await res.json();
+  try {
+    const res = await fetch("/data/nhl_players.json", { cache: "no-store" });
+    const raw = await res.json();
 
-  PREMIUM_PLAYERS_CACHE = data;
+    // 🔥 NORMALIZÁCIA HRÁČOV
+    PREMIUM_PLAYERS_CACHE = raw.map(p => ({
+      id: p.id,
+      name: `${p.firstName} ${p.lastName}`,
+      team: p.team,
+      position: p.position,
+      number: p.number
+    }));
 
-  [...new Set(data.map(p => p.team))].sort().forEach(team => {
-    const opt = document.createElement("option");
-    opt.value = team;
-    opt.textContent = team;
-    select.appendChild(opt);
-  });
+    // unikátne tímy
+    const teams = [...new Set(PREMIUM_PLAYERS_CACHE.map(p => p.team))].sort();
 
-  select.onchange = () => {
-    const team = select.value;
-    list.innerHTML = "";
-    const players = PREMIUM_PLAYERS_CACHE.filter(p => p.team === team);
-    renderPremiumPlayersForTeam(team, players);
-  };
+    teams.forEach(team => {
+      const opt = document.createElement("option");
+      opt.value = team;
+      opt.textContent = team;
+      select.appendChild(opt);
+    });
+
+  } catch (err) {
+    console.error("❌ loadPremiumTeams error:", err);
+    list.innerHTML = `<p style="color:red;">Chyba pri načítaní hráčov</p>`;
+  }
 }
 
 // ===============================
@@ -1111,21 +1118,33 @@ function renderPremiumPlayersForTeam(team, players) {
 async function addPremiumPlayerFromSelect(name, team) {
   const token = localStorage.getItem("sb-access-token");
   const msg = document.getElementById("premium-msg");
-  if (!token) return;
+
+  if (!token || !name || !team) return;
 
   msg.textContent = "⏳ Pridávam hráča...";
 
-  const res = await fetch(
-    `/api/vip?task=add_player&name=${encodeURIComponent(name)}&team=${team}`,
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+  try {
+    const res = await fetch(
+      `/api/vip?task=add_player&name=${encodeURIComponent(name)}&team=${encodeURIComponent(team)}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
-  const data = await res.json();
-  msg.textContent = data.ok
-    ? `✅ ${name} pridaný`
-    : data.error || "Chyba";
+    const data = await res.json();
 
-  if (data.ok) await loadPremiumPlayers();
+    if (!data.ok) {
+      msg.textContent = data.error || "Chyba pri pridávaní hráča.";
+      return;
+    }
+
+    msg.textContent = `✅ ${name} pridaný do NHLPRO PREMIUM`;
+    await loadPremiumPlayers();
+
+  } catch (err) {
+    console.error(err);
+    msg.textContent = "❌ Chyba servera";
+  }
 }
 
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
@@ -1386,7 +1405,7 @@ document.getElementById("mobileSelect")?.addEventListener("change", async (e) =>
 window.addEventListener("DOMContentLoaded", async () => {
   console.log("🚀 Spúšťam NHLPRO...");
 
-  // 1️⃣ Načítaj databázu hráčov
+  // 1️⃣ Načítaj databázu hráčov (ratingy atď.)
   await loadPlayerTeams();
 
   // 2️⃣ Skry všetky sekcie
@@ -1409,78 +1428,78 @@ window.addEventListener("DOMContentLoaded", async () => {
     await fetchMatches();
   }
 
+  // ===============================
+  // 🔐 PREMIUM – LOGIN
+  // ===============================
   document.getElementById("premium-login-btn")?.addEventListener("click", async () => {
-  const email = document.getElementById("premium-email")?.value?.trim();
-  const pass = document.getElementById("premium-pass")?.value;
+    const email = document.getElementById("premium-email")?.value?.trim();
+    const pass = document.getElementById("premium-pass")?.value;
 
-  if (!email || !pass) {
-    alert("Zadaj email aj heslo");
-    return;
-  }
-
-  try {
-    const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-      method: "POST",
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password: pass }),
-    });
-
-    const data = await r.json();
-    if (!r.ok) {
-      alert(data?.error_description || "Login error");
+    if (!email || !pass) {
+      alert("Zadaj email aj heslo");
       return;
     }
 
-    localStorage.setItem("sb-access-token", data.access_token);
-    localStorage.setItem("sb-refresh-token", data.refresh_token);
+    try {
+      const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password: pass }),
+      });
 
-    // refresh premium UI
-    checkPremiumStatus();
-  } catch (e) {
-    alert("Chyba pri prihlásení");
-    console.error(e);
-  }
-});
+      const data = await r.json();
 
-document.getElementById("premium-logout-btn")?.addEventListener("click", () => {
-  localStorage.removeItem("sb-access-token");
-  localStorage.removeItem("sb-refresh-token");
-  checkPremiumStatus();
-});
+      if (!r.ok) {
+        alert(data?.error_description || "Login error");
+        return;
+      }
 
-// ===============================
-// PREMIUM – Logout (delegácia)
-// ===============================
-document.addEventListener("click", (e) => {
-  if (e.target && e.target.id === "premium-logout-btn") {
+      localStorage.setItem("sb-access-token", data.access_token);
+      localStorage.setItem("sb-refresh-token", data.refresh_token);
+
+      // 🔄 refresh PREMIUM sekcie
+      await checkPremiumStatus();
+
+    } catch (e) {
+      alert("Chyba pri prihlásení");
+      console.error(e);
+    }
+  });
+
+  // ===============================
+  // 🔓 PREMIUM – LOGOUT
+  // ===============================
+  document.getElementById("premium-logout-btn")?.addEventListener("click", () => {
     console.log("🔓 PREMIUM logout");
     localStorage.removeItem("sb-access-token");
+    localStorage.removeItem("sb-refresh-token");
     location.reload();
-  }
-});
+  });
 
-document.addEventListener("click", (e) => {
+  // ===============================
+  // 🗑️ PREMIUM – DELETE PLAYER (delegácia)
+  // ===============================
+  document.addEventListener("click", (e) => {
+    if (
+      e.target &&
+      e.target.classList &&
+      e.target.classList.contains("premium-del-btn")
+    ) {
+      const encodedName = e.target.getAttribute("data-player");
+      deletePremiumPlayer(encodedName);
+    }
+  });
 
-  // ➕ Pridať hráča
-  if (e.target && e.target.id === "premium-add-player-btn") {
-    addPremiumPlayer();
-  }
-
-  // 🗑️ Vymazať hráča
-  if (e.target && e.target.classList && e.target.classList.contains("premium-del-btn")) {
-    const p = e.target.getAttribute("data-player");
-    deletePremiumPlayer(p);
-  }
-
-});
-
+  // ===============================
   // 4️⃣ Soft refresh po 3s
+  // ===============================
   setTimeout(() => {
     console.log("🔁 Aktualizujem dáta po načítaní...");
     fetchMatches();
   }, 3000);
 });
+
