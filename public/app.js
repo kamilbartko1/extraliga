@@ -1136,14 +1136,18 @@ document.addEventListener("change", (e) => {
 // Otvorenie modalu
 // ===============================
 document.getElementById("premium-signup-btn")?.addEventListener("click", () => {
-  document.getElementById("premium-register-modal").style.display = "flex";
+  document
+    .getElementById("premium-register-modal")
+    ?.classList.add("active");
 });
 
 // ===============================
 // Zatvorenie modalu
 // ===============================
 document.getElementById("premium-register-close")?.addEventListener("click", () => {
-  document.getElementById("premium-register-modal").style.display = "none";
+  document
+    .getElementById("premium-register-modal")
+    ?.classList.remove("active");
 });
 
 // ===============================

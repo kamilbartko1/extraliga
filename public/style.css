@@ -3679,6 +3679,10 @@ body {
   animation: fadeIn 0.3s ease;
 }
 
+.modal-overlay.active {
+  display: flex;
+}
+
 /* Moderný box */
 .modal-content {
   background: linear-gradient(165deg, #0c1b29, #061018);
