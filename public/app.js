@@ -1058,6 +1058,7 @@ async function deletePremiumPlayer(encodedName) {
 // ===============================
 // PREMIUM – Načítanie klubov + hráčov
 // ===============================
+let PREMIUM_PLAYERS_CACHE = [];
 
 async function loadPremiumTeams() {
   const teamSelect = document.getElementById("premium-team-select");
