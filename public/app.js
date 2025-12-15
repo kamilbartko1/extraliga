@@ -922,31 +922,40 @@ async function displayStrategies() {
 }
 
 // ===============================
+// PREMIUM UI – RESET
+// ===============================
+function hideAllPremiumUI() {
+  [
+    "premium-not-logged",
+    "premium-register-box",
+    "premium-locked",
+    "premium-content"
+  ].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+  });
+}
+
+// ===============================
 // Zistenie kto je NHLPRO PREMIUM
 // ===============================
 async function checkPremiumStatus() {
   const section = document.getElementById("premium-section");
-  const notLogged = document.getElementById("premium-not-logged");
-  const locked = document.getElementById("premium-locked");
-  const content = document.getElementById("premium-content");
+  if (!section) return;
 
-  if (!section || !notLogged || !locked || !content) return;
-
-  notLogged.style.display = "none";
-  locked.style.display = "none";
-  content.style.display = "none";
+  hideAllPremiumUI();
   section.style.display = "block";
 
   const token = localStorage.getItem("sb-access-token");
-
   const logoutBtn = document.getElementById("premium-logout-btn");
+
   if (logoutBtn) {
     logoutBtn.style.display = token ? "inline-block" : "none";
     logoutBtn.onclick = premiumLogout;
   }
 
   if (!token) {
-    notLogged.style.display = "block";
+    document.getElementById("premium-not-logged").style.display = "block";
     return;
   }
 
@@ -956,38 +965,42 @@ async function checkPremiumStatus() {
     });
 
     const data = await res.json();
+
     if (!data?.ok) {
-      notLogged.style.display = "block";
+      document.getElementById("premium-not-logged").style.display = "block";
       return;
     }
 
     if (data.isVip === true) {
-      content.style.display = "block";
+      document.getElementById("premium-content").style.display = "block";
       await loadPremiumTeams();
       await loadPremiumPlayers();
-      return;
+    } else {
+      document.getElementById("premium-locked").style.display = "block";
     }
 
-    locked.style.display = "block";
   } catch (err) {
-    console.error("❌ PREMIUM status error:", err);
-    notLogged.style.display = "block";
+    console.error(err);
+    document.getElementById("premium-not-logged").style.display = "block";
   }
 }
 
 // ===============================
-// Odhlásenie PREMIUM
+// Odhlásenie
 // ===============================
 function premiumLogout() {
   localStorage.removeItem("sb-access-token");
+  localStorage.removeItem("sb-refresh-token");
   location.reload();
 }
 
 // ===============================
-// Sign up button
+// Klik: Registrovať sa → zobraz REGISTER
 // ===============================
 document.getElementById("premium-signup-btn")
   ?.addEventListener("click", () => {
+
+    hideAllPremiumUI();
 
     const box = document.getElementById("premium-register-box");
     if (!box) return;
@@ -997,7 +1010,63 @@ document.getElementById("premium-signup-btn")
 });
 
 // ===============================
-// PREMIUM – Načítanie hráčov používateľa
+// REGISTRÁCIA – SUPABASE SIGNUP
+// ===============================
+document.getElementById("premium-register-confirm")
+  ?.addEventListener("click", async () => {
+
+    const email = document.getElementById("reg-email")?.value.trim();
+    const pass = document.getElementById("reg-pass")?.value;
+    const pass2 = document.getElementById("reg-pass2")?.value;
+    const msg = document.getElementById("premium-register-msg");
+
+    if (!email || !pass || !pass2) {
+      msg.textContent = "Vyplň všetky polia.";
+      return;
+    }
+
+    if (pass !== pass2) {
+      msg.textContent = "Heslá sa nezhodujú.";
+      return;
+    }
+
+    msg.textContent = "⏳ Vytváram účet...";
+
+    try {
+      const r = await fetch(
+        `${SUPABASE_URL}/auth/v1/signup`,
+        {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password: pass }),
+        }
+      );
+
+      const data = await r.json();
+
+      if (!r.ok) {
+        msg.textContent = data?.error_description || data?.error || "Registrácia zlyhala.";
+        return;
+      }
+
+      msg.textContent = "✅ Účet vytvorený. Skontroluj email.";
+
+      setTimeout(() => {
+        hideAllPremiumUI();
+        document.getElementById("premium-not-logged").style.display = "block";
+      }, 1500);
+
+    } catch (err) {
+      console.error(err);
+      msg.textContent = "❌ Chyba pri registrácii.";
+    }
+});
+
+// ===============================
+// PREMIUM – Načítanie hráčov
 // ===============================
 async function loadPremiumPlayers() {
   const token = localStorage.getItem("sb-access-token");
@@ -1066,121 +1135,6 @@ async function deletePremiumPlayer(encodedName) {
   });
 
   await loadPremiumPlayers();
-}
-
-// ===============================
-// PREMIUM – Načítanie klubov + hráčov
-// ===============================
-
-async function loadPremiumTeams() {
-  const teamSelect = document.getElementById("premium-team-select");
-  const playerSelect = document.getElementById("premium-player-select");
-
-  if (!teamSelect || !playerSelect) return;
-
-  teamSelect.innerHTML = `<option value="">-- vyber klub --</option>`;
-  playerSelect.innerHTML = `<option value="">-- najprv vyber klub --</option>`;
-  playerSelect.disabled = true;
-
-  try {
-    const res = await fetch("/data/nhl_players.json", { cache: "no-store" });
-    const raw = await res.json();
-
-    PREMIUM_PLAYERS_CACHE = raw.map(p => ({
-      id: p.id,
-      name: `${p.firstName} ${p.lastName}`,
-      team: p.team,
-      position: p.position,
-      number: p.number
-    }));
-
-    const teams = [...new Set(PREMIUM_PLAYERS_CACHE.map(p => p.team))].sort();
-
-    teams.forEach(team => {
-      const opt = document.createElement("option");
-      opt.value = team;
-      opt.textContent = team;
-      teamSelect.appendChild(opt);
-    });
-
-  } catch (err) {
-    console.error("❌ loadPremiumTeams error:", err);
-  }
-}
-
-// ===============================
-// PREMIUM – Reakcia na výber klubu
-// ===============================
-document.addEventListener("change", (e) => {
-  if (e.target.id !== "premium-team-select") return;
-
-  const team = e.target.value;
-  const playerSelect = document.getElementById("premium-player-select");
-  if (!playerSelect) return;
-
-  playerSelect.innerHTML = "";
-  playerSelect.disabled = true;
-
-  if (!team) {
-    playerSelect.innerHTML = `<option value="">-- najprv vyber klub --</option>`;
-    return;
-  }
-
-  const players = PREMIUM_PLAYERS_CACHE.filter(p => p.team === team);
-
-  if (!players.length) {
-    playerSelect.innerHTML = `<option value="">Žiadni hráči</option>`;
-    return;
-  }
-
-  playerSelect.innerHTML = `<option value="">-- vyber hráča --</option>`;
-
-  players.forEach(p => {
-    const opt = document.createElement("option");
-    opt.value = p.name;
-    opt.textContent = `${p.name}  (#${p.number}, ${p.position})`;
-    playerSelect.appendChild(opt);
-  });
-
-  playerSelect.disabled = false;
-});
-
-// ===============================
-// PREMIUM – Pridanie hráča
-// ===============================
-async function addPremiumPlayer() {
-  const token = localStorage.getItem("sb-access-token");
-  const team = document.getElementById("premium-team-select")?.value;
-  const player = document.getElementById("premium-player-select")?.value;
-  const msg = document.getElementById("premium-msg");
-
-  if (!token || !team || !player) {
-    if (msg) msg.textContent = "Vyber klub aj hráča.";
-    return;
-  }
-
-  if (msg) msg.textContent = "⏳ Pridávam hráča...";
-
-  try {
-    const res = await fetch(
-      `/api/vip?task=add_player&name=${encodeURIComponent(player)}&team=${encodeURIComponent(team)}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    const data = await res.json();
-
-    if (!data.ok) {
-      if (msg) msg.textContent = data.error || "Chyba pri pridávaní.";
-      return;
-    }
-
-    if (msg) msg.textContent = `✅ ${player} pridaný`;
-    await loadPremiumPlayers();
-
-  } catch (err) {
-    console.error(err);
-    if (msg) msg.textContent = "❌ Chyba servera";
-  }
 }
 
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
