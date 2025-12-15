@@ -553,12 +553,16 @@ async function loadPlayerTeams() {
 }
 
 function openTeamRatingModal() {
-  document.getElementById("teamRatingModal").style.display = "flex";
+  document
+    .getElementById("teamRatingModal")
+    ?.classList.add("active");
 }
 
 function closeTeamRatingModal(e) {
   if (!e || e.target.id === "teamRatingModal") {
-    document.getElementById("teamRatingModal").style.display = "none";
+    document
+      .getElementById("teamRatingModal")
+      ?.classList.remove("active");
   }
 }
 
