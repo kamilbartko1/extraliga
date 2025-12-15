@@ -271,10 +271,6 @@
     </div>
   </div>
 
-  <!-- Registracia -->
-  <button id="premium-signup-btn">Registrovať sa</button>
-  <p id="premium-auth-msg" style="color:#aaa;margin-top:6px;"></p>
-
   <!-- 🔒 LOGGED BUT NOT VIP -->
   <div id="premium-locked" style="display:none;">
     <p>
@@ -308,16 +304,12 @@
     <h3>Hráči tímu</h3>
     <div id="premium-players-list"></div>
     <!-- HRÁČI KLUBU -->
-<div class="premium-box">
-  <label for="premium-player-select">Vyber hráča:</label>
-  <select id="premium-player-select" disabled>
-    <option value="">-- najprv vyber klub --</option>
-  </select>
-
-  <button id="premium-add-player-btn" style="margin-top:10px;">
-    Pridať hráča
-  </button>
-</div>
+    <div class="premium-box">
+      <label>Hráči tímu:</label>
+      <div id="premium-team-players" class="premium-players-list">
+        <p style="color:#aaa;">Vyber klub pre zobrazenie hráčov</p>
+      </div>
+    </div>
 
     <!-- LOGOUT -->
     <button id="premium-logout-btn" class="logout-btn">
@@ -349,25 +341,6 @@
 
   </div>
 </section>
-
-<!-- ===============================
-     📝 PREMIUM REGISTRATION MODAL
-     =============================== -->
-<div id="premium-register-modal" class="modal-overlay">
-  <div class="modal-box">
-    <h2>📝 Registrácia do NHLPRO</h2>
-
-    <input id="reg-email" type="email" placeholder="Email" />
-    <input id="reg-pass" type="password" placeholder="Heslo" />
-    <input id="reg-pass2" type="password" placeholder="Zopakuj heslo" />
-
-    <button id="premium-register-confirm">Zaregistrovať sa</button>
-
-    <p id="premium-register-msg" style="margin-top:8px;color:#aaa;"></p>
-
-    <button class="modal-close" id="premium-register-close">✖</button>
-  </div>
-</div>
 
   <section id="stats-section" class="content-section" style="display:none;">
   <div class="stat-players"><h4>📊 ŠTATISTIKY HRÁČOV NHL</h4></div>
