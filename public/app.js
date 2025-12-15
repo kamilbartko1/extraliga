@@ -940,8 +940,12 @@ async function checkPremiumStatus() {
   section.style.display = "block";
 
   const token = localStorage.getItem("sb-access-token");
+
   const logoutBtn = document.getElementById("premium-logout-btn");
-  if (logoutBtn) logoutBtn.style.display = token ? "inline-block" : "none";
+  if (logoutBtn) {
+    logoutBtn.style.display = token ? "inline-block" : "none";
+    logoutBtn.onclick = premiumLogout;
+  }
 
   // ===============================
   // 1️⃣ NEPRIHLÁSENÝ USER
@@ -963,7 +967,7 @@ async function checkPremiumStatus() {
 
     const data = await res.json();
 
-    if (!data.ok) {
+    if (!data || !data.ok) {
       notLogged.style.display = "block";
       return;
     }
@@ -971,28 +975,26 @@ async function checkPremiumStatus() {
     // ===============================
     // 3️⃣ PREMIUM USER
     // ===============================
-    if (data.isVip) {
+    if (data.isVip === true) {
       content.style.display = "block";
 
-      // 🔹 Načítaj kluby a hráčov NHL (výber)
+      // 🔹 Načítaj kluby NHL
       if (typeof loadPremiumTeams === "function") {
         await loadPremiumTeams();
       }
 
-      // 🔹 Načítaj už pridaných PREMIUM hráčov používateľa
+      // 🔹 Načítaj už pridaných PREMIUM hráčov
       if (typeof loadPremiumPlayers === "function") {
         await loadPremiumPlayers();
       }
 
       return;
-      }
- 
+    }
+
     // ===============================
     // 4️⃣ PRIHLÁSENÝ, ALE NIE PREMIUM
     // ===============================
-    } else {
-      locked.style.display = "block";
-    }
+    locked.style.display = "block";
 
   } catch (err) {
     console.error("❌ PREMIUM status error:", err);
@@ -1000,10 +1002,12 @@ async function checkPremiumStatus() {
   }
 }
 
-// Odhlasenie pemium ===
+// ===============================
+// Odhlásenie PREMIUM
+// ===============================
 function premiumLogout() {
   localStorage.removeItem("sb-access-token");
-  location.reload(); // najjednoduchšie a najistejšie
+  location.reload();
 }
 
 // Nacitanie premium hracov ===
