@@ -300,16 +300,17 @@
       </select>
     </div>
 
-    <!-- ➕ Hraci klubu -->
-    <h3>Hráči tímu</h3>
-    <div id="premium-players-list"></div>
-    <!-- HRÁČI KLUBU -->
-    <div class="premium-box">
-      <label>Hráči tímu:</label>
-      <div id="premium-team-players" class="premium-players-list">
-        <p style="color:#aaa;">Vyber klub pre zobrazenie hráčov</p>
-      </div>
-    </div>
+  <!-- HRÁČI KLUBU -->
+<div class="premium-box">
+  <label for="premium-player-select">Vyber hráča:</label>
+  <select id="premium-player-select" disabled>
+    <option value="">-- najprv vyber klub --</option>
+  </select>
+
+  <button id="premium-add-player-btn" style="margin-top:10px;">
+    Pridať hráča
+  </button>
+</div>
 
     <!-- LOGOUT -->
     <button id="premium-logout-btn" class="logout-btn">

@@ -1039,34 +1039,6 @@ async function loadPremiumPlayers() {
 }
 
 // ===============================
-// PREMIUM – reakcia na výber klubu
-// ===============================
-document.addEventListener("change", (e) => {
-  if (e.target.id !== "premium-team-select") return;
-
-  const team = e.target.value;
-  const list = document.getElementById("premium-team-players");
-  if (!list) return;
-
-  list.innerHTML = "";
-
-  if (!team) {
-    list.innerHTML = `<p style="color:#aaa;">Vyber klub pre zobrazenie hráčov</p>`;
-    return;
-  }
-
-  const players = PREMIUM_PLAYERS_CACHE.filter(p => p.team === team);
-
-  if (!players.length) {
-    list.innerHTML = `<p style="color:#aaa;">Žiadni hráči pre tento klub</p>`;
-    return;
-  }
-
-  // 🔥 TU SA TO KONEČNE ZOBRAZÍ
-  renderPremiumPlayersForTeam(team, players);
-});
-
-// ===============================
 // PREMIUM – Vymazať hráča
 // ===============================
 async function deletePremiumPlayer(encodedName) {
@@ -1083,19 +1055,25 @@ async function deletePremiumPlayer(encodedName) {
   await loadPremiumPlayers();
 }
 
-async function loadPremiumTeams() {
-  const select = document.getElementById("premium-team-select");
-  const list = document.getElementById("premium-team-players");
-  if (!select || !list) return;
+// ===============================
+// PREMIUM – Načítanie klubov + hráčov
+// ===============================
+let PREMIUM_PLAYERS_CACHE = [];
 
-  select.innerHTML = `<option value="">-- vyber klub --</option>`;
-  list.innerHTML = `<p style="color:#aaa;">Vyber klub pre zobrazenie hráčov</p>`;
+async function loadPremiumTeams() {
+  const teamSelect = document.getElementById("premium-team-select");
+  const playerSelect = document.getElementById("premium-player-select");
+
+  if (!teamSelect || !playerSelect) return;
+
+  teamSelect.innerHTML = `<option value="">-- vyber klub --</option>`;
+  playerSelect.innerHTML = `<option value="">-- najprv vyber klub --</option>`;
+  playerSelect.disabled = true;
 
   try {
     const res = await fetch("/data/nhl_players.json", { cache: "no-store" });
     const raw = await res.json();
 
-    // 🔥 NORMALIZÁCIA HRÁČOV
     PREMIUM_PLAYERS_CACHE = raw.map(p => ({
       id: p.id,
       name: `${p.firstName} ${p.lastName}`,
@@ -1104,68 +1082,93 @@ async function loadPremiumTeams() {
       number: p.number
     }));
 
-    // unikátne tímy
     const teams = [...new Set(PREMIUM_PLAYERS_CACHE.map(p => p.team))].sort();
 
     teams.forEach(team => {
       const opt = document.createElement("option");
       opt.value = team;
       opt.textContent = team;
-      select.appendChild(opt);
+      teamSelect.appendChild(opt);
     });
 
   } catch (err) {
     console.error("❌ loadPremiumTeams error:", err);
-    list.innerHTML = `<p style="color:red;">Chyba pri načítaní hráčov</p>`;
   }
 }
 
 // ===============================
-// PREMIUM – Zobrazenie hráčov tímu
+// PREMIUM – Reakcia na výber klubu
 // ===============================
-function renderPremiumPlayersForTeam(team, players) {
-  const container = document.getElementById("premium-team-players");
-  if (!container) return;
+document.addEventListener("change", (e) => {
+  if (e.target.id !== "premium-team-select") return;
 
-  container.innerHTML = "";
+  const team = e.target.value;
+  const playerSelect = document.getElementById("premium-player-select");
+  if (!playerSelect) return;
+
+  playerSelect.innerHTML = "";
+  playerSelect.disabled = true;
+
+  if (!team) {
+    playerSelect.innerHTML = `<option value="">-- najprv vyber klub --</option>`;
+    return;
+  }
+
+  const players = PREMIUM_PLAYERS_CACHE.filter(p => p.team === team);
+
+  if (!players.length) {
+    playerSelect.innerHTML = `<option value="">Žiadni hráči</option>`;
+    return;
+  }
+
+  playerSelect.innerHTML = `<option value="">-- vyber hráča --</option>`;
 
   players.forEach(p => {
-    const btn = document.createElement("button");
-    btn.className = "premium-player-btn";
-    btn.innerHTML = `
-      <strong>${p.name}</strong>
-      <span style="opacity:.7;font-size:12px;">
-        #${p.number} • ${p.position}
-      </span>
-    `;
-
-    btn.onclick = () => addPremiumPlayerFromSelect(p.name, team);
-
-    container.appendChild(btn);
+    const opt = document.createElement("option");
+    opt.value = p.name;
+    opt.textContent = `${p.name}  (#${p.number}, ${p.position})`;
+    playerSelect.appendChild(opt);
   });
-}
+
+  playerSelect.disabled = false;
+});
 
 // ===============================
 // PREMIUM – Pridanie hráča
 // ===============================
-async function addPremiumPlayerFromSelect(name, team) {
+async function addPremiumPlayer() {
   const token = localStorage.getItem("sb-access-token");
+  const team = document.getElementById("premium-team-select")?.value;
+  const player = document.getElementById("premium-player-select")?.value;
   const msg = document.getElementById("premium-msg");
-  if (!token) return;
 
-  msg.textContent = "⏳ Pridávam hráča...";
+  if (!token || !team || !player) {
+    if (msg) msg.textContent = "Vyber klub aj hráča.";
+    return;
+  }
 
-  const res = await fetch(
-    `/api/vip?task=add_player&name=${encodeURIComponent(name)}&team=${team}`,
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+  if (msg) msg.textContent = "⏳ Pridávam hráča...";
 
-  const data = await res.json();
-  msg.textContent = data.ok
-    ? `✅ ${name} pridaný`
-    : data.error || "Chyba";
+  try {
+    const res = await fetch(
+      `/api/vip?task=add_player&name=${encodeURIComponent(player)}&team=${encodeURIComponent(team)}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-  if (data.ok) await loadPremiumPlayers();
+    const data = await res.json();
+
+    if (!data.ok) {
+      if (msg) msg.textContent = data.error || "Chyba pri pridávaní.";
+      return;
+    }
+
+    if (msg) msg.textContent = `✅ ${player} pridaný`;
+    await loadPremiumPlayers();
+
+  } catch (err) {
+    console.error(err);
+    if (msg) msg.textContent = "❌ Chyba servera";
+  }
 }
 
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
