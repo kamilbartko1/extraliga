@@ -3849,6 +3849,48 @@ body {
   border-color: #00eaff;
 }
 
+/* ===========================
+   PREMIUM – FORM ELEMENTS
+=========================== */
+
+#premium-section input,
+#premium-section select {
+  background: #0e1b2a;
+  color: #e6f7ff;
+  border: 1px solid #00eaff;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+#premium-section input::placeholder {
+  color: #8fbfd1;
+}
+
+#premium-section option {
+  background: #0e1b2a;
+  color: #e6f7ff;
+}
+
+/* hráči – klikateľné karty */
+.premium-player-chip {
+  display: inline-block;
+  padding: 6px 10px;
+  margin: 4px;
+  background: #13293d;
+  border: 1px solid #00eaff;
+  border-radius: 14px;
+  color: #e6f7ff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.premium-player-chip:hover {
+  background: #00eaff;
+  color: #00131f;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
