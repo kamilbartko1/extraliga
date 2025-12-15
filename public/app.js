@@ -943,45 +943,90 @@ async function checkPremiumStatus() {
   const section = document.getElementById("premium-section");
   if (!section) return;
 
+  // 1) vyčisti všetky PREMIUM stavy
   hideAllPremiumUI();
   section.style.display = "block";
 
   const token = localStorage.getItem("sb-access-token");
-  const logoutBtn = document.getElementById("premium-logout-btn");
 
+  // 2) tlačidlá, ktoré musia reagovať na stav
+  const logoutBtn = document.getElementById("premium-logout-btn");
+  const signupBtn = document.getElementById("premium-signup-btn");
+  const authMsg = document.getElementById("premium-auth-msg");
+
+  if (authMsg) authMsg.textContent = "";
+
+  // 3) default: logout skryť (zapneme len keď je token OK)
   if (logoutBtn) {
-    logoutBtn.style.display = token ? "inline-block" : "none";
+    logoutBtn.style.display = "none";
     logoutBtn.onclick = premiumLogout;
   }
 
+  // 4) ak nie je token → zobraz login + nechaj "Registrovať sa"
   if (!token) {
-    document.getElementById("premium-not-logged").style.display = "block";
+    if (signupBtn) signupBtn.style.display = "inline-block";
+    const loginBox = document.getElementById("premium-not-logged");
+    if (loginBox) loginBox.style.display = "block";
     return;
   }
+
+  // 5) token existuje → user je "prihlásený" aspoň lokálne
+  // schovaj register button, zobraz logout
+  if (signupBtn) signupBtn.style.display = "none";
+  if (logoutBtn) logoutBtn.style.display = "inline-block";
 
   try {
     const res = await fetch("/api/vip?task=status", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
+    // ak token neplatný / expirovaný
+    if (res.status === 401 || res.status === 403) {
+      localStorage.removeItem("sb-access-token");
+      localStorage.removeItem("sb-refresh-token");
+      hideAllPremiumUI();
+      if (signupBtn) signupBtn.style.display = "inline-block";
+      const loginBox = document.getElementById("premium-not-logged");
+      if (loginBox) loginBox.style.display = "block";
+      if (authMsg) authMsg.textContent = "Prihlásenie vypršalo. Prihlás sa znova.";
+      return;
+    }
+
     const data = await res.json();
 
     if (!data?.ok) {
-      document.getElementById("premium-not-logged").style.display = "block";
+      // radšej token zruš (je to nesúlad)
+      localStorage.removeItem("sb-access-token");
+      localStorage.removeItem("sb-refresh-token");
+      hideAllPremiumUI();
+      if (signupBtn) signupBtn.style.display = "inline-block";
+      const loginBox = document.getElementById("premium-not-logged");
+      if (loginBox) loginBox.style.display = "block";
+      if (authMsg) authMsg.textContent = "Prihlásenie nie je platné. Skús to znova.";
       return;
     }
 
     if (data.isVip === true) {
-      document.getElementById("premium-content").style.display = "block";
+      const content = document.getElementById("premium-content");
+      if (content) content.style.display = "block";
       await loadPremiumTeams();
       await loadPremiumPlayers();
     } else {
-      document.getElementById("premium-locked").style.display = "block";
+      // NIE VIP → locked, ale logout musí byť dostupný
+      const locked = document.getElementById("premium-locked");
+      if (locked) locked.style.display = "block";
+      if (logoutBtn) logoutBtn.style.display = "inline-block";
     }
 
   } catch (err) {
-    console.error(err);
-    document.getElementById("premium-not-logged").style.display = "block";
+    console.error("❌ checkPremiumStatus error:", err);
+
+    // pri chybe siete radšej nenič token, len ukáž login
+    hideAllPremiumUI();
+    if (signupBtn) signupBtn.style.display = "inline-block";
+    const loginBox = document.getElementById("premium-not-logged");
+    if (loginBox) loginBox.style.display = "block";
+    if (authMsg) authMsg.textContent = "Chyba spojenia. Skús to znova.";
   }
 }
 
