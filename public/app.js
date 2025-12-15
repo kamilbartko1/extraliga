@@ -1585,6 +1585,71 @@ window.addEventListener("DOMContentLoaded", async () => {
   });
 
   // ===============================
+  // Potvrdenie registracie
+  // ===============================
+  document.getElementById("premium-register-confirm")
+  ?.addEventListener("click", async () => {
+
+    const email = document.getElementById("reg-email")?.value.trim();
+    const pass = document.getElementById("reg-pass")?.value;
+    const pass2 = document.getElementById("reg-pass2")?.value;
+    const msg = document.getElementById("premium-register-msg");
+
+    if (!email || !pass || !pass2) {
+      msg.textContent = "Vyplň všetky polia.";
+      return;
+    }
+
+    if (pass !== pass2) {
+      msg.textContent = "Heslá sa nezhodujú.";
+      return;
+    }
+
+    msg.textContent = "⏳ Registrujem používateľa...";
+
+    try {
+      const r = await fetch(
+        `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
+        {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password: pass,
+            should_create_user: true
+          }),
+        }
+      );
+
+      const data = await r.json();
+
+      if (!r.ok) {
+        msg.textContent = data?.error_description || "Registrácia zlyhala.";
+        return;
+      }
+
+      // ✅ USER VYTVORENÝ NA SUPABASE
+      localStorage.setItem("sb-access-token", data.access_token);
+      localStorage.setItem("sb-refresh-token", data.refresh_token);
+
+      msg.textContent = "✅ Registrácia úspešná. Nie si ešte PREMIUM.";
+
+      setTimeout(() => {
+        document.getElementById("premium-register-box").style.display = "none";
+        checkPremiumStatus(); // zobrazí premium-locked
+      }, 1200);
+
+    } catch (e) {
+      console.error(e);
+      msg.textContent = "❌ Chyba pri registrácii.";
+    }
+});
+
+  // ===============================
   // PREMIUM – Akcie (delegácia)
   // ===============================
   document.addEventListener("click", (e) => {
