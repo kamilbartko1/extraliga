@@ -931,12 +931,9 @@ async function checkPremiumStatus() {
 
   if (!section || !notLogged || !locked || !content) return;
 
-  // 🔹 default: všetko skry
   notLogged.style.display = "none";
   locked.style.display = "none";
   content.style.display = "none";
-
-  // 🔹 sekcia musí byť viditeľná
   section.style.display = "block";
 
   const token = localStorage.getItem("sb-access-token");
@@ -947,55 +944,30 @@ async function checkPremiumStatus() {
     logoutBtn.onclick = premiumLogout;
   }
 
-  // ===============================
-  // 1️⃣ NEPRIHLÁSENÝ USER
-  // ===============================
   if (!token) {
     notLogged.style.display = "block";
     return;
   }
 
-  // ===============================
-  // 2️⃣ PRIHLÁSENÝ → ZISTI VIP
-  // ===============================
   try {
     const res = await fetch("/api/vip?task=status", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     const data = await res.json();
-
-    if (!data || !data.ok) {
+    if (!data?.ok) {
       notLogged.style.display = "block";
       return;
     }
 
-    // ===============================
-    // 3️⃣ PREMIUM USER
-    // ===============================
     if (data.isVip === true) {
       content.style.display = "block";
-
-      // 🔹 Načítaj kluby NHL
-      if (typeof loadPremiumTeams === "function") {
-        await loadPremiumTeams();
-      }
-
-      // 🔹 Načítaj už pridaných PREMIUM hráčov
-      if (typeof loadPremiumPlayers === "function") {
-        await loadPremiumPlayers();
-      }
-
+      await loadPremiumTeams();
+      await loadPremiumPlayers();
       return;
     }
 
-    // ===============================
-    // 4️⃣ PRIHLÁSENÝ, ALE NIE PREMIUM
-    // ===============================
     locked.style.display = "block";
-
   } catch (err) {
     console.error("❌ PREMIUM status error:", err);
     notLogged.style.display = "block";
@@ -1010,23 +982,20 @@ function premiumLogout() {
   location.reload();
 }
 
-// Nacitanie premium hracov ===
+// ===============================
+// PREMIUM – Načítanie hráčov používateľa
+// ===============================
 async function loadPremiumPlayers() {
   const token = localStorage.getItem("sb-access-token");
   const tbody = document.getElementById("premium-players-body");
   const totalEl = document.getElementById("premium-total-profit");
   const msg = document.getElementById("premium-msg");
 
-  if (!tbody || !totalEl) return;
+  if (!tbody || !totalEl || !token) return;
 
   tbody.innerHTML = "";
   totalEl.textContent = "0.00";
   if (msg) msg.textContent = "";
-
-  if (!token) {
-    if (msg) msg.textContent = "Nie si prihlásený.";
-    return;
-  }
 
   try {
     const res = await fetch("/api/vip?task=get_players", {
@@ -1035,16 +1004,14 @@ async function loadPremiumPlayers() {
 
     const data = await res.json();
     if (!data.ok) {
-      if (msg) msg.textContent = data.error || "Nepodarilo sa načítať hráčov.";
+      if (msg) msg.textContent = data.error;
       return;
     }
 
-    const players = data.players || {};
-    const entries = Object.entries(players);
-
+    const entries = Object.entries(data.players || {});
     totalEl.textContent = Number(data.totalProfit || 0).toFixed(2);
 
-    if (entries.length === 0) {
+    if (!entries.length) {
       if (msg) msg.textContent = "Zatiaľ nemáš pridaných žiadnych hráčov.";
       return;
     }
@@ -1053,65 +1020,20 @@ async function loadPremiumPlayers() {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${name}</td>
-        <td>${Number(p.stake || 1)}</td>
-        <td>${Number(p.streak || 0)}</td>
-        <td>${Number(p.balance || 0).toFixed(2)} €</td>
+        <td>${p.stake}</td>
+        <td>${p.streak}</td>
+        <td>${Number(p.balance).toFixed(2)} €</td>
         <td>
-          <button class="premium-del-btn" data-player="${encodeURIComponent(name)}">Vymazať</button>
+          <button onclick="deletePremiumPlayer('${encodeURIComponent(name)}')">
+            Vymazať
+          </button>
         </td>
       `;
       tbody.appendChild(tr);
     }
-
-    // delete zatiaľ len pripravené (v KROKU 4)
   } catch (err) {
-    console.error("loadPremiumPlayers error:", err);
+    console.error(err);
     if (msg) msg.textContent = "Chyba pri načítaní hráčov.";
-  }
-}
-
-// ===============================
-// PREMIUM – Pridanie hráča (z výberu klubu)
-// ===============================
-async function addPremiumPlayer(player) {
-  const token = localStorage.getItem("sb-access-token");
-  const msg = document.getElementById("premium-msg");
-
-  if (!token || !player || !player.name || !player.team) {
-    if (msg) msg.textContent = "❌ Chyba pri výbere hráča.";
-    return;
-  }
-
-  if (msg) msg.textContent = `⏳ Pridávam hráča ${player.name}...`;
-
-  try {
-    const res = await fetch(
-      `/api/vip?task=add_player&name=${encodeURIComponent(player.name)}&team=${player.team}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    const data = await res.json();
-
-    if (!data.ok) {
-      if (msg) msg.textContent = data.error || "❌ Chyba pri pridávaní hráča.";
-      return;
-    }
-
-    if (msg) msg.textContent = `✅ ${player.name} bol pridaný do PREMIUM.`
-
-    // 🔄 obnov tabuľku premium hráčov
-    if (typeof loadPremiumPlayers === "function") {
-      await loadPremiumPlayers();
-    }
-
-  } catch (err) {
-    console.error("❌ ADD PREMIUM PLAYER ERROR:", err);
-    if (msg) msg.textContent = "❌ Chyba komunikácie so serverom.";
   }
 }
 
@@ -1120,41 +1042,20 @@ async function addPremiumPlayer(player) {
 // ===============================
 async function deletePremiumPlayer(encodedName) {
   const token = localStorage.getItem("sb-access-token");
-  const msg = document.getElementById("premium-msg");
   if (!token) return;
 
-  const name = decodeURIComponent(encodedName || "");
-  if (!name) return;
+  const name = decodeURIComponent(encodedName);
+  if (!confirm(`Naozaj chceš vymazať ${name}?`)) return;
 
-  const ok = confirm(`Naozaj chceš vymazať hráča: ${name}?`);
-  if (!ok) return;
+  await fetch(`/api/vip?task=delete_player&player=${encodeURIComponent(name)}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 
-  if (msg) msg.textContent = "⏳ Mažem hráča...";
-
-  try {
-    const res = await fetch(
-      `/api/vip?task=delete_player&player=${encodeURIComponent(name)}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-
-    const data = await res.json();
-    if (!data.ok) {
-      if (msg) msg.textContent = data.error || "Chyba pri mazaní hráča.";
-      return;
-    }
-
-    if (msg) msg.textContent = `🗑️ Hráč ${name} vymazaný.`;
-    await loadPremiumPlayers();
-  } catch (err) {
-    console.error("DELETE PREMIUM PLAYER ERROR:", err);
-    if (msg) msg.textContent = "❌ Chyba pri komunikácii so serverom.";
-  }
+  await loadPremiumPlayers();
 }
 
 // ===============================
-// PREMIUM – načítanie klubov
+// PREMIUM – Načítanie klubov a hráčov
 // ===============================
 let PREMIUM_PLAYERS_CACHE = [];
 
@@ -1163,67 +1064,69 @@ async function loadPremiumTeams() {
   const list = document.getElementById("premium-team-players");
   if (!select || !list) return;
 
-  // reset UI
   select.innerHTML = `<option value="">-- vyber klub --</option>`;
-  list.innerHTML = `<p style="color:#aaa;">Vyber klub pre zobrazenie hráčov</p>`;
+  list.innerHTML = `<p style="color:#aaa;">Vyber klub</p>`;
 
-  try {
-    const res = await fetch("/data/nhl_players.json", { cache: "no-store" });
-    const data = await res.json();
+  const res = await fetch("/data/nhl_players.json", { cache: "no-store" });
+  const data = await res.json();
 
-    PREMIUM_PLAYERS_CACHE = data;
+  PREMIUM_PLAYERS_CACHE = data;
 
-    // unikátne kluby
-    const teams = [...new Set(data.map(p => p.team))].sort();
+  [...new Set(data.map(p => p.team))].sort().forEach(team => {
+    const opt = document.createElement("option");
+    opt.value = team;
+    opt.textContent = team;
+    select.appendChild(opt);
+  });
 
-    teams.forEach(team => {
-      const opt = document.createElement("option");
-      opt.value = team;
-      opt.textContent = team;
-      select.appendChild(opt);
-    });
-
-  } catch (err) {
-    console.error("❌ loadPremiumTeams error:", err);
-    list.innerHTML = `<p style="color:red;">Chyba pri načítaní klubov</p>`;
-  }
+  select.onchange = () => {
+    const team = select.value;
+    list.innerHTML = "";
+    const players = PREMIUM_PLAYERS_CACHE.filter(p => p.team === team);
+    renderPremiumPlayersForTeam(team, players);
+  };
 }
 
 // ===============================
-// PREMIUM – zobrazenie hráčov klubu
+// PREMIUM – Zobrazenie hráčov tímu
 // ===============================
-document.addEventListener("change", (e) => {
-  if (e.target.id !== "premium-team-select") return;
+function renderPremiumPlayersForTeam(team, players) {
+  const container = document.getElementById("premium-team-players");
+  if (!container) return;
 
-  const team = e.target.value;
-  const list = document.getElementById("premium-team-players");
-  if (!list) return;
-
-  list.innerHTML = "";
-
-  if (!team) {
-    list.innerHTML = `<p style="color:#aaa;">Vyber klub pre zobrazenie hráčov</p>`;
-    return;
-  }
-
-  const players = PREMIUM_PLAYERS_CACHE.filter(p => p.team === team);
-
-  if (!players.length) {
-    list.innerHTML = `<p style="color:#aaa;">Žiadni hráči pre tento klub</p>`;
-    return;
-  }
+  container.innerHTML = "";
 
   players.forEach(p => {
-    const btn = document.createElement("button");
-    btn.className = "premium-player-btn";
-    btn.textContent = p.name;
-    btn.onclick = () => addPremiumPlayer(p);
-
-    list.appendChild(btn);
+    const chip = document.createElement("span");
+    chip.className = "premium-player-chip";
+    chip.textContent = p.name;
+    chip.onclick = () => addPremiumPlayerFromSelect(p.name, team);
+    container.appendChild(chip);
   });
-});
+}
 
+// ===============================
+// PREMIUM – Pridanie hráča
+// ===============================
+async function addPremiumPlayerFromSelect(name, team) {
+  const token = localStorage.getItem("sb-access-token");
+  const msg = document.getElementById("premium-msg");
+  if (!token) return;
 
+  msg.textContent = "⏳ Pridávam hráča...";
+
+  const res = await fetch(
+    `/api/vip?task=add_player&name=${encodeURIComponent(name)}&team=${team}`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+
+  const data = await res.json();
+  msg.textContent = data.ok
+    ? `✅ ${name} pridaný`
+    : data.error || "Chyba";
+
+  if (data.ok) await loadPremiumPlayers();
+}
 
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
 async function displayShootingLeaders() {
