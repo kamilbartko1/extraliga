@@ -984,6 +984,74 @@ function premiumLogout() {
 }
 
 // ===============================
+// Registracia
+// ===============================
+document.getElementById("premium-signup-btn")?.addEventListener("click", async () => {
+  const email = document.getElementById("premium-email")?.value?.trim();
+  const pass = document.getElementById("premium-pass")?.value;
+  const msg = document.getElementById("premium-auth-msg");
+
+  if (!email || !pass) {
+    msg.textContent = "Zadaj email aj heslo.";
+    return;
+  }
+
+  msg.textContent = "⏳ Registrujem používateľa...";
+
+  try {
+    const r = await fetch(
+      `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
+      {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password: pass,
+          should_create_user: true   // 🔥 KĽÚČOVÉ
+        }),
+      }
+    );
+
+    const data = await r.json();
+
+    if (!r.ok) {
+      msg.textContent = data?.error_description || "Registrácia zlyhala.";
+      return;
+    }
+
+    // uloženie tokenov
+    localStorage.setItem("sb-access-token", data.access_token);
+    localStorage.setItem("sb-refresh-token", data.refresh_token);
+
+    msg.textContent = "✅ Registrácia úspešná. Nie si ešte PREMIUM.";
+
+    // refresh UI
+    checkPremiumStatus();
+
+  } catch (e) {
+    console.error(e);
+    msg.textContent = "❌ Chyba pri registrácii.";
+  }
+});
+
+// ===============================
+// Sign up button
+// ===============================
+document.getElementById("premium-signup-btn")
+  ?.addEventListener("click", () => {
+
+    const box = document.getElementById("premium-register-box");
+    if (!box) return;
+
+    box.style.display = "block";
+    box.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+// ===============================
 // PREMIUM – Načítanie hráčov používateľa
 // ===============================
 async function loadPremiumPlayers() {
