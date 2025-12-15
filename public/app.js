@@ -1609,18 +1609,16 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     try {
       const r = await fetch(
-        `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
+        `${SUPABASE_URL}/auth/v1/signup`,
         {
           method: "POST",
           headers: {
             apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             email,
-            password: pass,
-            should_create_user: true
+            password: pass
           }),
         }
       );
@@ -1628,20 +1626,25 @@ window.addEventListener("DOMContentLoaded", async () => {
       const data = await r.json();
 
       if (!r.ok) {
-        msg.textContent = data?.error_description || "Registrácia zlyhala.";
+        console.error("Supabase signup error:", data);
+        msg.textContent = data?.error_description || data?.error || "Registrácia zlyhala.";
         return;
       }
 
-      // ✅ USER VYTVORENÝ NA SUPABASE
-      localStorage.setItem("sb-access-token", data.access_token);
-      localStorage.setItem("sb-refresh-token", data.refresh_token);
+      msg.textContent = "✅ Registrácia prebehla úspešne.";
 
-      msg.textContent = "✅ Registrácia úspešná. Nie si ešte PREMIUM.";
+      // ⚠️ ak máš zapnuté email potvrdenie:
+      // user sa NEPRIHLÁSI hneď
+      // musí kliknúť na link v emaile
 
-      setTimeout(() => {
-        document.getElementById("premium-register-box").style.display = "none";
-        checkPremiumStatus(); // zobrazí premium-locked
-      }, 1200);
+      // ak email confirmation NEMÁŠ:
+      if (data.access_token) {
+        localStorage.setItem("sb-access-token", data.access_token);
+        localStorage.setItem("sb-refresh-token", data.refresh_token);
+        checkPremiumStatus();
+      } else {
+        msg.textContent += " Skontroluj email pre potvrdenie.";
+      }
 
     } catch (e) {
       console.error(e);
