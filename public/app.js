@@ -1240,9 +1240,12 @@ document.getElementById("premium-register-confirm")?.addEventListener("click", a
     msg.textContent = "✅ Registrácia úspešná. Nie si ešte PREMIUM.";
 
     setTimeout(() => {
-      document.getElementById("premium-register-modal").style.display = "none";
-      checkPremiumStatus();
-    }, 1000);
+  document
+    .getElementById("premium-register-modal")
+    ?.classList.remove("active");
+
+  checkPremiumStatus();
+}, 1000);
 
   } catch (e) {
     console.error(e);
