@@ -922,70 +922,55 @@ async function displayStrategies() {
 }
 
 // ===============================
-// PREMIUM UI – STATE MANAGER
+// PREMIUM UI – RESET
 // ===============================
-function setPremiumState(state, message = "") {
-  const map = {
-    login: "premium-not-logged",
-    register: "premium-register-box",
-    locked: "premium-locked",
-    vip: "premium-content",
-  };
-
-  // skry všetko
-  Object.values(map).forEach(id => {
+function hideAllPremiumUI() {
+  [
+    "premium-not-logged",
+    "premium-register-box",
+    "premium-locked",
+    "premium-content"
+  ].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = "none";
   });
-
-  const signupBtn = document.getElementById("premium-signup-btn");
-  const logoutBtn = document.getElementById("premium-logout-btn");
-  const authMsg = document.getElementById("premium-auth-msg");
-
-  if (authMsg) authMsg.textContent = message || "";
-
-  // default
-  if (signupBtn) signupBtn.style.display = "none";
-  if (logoutBtn) logoutBtn.style.display = "none";
-
-  // zobraz konkrétny stav
-  switch (state) {
-    case "GUEST":
-      document.getElementById(map.login).style.display = "block";
-      if (signupBtn) signupBtn.style.display = "inline-block";
-      break;
-
-    case "REGISTER":
-      document.getElementById(map.register).style.display = "block";
-      break;
-
-    case "LOCKED":
-      document.getElementById(map.locked).style.display = "block";
-      if (logoutBtn) logoutBtn.style.display = "inline-block";
-      break;
-
-    case "VIP":
-      document.getElementById(map.vip).style.display = "block";
-      if (logoutBtn) logoutBtn.style.display = "inline-block";
-      break;
-  }
 }
 
-// ===============================
-// CHECK PREMIUM STATUS
-// ===============================
 async function checkPremiumStatus() {
   const section = document.getElementById("premium-section");
   if (!section) return;
 
+  // ===== ZÁKLAD: skry všetko =====
+  const loginBox   = document.getElementById("premium-not-logged");
+  const registerBox = document.getElementById("premium-register-box");
+  const lockedBox  = document.getElementById("premium-locked");
+  const contentBox = document.getElementById("premium-content");
+  const signupBtn  = document.getElementById("premium-signup-btn");
+  const logoutBtn  = document.getElementById("premium-logout-btn");
+  const authMsg    = document.getElementById("premium-auth-msg");
+
+  [loginBox, registerBox, lockedBox, contentBox].forEach(el => {
+    if (el) el.style.display = "none";
+  });
+
   section.style.display = "block";
+  if (authMsg) authMsg.textContent = "";
 
   const token = localStorage.getItem("sb-access-token");
 
-  // ❌ neprihlásený
+  // ===== NIE JE PRIHLÁSENÝ =====
   if (!token) {
-    setPremiumState("GUEST");
+    if (loginBox) loginBox.style.display = "block";
+    if (signupBtn) signupBtn.style.display = "inline-block";
+    if (logoutBtn) logoutBtn.style.display = "none";
     return;
+  }
+
+  // ===== PRIHLÁSENÝ (lokálne) =====
+  if (signupBtn) signupBtn.style.display = "none";
+  if (logoutBtn) {
+    logoutBtn.style.display = "inline-block";
+    logoutBtn.onclick = premiumLogout;
   }
 
   try {
@@ -993,74 +978,85 @@ async function checkPremiumStatus() {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    // token expirovaný
+    // token neplatný
     if (res.status === 401 || res.status === 403) {
       localStorage.removeItem("sb-access-token");
       localStorage.removeItem("sb-refresh-token");
-      setPremiumState("GUEST", "Prihlásenie vypršalo.");
+
+      if (loginBox) loginBox.style.display = "block";
+      if (signupBtn) signupBtn.style.display = "inline-block";
+      if (logoutBtn) logoutBtn.style.display = "none";
+      if (authMsg) authMsg.textContent = "Prihlásenie vypršalo. Prihlás sa znova.";
       return;
     }
 
     const data = await res.json();
 
-    if (!data?.ok) {
-      localStorage.removeItem("sb-access-token");
-      localStorage.removeItem("sb-refresh-token");
-      setPremiumState("GUEST", "Prihlásenie nie je platné.");
-      return;
-    }
-
-    // ✅ VIP
-    if (data.isVip === true) {
-      setPremiumState("VIP");
+    // ===== VIP USER =====
+    if (data.ok && data.isVip === true) {
+      if (contentBox) contentBox.style.display = "block";
       await loadPremiumTeams();
       await loadPremiumPlayers();
       return;
     }
 
-    // 🔒 NIE VIP
-    setPremiumState("LOCKED");
-
+    // ===== PRIHLÁSENÝ, ALE NIE VIP =====
+    if (lockedBox) lockedBox.style.display = "block";
+    // logout OSTÁVA viditeľný
   } catch (err) {
-    console.error("❌ checkPremiumStatus:", err);
-    setPremiumState("GUEST", "Chyba spojenia.");
+    console.error("❌ checkPremiumStatus error:", err);
+
+    // fallback: vráť login
+    localStorage.removeItem("sb-access-token");
+    localStorage.removeItem("sb-refresh-token");
+
+    if (loginBox) loginBox.style.display = "block";
+    if (signupBtn) signupBtn.style.display = "inline-block";
+    if (logoutBtn) logoutBtn.style.display = "none";
+    if (authMsg) authMsg.textContent = "Chyba spojenia. Skús to znova.";
   }
 }
 
 // ===============================
-// LOGOUT
+// Odhlásenie
 // ===============================
 function premiumLogout() {
   localStorage.removeItem("sb-access-token");
   localStorage.removeItem("sb-refresh-token");
-  setPremiumState("GUEST");
+  location.reload();
 }
 
 // ===============================
-// REGISTER BUTTON
+// Klik: Registrovať sa → zobraz REGISTER
 // ===============================
 document.getElementById("premium-signup-btn")
   ?.addEventListener("click", () => {
-    setPremiumState("REGISTER");
-    document.getElementById("premium-register-box")
-      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    hideAllPremiumUI();
+
+    const box = document.getElementById("premium-register-box");
+    if (!box) return;
+
+    box.style.display = "block";
+    box.scrollIntoView({ behavior: "smooth", block: "center" });
 });
 
 // ===============================
-// REGISTRÁCIA – SUPABASE
+// REGISTRÁCIA – SUPABASE SIGNUP
 // ===============================
 document.getElementById("premium-register-confirm")
   ?.addEventListener("click", async () => {
 
     const email = document.getElementById("reg-email")?.value.trim();
-    const pass  = document.getElementById("reg-pass")?.value;
+    const pass = document.getElementById("reg-pass")?.value;
     const pass2 = document.getElementById("reg-pass2")?.value;
-    const msg   = document.getElementById("premium-register-msg");
+    const msg = document.getElementById("premium-register-msg");
 
     if (!email || !pass || !pass2) {
       msg.textContent = "Vyplň všetky polia.";
       return;
     }
+
     if (pass !== pass2) {
       msg.textContent = "Heslá sa nezhodujú.";
       return;
@@ -1069,26 +1065,30 @@ document.getElementById("premium-register-confirm")
     msg.textContent = "⏳ Vytváram účet...";
 
     try {
-      const r = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
-        method: "POST",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password: pass })
-      });
+      const r = await fetch(
+        `${SUPABASE_URL}/auth/v1/signup`,
+        {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password: pass }),
+        }
+      );
 
       const data = await r.json();
 
       if (!r.ok) {
-        msg.textContent = data?.error_description || "Registrácia zlyhala.";
+        msg.textContent = data?.error_description || data?.error || "Registrácia zlyhala.";
         return;
       }
 
       msg.textContent = "✅ Účet vytvorený. Skontroluj email.";
 
       setTimeout(() => {
-        setPremiumState("GUEST");
+        hideAllPremiumUI();
+        document.getElementById("premium-not-logged").style.display = "block";
       }, 1500);
 
     } catch (err) {
