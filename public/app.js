@@ -1055,8 +1055,6 @@ async function deletePremiumPlayer(encodedName) {
   await loadPremiumPlayers();
 }
 
-let PREMIUM_PLAYERS_CACHE = [];
-
 async function loadPremiumTeams() {
   const select = document.getElementById("premium-team-select");
   const list = document.getElementById("premium-team-players");
@@ -1417,33 +1415,30 @@ window.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ===============================
-  // ✅ PREMIUM – LOGIN (bez pádu celej stránky)
+  // PREMIUM – LOGIN
   // ===============================
   document.getElementById("premium-login-btn")?.addEventListener("click", async () => {
+    const email = document.getElementById("premium-email")?.value?.trim();
+    const pass = document.getElementById("premium-pass")?.value;
+
+    if (!email || !pass) {
+      alert("Zadaj email aj heslo");
+      return;
+    }
+
     try {
-      // ak by náhodou neboli definované (aby to NEZABILO celú app)
-      if (typeof SUPABASE_URL === "undefined" || typeof SUPABASE_ANON_KEY === "undefined") {
-        alert("Chýba SUPABASE_URL alebo SUPABASE_ANON_KEY v app.js");
-        return;
-      }
-
-      const email = document.getElementById("premium-email")?.value?.trim();
-      const pass = document.getElementById("premium-pass")?.value;
-
-      if (!email || !pass) {
-        alert("Zadaj email aj heslo");
-        return;
-      }
-
-      const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-        method: "POST",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password: pass }),
-      });
+      const r = await fetch(
+        `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
+        {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password: pass }),
+        }
+      );
 
       const data = await r.json();
 
@@ -1456,9 +1451,8 @@ window.addEventListener("DOMContentLoaded", async () => {
       localStorage.setItem("sb-refresh-token", data.refresh_token);
 
       // refresh premium UI
-      if (typeof checkPremiumStatus === "function") {
-        await checkPremiumStatus();
-      }
+      checkPremiumStatus();
+
     } catch (e) {
       alert("Chyba pri prihlásení");
       console.error(e);
@@ -1466,30 +1460,41 @@ window.addEventListener("DOMContentLoaded", async () => {
   });
 
   // ===============================
-  // ✅ PREMIUM – LOGOUT (LEN JEDEN, bez duplicít)
+  // PREMIUM – LOGOUT (priame)
   // ===============================
   document.getElementById("premium-logout-btn")?.addEventListener("click", () => {
     localStorage.removeItem("sb-access-token");
     localStorage.removeItem("sb-refresh-token");
+    checkPremiumStatus();
+  });
 
-    // bezpečne: refresh UI (ak existuje), inak reload
-    if (typeof checkPremiumStatus === "function") {
-      checkPremiumStatus();
-    } else {
+  // ===============================
+  // PREMIUM – Logout (delegácia)
+  // ===============================
+  document.addEventListener("click", (e) => {
+    if (e.target && e.target.id === "premium-logout-btn") {
+      console.log("🔓 PREMIUM logout");
+      localStorage.removeItem("sb-access-token");
       location.reload();
     }
   });
 
   // ===============================
-  // ✅ PREMIUM – DELETE hráča (delegácia)
+  // PREMIUM – Akcie (delegácia)
   // ===============================
   document.addEventListener("click", (e) => {
-    if (e.target && e.target.classList?.contains("premium-del-btn")) {
-      const p = e.target.getAttribute("data-player"); // encoded
-      if (typeof deletePremiumPlayer === "function") {
-        deletePremiumPlayer(p);
-      }
+
+    // ➕ Pridať hráča
+    if (e.target && e.target.id === "premium-add-player-btn") {
+      addPremiumPlayer();
     }
+
+    // 🗑️ Vymazať hráča
+    if (e.target && e.target.classList && e.target.classList.contains("premium-del-btn")) {
+      const p = e.target.getAttribute("data-player");
+      deletePremiumPlayer(p);
+    }
+
   });
 
   // 4️⃣ Soft refresh po 3s
@@ -1498,3 +1503,4 @@ window.addEventListener("DOMContentLoaded", async () => {
     fetchMatches();
   }, 3000);
 });
+
