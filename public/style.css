@@ -4282,134 +4282,71 @@ body {
 }
 
 /* ===============================
-   ACTION BUTTONS – COMPACT
+   PREMIUM TABLE – STABLE LAYOUT
+   =============================== */
+
+/* tabuľka sa správa normálne */
+.premium-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* bunky – kompaktné */
+.premium-table th,
+.premium-table td {
+  padding: 10px 6px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* meno hráča – 1 riadok */
+.premium-table td:first-child {
+  font-weight: 500;
+}
+
+/* ===============================
+   ACTIONS CELL
    =============================== */
 
 .premium-actions {
   display: flex;
-  flex-direction: row;     /* 🔑 vedľa seba */
+  align-items: center;
   gap: 6px;
-  justify-content: flex-end;
-  min-width: 110px;
 }
 
-/* DETAIL */
+/* DETAIL – vždy viditeľný */
 .btn-detail {
-  width: 52px;
-  padding: 6px 0;
+  padding: 6px 10px;
   font-size: 0.75rem;
-  border-radius: 8px;
+  border-radius: 6px;
   background: #00bfff;
   color: #001018;
-  font-weight: 600;
+  border: none;
 }
 
-/* DELETE */
+/* DELETE – môže ísť mimo */
 .btn-delete {
-  width: 52px;
-  padding: 6px 0;
+  padding: 6px 10px;
   font-size: 0.7rem;
-  border-radius: 8px;
+  border-radius: 6px;
   background: none;
   border: 1px solid rgba(255,90,90,0.5);
   color: #ff6b6b;
 }
 
-/* žiadne divoké hover efekty */
-.btn-detail:hover { filter: brightness(1.05); }
-.btn-delete:hover { background: rgba(255,90,90,0.1); }
-
 /* ===============================
-   TABLE – HORIZONTAL SCROLL
+   MOBILE – SCROLL LEN NA DELETE
    =============================== */
 
-.premium-table-wrapper {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
+@media (max-width: 768px) {
+  .premium-actions {
+    max-width: 70px;          /* zmestí Detail */
+    overflow-x: auto;         /* 🔑 */
+  }
 
-.premium-table {
-  min-width: 620px;   /* 🔑 núti scroll */
-}
-
-.premium-table th,
-.premium-table td {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont,
-               "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-size: 0.85rem;
-}
-
-/* TABUĽKA SA MUSÍ ZMESTIŤ */
-.premium-table {
-  width: 100%;
-  table-layout: fixed; /* 🔑 KĽÚČ */
-}
-
-/* HRÁČ */
-.premium-table th:nth-child(1),
-.premium-table td:nth-child(1) {
-  width: 34%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* STÁVKA */
-.premium-table th:nth-child(2),
-.premium-table td:nth-child(2) {
-  width: 16%;
-  text-align: center;
-}
-
-/* STREAK */
-.premium-table th:nth-child(3),
-.premium-table td:nth-child(3) {
-  width: 16%;
-  text-align: center;
-}
-
-/* BALANCE */
-.premium-table th:nth-child(4),
-.premium-table td:nth-child(4) {
-  width: 20%;
-  text-align: right;
-  padding-right: 6px;
-}
-
-/* AKCIE – LEN DETAIL SA MUSÍ ZMESTIŤ */
-.premium-table th:nth-child(5),
-.premium-table td:nth-child(5) {
-  width: 14%;
-  text-align: right;
-}
-
-.btn-detail {
-  width: 56px;
-  padding: 6px 0;
-  font-size: 0.75rem;
-  border-radius: 7px;
-}
-
-/* AKCIE – HORIZONTÁLNY SCROLL LEN TU */
-.premium-actions {
-  display: flex;
-  gap: 6px;
-  justify-content: flex-end;
-  overflow-x: auto;               /* 🔑 */
-  -webkit-overflow-scrolling: touch;
-}
-
-/* skry scrollbar, ale scroll funguje */
-.premium-actions::-webkit-scrollbar {
-  display: none;
-}
-
-/* DELETE mimo viewport */
-.btn-delete {
-  min-width: 56px;
-  padding: 6px 0;
-  font-size: 0.7rem;
-  margin-left: 6px;
+  .premium-actions::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
