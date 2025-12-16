@@ -1155,15 +1155,17 @@ async function loadPremiumPlayers() {
         <td>${p.stake}</td>
         <td>${p.streak}</td>
         <td>${Number(p.balance).toFixed(2)} €</td>
-        <td>
+
+        <td class="premium-actions">
           <button
-            class="vip-mtg-detail-btn"
+            class="btn-detail vip-mtg-detail-btn"
             data-player="${name}"
           >
             Detail
           </button>
 
           <button
+            class="btn-delete"
             onclick="deletePremiumPlayer('${encodeURIComponent(name)}')"
           >
             Vymazať
@@ -1172,6 +1174,7 @@ async function loadPremiumPlayers() {
       `;
       tbody.appendChild(tr);
     }
+
   } catch (err) {
     console.error(err);
     if (msg) msg.textContent = "Chyba pri načítaní hráčov.";
