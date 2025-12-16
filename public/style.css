@@ -4269,63 +4269,74 @@ body {
 }
 
 /* ===============================
-   PREMIUM ACTIONS – CLEAN & PRO
+   PLAYER NAME – ONE LINE ONLY
+   =============================== */
+
+.premium-table td:first-child {
+  white-space: nowrap;        /* 🔑 nikdy nezalomí */
+  overflow: hidden;
+  text-overflow: ellipsis;    /* … ak by bolo fakt dlhé */
+  max-width: 120px;
+  font-weight: 500;
+  color: #eaf6ff;
+}
+
+/* ===============================
+   ACTION BUTTONS – COMPACT
    =============================== */
 
 .premium-actions {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end; /* tlačidlá vpravo, nie cez celú šírku */
-  gap: 8px;
-  min-width: 90px;
+  flex-direction: row;     /* 🔑 vedľa seba */
+  gap: 6px;
+  justify-content: flex-end;
+  min-width: 110px;
 }
 
-/* DETAIL – primary, ale striedmy */
+/* DETAIL */
 .btn-detail {
-  width: 90px;
-  padding: 8px 0;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #00eaff, #0077ff);
-  color: #001018;
-  border: none;
-  text-align: center;
-}
-
-/* DELETE – secondary, tichý danger */
-.btn-delete {
-  width: 90px;
-  padding: 7px 0;
+  width: 52px;
+  padding: 6px 0;
   font-size: 0.75rem;
-  border-radius: 10px;
+  border-radius: 8px;
+  background: #00bfff;
+  color: #001018;
+  font-weight: 600;
+}
+
+/* DELETE */
+.btn-delete {
+  width: 52px;
+  padding: 6px 0;
+  font-size: 0.7rem;
+  border-radius: 8px;
   background: none;
-  border: 1px solid rgba(255, 90, 90, 0.4);
+  border: 1px solid rgba(255,90,90,0.5);
   color: #ff6b6b;
-  text-align: center;
-  opacity: 0.8;
 }
 
-/* hover jemne, žiadny cirkus */
-.btn-detail:hover {
-  filter: brightness(1.05);
+/* žiadne divoké hover efekty */
+.btn-detail:hover { filter: brightness(1.05); }
+.btn-delete:hover { background: rgba(255,90,90,0.1); }
+
+/* ===============================
+   TABLE – HORIZONTAL SCROLL
+   =============================== */
+
+.premium-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.btn-delete:hover {
-  background: rgba(255, 90, 90, 0.1);
-  opacity: 1;
+.premium-table {
+  min-width: 620px;   /* 🔑 núti scroll */
 }
 
-/* MOBILE – ešte kompaktnejšie */
-@media (max-width: 768px) {
-  .premium-actions {
-    min-width: 80px;
-  }
-
-  .btn-detail,
-  .btn-delete {
-    width: 80px;
-  }
+.premium-table th,
+.premium-table td {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 0.85rem;
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
