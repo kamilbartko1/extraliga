@@ -1150,7 +1150,16 @@ async function loadPremiumPlayers() {
         <td>${p.streak}</td>
         <td>${Number(p.balance).toFixed(2)} €</td>
         <td>
-          <button onclick="deletePremiumPlayer('${encodeURIComponent(name)}')">
+          <button
+            class="vip-mtg-detail-btn"
+            data-player="${name}"
+          >
+            Detail
+          </button>
+
+          <button
+            onclick="deletePremiumPlayer('${encodeURIComponent(name)}')"
+          >
             Vymazať
           </button>
         </td>
