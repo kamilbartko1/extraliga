@@ -4305,14 +4305,18 @@ body {
   line-height: 1.25;
 }
 
-/* mobile: max 2 riadky */
-@media (max-width: 768px) {
-  .premium-table td:first-child {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;       /* max 2 riadky */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+/* ===============================
+   PREMIUM TABLE – PLAYER NAME FIX
+   =============================== */
+
+.premium-table td:first-child {
+  max-width: 140px;
+  white-space: normal;        /* normálne zalamovanie slov */
+  word-break: normal;         /* ŽIADNE lámanie písmen */
+  overflow-wrap: normal;
+  line-height: 1.25;
+  font-weight: 500;
+  color: #eaf6ff;
 }
 
 /* ===============================
@@ -4320,19 +4324,23 @@ body {
    =============================== */
 
 @media (max-width: 768px) {
+  .premium-actions {
+    width: 100%;
+  }
+
+  .btn-detail,
   .btn-delete {
+    width: 100%;
     min-width: 100%;
-    font-size: 0.85rem;
-    letter-spacing: 0.04em;
-    padding: 12px 0;
+    box-sizing: border-box;
     text-align: center;
   }
-}
 
-/* jemné oddelenie mena */
-.premium-table td:first-child {
-  font-weight: 500;
-  color: #eaf6ff;
+  .btn-delete {
+    padding: 12px 0;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+  }
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
