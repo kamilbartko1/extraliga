@@ -91,12 +91,14 @@ async function appendHistory(player, entry) {
   await redis.set(key, JSON.stringify(hist));
 }
 
-async function updateMantingalePlayers() {
-  console.log("🔥 Mantingal: vyhodnocujem podľa BOXSCORE API...");
+// =======================================
+// 🔧 Martingale pre vip users
+// =======================================
+async function updateMantingaleForKey(playersKey, historyPrefix) {
+  console.log(`🔥 Mantingal: vyhodnocujem ${playersKey} podľa BOXSCORE API...`);
 
   const y = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
 
-  // 1️⃣ Stiahneme iba zoznam zápasov (bez hráčov)
   let games;
   try {
     const r = await axios.get(`https://api-web.nhle.com/v1/score/${y}`, { timeout: 12000 });
@@ -106,22 +108,17 @@ async function updateMantingalePlayers() {
     return;
   }
 
-  if (!games.length) {
-    console.log("⚠️ Včera neboli zápasy.");
-    return;
-  }
+  if (!games.length) return;
 
-  const players = await redis.hgetall(M_PLAYERS);
+  const players = await redis.hgetall(playersKey);
   if (!players || Object.keys(players).length === 0) return;
 
-  // map tímov ktoré hrali
   const teamsPlayed = new Set();
   for (const g of games) {
     teamsPlayed.add(g.homeTeam?.abbrev);
     teamsPlayed.add(g.awayTeam?.abbrev);
   }
 
-  // FUNKCIA – identická ako v ai.js
   function normalizeName(str) {
     return String(str || "")
       .toLowerCase()
@@ -130,7 +127,6 @@ async function updateMantingalePlayers() {
       .trim();
   }
 
-  // FUNKCIA – identická ako v ai.js
   function findPlayerInBox(box, target) {
     const players = [
       ...(box?.playerByGameStats?.homeTeam?.forwards || []),
@@ -157,14 +153,12 @@ async function updateMantingalePlayers() {
     });
   }
 
-  // PRE KAŽDÉHO HRÁČA v MANTINGALE
   for (const [playerName, raw] of Object.entries(players)) {
     let state = normalizePlayer(safeParse(raw));
     const team = state.teamAbbrev;
 
-    // 1️⃣ Tím nehral → SKIP
     if (!team || !teamsPlayed.has(team)) {
-      await appendHistory(playerName, {
+      await appendHistory(`${historyPrefix}:${playerName}`, {
         date: y,
         gameId: null,
         goals: null,
@@ -173,19 +167,15 @@ async function updateMantingalePlayers() {
         balanceAfter: state.balance,
       });
       state.lastUpdate = y;
-      await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
-      console.log("⏭ SKIP (team not played):", playerName);
+      await redis.hset(playersKey, { [playerName]: JSON.stringify(state) });
       continue;
     }
 
-    // 2️⃣ Nájdeme GAME ID kde hrá jeho tím
     const game = games.find(
       (g) => g.homeTeam?.abbrev === team || g.awayTeam?.abbrev === team
     );
-
     if (!game) continue;
 
-    // 3️⃣ Stiahneme BOXSCORE
     let box;
     try {
       const r = await axios.get(
@@ -193,17 +183,14 @@ async function updateMantingalePlayers() {
         { timeout: 12000 }
       );
       box = r.data;
-    } catch (err) {
-      console.log("❌ BOX ERROR:", err.message);
+    } catch {
       continue;
     }
 
-    // 4️⃣ Nájdeme hráča presne ako v ai.js
     const found = findPlayerInBox(box, playerName);
 
-    // 5️⃣ Hráč nebol na súpiske → SKIP
     if (!found) {
-      await appendHistory(playerName, {
+      await appendHistory(`${historyPrefix}:${playerName}`, {
         date: y,
         gameId: game.id,
         goals: null,
@@ -212,19 +199,17 @@ async function updateMantingalePlayers() {
         balanceAfter: state.balance,
       });
       state.lastUpdate = y;
-      await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
-      console.log("⏭ SKIP (not on roster):", playerName);
+      await redis.hset(playersKey, { [playerName]: JSON.stringify(state) });
       continue;
     }
 
     const goals = Number(found.goals || 0);
 
-    // 6️⃣ HIT
     if (goals > 0) {
       const profit = Number((state.stake * 1.2).toFixed(2));
       state.balance = Number((state.balance + profit).toFixed(2));
 
-      await appendHistory(playerName, {
+      await appendHistory(`${historyPrefix}:${playerName}`, {
         date: y,
         gameId: game.id,
         goals,
@@ -236,19 +221,16 @@ async function updateMantingalePlayers() {
       state.stake = 1;
       state.streak = 0;
       state.lastUpdate = y;
-      await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
-
-      console.log("🎯 HIT:", playerName);
+      await redis.hset(playersKey, { [playerName]: JSON.stringify(state) });
       continue;
     }
 
-    // 7️⃣ MISS
     const loss = -state.stake;
     state.balance = Number((state.balance + loss).toFixed(2));
     state.stake *= 2;
     state.streak += 1;
 
-    await appendHistory(playerName, {
+    await appendHistory(`${historyPrefix}:${playerName}`, {
       date: y,
       gameId: game.id,
       goals: 0,
@@ -258,10 +240,18 @@ async function updateMantingalePlayers() {
     });
 
     state.lastUpdate = y;
-    await redis.hset(M_PLAYERS, { [playerName]: JSON.stringify(state) });
-
-    console.log("❌ MISS:", playerName);
+    await redis.hset(playersKey, { [playerName]: JSON.stringify(state) });
   }
+}
+
+// =======================================
+// Global Mantingal
+// =======================================
+async function updateMantingalePlayers() {
+  return updateMantingaleForKey(
+    M_PLAYERS,               // globálny mantingale (ako doteraz)
+    "MANTINGAL_HISTORY"      // globálna história
+  );
 }
 
 // ===============================================
@@ -286,6 +276,24 @@ export default async function handler(req, res) {
       await axios.get(`${base}/api/ai?task=update`);
       await updateMantingalePlayers();
       executed = "update + mantingale";
+
+      // ✅ VIP MANTINGAL – bezpečne paralelne
+try {
+  const vipUsers = await redis.smembers("VIP_USERS");
+  if (Array.isArray(vipUsers) && vipUsers.length) {
+    for (const userId of vipUsers) {
+      await updateMantingaleForKey(
+      `VIP_MTG:${userId}`,
+      `VIP_MTG_HISTORY:${userId}`
+    );
+      }
+    console.log("👑 VIP Mantingal: OK users =", vipUsers.length);
+  } else {
+    console.log("👑 VIP Mantingal: no users");
+  }
+} catch (e) {
+  console.log("❌ VIP Mantingal error:", e.message);
+}
     }
 
     // 2) SCORER

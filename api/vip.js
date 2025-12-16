@@ -26,6 +26,44 @@ const vipHistoryKey = (userId, player) =>
   `VIP_MTG_HISTORY:${userId}:${player}`;
 
 // ===============================
+// Skratky timov
+// ===============================
+const TEAM_NAME_TO_ABBREV = {
+  "Anaheim Ducks": "ANA",
+  "Boston Bruins": "BOS",
+  "Buffalo Sabres": "BUF",
+  "Calgary Flames": "CGY",
+  "Carolina Hurricanes": "CAR",
+  "Chicago Blackhawks": "CHI",
+  "Colorado Avalanche": "COL",
+  "Columbus Blue Jackets": "CBJ",
+  "Dallas Stars": "DAL",
+  "Detroit Red Wings": "DET",
+  "Edmonton Oilers": "EDM",
+  "Florida Panthers": "FLA",
+  "Los Angeles Kings": "LAK",
+  "Minnesota Wild": "MIN",
+  "Montreal Canadiens": "MTL",
+  "Nashville Predators": "NSH",
+  "New Jersey Devils": "NJD",
+  "New York Islanders": "NYI",
+  "New York Rangers": "NYR",
+  "Ottawa Senators": "OTT",
+  "Philadelphia Flyers": "PHI",
+  "Pittsburgh Penguins": "PIT",
+  "San Jose Sharks": "SJS",
+  "Seattle Kraken": "SEA",
+  "St. Louis Blues": "STL",
+  "Tampa Bay Lightning": "TBL",
+  "Toronto Maple Leafs": "TOR",
+  "Utah Mammoth": "UTA",
+  "Vancouver Canucks": "VAN",
+  "Vegas Golden Knights": "VGK",
+  "Washington Capitals": "WSH",
+  "Winnipeg Jets": "WPG"
+};
+
+// ===============================
 // Pomocné funkcie
 // ===============================
 
@@ -186,42 +224,52 @@ export default async function handler(req, res) {
     }
 
     // =====================================================
-    // 4) ADD_PLAYER
-    // =====================================================
-    if (task === "add_player") {
-      const name = req.query.name || null;
-      const teamAbbrev = req.query.team || null;
+// 4) ADD_PLAYER  (VIP – OPRAVENÉ teamAbbrev)
+// =====================================================
+if (task === "add_player") {
+  const name = req.query.name || null;
+  const teamName = req.query.team || null; // ⬅️ PRICHÁDZA CELÝ NÁZOV
 
-      if (!name || !teamAbbrev) {
-        return res.status(400).json({
-          ok: false,
-          error: "Missing name or team (?name=...&team=...)",
-        });
-      }
+  if (!name || !teamName) {
+    return res.status(400).json({
+      ok: false,
+      error: "Missing name or team (?name=...&team=...)",
+    });
+  }
 
-      const now = todayISO();
-      const key = vipPlayersKey(userId);
+  // 🔥 PREKLAD CELÉHO NÁZVU → NHL SKRATKA
+  const teamAbbrev = TEAM_NAME_TO_ABBREV[teamName];
 
-      const playerState = normalizePlayer({
-        stake: 1,
-        streak: 0,
-        balance: 0,
-        started: now,
-        lastUpdate: now,
-        teamAbbrev,
-      });
+  if (!teamAbbrev) {
+    return res.status(400).json({
+      ok: false,
+      error: `Unknown team name: ${teamName}`,
+    });
+  }
 
-      await redis.hset(key, {
-        [name]: JSON.stringify(playerState),
-      });
+  const now = todayISO();
+  const key = vipPlayersKey(userId);
 
-      return res.json({
-        ok: true,
-        userId,
-        player: name,
-        teamAbbrev,
-      });
-    }
+  const playerState = normalizePlayer({
+    stake: 1,
+    streak: 0,
+    balance: 0,
+    started: now,
+    lastUpdate: now,
+    teamAbbrev, // ✅ UŽ JE BOS / EDM / TOR
+  });
+
+  await redis.hset(key, {
+    [name]: JSON.stringify(playerState),
+  });
+
+  return res.json({
+    ok: true,
+    userId,
+    player: name,
+    teamAbbrev,
+  });
+}
 
     // ------------------------------------------
 // 4) DELETE_PLAYER – vymazanie hráča
