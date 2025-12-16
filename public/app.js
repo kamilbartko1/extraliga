@@ -1670,6 +1670,15 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
+// ===============================
+// PREMIUM – Pridať hráča (PRIAMY listener)
+// ===============================
+document.getElementById("premium-add-player-btn")
+  ?.addEventListener("click", (e) => {
+    e.preventDefault();
+    addPremiumPlayer();
+  });
+
   // ===============================
   // PREMIUM – Akcie (delegácia)
   // ===============================
