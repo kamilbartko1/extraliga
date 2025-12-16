@@ -8,6 +8,7 @@ let playerTeams = {}; // mapovanie priezvisko → tím
 let fullTeamNames = {};
 let NHL_PLAYERS_BY_TEAM = {};
 let PREMIUM_PLAYERS_CACHE = [];
+let PREMIUM_SELECTS_READY = false;
 
 const BASE_STAKE = 1;
 const ODDS = 2.5;
@@ -993,10 +994,11 @@ async function checkPremiumStatus() {
     const data = await res.json();
 
     // ===== VIP USER =====
-    if (data.ok && data.isVip === true) {
+      if (data.ok && data.isVip === true) {
       if (contentBox) contentBox.style.display = "block";
-      await loadPremiumTeams();
-      await loadPremiumPlayers();
+
+      await loadPremiumTeams();      // 🔥 selecty
+      await loadPremiumPlayers();    // 🔥 tabuľka
       return;
     }
 
@@ -1168,6 +1170,91 @@ async function deletePremiumPlayer(encodedName) {
 
   await loadPremiumPlayers();
 }
+
+// ===============================
+// PREMIUM – Načítanie tímov + hráčov z JSON
+// ===============================
+async function loadPremiumTeams() {
+  const teamSelect = document.getElementById("premium-team-select");
+  const playerSelect = document.getElementById("premium-player-select");
+
+  if (!teamSelect || !playerSelect) return;
+
+  teamSelect.innerHTML = `<option value="">-- vyber klub --</option>`;
+  playerSelect.innerHTML = `<option value="">-- najprv vyber klub --</option>`;
+  playerSelect.disabled = true;
+
+  try {
+    const res = await fetch("/data/nhl_players.json", { cache: "no-store" });
+    if (!res.ok) throw new Error("players.json not found");
+
+    const raw = await res.json();
+
+    PREMIUM_PLAYERS_CACHE = raw.map(p => ({
+      id: p.id,
+      name: `${p.firstName} ${p.lastName}`,
+      team: p.team,
+      position: p.position,
+      number: p.number
+    }));
+
+    const teams = [...new Set(PREMIUM_PLAYERS_CACHE.map(p => p.team))].sort();
+
+    teams.forEach(team => {
+      const opt = document.createElement("option");
+      opt.value = team;
+      opt.textContent = team;
+      teamSelect.appendChild(opt);
+    });
+
+  } catch (err) {
+    console.error("❌ loadPremiumTeams error:", err);
+    teamSelect.innerHTML = `<option value="">⚠️ Chyba načítania tímov</option>`;
+  }
+}
+
+// ===============================
+// PREMIUM – Po výbere tímu zobraz hráčov
+// ===============================
+function renderPremiumPlayersForTeam(team) {
+  const playerSelect = document.getElementById("premium-player-select");
+  if (!playerSelect) return;
+
+  playerSelect.innerHTML = "";
+  playerSelect.disabled = true;
+
+  if (!team) {
+    playerSelect.innerHTML = `<option value="">-- najprv vyber klub --</option>`;
+    return;
+  }
+
+  const players = PREMIUM_PLAYERS_CACHE
+    .filter(p => p.team === team)
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  if (!players.length) {
+    playerSelect.innerHTML = `<option value="">Žiadni hráči</option>`;
+    return;
+  }
+
+  playerSelect.innerHTML = `<option value="">-- vyber hráča --</option>`;
+
+  players.forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = p.name;
+    opt.textContent = `${p.name} (#${p.number}, ${p.position})`;
+    playerSelect.appendChild(opt);
+  });
+
+  playerSelect.disabled = false;
+}
+
+// === Listener na vyber klubu a hraca ===
+document.addEventListener("change", (e) => {
+  if (e.target?.id === "premium-team-select") {
+    renderPremiumPlayersForTeam(e.target.value);
+  }
+});
 
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
 async function displayShootingLeaders() {
