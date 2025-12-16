@@ -4293,6 +4293,48 @@ body {
   }
 }
 
+/* ===============================
+   PREMIUM TABLE – PLAYER NAME
+   =============================== */
+
+.premium-table td:first-child {
+  max-width: 140px;              /* kontrola šírky */
+  white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  line-height: 1.25;
+}
+
+/* mobile: max 2 riadky */
+@media (max-width: 768px) {
+  .premium-table td:first-child {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;       /* max 2 riadky */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* ===============================
+   DELETE BUTTON – MOBILE FIX
+   =============================== */
+
+@media (max-width: 768px) {
+  .btn-delete {
+    min-width: 100%;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    padding: 12px 0;
+    text-align: center;
+  }
+}
+
+/* jemné oddelenie mena */
+.premium-table td:first-child {
+  font-weight: 500;
+  color: #eaf6ff;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
