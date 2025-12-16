@@ -1727,11 +1727,6 @@ document.getElementById("premium-add-player-btn")
   // ===============================
   document.addEventListener("click", (e) => {
 
-    // ➕ Pridať hráča
-    if (e.target && e.target.id === "premium-add-player-btn") {
-      addPremiumPlayer();
-    }
-
     // 🗑️ Vymazať hráča
     if (e.target && e.target.classList && e.target.classList.contains("premium-del-btn")) {
       const p = e.target.getAttribute("data-player");
