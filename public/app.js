@@ -1115,6 +1115,21 @@ document.getElementById("premium-register-confirm")
 });
 
 // ===============================
+// Uprava priezviska bez celeho mena
+// ===============================
+function formatPlayerName(fullName) {
+  if (!fullName) return "";
+
+  const parts = fullName.trim().split(" ");
+  if (parts.length === 1) return fullName;
+
+  const firstName = parts[0];
+  const lastName = parts.slice(1).join(" ");
+
+  return `${lastName} ${firstName.charAt(0)}.`;
+}
+
+// ===============================
 // PREMIUM – Načítanie hráčov
 // ===============================
 async function loadPremiumPlayers() {
@@ -1151,7 +1166,7 @@ async function loadPremiumPlayers() {
     for (const [name, p] of entries) {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${name}</td>
+        <td>${formatPlayerName(name)}</td>
         <td>${p.stake}</td>
         <td>${p.streak}</td>
         <td>${Number(p.balance).toFixed(2)} €</td>
