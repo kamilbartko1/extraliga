@@ -9,6 +9,7 @@ let fullTeamNames = {};
 let NHL_PLAYERS_BY_TEAM = {};
 let PREMIUM_PLAYERS_CACHE = [];
 let PREMIUM_SELECTS_READY = false;
+let premiumPlayersLoaded = false;
 
 const BASE_STAKE = 1;
 const ODDS = 2.5;
@@ -1003,13 +1004,17 @@ async function checkPremiumStatus() {
     const data = await res.json();
 
     // ===== VIP USER =====
-      if (data.ok && data.isVip === true) {
-      if (contentBox) contentBox.style.display = "block";
+if (data.ok && data.isVip === true) {
+  if (contentBox) contentBox.style.display = "block";
 
-      await loadPremiumTeams();      // 🔥 selecty
-      await loadPremiumPlayers();    // 🔥 tabuľka
-      return;
-    }
+  if (!premiumPlayersLoaded) {
+    premiumPlayersLoaded = true;
+    await loadPremiumTeams();
+    await loadPremiumPlayers();
+  }
+
+  return;
+}
 
     // ===== PRIHLÁSENÝ, ALE NIE VIP =====
     if (lockedBox) lockedBox.style.display = "block";
