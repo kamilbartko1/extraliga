@@ -223,12 +223,12 @@ export default async function handler(req, res) {
       });
     }
 
-    // =====================================================
-// 4) ADD_PLAYER  (VIP – OPRAVENÉ teamAbbrev)
+// =====================================================
+// 4) ADD_PLAYER  (VIP – vytvorí aj prázdnu HISTÓRIU)
 // =====================================================
 if (task === "add_player") {
   const name = req.query.name || null;
-  const teamName = req.query.team || null; // ⬅️ PRICHÁDZA CELÝ NÁZOV
+  const teamName = req.query.team || null; // celý názov tímu z frontend selectu
 
   if (!name || !teamName) {
     return res.status(400).json({
@@ -248,20 +248,29 @@ if (task === "add_player") {
   }
 
   const now = todayISO();
-  const key = vipPlayersKey(userId);
+  const playersKey = vipPlayersKey(userId);
+  const historyKey = vipHistoryKey(userId, name);
 
+  // 🔹 Stav hráča (rovnaký koncept ako globál)
   const playerState = normalizePlayer({
     stake: 1,
     streak: 0,
     balance: 0,
     started: now,
     lastUpdate: now,
-    teamAbbrev, // ✅ UŽ JE BOS / EDM / TOR
+    teamAbbrev, // BOS / EDM / COL / ...
   });
 
-  await redis.hset(key, {
+  // 1️⃣ uloženie hráča do VIP_MTG
+  await redis.hset(playersKey, {
     [name]: JSON.stringify(playerState),
   });
+
+  // 2️⃣ 🔥 VYTVORENIE PRÁZDNEJ HISTÓRIE (kľúčový rozdiel!)
+  const exists = await redis.exists(historyKey);
+  if (!exists) {
+    await redis.set(historyKey, JSON.stringify([]));
+  }
 
   return res.json({
     ok: true,
