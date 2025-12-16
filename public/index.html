@@ -255,112 +255,139 @@
 </section>
 
 <!-- ===============================
-     📊 NHLPRO PREMIUM SECTION
+     👑 NHLPRO PREMIUM SECTION
      =============================== -->
-<section id="premium-section" class="section" style="display:none;">
-  <h2>🏒 NHLPRO PREMIUM</h2>
+<section id="premium-section" class="section premium-section" style="display:none;">
 
-  <!-- 🔐 NOT LOGGED -->
-  <div id="premium-not-logged" style="display:none;">
-    <p>Najprv sa prihlás, aby si mohol používať NHLPRO PREMIUM.</p>
+  <!-- 🔹 CENTERED CONTAINER -->
+  <div class="premium-container">
 
-    <div class="premium-auth-box">
-      <input id="premium-email" type="email" placeholder="Email" />
-      <input id="premium-pass" type="password" placeholder="Heslo" />
-      <button id="premium-login-btn">Prihlásiť</button>
-    </div>
-  </div>
+    <!-- ===== HEADER ===== -->
+    <header class="premium-header">
+      <h1>👑 NHLPRO PREMIUM</h1>
+      <p>Martingale Dashboard</p>
+    </header>
 
-  <!-- Registracia -->
-  <button id="premium-signup-btn">Registrovať sa</button>
-  <p id="premium-auth-msg" style="color:#aaa;margin-top:6px;"></p>
+    <!-- 🔐 NOT LOGGED -->
+    <div id="premium-not-logged" class="premium-state" style="display:none;">
+      <p class="premium-info-text">
+        Najprv sa prihlás, aby si mohol používať NHLPRO PREMIUM.
+      </p>
 
-  <!-- 📝 INLINE REGISTRATION -->
-<div id="premium-register-box" class="premium-register-box" style="display:none;">
+      <div class="premium-auth-box">
+        <input id="premium-email" type="email" placeholder="Email" />
+        <input id="premium-pass" type="password" placeholder="Heslo" />
+        <button id="premium-login-btn">Prihlásiť</button>
+      </div>
 
-  <h3>📝 Registrácia do NHLPRO</h3>
+      <button id="premium-signup-btn" class="premium-link-btn">
+        Registrovať sa
+      </button>
 
-  <input id="reg-email" type="email" placeholder="Email" />
-  <input id="reg-pass" type="password" placeholder="Heslo" />
-  <input id="reg-pass2" type="password" placeholder="Zopakuj heslo" />
-
-  <button id="premium-register-confirm">
-    Zaregistrovať sa
-  </button>
-
-  <p id="premium-register-msg" style="margin-top:8px;color:#aaa;"></p>
-
-</div>
-
-  <!-- 🔒 LOGGED BUT NOT VIP -->
-  <div id="premium-locked" style="display:none;">
-    <p>
-      Táto sekcia je dostupná len pre členov
-      <strong>NHLPRO PREMIUM</strong>.
-    </p>
-    <button id="premium-upgrade-btn">
-      Staň sa NHLPRO PREMIUM
-    </button>
-  </div>
-
-  <!-- 👑 PREMIUM CONTENT -->
-  <div id="premium-content" style="display:none;">
-
-    <p>Vitaj v NHLPRO PREMIUM 👑</p>
-
-    <h3>Tvoj vlastný Martingale zoznam hráčov</h3>
-
-    <!-- ➕ Vyber klubu -->
-    <h3>Vyber klub</h3>
-    <div id="premium-teams" class="premium-teams"></div>
-    <!-- VÝBER KLUBU -->
-    <div class="premium-box">
-      <label for="premium-team-select">Vyber klub:</label>
-      <select id="premium-team-select">
-        <option value="">-- vyber klub --</option>
-      </select>
+      <p id="premium-auth-msg" class="premium-msg"></p>
     </div>
 
-  <!-- HRÁČI KLUBU -->
-<div class="premium-box">
-  <label for="premium-player-select">Vyber hráča:</label>
-  <select id="premium-player-select" disabled>
-    <option value="">-- najprv vyber klub --</option>
-  </select>
+    <!-- 📝 REGISTRATION -->
+    <div
+      id="premium-register-box"
+      class="premium-register-box premium-state"
+      style="display:none;"
+    >
+      <h3>📝 Registrácia do NHLPRO</h3>
 
-  <button id="premium-add-player-btn" style="margin-top:10px;">
-    Pridať hráča
-  </button>
-</div>
+      <input id="reg-email" type="email" placeholder="Email" />
+      <input id="reg-pass" type="password" placeholder="Heslo" />
+      <input id="reg-pass2" type="password" placeholder="Zopakuj heslo" />
 
-    <!-- LOGOUT -->
-    <button id="premium-logout-btn" class="logout-btn">
-      Odhlásiť sa
-    </button>
-    
-    <!-- SUMMARY -->
-    <p>
-      <strong>Celkový profit:</strong>
-      <span id="premium-total-profit">0.00</span> €
-    </p>
+      <button id="premium-register-confirm">
+        Zaregistrovať sa
+      </button>
 
-    <!-- TABLE -->
-    <table class="mantingale-table">
-      <thead>
-        <tr>
-          <th>Hráč</th>
-          <th>Stávka</th>
-          <th>Streak</th>
-          <th>Balance</th>
-          <th>Akcie</th>
-        </tr>
-      </thead>
-      <tbody id="premium-players-body"></tbody>
-    </table>
+      <p id="premium-register-msg" class="premium-msg"></p>
+    </div>
 
-    <!-- MSG -->
-    <div id="premium-msg" style="margin-top:10px;color:#aaa;"></div>
+    <!-- 🔒 LOGGED BUT NOT VIP -->
+    <div id="premium-locked" class="premium-state" style="display:none;">
+      <p class="premium-info-text">
+        Táto sekcia je dostupná len pre členov
+        <strong>NHLPRO PREMIUM</strong>.
+      </p>
 
+      <button id="premium-upgrade-btn" class="premium-upgrade-btn">
+        Staň sa NHLPRO PREMIUM
+      </button>
+    </div>
+
+    <!-- 👑 PREMIUM CONTENT -->
+    <div id="premium-content" class="premium-content" style="display:none;">
+
+      <!-- ===== TOP BAR ===== -->
+      <div class="premium-topbar">
+        <span class="premium-welcome">
+          Vitaj v NHLPRO PREMIUM 👑
+        </span>
+
+        <button
+          id="premium-logout-btn"
+          class="premium-logout-btn"
+        >
+          Odhlásiť sa
+        </button>
+      </div>
+
+      <!-- ===== TOOLBAR (TEAM + PLAYER) ===== -->
+      <div class="premium-toolbar">
+
+        <div class="premium-field">
+          <label for="premium-team-select">Vyber klub</label>
+          <select id="premium-team-select">
+            <option value="">-- vyber klub --</option>
+          </select>
+        </div>
+
+        <div class="premium-field">
+          <label for="premium-player-select">Vyber hráča</label>
+          <select id="premium-player-select" disabled>
+            <option value="">-- najprv vyber klub --</option>
+          </select>
+        </div>
+
+        <div class="premium-field premium-field-action">
+          <button id="premium-add-player-btn">
+            Pridať hráča
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ===== SUMMARY ===== -->
+      <div class="premium-summary">
+        <span>Celkový profit</span>
+        <strong>
+          <span id="premium-total-profit">0.00</span> €
+        </strong>
+      </div>
+
+      <!-- ===== TABLE ===== -->
+      <div class="premium-table-wrapper">
+        <table class="mantingale-table premium-table">
+          <thead>
+            <tr>
+              <th>Hráč</th>
+              <th>Stávka</th>
+              <th>Streak</th>
+              <th>Balance</th>
+              <th>Akcie</th>
+            </tr>
+          </thead>
+          <tbody id="premium-players-body"></tbody>
+        </table>
+      </div>
+
+      <!-- ===== MESSAGE ===== -->
+      <div id="premium-msg" class="premium-msg"></div>
+
+    </div>
   </div>
 </section>
 

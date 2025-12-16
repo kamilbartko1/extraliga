@@ -3919,6 +3919,301 @@ body {
   cursor: pointer;
 }
 
+/* ===============================
+   👑 NHLPRO PREMIUM – CORE
+   =============================== */
+
+.premium-section {
+  background: radial-gradient(
+    circle at top,
+    #0b1a2a,
+    #02070d 70%
+  );
+  padding: 60px 16px;
+}
+
+/* ===============================
+   CENTER CONTAINER
+   =============================== */
+
+.premium-container {
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: 36px 32px 42px;
+  background: linear-gradient(
+    180deg,
+    rgba(12, 24, 38, 0.96),
+    rgba(6, 12, 20, 0.98)
+  );
+  border-radius: 20px;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.75),
+    inset 0 0 0 1px rgba(0,234,255,0.08);
+}
+
+/* ===============================
+   HEADER
+   =============================== */
+
+.premium-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.premium-header h1 {
+  font-family: 'Orbitron', 'Inter', sans-serif;
+  font-size: 1.9rem;
+  letter-spacing: 0.12em;
+  color: #00eaff;
+  margin-bottom: 6px;
+}
+
+.premium-header p {
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  color: #8fb6d6;
+  text-transform: uppercase;
+}
+
+/* ===============================
+   STATES (login / locked / register)
+   =============================== */
+
+.premium-state {
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.premium-info-text {
+  color: #c7d9e8;
+  margin-bottom: 18px;
+  font-size: 0.95rem;
+}
+
+/* ===============================
+   AUTH BOX
+   =============================== */
+
+.premium-auth-box,
+.premium-register-box {
+  background: rgba(6, 14, 22, 0.85);
+  padding: 22px;
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+.premium-auth-box input,
+.premium-register-box input,
+.premium-toolbar select {
+  width: 100%;
+  background: #07131f;
+  border: 1px solid #1f3b4d;
+  color: #e6f1ff;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.premium-auth-box input:focus,
+.premium-register-box input:focus,
+.premium-toolbar select:focus {
+  outline: none;
+  border-color: #00eaff;
+  box-shadow: 0 0 0 2px rgba(0,234,255,0.15);
+}
+
+/* ===============================
+   BUTTONS – PREMIUM STYLE
+   =============================== */
+
+.premium-auth-box button,
+.premium-register-box button,
+#premium-add-player-btn,
+.premium-upgrade-btn {
+  background: linear-gradient(135deg, #00eaff, #0077ff);
+  border: none;
+  color: #001018;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.premium-auth-box button:hover,
+.premium-register-box button:hover,
+#premium-add-player-btn:hover,
+.premium-upgrade-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0,234,255,0.35);
+}
+
+.premium-link-btn {
+  background: none;
+  border: none;
+  color: #7fcfff;
+  margin-top: 14px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* ===============================
+   TOP BAR
+   =============================== */
+
+.premium-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 26px;
+}
+
+.premium-welcome {
+  color: #bfeaff;
+  font-size: 0.95rem;
+}
+
+.premium-logout-btn {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #9bbbd6;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.premium-logout-btn:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+/* ===============================
+   TOOLBAR
+   =============================== */
+
+.premium-toolbar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.premium-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+}
+
+.premium-field label {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: #7fa9c9;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.premium-field-action {
+  justify-content: flex-end;
+}
+
+/* ===============================
+   SUMMARY
+   =============================== */
+
+.premium-summary {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.premium-summary span {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #7fa9c9;
+}
+
+.premium-summary strong {
+  font-size: 1.6rem;
+  color: #00ff9c;
+  font-weight: 600;
+}
+
+/* ===============================
+   TABLE
+   =============================== */
+
+.premium-table-wrapper {
+  overflow-x: auto;
+}
+
+.premium-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.premium-table th {
+  padding: 12px;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8fb6d6;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.premium-table td {
+  padding: 14px 12px;
+  font-size: 0.9rem;
+  color: #e6f1ff;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.premium-table tr:hover {
+  background: rgba(0,234,255,0.06);
+}
+
+/* ===============================
+   MESSAGES
+   =============================== */
+
+.premium-msg {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #9bbbd6;
+}
+
+/* ===============================
+   MOBILE
+   =============================== */
+
+@media (max-width: 768px) {
+  .premium-container {
+    padding: 26px 18px;
+  }
+
+  .premium-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .premium-summary strong {
+    font-size: 1.3rem;
+  }
+
+  .premium-topbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .premium-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
