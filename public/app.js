@@ -641,6 +641,15 @@ async function loadMantingal() {
   });
 }
 
+// ===================================
+// VIP – kliknutie na detail hráča
+// ===================================
+document.querySelectorAll(".vip-mtg-detail-btn").forEach((btn) => {
+  btn.addEventListener("click", () =>
+    showVipMantingalDetail(btn.dataset.player)
+  );
+});
+
 async function showMantingalDetail(player) {
   const res = await fetch(`/api/mantingal?player=${encodeURIComponent(player)}`);
   const data = await res.json();
@@ -1152,6 +1161,46 @@ async function loadPremiumPlayers() {
     console.error(err);
     if (msg) msg.textContent = "Chyba pri načítaní hráčov.";
   }
+}
+
+// ===================================
+// VIP – DETAIL MANTINGAL
+// ===================================
+async function showVipMantingalDetail(player) {
+  const token = localStorage.getItem("sb-access-token");
+  if (!token) return alert("Nie si prihlásený");
+
+  const res = await fetch(
+    `/api/vip?task=history&player=${encodeURIComponent(player)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const data = await res.json();
+  if (!data.ok) return alert("Nepodarilo sa načítať históriu");
+
+  document.getElementById("mtg-player-name").textContent = player;
+
+  const tbody = document.getElementById("mtg-history-body");
+  tbody.innerHTML = "";
+
+  data.history.forEach((h) => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${h.date}</td>
+        <td>${h.gameId || "-"}</td>
+        <td>${h.goals === null ? "-" : h.goals}</td>
+        <td>${h.result}</td>
+        <td>${h.profitChange}</td>
+        <td>${h.balanceAfter}</td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("mantingale-detail").classList.remove("hidden");
 }
 
 // ===============================
