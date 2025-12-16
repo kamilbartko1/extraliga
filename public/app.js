@@ -1249,6 +1249,49 @@ function renderPremiumPlayersForTeam(team) {
   playerSelect.disabled = false;
 }
 
+// ===============================
+// PREMIUM – Pridanie hráča
+// ===============================
+async function addPremiumPlayer() {
+  console.log("🔥 addPremiumPlayer CLICKED");
+
+  const token = localStorage.getItem("sb-access-token");
+  const team = document.getElementById("premium-team-select")?.value;
+  const player = document.getElementById("premium-player-select")?.value;
+  const msg = document.getElementById("premium-msg");
+
+  if (!token || !team || !player) {
+    if (msg) msg.textContent = "Vyber klub aj hráča.";
+    return;
+  }
+
+  if (msg) msg.textContent = "⏳ Pridávam hráča...";
+
+  try {
+    const res = await fetch(
+      `/api/vip?task=add_player&name=${encodeURIComponent(player)}&team=${encodeURIComponent(team)}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    const data = await res.json();
+    console.log("📦 add_player response:", data);
+
+    if (!data.ok) {
+      if (msg) msg.textContent = data.error || "Chyba pri pridávaní.";
+      return;
+    }
+
+    if (msg) msg.textContent = `✅ ${player} pridaný`;
+    await loadPremiumPlayers();
+
+  } catch (err) {
+    console.error(err);
+    if (msg) msg.textContent = "❌ Chyba servera";
+  }
+}
+
 // === Listener na vyber klubu a hraca ===
 document.addEventListener("change", (e) => {
   if (e.target?.id === "premium-team-select") {
