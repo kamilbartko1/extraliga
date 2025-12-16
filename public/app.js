@@ -642,13 +642,14 @@ async function loadMantingal() {
   });
 }
 
+/// ===================================
+// VIP – delegované kliknutie na Detail
 // ===================================
-// VIP – kliknutie na detail hráča
-// ===================================
-document.querySelectorAll(".vip-mtg-detail-btn").forEach((btn) => {
-  btn.addEventListener("click", () =>
-    showVipMantingalDetail(btn.dataset.player)
-  );
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("vip-mtg-detail-btn")) {
+    console.log("👑 VIP DETAIL CLICK:", e.target.dataset.player);
+    showVipMantingalDetail(e.target.dataset.player);
+  }
 });
 
 async function showMantingalDetail(player) {
