@@ -4339,6 +4339,45 @@ body {
   font-size: 0.85rem;
 }
 
+/* ===============================
+   TABLE – MORE COMPACT
+   =============================== */
+
+/* menšia minimálna šírka tabuľky */
+.premium-table {
+  min-width: 520px;   /* bolo 620px – teraz kompaktnejšie */
+}
+
+/* menej „vzduchu“ v bunkách */
+.premium-table th,
+.premium-table td {
+  padding: 10px 8px;   /* menej ako default */
+  font-size: 0.82rem;
+}
+
+/* meno hráča – bližšie k ostatným stĺpcom */
+.premium-table td:first-child {
+  max-width: 130px;
+}
+
+/* ===============================
+   ACTIONS – CLOSER TO DATA
+   =============================== */
+
+.premium-actions {
+  min-width: 100px;      /* menšia šírka */
+  gap: 4px;              /* menší rozostup medzi tlačidlami */
+}
+
+/* ešte o kúsok užšie tlačidlá */
+.btn-detail,
+.btn-delete {
+  width: 48px;
+  padding: 5px 0;
+  font-size: 0.7rem;
+  border-radius: 7px;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
