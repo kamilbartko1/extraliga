@@ -4269,77 +4269,62 @@ body {
 }
 
 /* ===============================
-   MOBILE UX – VERTICAL & SAFE
+   PREMIUM ACTIONS – CLEAN & PRO
    =============================== */
 
+.premium-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* tlačidlá vpravo, nie cez celú šírku */
+  gap: 8px;
+  min-width: 90px;
+}
+
+/* DETAIL – primary, ale striedmy */
+.btn-detail {
+  width: 90px;
+  padding: 8px 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #00eaff, #0077ff);
+  color: #001018;
+  border: none;
+  text-align: center;
+}
+
+/* DELETE – secondary, tichý danger */
+.btn-delete {
+  width: 90px;
+  padding: 7px 0;
+  font-size: 0.75rem;
+  border-radius: 10px;
+  background: none;
+  border: 1px solid rgba(255, 90, 90, 0.4);
+  color: #ff6b6b;
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* hover jemne, žiadny cirkus */
+.btn-detail:hover {
+  filter: brightness(1.05);
+}
+
+.btn-delete:hover {
+  background: rgba(255, 90, 90, 0.1);
+  opacity: 1;
+}
+
+/* MOBILE – ešte kompaktnejšie */
 @media (max-width: 768px) {
   .premium-actions {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
+    min-width: 80px;
   }
 
   .btn-detail,
   .btn-delete {
-    width: 100%;
-    text-align: center;
-    padding: 12px 0;
-    font-size: 0.9rem;
-  }
-
-  /* delete ešte menej dominantné */
-  .btn-delete {
-    opacity: 0.75;
-  }
-}
-
-/* ===============================
-   PREMIUM TABLE – PLAYER NAME
-   =============================== */
-
-.premium-table td:first-child {
-  max-width: 140px;              /* kontrola šírky */
-  white-space: normal;
-  word-break: keep-all;
-  overflow-wrap: break-word;
-  line-height: 1.25;
-}
-
-/* ===============================
-   PREMIUM TABLE – PLAYER NAME FIX
-   =============================== */
-
-.premium-table td:first-child {
-  max-width: 140px;
-  white-space: normal;        /* normálne zalamovanie slov */
-  word-break: normal;         /* ŽIADNE lámanie písmen */
-  overflow-wrap: normal;
-  line-height: 1.25;
-  font-weight: 500;
-  color: #eaf6ff;
-}
-
-/* ===============================
-   DELETE BUTTON – MOBILE FIX
-   =============================== */
-
-@media (max-width: 768px) {
-  .premium-actions {
-    width: 100%;
-  }
-
-  .btn-detail,
-  .btn-delete {
-    width: 100%;
-    min-width: 100%;
-    box-sizing: border-box;
-    text-align: center;
-  }
-
-  .btn-delete {
-    padding: 12px 0;
-    font-size: 0.85rem;
-    letter-spacing: 0.04em;
+    width: 80px;
   }
 }
 
