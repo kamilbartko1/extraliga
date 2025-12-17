@@ -67,6 +67,14 @@ const TEAM_NAME_TO_ABBREV = {
 // Pomocné funkcie
 // ===============================
 
+function formatShortName(fullName) {
+  const parts = fullName.trim().split(" ");
+  if (parts.length < 2) return fullName;
+  const first = parts[0];
+  const last = parts.slice(1).join(" ");
+  return `${first[0].toUpperCase()}. ${last}`;
+}
+
 function safeParse(raw) {
   try {
     if (!raw) return {};
@@ -227,10 +235,10 @@ export default async function handler(req, res) {
 // 4) ADD_PLAYER  (VIP – vytvorí aj prázdnu HISTÓRIU)
 // =====================================================
 if (task === "add_player") {
-  const name = req.query.name || null;
-  const teamName = req.query.team || null; // celý názov tímu z frontend selectu
+  const fullName = req.query.name || null;
+  const teamName = req.query.team || null;
 
-  if (!name || !teamName) {
+  if (!fullName || !teamName) {
     return res.status(400).json({
       ok: false,
       error: "Missing name or team (?name=...&team=...)",
@@ -239,7 +247,6 @@ if (task === "add_player") {
 
   // 🔥 PREKLAD CELÉHO NÁZVU → NHL SKRATKA
   const teamAbbrev = TEAM_NAME_TO_ABBREV[teamName];
-
   if (!teamAbbrev) {
     return res.status(400).json({
       ok: false,
@@ -247,9 +254,12 @@ if (task === "add_player") {
     });
   }
 
+  // ✅ SKRÁTENÝ TVAR MENA – IDENTICKÝ AKO GLOBÁL
+  const shortName = formatShortName(fullName);
+
   const now = todayISO();
   const playersKey = vipPlayersKey(userId);
-  const historyKey = vipHistoryKey(userId, name);
+  const historyKey = vipHistoryKey(userId, shortName);
 
   // 🔹 Stav hráča (rovnaký koncept ako globál)
   const playerState = normalizePlayer({
@@ -258,15 +268,15 @@ if (task === "add_player") {
     balance: 0,
     started: now,
     lastUpdate: now,
-    teamAbbrev, // BOS / EDM / COL / ...
+    teamAbbrev,
   });
 
   // 1️⃣ uloženie hráča do VIP_MTG
   await redis.hset(playersKey, {
-    [name]: JSON.stringify(playerState),
+    [shortName]: JSON.stringify(playerState),
   });
 
-  // 2️⃣ 🔥 VYTVORENIE PRÁZDNEJ HISTÓRIE (kľúčový rozdiel!)
+  // 2️⃣ 🔥 vytvorenie prázdnej histórie (ako v globále)
   const exists = await redis.exists(historyKey);
   if (!exists) {
     await redis.set(historyKey, JSON.stringify([]));
@@ -275,7 +285,7 @@ if (task === "add_player") {
   return res.json({
     ok: true,
     userId,
-    player: name,
+    player: shortName,
     teamAbbrev,
   });
 }
