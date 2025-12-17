@@ -93,18 +93,17 @@ async function preloadMatchesData() {
   }
 }
 
-// === DOMOVSKÁ STRÁNKA – SAFE RENDER ===
+// === DOMOVSKÁ STRÁNKA – RÝCHLE NAČÍTANIE, AI SA DOLOŽÍ NESKÔR ===
 async function displayHome() {
-  const container = document.getElementById("home-dynamic");
-  if (!container) return;
+  const home = document.getElementById("home-section");
+  if (!home) return;
 
-  container.innerHTML = `
-    <p style="text-align:center;color:#00eaff;">
-      ⏳ Načítavam domovskú stránku...
-    </p>
+  home.innerHTML = `
+    <p style="text-align:center;color:#00eaff;">⏳ Načítavam domovskú stránku...</p>
   `;
 
   try {
+    // 🔥 1️⃣ RÝCHLE API – len zápasy, štatistiky a AI história
     const [homeResp, statsResp, aiGetResp] = await Promise.all([
       fetch("/api/home", { cache: "no-store" }),
       fetch("/api/statistics", { cache: "no-store" }),
@@ -113,87 +112,123 @@ async function displayHome() {
 
     const homeData = await homeResp.json();
     const statsData = statsResp.ok ? await statsResp.json() : {};
+
+    // AI história (bez dnešného live výpočtu)
     const aiData = aiGetResp.ok
       ? await aiGetResp.json()
       : { history: [], hits: 0, total: 0, successRate: 0 };
 
     const history = (aiData.history || []).filter(h => h.result !== "pending");
 
+    // 🔝 Štatistiky hráčov
     const topGoal = statsData?.topGoals?.[0] || {};
     const topPoints = statsData?.topPoints?.[0] || {};
     const topShots = statsData?.topShots?.[0] || {};
 
-    container.innerHTML = `
+    // 🔥 2️⃣ VŠETKO OKREM AI TIPU SA RENDERUJE HNEĎ
+    let html = `
       <div class="home-container">
 
-        <!-- ZÁPASY -->
+        <!-- 🏒 Zápasy -->
         <div class="home-panel matches-panel" onclick="showSection('matches-section')">
           <h3>🏒 Dnešné zápasy NHL</h3>
           ${
             homeData.matchesToday.length === 0
               ? `<p style="color:#aaa;">Žiadne zápasy dnes</p>`
-              : homeData.matchesToday.map(m => `
-                <div class="match-row">
-                  <img src="${m.homeLogo}" class="team-logo">
-                  <span>${m.homeName}</span>
-                  <span style="color:#00eaff;">vs</span>
-                  <span>${m.awayName}</span>
-                  <img src="${m.awayLogo}" class="team-logo">
-                  <div class="time">🕒 ${m.startTime}</div>
-                </div>
-              `).join("")
+              : homeData.matchesToday.map(
+                  (m) => `
+              <div class="match-row">
+                <img src="${m.homeLogo}" class="team-logo">
+                <span>${m.homeName}</span>
+                <span style="color:#00eaff;">vs</span>
+                <span>${m.awayName}</span>
+                <img src="${m.awayLogo}" class="team-logo">
+                <div class="time">🕒 ${m.startTime}</div>
+              </div>
+            `
+                ).join("")
           }
         </div>
 
-        <!-- AI -->
+        <!-- 🎯 AI STRELEC DŇA – NA ZAČIATKU LEN LOADING -->
         <div class="home-panel ai-panel">
           <h3>🎯 AI Strelci Dňa</h3>
 
-          <div id="ai-today-loading">
-            <p style="color:#aaa;">⏳ Prebieha AI výpočet...</p>
+          <div class="ai-today-box" id="ai-today-loading">
+            <p style="color:#aaa;">⏳ Prebieha AI výpočet strelca...</p>
           </div>
 
-          <h4>📅 História AI tipov</h4>
-          <p>Úspešnosť: <b>${aiData.successRate}%</b></p>
+          <hr style="border:0;border-bottom:1px solid #444;margin:12px 0;">
+
+          <h4 style="margin:0 0 10px 0;">📅 História AI tipov</h4>
+
+          <div class="ai-success-box" style="margin-bottom:10px;color:#ccc;">
+            Úspešnosť AI: 
+            <b style="color:#ffcc00;">${aiData.successRate}%</b><br>
+            (<span style="color:#00ff77;">${aiData.hits} správnych</span> z ${aiData.total})
+          </div>
 
           <div class="ai-history-list">
             ${
-              history.length
-                ? history.map(h => `
-                  <div class="ai-history-row">
-                    <span>${h.date}</span>
-                    <span>${h.player}</span>
-                    <span style="color:${h.result === "hit" ? "#00ff77" : "#ff4444"};">
-                      ${h.result === "hit" ? "✔" : "✘"}
-                    </span>
-                  </div>
-                `).join("")
-                : `<p style="color:#777;">Žiadne vyhodnotené tipy</p>`
+              history.length === 0
+                ? `<p style="color:#777;">Žiadne vyhodnotené tipy</p>`
+                : history.map(h => `
+              <div class="ai-history-row">
+                <span class="ai-date">${h.date}</span>
+                <span class="ai-player">${h.player}</span>
+                <span class="ai-result" style="color:${h.result === "hit" ? "#00ff77" : "#ff4444"};">
+                  ${h.result === "hit" ? "✔" : "✘"}
+                </span>
+              </div>
+            `).join("")
             }
           </div>
         </div>
 
-        <!-- ŠTATISTIKY -->
+        <!-- 📊 TOP ŠTATISTIKY -->
         <div class="home-panel stats-panel" onclick="showSection('stats-section')">
           <h3>📊 Top štatistiky hráčov</h3>
 
           <div class="top-player">
-            <b>${topGoal.name || "-"}</b> – 🥅 ${topGoal.goals || 0}
+            <img src="${topGoal.headshot || "/icons/nhl_placeholder.svg"}">
+            <div><b>${topGoal.name || "-"}</b><br>🥅 ${topGoal.goals || 0} gólov</div>
+            <span class="stat-label">Top Góly</span>
           </div>
 
           <div class="top-player">
-            <b>${topPoints.name || "-"}</b> – ⚡ ${topPoints.points || 0}
+            <img src="${(statsData?.topAssists?.[0]?.headshot) || "/icons/nhl_placeholder.svg"}">
+            <div><b>${statsData?.topAssists?.[0]?.name || "-"}</b><br>
+            🅰️ ${statsData?.topAssists?.[0]?.assists || 0} asistencií</div>
+            <span class="stat-label">Top Asistencie</span>
           </div>
 
           <div class="top-player">
-            <b>${topShots.name || "-"}</b> – 🎯 ${topShots.shots || 0}
+            <img src="${topPoints.headshot || "/icons/nhl_placeholder.svg"}">
+            <div><b>${topPoints.name || "-"}</b><br>⚡ ${topPoints.points || 0} bodov</div>
+            <span class="stat-label">Top Body</span>
+          </div>
+
+          <div class="top-player">
+            <img src="${(statsData?.topPowerPlayGoals?.[0]?.headshot) || "/icons/nhl_placeholder.svg"}">
+            <div><b>${statsData?.topPowerPlayGoals?.[0]?.name || "-"}</b><br>
+            🔌 ${statsData?.topPowerPlayGoals?.[0]?.powerPlayGoals || 0} PP gólov</div>
+            <span class="stat-label">Top PP Góly</span>
+          </div>
+
+          <div class="top-player">
+            <img src="${topShots.headshot || "/icons/nhl_placeholder.svg"}">
+            <div><b>${topShots.name || "-"}</b><br>🎯 ${topShots.shots || 0} striel</div>
+            <span class="stat-label">Top Strely</span>
           </div>
         </div>
-
       </div>
+
+      <footer class="home-footer">© 2025 NHLPRO.sk | AI hokejové predikcie</footer>
     `;
 
-    // AI scorer – lazy load
+    home.innerHTML = html;
+
+    // 🔥 3️⃣ AI STRELEC SA DOLOŽÍ EXTRA (NEBLOKUJE STRÁNKU)
     setTimeout(async () => {
       try {
         const resp = await fetch("/api/ai?task=scorer", { cache: "no-store" });
@@ -201,19 +236,33 @@ async function displayHome() {
 
         const data = await resp.json();
         const ai = data.aiScorerTip;
-        const box = document.getElementById("ai-today-loading");
 
-        if (box && ai) {
-          box.innerHTML = `
-            <p><b>${ai.player}</b> (${ai.team})</p>
-            <p>🧠 Pravdepodobnosť: <b>${ai.probability}%</b></p>
-          `;
+        const box = document.getElementById("ai-today-loading");
+        if (!box) return;
+
+        if (!ai) {
+          box.innerHTML = `<p style="color:#aaa;">AI strelec sa nepodarilo vypočítať.</p>`;
+          return;
         }
-      } catch {}
+
+        box.innerHTML = `
+          <img src="${ai.headshot}" class="player-headshot">
+          <div class="ai-scorer-info">
+            <p><b>${ai.player}</b> (${ai.team})</p>
+            <p style="color:#00eaff;">${ai.match}</p>
+            <p>🥅 Góly: <b>${ai.goals}</b> | 🎯 ${ai.shots} | ⚡ PP ${ai.powerPlayGoals}</p>
+            <p>🧠 Pravdepodobnosť: 
+              <b style="color:#ffcc00;">${ai.probability}%</b>
+            </p>
+          </div>
+        `;
+      } catch (err) {
+        console.warn("AI scorer load failed:", err.message);
+      }
     }, 300);
 
   } catch (err) {
-    container.innerHTML = `<p style="color:red;">❌ ${err.message}</p>`;
+    home.innerHTML = `<p style="color:red;text-align:center;">❌ Chyba: ${err.message}</p>`;
   }
 }
 
