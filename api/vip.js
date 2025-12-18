@@ -96,6 +96,7 @@ function normalizePlayer(obj) {
     stake: Number(obj.stake ?? 1),
     streak: Number(obj.streak ?? 0),
     balance: Number(obj.balance ?? 0),
+    odds: Number(obj.odds ?? 2.2),   // 🔥 POVINNÉ
     started: obj.started || null,
     lastUpdate: obj.lastUpdate || null,
     teamAbbrev: obj.teamAbbrev || obj.team || null,
@@ -237,16 +238,23 @@ export default async function handler(req, res) {
 if (task === "add_player") {
   const fullName = req.query.name || null;
   const teamName = req.query.team || null;
-  const oddsRaw  = req.query.odds || null;   // ⬅️ NOVÉ (voliteľné)
+  const oddsRaw = req.query.odds || null;
 
   if (!fullName || !teamName) {
     return res.status(400).json({
       ok: false,
-      error: "Missing name or team (?name=...&team=...)",
+      error: "Missing name or team",
     });
   }
 
-  // 🔥 PREKLAD CELÉHO NÁZVU → NHL SKRATKA
+  const odds = Number(oddsRaw);
+  if (!odds || odds <= 1) {
+    return res.status(400).json({
+      ok: false,
+      error: "Invalid or missing odds",
+    });
+  }
+
   const teamAbbrev = TEAM_NAME_TO_ABBREV[teamName];
   if (!teamAbbrev) {
     return res.status(400).json({
@@ -255,50 +263,35 @@ if (task === "add_player") {
     });
   }
 
-  // ✅ SKRÁTENÝ TVAR MENA – IDENTICKÝ AKO GLOBÁL
   const shortName = formatShortName(fullName);
-
-  // 🎯 ODDS – bezpečne
-  const odds = oddsRaw !== null ? Number(oddsRaw) : null;
-  if (odds !== null && (!Number.isFinite(odds) || odds <= 1)) {
-    return res.status(400).json({
-      ok: false,
-      error: "Invalid odds value",
-    });
-  }
-
   const now = todayISO();
+
   const playersKey = vipPlayersKey(userId);
   const historyKey = vipHistoryKey(userId, shortName);
 
-  // 🔹 Stav hráča (rozšírený o odds)
-  const playerState = normalizePlayer({
+  // ✅ ULOŽÍME AJ ODDS
+  const playerState = {
     stake: 1,
     streak: 0,
     balance: 0,
+    odds: odds,              // 🔥 TU BOL PROBLÉM
     started: now,
     lastUpdate: now,
     teamAbbrev,
-    odds, // ⬅️ NOVÉ (môže byť null)
-  });
+  };
 
-  // 1️⃣ uloženie hráča do VIP_MTG
   await redis.hset(playersKey, {
     [shortName]: JSON.stringify(playerState),
   });
 
-  // 2️⃣ 🔥 vytvorenie prázdnej histórie (ako v globále)
-  const exists = await redis.exists(historyKey);
-  if (!exists) {
+  if (!(await redis.exists(historyKey))) {
     await redis.set(historyKey, JSON.stringify([]));
   }
 
   return res.json({
     ok: true,
-    userId,
     player: shortName,
-    teamAbbrev,
-    odds, // ⬅️ vrátime späť pre kontrolu
+    odds,
   });
 }
 

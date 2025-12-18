@@ -1178,6 +1178,7 @@ async function loadPremiumPlayers() {
         <td>${p.stake}</td>
         <td>${p.streak}</td>
         <td>${Number(p.balance).toFixed(2)} €</td>
+        <td>${p.odds?.toFixed(2) ?? "-"}</td>
         <td>${odds}</td>
 
         <td class="premium-actions">

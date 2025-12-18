@@ -76,9 +76,10 @@ function normalizePlayer(obj) {
     stake: Number(obj.stake ?? 1),
     streak: Number(obj.streak ?? 0),
     balance: Number(obj.balance ?? 0),
+    odds: Number(obj.odds ?? 2.2),   // 🔥 POVINNÉ
     started: obj.started || null,
     lastUpdate: obj.lastUpdate || null,
-    teamAbbrev: obj.teamAbbrev || obj.team || null, // dôležité!
+    teamAbbrev: obj.teamAbbrev || obj.team || null,
   };
 }
 
@@ -267,7 +268,7 @@ async function updateMantingaleForKey(playersKey, historyPrefix) {
 
     // ---------- HIT
     if (goals > 0) {
-      const profit = Number((state.stake * 1.2).toFixed(2));
+      const profit = Number((state.stake * state.odds).toFixed(2));
       state.balance = Number((state.balance + profit).toFixed(2));
 
       const entry = {
