@@ -660,7 +660,7 @@ async function showMantingalDetail(player) {
   document.getElementById("mtg-player-name").textContent = player;
 
   // ===================================
-  // HISTÓRIA HRÁČA
+  // HISTÓRIA HRÁČA – GLOBAL
   // ===================================
   const tbody = document.getElementById("mtg-history-body");
   tbody.innerHTML = "";
@@ -678,11 +678,13 @@ async function showMantingalDetail(player) {
     `;
   });
 
-  document.getElementById("mantingale-detail").classList.remove("hidden");
-}
+const detailBox = document.getElementById("mantingale-detail");
+detailBox.classList.remove("hidden");
 
-document.getElementById("mtg-back-btn").addEventListener("click", () => {
-  document.getElementById("mantingale-detail").classList.add("hidden");
+// ✅ AUTO SCROLL NA DETAIL
+detailBox.scrollIntoView({
+  behavior: "smooth",
+  block: "start"
 });
 
 loadMantingal();
@@ -1236,9 +1238,14 @@ async function showVipMantingalDetail(player) {
     `;
   });
 
-  document
-    .getElementById("vip-mantingale-detail")
-    .classList.remove("hidden");
+  const detailBox = document.getElementById("vip-mantingale-detail");
+  detailBox.classList.remove("hidden");
+
+  // 👑 AUTO SCROLL NA VIP DETAIL
+  detailBox.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
 }
 
 // ===============================
