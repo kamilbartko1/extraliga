@@ -1197,11 +1197,11 @@ async function loadPremiumPlayers() {
 }
 
 // ===================================
-// VIP – DETAIL MANTINGAL
+// 👑 VIP – HISTÓRIA HRÁČA
 // ===================================
 async function showVipMantingalDetail(player) {
   const token = localStorage.getItem("sb-access-token");
-  if (!token) return alert("Nie si prihlásený");
+  if (!token) return;
 
   const res = await fetch(
     `/api/vip?task=history&player=${encodeURIComponent(player)}`,
@@ -1213,11 +1213,14 @@ async function showVipMantingalDetail(player) {
   );
 
   const data = await res.json();
-  if (!data.ok) return alert("Nepodarilo sa načítať históriu");
+  if (!data.ok) {
+    alert("Nepodarilo sa načítať históriu");
+    return;
+  }
 
-  document.getElementById("mtg-player-name").textContent = player;
+  document.getElementById("vip-mtg-player-name").textContent = player;
 
-  const tbody = document.getElementById("mtg-history-body");
+  const tbody = document.getElementById("vip-mtg-history-body");
   tbody.innerHTML = "";
 
   data.history.forEach((h) => {
@@ -1233,8 +1236,21 @@ async function showVipMantingalDetail(player) {
     `;
   });
 
-  document.getElementById("mantingale-detail").classList.remove("hidden");
+  document
+    .getElementById("vip-mantingale-detail")
+    .classList.remove("hidden");
 }
+
+// ===============================
+// Back Button vip
+// ===============================
+document
+  .getElementById("vip-mtg-back-btn")
+  ?.addEventListener("click", () => {
+    document
+      .getElementById("vip-mantingale-detail")
+      .classList.add("hidden");
+  });
 
 // ===============================
 // PREMIUM – Vymazať hráča
