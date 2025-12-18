@@ -1136,7 +1136,7 @@ function formatPlayerName(fullName) {
 }
 
 // ===============================
-// PREMIUM – Načítanie hráčov
+// PREMIUM – Načítanie hráčov (s odds)
 // ===============================
 async function loadPremiumPlayers() {
   const token = localStorage.getItem("sb-access-token");
@@ -1170,12 +1170,15 @@ async function loadPremiumPlayers() {
     }
 
     for (const [name, p] of entries) {
+      const odds = Number(p.odds || 2.2).toFixed(2); // fallback
+
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${formatPlayerName(name)}</td>
         <td>${p.stake}</td>
         <td>${p.streak}</td>
         <td>${Number(p.balance).toFixed(2)} €</td>
+        <td>${odds}</td>
 
         <td class="premium-actions">
           <button
@@ -1283,7 +1286,7 @@ async function deletePremiumPlayer(encodedName) {
 }
 
 // ===============================
-// PREMIUM – Načítanie tímov + hráčov z JSON
+// PREMIUM – Načítanie tímov + hráčov z JSON (s odds)
 // ===============================
 async function loadPremiumTeams() {
   const teamSelect = document.getElementById("premium-team-select");
@@ -1301,12 +1304,14 @@ async function loadPremiumTeams() {
 
     const raw = await res.json();
 
+    // 🔥 cache vrátane odds
     PREMIUM_PLAYERS_CACHE = raw.map(p => ({
       id: p.id,
       name: `${p.firstName} ${p.lastName}`,
       team: p.team,
       position: p.position,
-      number: p.number
+      number: p.number,
+      odds: Number(p.odds) || 2.2   // ⬅️ dôležité
     }));
 
     const teams = [...new Set(PREMIUM_PLAYERS_CACHE.map(p => p.team))].sort();
@@ -1317,6 +1322,26 @@ async function loadPremiumTeams() {
       opt.textContent = team;
       teamSelect.appendChild(opt);
     });
+
+    // 🔽 zmena tímu → naplň hráčov
+    teamSelect.onchange = () => {
+      const team = teamSelect.value;
+
+      playerSelect.innerHTML = `<option value="">-- vyber hráča --</option>`;
+      playerSelect.disabled = !team;
+
+      if (!team) return;
+
+      PREMIUM_PLAYERS_CACHE
+        .filter(p => p.team === team)
+        .forEach(p => {
+          const opt = document.createElement("option");
+          opt.value = p.name;
+          opt.textContent = `${p.name} (${p.odds})`;
+          opt.dataset.odds = p.odds;   // ✅ TU SA TO DEJE
+          playerSelect.appendChild(opt);
+        });
+    };
 
   } catch (err) {
     console.error("❌ loadPremiumTeams error:", err);
@@ -1361,18 +1386,31 @@ function renderPremiumPlayersForTeam(team) {
 }
 
 // ===============================
-// PREMIUM – Pridanie hráča
+// PREMIUM – Pridanie hráča (s ODDS)
 // ===============================
 async function addPremiumPlayer() {
   console.log("🔥 addPremiumPlayer CLICKED");
 
   const token = localStorage.getItem("sb-access-token");
-  const team = document.getElementById("premium-team-select")?.value;
-  const player = document.getElementById("premium-player-select")?.value;
+  const teamSelect = document.getElementById("premium-team-select");
+  const playerSelect = document.getElementById("premium-player-select");
   const msg = document.getElementById("premium-msg");
 
-  if (!token || !team || !player) {
+  if (!token || !teamSelect?.value || !playerSelect?.value) {
     if (msg) msg.textContent = "Vyber klub aj hráča.";
+    return;
+  }
+
+  const team = teamSelect.value;
+  const player = playerSelect.value;
+
+  // 🔥 ODDS Z <option data-odds="">
+  const selectedOption =
+    playerSelect.options[playerSelect.selectedIndex];
+  const odds = selectedOption?.dataset?.odds;
+
+  if (!odds) {
+    if (msg) msg.textContent = "❌ Hráč nemá nastavený kurz (odds).";
     return;
   }
 
@@ -1380,9 +1418,14 @@ async function addPremiumPlayer() {
 
   try {
     const res = await fetch(
-      `/api/vip?task=add_player&name=${encodeURIComponent(player)}&team=${encodeURIComponent(team)}`,
+      `/api/vip?task=add_player` +
+        `&name=${encodeURIComponent(player)}` +
+        `&team=${encodeURIComponent(team)}` +
+        `&odds=${encodeURIComponent(odds)}`,
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
@@ -1394,7 +1437,7 @@ async function addPremiumPlayer() {
       return;
     }
 
-    if (msg) msg.textContent = `✅ ${player} pridaný`;
+    if (msg) msg.textContent = `✅ ${player} pridaný (kurz ${odds})`;
     await loadPremiumPlayers();
 
   } catch (err) {
