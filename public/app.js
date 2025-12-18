@@ -668,18 +668,20 @@ async function showMantingalDetail(player) {
   const tbody = document.getElementById("mtg-history-body");
   tbody.innerHTML = "";
 
-  data.history.forEach((h) => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${h.date}</td>
-        <td>${h.gameId || "-"}</td>
-        <td>${h.goals === null ? "-" : h.goals}</td>
-        <td>${h.result}</td>
-        <td>${h.profitChange}</td>
-        <td>${h.balanceAfter}</td>
-      </tr>
-    `;
-  });
+  data.history
+    .filter(h => h.result !== "skip")
+    .forEach((h) => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${h.date}</td>
+          <td>${h.gameId || "-"}</td>
+          <td>${h.goals === null ? "-" : h.goals}</td>
+          <td>${h.result}</td>
+          <td>${h.profitChange}</td>
+          <td>${h.balanceAfter}</td>
+        </tr>
+      `;
+    });
 
   const detailBox = document.getElementById("mantingale-detail");
   detailBox.classList.remove("hidden");
@@ -1227,18 +1229,20 @@ async function showVipMantingalDetail(player) {
   const tbody = document.getElementById("vip-mtg-history-body");
   tbody.innerHTML = "";
 
-  data.history.forEach((h) => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${h.date}</td>
-        <td>${h.gameId || "-"}</td>
-        <td>${h.goals === null ? "-" : h.goals}</td>
-        <td>${h.result}</td>
-        <td>${h.profitChange}</td>
-        <td>${h.balanceAfter}</td>
-      </tr>
-    `;
-  });
+  data.history
+    .filter(h => h.result !== "skip")
+    .forEach((h) => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${h.date}</td>
+          <td>${h.gameId || "-"}</td>
+          <td>${h.goals === null ? "-" : h.goals}</td>
+          <td>${h.result}</td>
+          <td>${h.profitChange}</td>
+          <td>${h.balanceAfter}</td>
+        </tr>
+      `;
+    });
 
   const detailBox = document.getElementById("vip-mantingale-detail");
   detailBox.classList.remove("hidden");
