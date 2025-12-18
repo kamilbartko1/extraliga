@@ -237,6 +237,7 @@ export default async function handler(req, res) {
 if (task === "add_player") {
   const fullName = req.query.name || null;
   const teamName = req.query.team || null;
+  const oddsRaw  = req.query.odds || null;   // ⬅️ NOVÉ (voliteľné)
 
   if (!fullName || !teamName) {
     return res.status(400).json({
@@ -257,11 +258,20 @@ if (task === "add_player") {
   // ✅ SKRÁTENÝ TVAR MENA – IDENTICKÝ AKO GLOBÁL
   const shortName = formatShortName(fullName);
 
+  // 🎯 ODDS – bezpečne
+  const odds = oddsRaw !== null ? Number(oddsRaw) : null;
+  if (odds !== null && (!Number.isFinite(odds) || odds <= 1)) {
+    return res.status(400).json({
+      ok: false,
+      error: "Invalid odds value",
+    });
+  }
+
   const now = todayISO();
   const playersKey = vipPlayersKey(userId);
   const historyKey = vipHistoryKey(userId, shortName);
 
-  // 🔹 Stav hráča (rovnaký koncept ako globál)
+  // 🔹 Stav hráča (rozšírený o odds)
   const playerState = normalizePlayer({
     stake: 1,
     streak: 0,
@@ -269,6 +279,7 @@ if (task === "add_player") {
     started: now,
     lastUpdate: now,
     teamAbbrev,
+    odds, // ⬅️ NOVÉ (môže byť null)
   });
 
   // 1️⃣ uloženie hráča do VIP_MTG
@@ -287,6 +298,7 @@ if (task === "add_player") {
     userId,
     player: shortName,
     teamAbbrev,
+    odds, // ⬅️ vrátime späť pre kontrolu
   });
 }
 
