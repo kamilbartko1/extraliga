@@ -340,7 +340,7 @@ export default async function handler(req, res) {
 
     // 1) UPDATE + MANTINGAL
 // (čas máš aktuálne nastavený na 10:20 UTC)
-if (utcHour === 9 && utcMinute < 50) {
+if (utcHour === 7 && utcMinute < 50) {
 
   // 🔹 1️⃣ Najprv vyhodnotíme AI tip (nemeniť)
   await axios.get(`${base}/api/ai?task=update`);
@@ -374,13 +374,13 @@ if (utcHour === 9 && utcMinute < 50) {
 }
 
     // 2) SCORER
-    else if (utcHour === 12 && utcMinute < 5) {
+    else if (utcHour === 11 && utcMinute < 5) {
       await axios.get(`${base}/api/ai?task=scorer`);
       executed = "scorer";
     }
 
     // 3) SAVE
-    else if (utcHour === 15 && utcMinute < 22) {
+    else if (utcHour === 11 && utcMinute < 22) {
       await axios.get(`${base}/api/ai?task=save`);
       executed = "save";
     }
