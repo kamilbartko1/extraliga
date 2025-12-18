@@ -653,7 +653,10 @@ document.addEventListener("click", (e) => {
 });
 
 async function showMantingalDetail(player) {
-  const res = await fetch(`/api/mantingal?player=${encodeURIComponent(player)}`);
+  const res = await fetch(
+    `/api/mantingal?player=${encodeURIComponent(player)}`
+  );
+
   const data = await res.json();
   if (!data.ok) return;
 
@@ -678,16 +681,15 @@ async function showMantingalDetail(player) {
     `;
   });
 
-const detailBox = document.getElementById("mantingale-detail");
-detailBox.classList.remove("hidden");
+  const detailBox = document.getElementById("mantingale-detail");
+  detailBox.classList.remove("hidden");
 
-// ✅ AUTO SCROLL NA DETAIL
-detailBox.scrollIntoView({
-  behavior: "smooth",
-  block: "start"
-});
-
-loadMantingal();
+  // ✅ AUTO SCROLL NA DETAIL
+  detailBox.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+}
 
 // === Mantingal sekcia (nová verzia) ===
 async function displayMantingal() {
