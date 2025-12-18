@@ -339,30 +339,39 @@ export default async function handler(req, res) {
     let executed = null;
 
     // 1) UPDATE + MANTINGAL
-    // (čas máš aktuálne nastavený na 10:20 UTC, nechávam tak ako si poslal)
-    if (utcHour === 9 && utcMinute < 21) {
-      await axios.get(`${base}/api/ai?task=update`);
-      await updateMantingalePlayers();
-      executed = "update + mantingale";
+// (čas máš aktuálne nastavený na 10:20 UTC)
+if (utcHour === 9 && utcMinute < 50) {
 
-      // ✅ VIP MANTINGAL – bezpečne paralelne
-try {
-  const vipUsers = await redis.smembers("VIP_USERS");
-  if (Array.isArray(vipUsers) && vipUsers.length) {
-    for (const userId of vipUsers) {
-      await updateMantingaleForKey(
-      `VIP_MTG:${userId}`,
-      `VIP_MTG_HISTORY:${userId}`
-    );
+  // 🔹 1️⃣ Najprv vyhodnotíme AI tip (nemeniť)
+  await axios.get(`${base}/api/ai?task=update`);
+
+  // 🔹 2️⃣ GLOBAL MANTINGAL – PRIAMO cez engine
+  await updateMantingaleForKey(
+    "MANTINGAL_PLAYERS",
+    "MANTINGAL_HISTORY"
+  );
+
+  executed = "update + mantingale";
+
+  // 🔹 3️⃣ VIP MANTINGAL – BEZPEČNE PRE KAŽDÉHO USERA
+  try {
+    const vipUsers = await redis.smembers("VIP_USERS");
+
+    if (Array.isArray(vipUsers) && vipUsers.length > 0) {
+      for (const userId of vipUsers) {
+        await updateMantingaleForKey(
+          `VIP_MTG:${userId}`,
+          `VIP_MTG_HISTORY:${userId}`
+        );
       }
-    console.log("👑 VIP Mantingal: OK users =", vipUsers.length);
-  } else {
-    console.log("👑 VIP Mantingal: no users");
-  }
-} catch (e) {
-  console.log("❌ VIP Mantingal error:", e.message);
-}
+      console.log("👑 VIP Mantingal OK – users:", vipUsers.length);
+    } else {
+      console.log("👑 VIP Mantingal – no users");
     }
+  } catch (e) {
+    console.error("❌ VIP Mantingal error:", e.message);
+  }
+}
 
     // 2) SCORER
     else if (utcHour === 12 && utcMinute < 5) {
