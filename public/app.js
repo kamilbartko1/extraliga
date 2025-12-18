@@ -1446,13 +1446,6 @@ async function addPremiumPlayer() {
   }
 }
 
-// === Listener na vyber klubu a hraca ===
-document.addEventListener("change", (e) => {
-  if (e.target?.id === "premium-team-select") {
-    renderPremiumPlayersForTeam(e.target.value);
-  }
-});
-
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
 async function displayShootingLeaders() {
   const grid = document.getElementById("stats-grid");
