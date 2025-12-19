@@ -14,7 +14,6 @@ let premiumPlayersLoaded = false;
 const BASE_STAKE = 1;
 const ODDS = 2.5;
 const API_BASE = "";
-const GAME_LABELS = {};
 
 // === Prihlasenie premium klientov cez supabase ===
 const SUPABASE_URL = "https://ztjyvzulbrilyzfcxogj.supabase.co";
@@ -324,56 +323,7 @@ async function fetchMatches() {
       statusEl.textContent = `✅ Dokončené: ${totalGames} zápasov | ${totalPlayers} hráčov v rebríčku`;
 
     allMatches = Array.isArray(data.matches) ? data.matches : [];
-
-    // ===============================
-    // MAPA GAME ID → TEAM ABBREV (BOS-VGK)
-    // ===============================
-    GAME_LABELS = {};
-
-    allMatches.forEach(m => {
-      const id = m.id || m.sport_event?.id;
-      if (!id) return;
-
-      const home =
-        m.home_team ||
-        m.sport_event?.competitors?.[0]?.name ||
-        "";
-
-      const away =
-        m.away_team ||
-        m.sport_event?.competitors?.[1]?.name ||
-        "";
-
-      const toCode = (name) => {
-        if (!name) return "";
-        const map = {
-          Ducks: "ANA", Coyotes: "ARI", Bruins: "BOS", Sabres: "BUF",
-          Flames: "CGY", Hurricanes: "CAR", Blackhawks: "CHI",
-          Avalanche: "COL", Blue: "CBJ", Stars: "DAL", Red: "DET",
-          Oilers: "EDM", Panthers: "FLA", Kings: "LAK",
-          Wild: "MIN", Canadiens: "MTL", Predators: "NSH",
-          Devils: "NJD", Islanders: "NYI", Rangers: "NYR",
-          Senators: "OTT", Flyers: "PHI", Penguins: "PIT",
-          Sharks: "SJS", Kraken: "SEA", Blues: "STL",
-          Lightning: "TBL", Maple: "TOR", Canucks: "VAN",
-          Golden: "VGK", Capitals: "WSH", Jets: "WPG",
-          Mammoth: "UTA"
-        };
-
-        for (const k in map) {
-          if (name.includes(k)) return map[k];
-        }
-        return name.slice(0, 3).toUpperCase();
-      };
-
-      const h = toCode(home);
-      const a = toCode(away);
-
-      if (h && a) {
-        GAME_LABELS[id] = `${h}-${a}`;
-      }
-    });
-
+    
     if (!allMatches.length) {
       console.warn("⚠️ Žiadne zápasy v data.matches");
       if (statusEl) statusEl.textContent = "⚠️ Žiadne odohrané zápasy";
@@ -724,7 +674,7 @@ async function showMantingalDetail(player) {
       tbody.innerHTML += `
         <tr>
           <td>${h.date}</td>
-          <td>${GAME_LABELS[h.gameId] || h.gameId || "-"}</td>
+          <td>${h.gameId || "-"}</td>
           <td>${h.goals === null ? "-" : h.goals}</td>
           <td>${h.result}</td>
           <td>${h.profitChange}</td>
@@ -1289,7 +1239,7 @@ async function showVipMantingalDetail(player) {
       tbody.innerHTML += `
         <tr>
           <td>${h.date}</td>
-          <td>${GAME_LABELS[h.gameId] || h.gameId || "-"}</td>
+          <td>${h.gameId || "-"}</td>
           <td>${h.goals === null ? "-" : h.goals}</td>
           <td>${h.result}</td>
           <td>${h.profitChange}</td>
