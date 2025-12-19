@@ -699,6 +699,7 @@ tbody.querySelectorAll(".game-cell").forEach(async (cell) => {
     // fallback – nechaj ID
   }
 });
+}
 
 const detailBox = document.getElementById("mantingale-detail");
 detailBox.classList.remove("hidden");
