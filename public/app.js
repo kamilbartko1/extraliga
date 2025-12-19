@@ -663,52 +663,35 @@ async function showMantingalDetail(player) {
   document.getElementById("mtg-player-name").textContent = player;
 
   // ===================================
-// HISTÓRIA HRÁČA – GLOBAL
-// ===================================
-const tbody = document.getElementById("mtg-history-body");
-tbody.innerHTML = "";
+  // HISTÓRIA HRÁČA – GLOBAL
+  // ===================================
+  const tbody = document.getElementById("mtg-history-body");
+  tbody.innerHTML = "";
 
-data.history
-  .filter(h => h.result !== "skip")
-  .forEach((h) => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${h.date}</td>
-        <td class="game-cell" data-game="${h.gameId}">
-          ${h.gameId || "-"}
-        </td>
-        <td>${h.goals === null ? "-" : h.goals}</td>
-        <td>${h.result}</td>
-        <td>${h.profitChange}</td>
-        <td>${h.balanceAfter}</td>
-      </tr>
-    `;
+  data.history
+    .filter(h => h.result !== "skip")
+    .forEach((h) => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${h.date}</td>
+          <td>${h.gameId || "-"}</td>
+          <td>${h.goals === null ? "-" : h.goals}</td>
+          <td>${h.result}</td>
+          <td>${h.profitChange}</td>
+          <td>${h.balanceAfter}</td>
+        </tr>
+      `;
+    });
+
+  const detailBox = document.getElementById("mantingale-detail");
+  detailBox.classList.remove("hidden");
+
+  // ✅ AUTO SCROLL NA DETAIL
+  detailBox.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
   });
-
-// ===============================
-// PREVOD ID ZÁPASU → BOS–VGK
-// ===============================
-tbody.querySelectorAll(".game-cell").forEach(async (cell) => {
-  const gameId = cell.dataset.game;
-  if (!gameId) return;
-
-  try {
-    const label = await resolveGameLabel(gameId);
-    if (label) cell.textContent = label;
-  } catch {
-    // fallback – nechaj ID
-  }
-});
 }
-
-const detailBox = document.getElementById("mantingale-detail");
-detailBox.classList.remove("hidden");
-
-// ✅ AUTO SCROLL NA DETAIL
-detailBox.scrollIntoView({
-  behavior: "smooth",
-  block: "start",
-});
 
 // === Mantingal sekcia (nová verzia) ===
 async function displayMantingal() {
@@ -857,22 +840,6 @@ async function displayMantingalHistory() {
     historyDiv.innerHTML = html;
   } catch (err) {
     historyDiv.innerHTML = `<p>❌ Chyba: ${err.message}</p>`;
-  }
-}
-
-async function resolveGameLabel(gameId) {
-  if (!gameId) return "-";
-
-  try {
-    const resp = await fetch(`/api/game?id=${gameId}`);
-    if (!resp.ok) return gameId;
-
-    const g = await resp.json();
-    if (!g?.home || !g?.away) return gameId;
-
-    return `${g.home}-${g.away}`;
-  } catch {
-    return gameId;
   }
 }
 
@@ -1266,18 +1233,13 @@ async function showVipMantingalDetail(player) {
   const tbody = document.getElementById("vip-mtg-history-body");
   tbody.innerHTML = "";
 
-  // ===============================
-  // RENDER HISTÓRIE
-  // ===============================
   data.history
     .filter(h => h.result !== "skip")
     .forEach((h) => {
       tbody.innerHTML += `
         <tr>
           <td>${h.date}</td>
-          <td class="game-cell" data-game="${h.gameId}">
-            ${h.gameId || "-"}
-          </td>
+          <td>${h.gameId || "-"}</td>
           <td>${h.goals === null ? "-" : h.goals}</td>
           <td>${h.result}</td>
           <td>${h.profitChange}</td>
@@ -1285,21 +1247,6 @@ async function showVipMantingalDetail(player) {
         </tr>
       `;
     });
-
-  // ===============================
-  // PREVOD ID ZÁPASU → BOS–VGK
-  // ===============================
-  tbody.querySelectorAll(".game-cell").forEach(async (cell) => {
-    const gameId = cell.dataset.game;
-    if (!gameId) return;
-
-    try {
-      const label = await resolveGameLabel(gameId);
-      if (label) cell.textContent = label;
-    } catch {
-      // ak sa nepodarí, nechaj ID
-    }
-  });
 
   const detailBox = document.getElementById("vip-mantingale-detail");
   detailBox.classList.remove("hidden");
