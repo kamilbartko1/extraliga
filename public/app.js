@@ -167,7 +167,6 @@ async function displayHome() {
     <div class="nhl-card nhl-card-hero">
       <div class="nhl-card-head">
         <h3>🎯 AI strelec dňa</h3>
-        <span class="nhl-card-hint">načítava sa bez blokovania</span>
       </div>
 
       <div id="ai-today-loading" class="nhl-ai-today">
@@ -196,6 +195,13 @@ async function displayHome() {
     </div>
 
   </div>
+
+    <div class="nhl-section-head">
+    <h2>📊 Top štatistiky hráčov</h2>
+    <button class="nhl-btn nhl-btn-ghost" onclick="showSection('stats-section')">
+      Zobraziť všetky
+    </button>
+    </div>
 
   <!-- TOP STATISTIKY -->
   <div class="nhl-section-head">

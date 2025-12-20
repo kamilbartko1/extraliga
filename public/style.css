@@ -4556,6 +4556,38 @@ body {
   color: rgba(255,255,255,0.7);
 }
 
+/* ===== AI STRELEC – MOBILE FIX ===== */
+.nhl-ai-today {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
+.nhl-ai-today img,
+.nhl-ai-today .player-headshot {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(0,234,255,0.4);
+}
+
+.nhl-ai-today p {
+  margin: 2px 0;
+  line-height: 1.35;
+}
+
+.nhl-ai-today b {
+  font-size: 1.05rem;
+}
+
+.nhl-ai-today .probability,
+.nhl-ai-today b[style*="ffcc00"] {
+  font-size: 1.1rem;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
