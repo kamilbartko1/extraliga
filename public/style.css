@@ -4523,6 +4523,39 @@ body {
   .nhl-metrics { grid-template-columns: 1fr; }
 }
 
+.nhl-games-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nhl-game-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+}
+
+.nhl-game-row:hover {
+  background: rgba(0,234,255,0.08);
+}
+
+.nhl-game-teams {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.nhl-game-time {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
