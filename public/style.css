@@ -3262,7 +3262,7 @@ body {
   font-family: "Pacifico", cursive; /* alebo môžeš použiť napr. 'Satisfy' */
   font-size: 1.1rem;
   color: #eeff00; /* jemne žltá ako v slogane */
-  text-shadow: 0 2px 4px rgba(244, 255, 193, 0.5);
+  text-shadow: 0 2px 2px rgba(244, 255, 193, 0.5);
   pointer-events: none;
   opacity: 0.6;
 }
