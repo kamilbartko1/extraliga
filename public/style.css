@@ -4622,8 +4622,78 @@ body {
 /* ===== TOP STATS GRID ===== */
 .nhl-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.top-player {
+  display: flex;
+  align-items: center;
   gap: 14px;
+
+  padding: 14px 16px;
+  min-height: 82px;
+
+  background: linear-gradient(180deg, #121b26, #0c131d);
+  border-radius: 14px;
+
+  border: 1px solid rgba(0, 234, 255, 0.12);
+}
+
+.top-player img {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.top-player div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.top-player b {
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-player span {
+  font-size: 13px;
+  color: #9fdfff;
+}
+
+.top-player div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.top-player b {
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-player span {
+  font-size: 13px;
+  color: #9fdfff;
+}
+
+@media (max-width: 768px) {
+  .nhl-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .top-player {
+    min-height: 90px;
+  }
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
