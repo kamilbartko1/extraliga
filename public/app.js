@@ -138,8 +138,7 @@ async function displayHome() {
         </div>
 
         <h1 class="nhl-hero-title">
-          Tipuj NHL ako profík.
-          <span class="nhl-hero-title-accent">Rýchlo. Prehľadne. Bez balastu.</span>
+          <span class="nhl-hero-title-accent"></span>
         </h1>
 
         <p class="nhl-hero-sub">
