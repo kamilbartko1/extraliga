@@ -129,21 +129,21 @@ async function displayHome() {
     let html = `
 <section class="nhl-home">
 
-  <!-- HERO GRID -->
-  <div class="nhl-hero">
+  <!-- ================= HERO GRID ================= -->
+  <div class="nhl-hero-grid">
 
-    <!-- LEFT: DNESNE ZAPASY -->
-    <div class="nhl-card nhl-card-hero">
+    <!-- DNESNE ZAPASY -->
+    <div class="nhl-card">
       <div class="nhl-card-head">
         <h3>🏒 Dnešné zápasy NHL</h3>
         <span class="nhl-card-hint">${homeData.matchesToday.length} zápasov</span>
       </div>
 
-      <div class="nhl-games-vertical">
+      <div class="nhl-games-list">
         ${
           homeData.matchesToday.length === 0
             ? `<p class="nhl-muted">Dnes nie sú žiadne zápasy.</p>`
-            : homeData.matchesToday.map(m => `
+            : homeData.matchesToday.slice(0,6).map(m => `
               <div class="nhl-game-row" onclick="showSection('matches-section')">
                 <div class="nhl-game-teams">
                   <img src="${m.homeLogo}" class="nhl-team-logo">
@@ -152,30 +152,33 @@ async function displayHome() {
                   <span>${m.awayName}</span>
                   <img src="${m.awayLogo}" class="nhl-team-logo">
                 </div>
-                <div class="nhl-game-time">🕒 ${m.startTime}</div>
+                <div class="nhl-game-time">${m.startTime}</div>
               </div>
             `).join("")
         }
       </div>
 
       <button class="nhl-btn nhl-btn-link" onclick="showSection('matches-section')">
-        Zobraziť všetky výsledky →
+        Zobraziť všetky →
       </button>
     </div>
 
-    <!-- RIGHT: AI -->
-    <div class="nhl-card nhl-card-hero">
+    <!-- AI STRELEC DNA -->
+    <div class="nhl-card nhl-ai-card">
       <div class="nhl-card-head">
         <h3>🎯 AI strelec dňa</h3>
       </div>
 
-      <div id="ai-today-loading" class="nhl-ai-today">
-        <p class="nhl-muted">⏳ Prebieha AI výpočet strelca...</p>
+      <div id="ai-today-loading" class="nhl-ai-center">
+        <p class="nhl-muted">Načítavam AI tip…</p>
       </div>
+    </div>
 
-      <div class="nhl-divider"></div>
-
-      <h4 style="margin:6px 0;">📅 História AI tipov</h4>
+    <!-- HISTORIA AI -->
+    <div class="nhl-card">
+      <div class="nhl-card-head">
+        <h3>📅 História AI tipov</h3>
+      </div>
 
       <div class="nhl-ai-history">
         ${
@@ -196,14 +199,7 @@ async function displayHome() {
 
   </div>
 
-    <div class="nhl-section-head">
-    <h2>📊 Top štatistiky hráčov</h2>
-    <button class="nhl-btn nhl-btn-ghost" onclick="showSection('stats-section')">
-      Zobraziť všetky
-    </button>
-    </div>
-
-  <!-- TOP STATISTIKY -->
+  <!-- ================= TOP STATISTIKY ================= -->
   <div class="nhl-section-head">
     <h2>📊 Top štatistiky hráčov</h2>
     <button class="nhl-btn nhl-btn-ghost" onclick="showSection('stats-section')">
@@ -212,13 +208,13 @@ async function displayHome() {
   </div>
 
   <div class="nhl-stats-grid">
-    <!-- TU ZOSTÁVA TVOJ EXISTUJÚCI KÓD PRE TOP ŠTATISTIKY -->
+    <!-- SEM IDE TVOJ EXISTUJÚCI KÓD top-player -->
   </div>
 
 </section>
 `;
 
-    home.innerHTML = html;
+home.innerHTML = html;
 
     // 🔥 3️⃣ AI STRELEC SA DOLOŽÍ EXTRA (NEBLOKUJE STRÁNKU)
     setTimeout(async () => {
