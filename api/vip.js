@@ -284,10 +284,6 @@ if (task === "add_player") {
     [shortName]: JSON.stringify(playerState),
   });
 
-  if (!(await redis.exists(historyKey))) {
-    await redis.set(historyKey, JSON.stringify([]));
-  }
-
   return res.json({
     ok: true,
     player: shortName,
