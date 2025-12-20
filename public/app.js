@@ -208,8 +208,53 @@ async function displayHome() {
   </div>
 
   <div class="nhl-stats-grid">
-    <!-- SEM IDE TVOJ EXISTUJÚCI KÓD top-player -->
+
+  <div class="top-player">
+    <img src="${topGoal.headshot || "/icons/nhl_placeholder.svg"}">
+    <div>
+      <b>${topGoal.name || "-"}</b><br>
+      🥅 ${topGoal.goals || 0} gólov
+    </div>
+    <span class="stat-label">Top Góly</span>
   </div>
+
+  <div class="top-player">
+    <img src="${statsData?.topAssists?.[0]?.headshot || "/icons/nhl_placeholder.svg"}">
+    <div>
+      <b>${statsData?.topAssists?.[0]?.name || "-"}</b><br>
+      🅰️ ${statsData?.topAssists?.[0]?.assists || 0} asistencií
+    </div>
+    <span class="stat-label">Top Asistencie</span>
+  </div>
+
+  <div class="top-player">
+    <img src="${topPoints.headshot || "/icons/nhl_placeholder.svg"}">
+    <div>
+      <b>${topPoints.name || "-"}</b><br>
+      ⚡ ${topPoints.points || 0} bodov
+    </div>
+    <span class="stat-label">Top Body</span>
+  </div>
+
+  <div class="top-player">
+    <img src="${statsData?.topPowerPlayGoals?.[0]?.headshot || "/icons/nhl_placeholder.svg"}">
+    <div>
+      <b>${statsData?.topPowerPlayGoals?.[0]?.name || "-"}</b><br>
+      🔌 ${statsData?.topPowerPlayGoals?.[0]?.powerPlayGoals || 0} PP gólov
+    </div>
+    <span class="stat-label">Top PP</span>
+  </div>
+
+  <div class="top-player">
+    <img src="${topShots.headshot || "/icons/nhl_placeholder.svg"}">
+    <div>
+      <b>${topShots.name || "-"}</b><br>
+      🎯 ${topShots.shots || 0} striel
+    </div>
+    <span class="stat-label">Top Strely</span>
+  </div>
+
+</div>
 
 </section>
 `;
