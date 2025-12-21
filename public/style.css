@@ -4712,6 +4712,21 @@ body {
   }
 }
 
+/* ===== VIP AKCIE – ZAROVNANIE ===== */
+.premium-actions {
+  display: flex;
+  flex-direction: column;   /* tlačidlá pod sebou */
+  align-items: center;      /* horizontálne na stred */
+  justify-content: center;  /* vertikálne na stred */
+  gap: 6px;                 /* medzera medzi tlačidlami */
+}
+
+/* Voliteľne – jednotná šírka tlačidiel */
+.premium-actions button {
+  width: 90px;
+  text-align: center;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
