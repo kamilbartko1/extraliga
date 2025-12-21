@@ -267,17 +267,24 @@ async function updateMantingaleForKey(playersKey, historyPrefix) {
 
     const goals = Number(found.goals || 0);
 
-    // ---------- HIT
+    
+        // ---------- HIT
     if (goals > 0) {
-      const profit = Number((state.stake * state.odds).toFixed(2));
-      state.balance = Number((state.balance + profit).toFixed(2));
+      // ✅ NET PROFIT (nie return)
+      const profit = Number(
+        (state.stake * (state.odds - 1)).toFixed(2)
+      );
+
+      state.balance = Number(
+        (state.balance + profit).toFixed(2)
+      );
 
       const entry = {
         date: y,
         gameId: game.id,
         goals,
         result: "hit",
-        profitChange: profit,
+        profitChange: profit,       // ✅ čistý zisk
         balanceAfter: state.balance,
       };
 
@@ -287,12 +294,15 @@ async function updateMantingaleForKey(playersKey, historyPrefix) {
         await appendVipHistory(historyPrefix, playerName, entry);
       }
 
+      // reset martingale
       state.stake = 1;
       state.streak = 0;
       state.lastUpdate = y;
+
       await redis.hset(playersKey, {
         [playerName]: JSON.stringify(state),
       });
+
       continue;
     }
 
