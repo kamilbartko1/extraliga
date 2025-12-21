@@ -1203,7 +1203,6 @@ async function loadPremiumPlayers() {
     }
 
     for (const [name, p] of entries) {
-      const odds = Number(p.odds || 2.2).toFixed(2); // fallback
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -1212,7 +1211,6 @@ async function loadPremiumPlayers() {
         <td>${p.streak}</td>
         <td>${Number(p.balance).toFixed(2)} €</td>
         <td>${p.odds?.toFixed(2) ?? "-"}</td>
-        <td>${odds}</td>
 
         <td class="premium-actions">
           <button
