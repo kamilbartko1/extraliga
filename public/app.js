@@ -1206,28 +1206,28 @@ async function loadPremiumPlayers() {
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${formatPlayerName(name)}</td>
-        <td>${p.stake}</td>
-        <td>${p.streak}</td>
-        <td>${Number(p.balance).toFixed(2)} €</td>
-        <td>${p.odds?.toFixed(2) ?? "-"}</td>
+  <td>${formatPlayerName(name)}</td>
+  <td>${p.stake}</td>
+  <td>${p.streak}</td>
+  <td>${Number(p.balance).toFixed(2)} €</td>
+  <td>${Number(p.odds || 2.2).toFixed(2)}</td>
 
-        <td class="premium-actions">
-          <button
-            class="btn-detail vip-mtg-detail-btn"
-            data-player="${name}"
-          >
-            Detail
-          </button>
+  <td class="premium-actions">
+    <button
+      class="btn-detail vip-mtg-detail-btn"
+      data-player="${name}"
+    >
+      Detail
+    </button>
 
-          <button
-            class="btn-delete"
-            onclick="deletePremiumPlayer('${encodeURIComponent(name)}')"
-          >
-            Vymazať
-          </button>
-        </td>
-      `;
+    <button
+      class="btn-delete"
+      onclick="deletePremiumPlayer('${encodeURIComponent(name)}')"
+    >
+      Vymazať
+    </button>
+  </td>
+`;
       tbody.appendChild(tr);
     }
 
