@@ -372,7 +372,7 @@
     "birthCity": "Skelleftea",
     "country": "SWE",
     "team": "Boston Bruins",
-    "odds": "2.40"
+    "odds": "3.40"
   },
   {
     "id": 8481556,
@@ -386,7 +386,8 @@
     "birthDate": "2001-04-05",
     "birthCity": "Elmira",
     "country": "USA",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "11.50"
   },
   {
     "id": 8479591,
@@ -400,7 +401,8 @@
     "birthDate": "1996-09-09",
     "birthCity": "Littleton",
     "country": "USA",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "5.50"
   },
   {
     "id": 8479987,
@@ -414,7 +416,8 @@
     "birthDate": "1998-07-20",
     "birthCity": "Strathclair",
     "country": "CAN",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "2.35"
   },
   {
     "id": 8479661,
@@ -428,7 +431,8 @@
     "birthDate": "1997-05-29",
     "birthCity": "Estevan",
     "country": "CAN",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "7.00"
   },
   {
     "id": 8480355,
@@ -442,7 +446,8 @@
     "birthDate": "1999-03-11",
     "birthCity": "Phoenix",
     "country": "USA",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "6.80"
   },
   {
     "id": 8482177,
@@ -456,7 +461,8 @@
     "birthDate": "2002-07-17",
     "birthCity": "Moscow",
     "country": "RUS",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "5.30"
   },
   {
     "id": 8476374,
@@ -470,7 +476,8 @@
     "birthDate": "1993-01-20",
     "birthCity": "Niagara Falls",
     "country": "USA",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "7.50"
   },
   {
     "id": 8477496,
@@ -484,7 +491,8 @@
     "birthDate": "1994-12-02",
     "birthCity": "Boden",
     "country": "SWE",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "3.70"
   },
   {
     "id": 8483489,
@@ -498,7 +506,8 @@
     "birthDate": "2004-07-05",
     "birthCity": "Vancouver",
     "country": "CAN",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "6.30"
   },
   {
     "id": 8479999,
@@ -512,7 +521,8 @@
     "birthDate": "1998-11-22",
     "birthCity": "Eden Prairie",
     "country": "USA",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "4.20"
   },
   {
     "id": 8477956,
@@ -526,7 +536,8 @@
     "birthDate": "1996-05-25",
     "birthCity": "Havirov",
     "country": "CZE",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "2.40"
   },
   {
     "id": 8479705,
@@ -540,7 +551,8 @@
     "birthDate": "1997-01-28",
     "birthCity": "Rimouski",
     "country": "CAN",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "8.00"
   },
   {
     "id": 8478401,
@@ -554,7 +566,8 @@
     "birthDate": "1997-04-06",
     "birthCity": "Brno",
     "country": "CZE",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "4.00"
   },
   {
     "id": 8481219,
@@ -610,7 +623,8 @@
     "birthDate": "1994-01-20",
     "birthCity": "Helsingborg",
     "country": "SWE",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "8.50"
   },
   {
     "id": 8482511,
@@ -624,7 +638,8 @@
     "birthDate": "2001-01-17",
     "birthCity": "Baton Rouge",
     "country": "USA",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "10.00"
   },
   {
     "id": 8479325,
@@ -638,7 +653,8 @@
     "birthDate": "1997-12-21",
     "birthCity": "Long Beach",
     "country": "USA",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "7.50"
   },
   {
     "id": 8479369,
@@ -652,7 +668,8 @@
     "birthDate": "1998-03-17",
     "birthCity": "Parkland",
     "country": "USA",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "13.00"
   },
   {
     "id": 8477507,
@@ -666,7 +683,8 @@
     "birthDate": "1995-04-16",
     "birthCity": "Moscow",
     "country": "RUS",
-    "team": "Boston Bruins"
+    "team": "Boston Bruins",
+    "odds": "12.00"
   },
   {
     "id": 8476914,
@@ -2095,7 +2113,8 @@
     "birthDate": "2004-10-05",
     "birthCity": "Fort Myers",
     "country": "USA",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "5.50"
   },
   {
     "id": 8479525,
@@ -2109,7 +2128,8 @@
     "birthDate": "1996-09-11",
     "birthCity": "Robbinsville",
     "country": "USA",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "5.50"
   },
   {
     "id": 8480835,
@@ -2123,7 +2143,8 @@
     "birthDate": "2000-02-03",
     "birthCity": "New York",
     "country": "USA",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "6.50"
   },
   {
     "id": 8480448,
@@ -2137,7 +2158,8 @@
     "birthDate": "1999-05-14",
     "birthCity": "Camrose",
     "country": "CAN",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "6.50"
   },
   {
     "id": 8481641,
@@ -2151,7 +2173,8 @@
     "birthDate": "1996-03-23",
     "birthCity": "Vantaa",
     "country": "FIN",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "6.50"
   },
   {
     "id": 8476455,
@@ -2165,7 +2188,8 @@
     "birthDate": "1992-11-23",
     "birthCity": "Stockholm",
     "country": "SWE",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "3.30"
   },
   {
     "id": 8477476,
@@ -2179,7 +2203,8 @@
     "birthDate": "1995-07-04",
     "birthCity": "Piikkio",
     "country": "FIN",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "3.10"
   },
   {
     "id": 8477492,
@@ -2193,7 +2218,8 @@
     "birthDate": "1995-09-01",
     "birthCity": "Halifax",
     "country": "CAN",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "2.00"
   },
   {
     "id": 8480039,
@@ -2207,7 +2233,8 @@
     "birthDate": "1999-01-15",
     "birthCity": "Nove Mesto na Morave",
     "country": "CZE",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "2.50"
   },
   {
     "id": 8475754,
@@ -2221,7 +2248,8 @@
     "birthDate": "1991-10-15",
     "birthCity": "Warroad",
     "country": "USA",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "3.10"
   },
   {
     "id": 8477501,
@@ -2250,7 +2278,8 @@
     "birthDate": "1995-07-18",
     "birthCity": "Ornskoldsvik",
     "country": "SWE",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "5.50"
   },
   {
     "id": 8483569,
@@ -2278,7 +2307,8 @@
     "birthDate": "1985-03-09",
     "birthCity": "Barrie",
     "country": "CAN",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "7.00"
   },
   {
     "id": 8479398,
@@ -2292,7 +2322,8 @@
     "birthDate": "1998-05-12",
     "birthCity": "Roberval",
     "country": "CAN",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "12.00"
   },
   {
     "id": 8480069,
@@ -2306,7 +2337,8 @@
     "birthDate": "1998-10-30",
     "birthCity": "Calgary",
     "country": "CAN",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "3.80"
   },
   {
     "id": 8484258,
@@ -2320,7 +2352,8 @@
     "birthDate": "1998-07-27",
     "birthCity": "Lakeville",
     "country": "USA",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "9.00"
   },
   {
     "id": 8476312,
@@ -2334,7 +2367,8 @@
     "birthDate": "1991-10-07",
     "birthCity": "Hinsdale",
     "country": "USA",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "12.00"
   },
   {
     "id": 8482470,
@@ -2362,7 +2396,8 @@
     "birthDate": "1994-02-21",
     "birthCity": "Abbotsford",
     "country": "CAN",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "9.00"
   },
   {
     "id": 8478406,
@@ -2740,7 +2775,8 @@
     "birthDate": "1989-07-18",
     "birthCity": "Victoria",
     "country": "CAN",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "3.50"
   },
   {
     "id": 8476278,
@@ -2754,7 +2790,8 @@
     "birthDate": "1993-03-28",
     "birthCity": "North Andover",
     "country": "USA",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "7.50"
   },
   {
     "id": 8482145,
@@ -2768,7 +2805,8 @@
     "birthDate": "2002-01-08",
     "birthCity": "Plessisville",
     "country": "CAN",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "5.80"
   },
   {
     "id": 8480840,
@@ -2782,7 +2820,8 @@
     "birthDate": "2000-03-12",
     "birthCity": "Karlstad",
     "country": "SWE",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "7.00"
   },
   {
     "id": 8475168,
@@ -2796,7 +2835,8 @@
     "birthDate": "1991-01-16",
     "birthCity": "Haliburton",
     "country": "CAN",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "4.00"
   },
   {
     "id": 8477454,
@@ -2824,7 +2864,8 @@
     "birthDate": "1994-01-09",
     "birthCity": "Vitkov",
     "country": "CZE",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "7.00"
   },
   {
     "id": 8478449,
@@ -2838,7 +2879,8 @@
     "birthDate": "1996-11-17",
     "birthCity": "Nokia",
     "country": "FIN",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "2.70"
   },
   {
     "id": 8484829,
@@ -2852,7 +2894,8 @@
     "birthDate": "2001-02-23",
     "birthCity": "L'Ile-Bizard",
     "country": "CAN",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "7.00"
   },
   {
     "id": 8482740,
@@ -2866,7 +2909,8 @@
     "birthDate": "2003-05-14",
     "birthCity": "Toronto",
     "country": "CAN",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "2.50"
   },
   {
     "id": 8478420,
@@ -2880,7 +2924,8 @@
     "birthDate": "1996-10-29",
     "birthCity": "Nousiainen",
     "country": "FIN",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "2.50"
   },
   {
     "id": 8480027,
@@ -2894,7 +2939,8 @@
     "birthDate": "1999-07-22",
     "birthCity": "Arcadia",
     "country": "USA",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "2.20"
   },
   {
     "id": 8475794,
@@ -2923,7 +2969,8 @@
     "birthDate": "1998-02-03",
     "birthCity": "Ardrossan",
     "country": "CAN",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "5.50"
   },
   {
     "id": 8483425,
@@ -2979,7 +3026,8 @@
     "birthDate": "1999-07-18",
     "birthCity": "Espoo",
     "country": "FIN",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "5.00"
   },
   {
     "id": 8476902,
@@ -2993,7 +3041,8 @@
     "birthDate": "1994-05-23",
     "birthCity": "Vantaa",
     "country": "FIN",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "10.00"
   },
   {
     "id": 8480878,
@@ -3007,7 +3056,8 @@
     "birthDate": "2000-07-27",
     "birthCity": "Pitea",
     "country": "SWE",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "11.00"
   },
   {
     "id": 8480950,
@@ -3021,7 +3071,8 @@
     "birthDate": "1994-04-06",
     "birthCity": "Moscow",
     "country": "RUS",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "13.00"
   },
   {
     "id": 8475755,
@@ -3035,7 +3086,8 @@
     "birthDate": "1992-03-03",
     "birthCity": "Edmonton",
     "country": "CAN",
-    "team": "Dallas Stars"
+    "team": "Dallas Stars",
+    "odds": "13.00"
   },
   {
     "id": 8479193,
@@ -4800,7 +4852,8 @@
     "birthDate": "2001-04-05",
     "birthCity": "Milford",
     "country": "USA",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "2.30"
   },
   {
     "id": 8478493,
@@ -4814,7 +4867,8 @@
     "birthDate": "1997-01-29",
     "birthCity": "Karlstad",
     "country": "SWE",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "3.30"
   },
   {
     "id": 8475220,
@@ -4828,7 +4882,8 @@
     "birthDate": "1991-08-10",
     "birthCity": "Buffalo",
     "country": "USA",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "6.50"
   },
   {
     "id": 8477451,
@@ -4842,7 +4897,8 @@
     "birthDate": "1994-09-20",
     "birthCity": "Hilton Head Island",
     "country": "USA",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "5.00"
   },
   {
     "id": 8476994,
@@ -4856,7 +4912,8 @@
     "birthDate": "1994-04-03",
     "birthCity": "Chicago",
     "country": "USA",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "7.50"
   },
   {
     "id": 8475149,
@@ -4870,7 +4927,8 @@
     "birthDate": "1990-10-06",
     "birthCity": "Landskrona",
     "country": "SWE",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "4.20"
   },
   {
     "id": 8480259,
@@ -4884,7 +4942,8 @@
     "birthDate": "1999-02-26",
     "birthCity": "Waterloo",
     "country": "CAN",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "10.50"
   },
   {
     "id": 8478864,
@@ -4898,7 +4957,8 @@
     "birthDate": "1997-04-26",
     "birthCity": "Novokuznetsk",
     "country": "RUS",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "2.20"
   },
   {
     "id": 8475752,
@@ -4912,7 +4972,8 @@
     "birthDate": "1991-11-01",
     "birthCity": "Minneapolis",
     "country": "USA",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "10.50"
   },
   {
     "id": 8482079,
@@ -4926,7 +4987,8 @@
     "birthDate": "2001-09-23",
     "birthCity": "Feldkirch",
     "country": "AUT",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "10.50"
   },
   {
     "id": 8481477,
@@ -4940,7 +5002,8 @@
     "birthDate": "1995-05-03",
     "birthCity": "Augsburg",
     "country": "DEU",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "7.50"
   },
   {
     "id": 8475765,
@@ -4954,7 +5017,8 @@
     "birthDate": "1991-12-13",
     "birthCity": "Yaroslavl",
     "country": "RUS",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "4.20"
   },
   {
     "id": 8478508,
@@ -4968,7 +5032,8 @@
     "birthDate": "1997-01-13",
     "birthCity": "Chelyabinsk",
     "country": "RUS",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "6.50"
   },
   {
     "id": 8483525,
@@ -4982,7 +5047,8 @@
     "birthDate": "2003-12-22",
     "birthCity": "Chelyabinsk",
     "country": "RUS",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "5.50"
   },
   {
     "id": 8474567,
@@ -4996,7 +5062,8 @@
     "birthDate": "1990-07-15",
     "birthCity": "Massena",
     "country": "USA",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "10.50"
   },
   {
     "id": 8476463,
@@ -5010,7 +5077,8 @@
     "birthDate": "1993-07-12",
     "birthCity": "Karlstad",
     "country": "SWE",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "11.00"
   },
   {
     "id": 8484798,
@@ -5024,7 +5092,8 @@
     "birthDate": "2005-12-07",
     "birthCity": "San Diego",
     "country": "USA",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "6.50"
   },
   {
     "id": 8482122,
@@ -5038,7 +5107,8 @@
     "birthDate": "2002-08-22",
     "birthCity": "Maple Grove",
     "country": "USA",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "6.20"
   },
   {
     "id": 8482094,
@@ -5052,7 +5122,8 @@
     "birthDate": "2002-05-15",
     "birthCity": "Brandon",
     "country": "CAN",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "11.50"
   },
   {
     "id": 8483460,
@@ -5066,7 +5137,8 @@
     "birthDate": "2003-11-28",
     "birthCity": "Klatovy",
     "country": "CZE",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "13.00"
   },
   {
     "id": 8478136,
@@ -5080,7 +5152,8 @@
     "birthDate": "1996-01-02",
     "birthCity": "Wainwright",
     "country": "CAN",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "13.00"
   },
   {
     "id": 8474716,
@@ -5094,7 +5167,8 @@
     "birthDate": "1989-11-29",
     "birthCity": "Edmonton",
     "country": "CAN",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "9.00"
   },
   {
     "id": 8479406,
@@ -5108,7 +5182,8 @@
     "birthDate": "1998-06-07",
     "birthCity": "Skelleftea",
     "country": "SWE",
-    "team": "Minnesota Wild"
+    "team": "Minnesota Wild",
+    "odds": "11.50"
   },
   {
     "id": 8482661,
@@ -6831,7 +6906,8 @@
     "birthDate": "1996-05-13",
     "birthCity": "Sault Ste. Marie",
     "country": "CAN",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "5.80"
   },
   {
     "id": 8480208,
@@ -6845,7 +6921,8 @@
     "birthDate": "1998-04-27",
     "birthCity": "Fort Wayne",
     "country": "USA",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "3.00"
   },
   {
     "id": 8476393,
@@ -6859,7 +6936,8 @@
     "birthDate": "1993-07-20",
     "birthCity": "Belleville",
     "country": "CAN",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "7.50"
   },
   {
     "id": 8481528,
@@ -6873,7 +6951,8 @@
     "birthDate": "2001-02-09",
     "birthCity": "Whitehorse",
     "country": "CAN",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "3.50"
   },
   {
     "id": 8474189,
@@ -6887,7 +6966,8 @@
     "birthDate": "1989-05-08",
     "birthCity": "Rodovre",
     "country": "DNK",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "5.50"
   },
   {
     "id": 8473512,
@@ -6901,7 +6981,8 @@
     "birthDate": "1988-01-12",
     "birthCity": "Hearst",
     "country": "CAN",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "5.50"
   },
   {
     "id": 8482092,
@@ -6915,7 +6996,8 @@
     "birthDate": "2002-08-08",
     "birthCity": "Lethbridge",
     "country": "CAN",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "6.00"
   },
   {
     "id": 8480245,
@@ -6929,7 +7011,8 @@
     "birthDate": "1999-08-24",
     "birthCity": "Oskarshamn",
     "country": "SWE",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "7.50"
   },
   {
     "id": 8477073,
@@ -6957,7 +7040,8 @@
     "birthDate": "1988-05-28",
     "birthCity": "Sherbrooke",
     "country": "CAN",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "5.50"
   },
   {
     "id": 8481596,
@@ -6985,7 +7069,8 @@
     "birthDate": "2002-01-15",
     "birthCity": "Viersen",
     "country": "DEU",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "2.90"
   },
   {
     "id": 8480801,
@@ -6999,7 +7084,8 @@
     "birthDate": "1999-09-16",
     "birthCity": "Scottsdale",
     "country": "USA",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "2.70"
   },
   {
     "id": 8480188,
@@ -7013,7 +7099,8 @@
     "birthDate": "1999-08-25",
     "birthCity": "Karlstad",
     "country": "SWE",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "4.20"
   },
   {
     "id": 8478469,
@@ -7027,7 +7114,8 @@
     "birthDate": "1997-01-30",
     "birthCity": "Sainte-Marie",
     "country": "CAN",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "8.00"
   },
   {
     "id": 8475324,
@@ -7041,7 +7129,8 @@
     "birthDate": "1990-09-21",
     "birthCity": "Rogers",
     "country": "USA",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "13.00"
   },
   {
     "id": 8482095,
@@ -7055,7 +7144,8 @@
     "birthDate": "2002-01-10",
     "birthCity": "Fargo",
     "country": "USA",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "13.00"
   },
   {
     "id": 8484321,
@@ -7083,7 +7173,8 @@
     "birthDate": "2002-07-08",
     "birthCity": "Whitefish",
     "country": "USA",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "6.00"
   },
   {
     "id": 8481606,
@@ -7097,7 +7188,8 @@
     "birthDate": "2001-02-24",
     "birthCity": "Manly",
     "country": "AUS",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "11.00"
   },
   {
     "id": 8482245,
@@ -7111,7 +7203,8 @@
     "birthDate": "1995-10-03",
     "birthCity": "Khabarovsk",
     "country": "RUS",
-    "team": "Ottawa Senators"
+    "team": "Ottawa Senators",
+    "odds": "12.00"
   },
   {
     "id": 8482447,

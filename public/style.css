@@ -4440,7 +4440,7 @@ body {
 .nhl-muted { color: rgba(255,255,255,0.62); margin: 8px 0 0; font-size: 13px; }
 
 .nhl-ai-today { padding: 8px 6px; }
-.player-headshot { width: 54px; height: 54px; border-radius: 999px; object-fit: cover; border:1px solid rgba(255,255,255,0.18); }
+.player-headshot { width: 90px; height: 90px; border-radius: 999px; object-fit: cover; border:1px solid rgba(255,255,255,0.18); }
 .ai-scorer-info p { margin: 4px 0; }
 
 .nhl-skeleton { display:flex; gap:10px; align-items:center; }
