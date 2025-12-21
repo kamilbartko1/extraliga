@@ -57,9 +57,10 @@ async function appendVipHistory(prefix, playerName, entry) {
   let hist = [];
 
   const raw = await redis.get(key);
+
   if (raw) {
     try {
-      hist = JSON.parse(raw);
+      hist = typeof raw === "string" ? JSON.parse(raw) : safeParse(raw);
       if (!Array.isArray(hist)) hist = [];
     } catch {
       hist = [];
