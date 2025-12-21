@@ -1618,6 +1618,23 @@ async function displayShootingLeaders() {
   });
 }
 
+// ===============================
+// 🧠 ABS – TOGGLE TEXT
+// ===============================
+document.addEventListener("click", (e) => {
+  if (e.target.id !== "abs-toggle") return;
+
+  const more = document.getElementById("abs-more");
+  const btn = document.getElementById("abs-toggle");
+
+  if (!more) return;
+
+  const isOpen = more.style.display === "block";
+
+  more.style.display = isOpen ? "none" : "block";
+  btn.textContent = isOpen ? "Zobraziť viac ↓" : "Skryť ↑";
+});
+
 // === Prepínanie sekcií a načítanie dát dynamicky ===
 document.querySelectorAll("nav button").forEach(btn => {
   btn.addEventListener("click", async () => {
