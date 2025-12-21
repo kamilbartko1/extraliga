@@ -4887,6 +4887,47 @@ body {
   }
 }
 
+/* ================================
+   HERO BOX FONT UNIFICATION
+   ================================ */
+
+/* VŠETOK TEXT VO VNÚTRI HERO BOXY */
+.nhl-card,
+.nhl-card * {
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 300;
+  letter-spacing: 0.2px;
+}
+
+/* NADPISY BOXOV – jemne výraznejšie */
+.nhl-card-head h3 {
+  font-size: 1.05rem;
+  font-weight: 400;
+  letter-spacing: 0.4px;
+}
+
+/* NÁZVY TÍMOV, HRÁČOV */
+.nhl-game-teams span,
+.nhl-ai-today b,
+.nhl-ai-row span:nth-child(2) {
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+/* ČASY ZÁPASOV, DOPLNKY */
+.nhl-game-time,
+.nhl-muted {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+/* HISTÓRIA – RESULT */
+.nhl-ai-row span:last-child {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
