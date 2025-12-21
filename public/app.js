@@ -1043,6 +1043,43 @@ async function checkPremiumStatus() {
 
     const data = await res.json();
 
+// ===============================
+// PREMIUM – Stripe Checkout
+// ===============================
+document.getElementById("premium-upgrade-btn")
+  ?.addEventListener("click", async () => {
+
+    const token = localStorage.getItem("sb-access-token");
+    if (!token) {
+      alert("Najprv sa musíš prihlásiť.");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        "/api/vip?task=create_checkout_session",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+      if (!data.ok || !data.url) {
+        alert("Nepodarilo sa vytvoriť platbu.");
+        return;
+      }
+
+      // 🔥 presmerovanie na Stripe Checkout
+      window.location.href = data.url;
+
+    } catch (err) {
+      console.error(err);
+      alert("Chyba pri spustení platby.");
+    }
+});
+    
     // ===== VIP USER =====
 if (data.ok && data.isVip === true) {
   if (contentBox) contentBox.style.display = "block";
@@ -1110,6 +1147,11 @@ document.getElementById("premium-register-confirm")
 
     if (!email || !pass || !pass2) {
       msg.textContent = "Vyplň všetky polia.";
+      return;
+    }
+
+    if (pass.length < 8) {
+      msg.textContent = "Heslo musí mať minimálne 8 znakov.";
       return;
     }
 
