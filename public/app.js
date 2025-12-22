@@ -597,6 +597,21 @@ function closeTeamRatingModal(e) {
   }
 }
 
+// DISCLAIMER MODAL
+document.getElementById("open-disclaimer")
+  ?.addEventListener("click", () => {
+    document
+      .getElementById("disclaimer-modal")
+      .classList.remove("hidden");
+  });
+
+document.getElementById("close-disclaimer")
+  ?.addEventListener("click", () => {
+    document
+      .getElementById("disclaimer-modal")
+      .classList.add("hidden");
+  });
+
 // === Rating hráčov ===
 function displayPlayerRatings() {
   const tableBody = document.querySelector("#playerRatings tbody");

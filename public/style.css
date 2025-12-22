@@ -5093,6 +5093,92 @@ body {
   }
 }
 
+/* ===== FOOTER ===== */
+.site-footer {
+  margin-top: 40px;
+  padding: 15px 20px;
+  background: #0b0f14;
+  border-top: 1px solid #1f2a36;
+  color: #8fa3b8;
+  font-size: 0.85rem;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-link {
+  background: none;
+  border: none;
+  color: #00eaff;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}
+
+/* ===== DISCLAIMER MODAL ===== */
+.disclaimer-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.disclaimer-modal.hidden {
+  display: none;
+}
+
+.disclaimer-box {
+  background: #0f1621;
+  color: #dce7f3;
+  max-width: 800px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.disclaimer-box h2 {
+  margin-top: 0;
+  color: #00eaff;
+}
+
+.disclaimer-box h3 {
+  margin-top: 20px;
+  color: #ffd54f;
+}
+
+.disclaimer-box p {
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+.disclaimer-close {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.disclaimer-close:hover {
+  color: #fff;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
