@@ -283,7 +283,8 @@ home.innerHTML = html;
           <div class="ai-scorer-info">
             <p><b>${ai.player}</b> (${ai.team})</p>
             <p style="color:#00eaff;">${ai.match}</p>
-            <p>🥅 Góly: <b>${ai.goals}</b> |  PP Góly ${ai.powerPlayGoals}</p>
+            <p>Góly: <b>${ai.goals}</b> |  PP Góly: ${ai.powerPlayGoals}</p>
+            <p>Strely: <b>${ai.shots}</b> |  Kanadské body: ${ai.points}</p>
             <p>🧠 Pravdepodobnosť: 
               <b style="color:#ffcc00;">${ai.probability}%</b>
             </p>
