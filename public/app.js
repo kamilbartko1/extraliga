@@ -557,7 +557,7 @@ async function loadStandings() {
   box.innerHTML = `<p class="nhl-muted">Načítavam tabuľku…</p>`;
 
   try {
-    const resp = await fetch("/api/standings", { cache: "no-store" });
+    const resp = await fetch("/api/matches", { cache: "no-store" });
     const payload = await resp.json();
 
     if (!payload.ok) {
