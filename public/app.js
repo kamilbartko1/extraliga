@@ -566,15 +566,16 @@ async function loadStandings() {
 
     const data = await resp.json();
 
-    // 🔥 TU BOLA CELÁ CHYBA
-    const rows = Array.isArray(data.standings)
-      ? data.standings.slice(0, 16)
-      : [];
-
-    if (!rows.length) {
+    if (!Array.isArray(data.standings) || data.standings.length === 0) {
       box.innerHTML = `<p class="nhl-muted">Tabuľka nie je dostupná.</p>`;
       return;
     }
+
+    // 🔥 celkové poradie ligy (top 16 pre box)
+    const rows = data.standings
+      .slice() // bezpečná kópia
+      .sort((a, b) => b.points - a.points)
+      .slice(0, 16);
 
     box.innerHTML = `
       <table class="standings-table">
@@ -587,17 +588,24 @@ async function loadStandings() {
           </tr>
         </thead>
         <tbody>
-          ${rows.map((t, i) => `
-            <tr>
-              <td>${i + 1}</td>
-              <td class="team-cell">
-                <img src="${t.teamLogo}" alt="${t.teamAbbrev.default}">
-                ${t.teamCommonName?.default || t.teamName.default}
-              </td>
-              <td>${t.gamesPlayed}</td>
-              <td class="points">${t.points}</td>
-            </tr>
-          `).join("")}
+          ${rows.map((t, i) => {
+            const teamName =
+              t.teamName?.default ||
+              `${t.placeName?.default || ""} ${t.teamCommonName?.default || ""}`.trim() ||
+              "Tím";
+
+            return `
+              <tr>
+                <td>${i + 1}</td>
+                <td class="team-cell">
+                  <img src="${t.teamLogo}" alt="${teamName}">
+                  <span>${teamName}</span>
+                </td>
+                <td>${t.gamesPlayed ?? "-"}</td>
+                <td class="points">${t.points ?? 0}</td>
+              </tr>
+            `;
+          }).join("")}
         </tbody>
       </table>
     `;
