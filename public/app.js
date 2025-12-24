@@ -368,6 +368,7 @@ async function fetchMatches() {
     playerRatings = data.playerRatings || {};
     displayPlayerRatings();
     displayMantingal();
+    loadStandings();
 
   } catch (err) {
     console.error("❌ Chyba pri načítaní zápasov:", err);
@@ -558,15 +559,19 @@ async function loadStandings() {
 
   try {
     const resp = await fetch("https://api-web.nhle.com/v1/standings/now", {
-      cache: "no-store"
+      cache: "no-store",
     });
 
-    if (!resp.ok) throw new Error("NHL standings error");
+    if (!resp.ok) throw new Error("NHL API error");
 
     const data = await resp.json();
-    const rows = data.standings?.slice(0, 16);
 
-    if (!rows || !rows.length) {
+    // 🔥 TU BOLA CELÁ CHYBA
+    const rows = Array.isArray(data.standings)
+      ? data.standings.slice(0, 16)
+      : [];
+
+    if (!rows.length) {
       box.innerHTML = `<p class="nhl-muted">Tabuľka nie je dostupná.</p>`;
       return;
     }
@@ -585,16 +590,19 @@ async function loadStandings() {
           ${rows.map((t, i) => `
             <tr>
               <td>${i + 1}</td>
-              <td>${t.teamName.default}</td>
+              <td class="team-cell">
+                <img src="${t.teamLogo}" alt="${t.teamAbbrev.default}">
+                ${t.teamCommonName?.default || t.teamName.default}
+              </td>
               <td>${t.gamesPlayed}</td>
-              <td>${t.points}</td>
+              <td class="points">${t.points}</td>
             </tr>
           `).join("")}
         </tbody>
       </table>
     `;
   } catch (err) {
-    console.warn("Standings error:", err);
+    console.error("❌ Standings error:", err);
     box.innerHTML = `<p class="nhl-muted">Chyba tabuľky NHL</p>`;
   }
 }
@@ -2109,6 +2117,5 @@ document.getElementById("premium-add-player-btn")
   setTimeout(() => {
     console.log("🔁 Aktualizujem dáta po načítaní...");
     fetchMatches();
-    loadStandings();
   }, 3000);
 });
