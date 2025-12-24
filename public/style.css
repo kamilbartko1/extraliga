@@ -5283,23 +5283,42 @@ body {
 }
 
 /* MATCHES */
+.match-day {
+  margin-bottom: 14px;
+}
+
 .match-day-header {
-  font-size: 0.85rem;
-  color: #7ddcff;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-size: 0.9rem;
+  color: #9fdfff;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding-bottom: 4px;
   margin-bottom: 6px;
 }
 
 .match-row {
   display: flex;
   justify-content: space-between;
-  padding: 6px 0;
+  align-items: center;
+  padding: 4px 0;
   font-size: 0.95rem;
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 300;
+}
+
+.match-teams {
+  display: flex;
+  gap: 4px;
+  align-items: baseline;
 }
 
 .match-score {
+  color: #ffffff;
   min-width: 90px;
   text-align: right;
+}
+
+.match-highlight a {
+  margin-left: 6px;
 }
 
 /* STANDINGS */

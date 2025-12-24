@@ -545,7 +545,7 @@ async function displayMatches(matches) {
         if (!cell) continue;
 
         if (data.ok && data.highlight) {
-          cell.innerHTML = `<a href="${data.highlight}" target="_blank" class="highlight-link">🎥</a>`;
+          cell.innerHTML = `<a href="${data.highlight}" target="_blank" class="highlight-link" title="Zostrih zápasu">🎥</a>`;
         } else {
           cell.textContent = "";
         }
