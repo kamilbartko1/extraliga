@@ -147,6 +147,33 @@ app.get("/api/matches", async (req, res) => {
 
     console.log(`✅ Zápasov: ${matches.length} | počítam hráčov...`);
 
+    // =======================================
+    //  NHL STANDINGS PROXY  (CORS fix)
+    // =======================================
+    import fetch from "node-fetch"; // ak ho už máš, druhýkrát NEimportuj
+
+    app.get("/api/standings", async (req, res) => {
+      try {
+        const resp = await fetch("https://api-web.nhle.com/v1/standings/now");
+        if (!resp.ok) {
+          throw new Error(`NHL API error: ${resp.status}`);
+        }
+
+        const data = await resp.json();
+
+        res.json({
+          ok: true,
+          data,
+        });
+      } catch (err) {
+        console.error("❌ /api/standings error:", err.message);
+        res.status(500).json({
+          ok: false,
+          error: err.message || "Standings fetch failed",
+        });
+      }
+    });
+
     // === Boxscore rating hráčov (limit 6 paralelne) ===
     const CONCURRENCY = 6;
     let index = 0;

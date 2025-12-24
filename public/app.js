@@ -376,112 +376,132 @@ async function fetchMatches() {
   }
 }
 
-// === Zápasy (NOVÝ LAYOUT – bezpečná úprava) ===
+let matchesExpanded = false; // globalny flag pre Zobraziť viac
+
+// === Zápasy ===
 async function displayMatches(matches) {
   const recentBox = document.getElementById("matches-recent");
-  const olderBox = document.getElementById("matches-older");
-  const statusBox = document.getElementById("load-status");
+  const olderBox  = document.getElementById("matches-older");
+  const moreBtn   = document.getElementById("matches-more-btn");
 
   if (!recentBox || !olderBox) return;
 
   recentBox.innerHTML = "";
-  olderBox.innerHTML = "";
-  if (statusBox) statusBox.textContent = "";
+  olderBox.innerHTML  = "";
 
   if (!matches || matches.length === 0) {
-    recentBox.innerHTML = `<p class="nhl-muted">Žiadne odohrané zápasy</p>`;
+    recentBox.innerHTML = `<p class="nhl-muted">Žiadne odohrané zápasy.</p>`;
+    if (moreBtn) moreBtn.style.display = "none";
     return;
   }
 
-  // === 1️⃣ Zoskupenie podľa dátumu (PÔVODNÁ LOGIKA) ===
+  // Zoskupenie podľa dátumu
   const grouped = {};
   for (const m of matches) {
     const date =
       m.date ||
       new Date(m.sport_event?.start_time || "").toISOString().slice(0, 10);
-
     if (!grouped[date]) grouped[date] = [];
     grouped[date].push(m);
   }
 
-  const days = Object.keys(grouped).sort(
-    (a, b) => new Date(b) - new Date(a)
-  );
+  const days = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
 
-  // === 2️⃣ Rozdelenie: posledných 7 dní vs staršie ===
-  const now = new Date();
-  const recentDays = [];
-  const olderDays = [];
+  const today = new Date();
+  const RECENT_LIMIT_DAYS = 7;
+
+  let recentHtml = "";
+  let olderHtml  = "";
 
   for (const day of days) {
-    const diff =
-      (now - new Date(day)) / (1000 * 60 * 60 * 24);
-    if (diff <= 7) recentDays.push(day);
-    else olderDays.push(day);
-  }
+    const d = new Date(day);
+    const diffDays = Math.round(
+      (today - d) / (1000 * 60 * 60 * 24)
+    );
 
-  // === 3️⃣ Render funkcia (PÔVODNÝ VZHĽAD, nie tabuľka) ===
-  const renderMatch = (match) => {
-    const home =
-      match.home_team ||
-      match.sport_event?.competitors?.[0]?.name ||
-      "Home";
-    const away =
-      match.away_team ||
-      match.sport_event?.competitors?.[1]?.name ||
-      "Away";
+    const formatted = d.toLocaleDateString("sk-SK", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
 
-    const hs =
-      match.home_score ?? match.sport_event_status?.home_score ?? "-";
-    const as =
-      match.away_score ?? match.sport_event_status?.away_score ?? "-";
-
-    let suffix = "";
-    if (match.outcome === "OT") suffix = " pp";
-    else if (match.outcome === "SO") suffix = " sn";
-
-    const recapId = `recap-${match.id}`;
-
-    return `
-      <div class="nhl-match-row">
-        <div class="nhl-match-teams">
-          <span>${home}</span>
-          <span class="nhl-vs">vs</span>
-          <span>${away}</span>
-        </div>
-        <div class="nhl-match-score">
-          ${hs} : ${as}${suffix}
-        </div>
-        <div class="nhl-match-recap" id="${recapId}">
-          ⏳
-        </div>
-      </div>
+    let dayHtml = `<div class="match-day">
+      <div class="match-day-header">${formatted}</div>
     `;
-  };
 
-  // === 4️⃣ Render RECENT ===
-  for (const day of recentDays) {
-    const formatted = new Date(day).toLocaleDateString("sk-SK");
-    recentBox.innerHTML += `<div class="nhl-date">${formatted}</div>`;
-    grouped[day].forEach(m => {
-      recentBox.innerHTML += renderMatch(m);
-    });
+    for (const match of grouped[day]) {
+      const home =
+        match.home_team ||
+        match.sport_event?.competitors?.[0]?.name ||
+        "Home";
+      const away =
+        match.away_team ||
+        match.sport_event?.competitors?.[1]?.name ||
+        "Away";
+
+      const hs =
+        match.home_score ?? match.sport_event_status?.home_score ?? "-";
+      const as =
+        match.away_score ?? match.sport_event_status?.away_score ?? "-";
+
+      const status = (match.status || match.sport_event_status?.status || "")
+        .toLowerCase();
+
+      let suffix = "";
+      if (match.outcome === "OT") suffix = " pp";
+      else if (match.outcome === "SO") suffix = " sn";
+
+      const recapId = `recap-${match.id}`;
+
+      dayHtml += `
+        <div class="match-row">
+          <div class="match-teams">
+            <span class="match-team">${home}</span>
+            <span class="match-vs">vs</span>
+            <span class="match-team">${away}</span>
+          </div>
+          <div class="match-score">
+            ${hs} : ${as}${suffix.toLowerCase()}
+            <span id="${recapId}" class="match-highlight">
+              ${status === "closed" ? "⏳" : ""}
+            </span>
+          </div>
+        </div>
+      `;
+    }
+
+    dayHtml += `</div>`;
+
+    if (diffDays <= RECENT_LIMIT_DAYS) {
+      recentHtml += dayHtml;
+    } else {
+      olderHtml += dayHtml;
+    }
   }
 
-  // === 5️⃣ Render OLDER (skryté) ===
-  for (const day of olderDays) {
-    const formatted = new Date(day).toLocaleDateString("sk-SK");
-    olderBox.innerHTML += `<div class="nhl-date">${formatted}</div>`;
-    grouped[day].forEach(m => {
-      olderBox.innerHTML += renderMatch(m);
-    });
+  recentBox.innerHTML = recentHtml || `<p class="nhl-muted">Žiadne zápasy za posledný týždeň.</p>`;
+  olderBox.innerHTML  = olderHtml;
+
+  // Nastav tlačidlo "Zobraziť viac" len ak vôbec nejaké staršie dni existujú
+  if (moreBtn) {
+    if (olderHtml) {
+      moreBtn.style.display = "inline-block";
+      if (!matchesExpanded) {
+        olderBox.classList.add("hidden");
+        moreBtn.textContent = "Zobraziť viac ↓";
+      } else {
+        olderBox.classList.remove("hidden");
+        moreBtn.textContent = "Skryť staršie ↑";
+      }
+    } else {
+      moreBtn.style.display = "none";
+    }
   }
 
-  // === 6️⃣ ZOSTRIHY – PÔVODNÁ LOGIKA (NEZMENENÁ) ===
+  // 🎥 Zostrihy – rovnako ako predtým, len do nového HTML
   for (const day of days) {
     for (const match of grouped[day]) {
-      const status =
-        (match.status || match.sport_event_status?.status || "").toLowerCase();
+      const status = (match.status || "").toLowerCase();
       if (status !== "closed") continue;
 
       const home =
@@ -499,31 +519,58 @@ async function displayMatches(matches) {
         if (!cell) continue;
 
         if (data.ok && data.highlight) {
-          cell.innerHTML = `<a href="${data.highlight}" target="_blank">🎥</a>`;
+          cell.innerHTML = `<a href="${data.highlight}" target="_blank" class="highlight-link">🎥</a>`;
         } else {
-          cell.innerHTML = `—`;
+          cell.textContent = "";
         }
-      } catch {
+      } catch (err) {
+        console.warn("⚠️ Chyba zostrihu:", err);
         const cell = document.getElementById(`recap-${match.id}`);
-        if (cell) cell.innerHTML = `❌`;
+        if (cell) cell.textContent = "";
       }
     }
   }
 }
 
-// === Nacitanie tabuliek ===
+// toggle pre button
+function toggleMoreMatches() {
+  const olderBox = document.getElementById("matches-older");
+  const moreBtn  = document.getElementById("matches-more-btn");
+  if (!olderBox || !moreBtn) return;
+
+  matchesExpanded = !matchesExpanded;
+
+  if (matchesExpanded) {
+    olderBox.classList.remove("hidden");
+    moreBtn.textContent = "Skryť staršie ↑";
+  } else {
+    olderBox.classList.add("hidden");
+    moreBtn.textContent = "Zobraziť viac ↓";
+  }
+}
+
+// === NHL STANDINGS (pravý box vo Výsledkoch) ===
 async function loadStandings() {
   const box = document.getElementById("standings-table");
   if (!box) return;
 
-  try {
-    const resp = await fetch(
-      "https://api-web.nhle.com/v1/standings/now",
-      { cache: "no-store" }
-    );
-    const data = await resp.json();
+  box.innerHTML = `<p class="nhl-muted">Načítavam tabuľku…</p>`;
 
-    const rows = data.standings.slice(0, 16);
+  try {
+    const resp = await fetch("/api/standings", { cache: "no-store" });
+    const payload = await resp.json();
+
+    if (!payload.ok) {
+      throw new Error(payload.error || "Nepodarilo sa načítať tabuľku");
+    }
+
+    const data = payload.data || {};
+    const rows = (data.standings || []).slice(0, 16); // prvých 16 tímov
+
+    if (!rows.length) {
+      box.innerHTML = `<p class="nhl-muted">Tabuľka nie je dostupná.</p>`;
+      return;
+    }
 
     box.innerHTML = `
       <table class="standings-table">
@@ -536,18 +583,22 @@ async function loadStandings() {
           </tr>
         </thead>
         <tbody>
-          ${rows.map((t, i) => `
+          ${rows
+            .map(
+              (t, i) => `
             <tr>
               <td>${i + 1}</td>
-              <td>${t.teamName.default}</td>
+              <td>${t.teamName?.default || t.teamAbbrev}</td>
               <td>${t.gamesPlayed}</td>
               <td>${t.points}</td>
-            </tr>
-          `).join("")}
+            </tr>`
+            )
+            .join("")}
         </tbody>
       </table>
     `;
-  } catch (e) {
+  } catch (err) {
+    console.warn("❌ loadStandings:", err);
     box.innerHTML = `<p class="nhl-muted">Chyba tabuľky</p>`;
   }
 }
@@ -1784,8 +1835,8 @@ document.querySelectorAll("nav button").forEach(btn => {
         break;
 
       case "matches-section":
-        fetchMatches();
-        loadStandings();
+        await fetchMatches();
+        await loadStandings();
         break;
 
       case "teams-section":
