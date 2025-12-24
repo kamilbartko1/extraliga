@@ -442,13 +442,11 @@ async function displayMatches(matches) {
   let olderHtml  = "";
 
   // ===============================
-  // Render HTML (bez fetchov)
+  // Render zápasov – SCOREBOARD CARD
   // ===============================
   for (const day of days) {
     const d = new Date(day);
-    const diffDays = Math.round(
-      (today - d) / (1000 * 60 * 60 * 24)
-    );
+    const diffDays = Math.round((today - d) / (1000 * 60 * 60 * 24));
 
     const formatted = d.toLocaleDateString("sk-SK", {
       day: "2-digit",
@@ -462,50 +460,42 @@ async function displayMatches(matches) {
     `;
 
     for (const match of grouped[day]) {
-      const home =
-        match.home_team ||
-        match.sport_event?.competitors?.[0]?.name ||
-        "Home";
+      const home = match.home_team || "Home";
+      const away = match.away_team || "Away";
 
-      const away =
-        match.away_team ||
-        match.sport_event?.competitors?.[1]?.name ||
-        "Away";
+      const hs = match.home_score ?? "-";
+      const as = match.away_score ?? "-";
 
-      const hs =
-        match.home_score ?? match.sport_event_status?.home_score ?? "-";
-
-      const as =
-        match.away_score ?? match.sport_event_status?.away_score ?? "-";
-
-      const status = (match.status || match.sport_event_status?.status || "")
-        .toLowerCase();
+      const status = (match.status || "").toLowerCase();
 
       let suffix = "";
-      if (match.outcome === "OT") suffix = " pp";
-      else if (match.outcome === "SO") suffix = " sn";
+      if (match.outcome === "OT") suffix = "PP";
+      else if (match.outcome === "SO") suffix = "SN";
 
       const recapId = `recap-${match.id}`;
 
       dayHtml += `
-        <div class="match-row">
+        <div class="score-card">
 
-          <div class="match-teams">
-            <div class="team-line">
-              <span class="team-name">${home}</span>
+          <div class="score-team left">
+            <div class="score-name">${home}</div>
+          </div>
+
+          <div class="score-center">
+            <div class="score-status">FINAL</div>
+            <div class="score-main">
+              <span>${hs}</span>
+              <span class="score-sep">:</span>
+              <span>${as}</span>
             </div>
-            <div class="team-line away">
-              <span class="team-name">${away}</span>
+            ${suffix ? `<div class="score-extra">${suffix}</div>` : ``}
+            <div id="${recapId}" class="score-highlight">
+              ${status === "closed" ? "⏳" : ""}
             </div>
           </div>
 
-          <div class="match-score">
-            <div class="score">
-              ${hs} : ${as}<span class="suffix">${suffix.toLowerCase()}</span>
-            </div>
-            <div id="${recapId}" class="match-highlight">
-              ${status === "closed" ? "⏳" : ""}
-            </div>
+          <div class="score-team right">
+            <div class="score-name">${away}</div>
           </div>
 
         </div>
@@ -514,11 +504,8 @@ async function displayMatches(matches) {
 
     dayHtml += `</div>`;
 
-    if (diffDays <= RECENT_LIMIT_DAYS) {
-      recentHtml += dayHtml;
-    } else {
-      olderHtml += dayHtml;
-    }
+    if (diffDays <= RECENT_LIMIT_DAYS) recentHtml += dayHtml;
+    else olderHtml += dayHtml;
   }
 
   recentBox.innerHTML =
@@ -548,17 +535,11 @@ async function displayMatches(matches) {
   // ===============================
   for (const day of days) {
     for (const match of grouped[day]) {
-      const status = (match.status || "").toLowerCase();
-      if (status !== "closed") continue;
-
-      const home =
-        match.home_team ||
-        match.sport_event?.competitors?.[0]?.name ||
-        "Home";
+      if ((match.status || "").toLowerCase() !== "closed") continue;
 
       try {
         const resp = await fetch(
-          `/api/highlights?team=${encodeURIComponent(home)}&id=${match.id}`,
+          `/api/highlights?team=${encodeURIComponent(match.home_team)}&id=${match.id}`,
           { cache: "no-store" }
         );
         const data = await resp.json();
@@ -566,17 +547,11 @@ async function displayMatches(matches) {
         if (!cell) continue;
 
         if (data.ok && data.highlight) {
-          cell.innerHTML = `
-            <a href="${data.highlight}"
-               target="_blank"
-               class="highlight-link"
-               title="Zostrih zápasu">🎥</a>
-          `;
+          cell.innerHTML = `<a href="${data.highlight}" target="_blank" class="highlight-link">🎥</a>`;
         } else {
           cell.textContent = "";
         }
-      } catch (err) {
-        console.warn("⚠️ Chyba zostrihu:", err);
+      } catch {
         const cell = document.getElementById(`recap-${match.id}`);
         if (cell) cell.textContent = "";
       }

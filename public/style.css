@@ -5545,6 +5545,86 @@ body {
   transform: scale(1.05);
 }
 
+/* ===== SCOREBOARD CARDS ===== */
+
+.score-card{
+  display:grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items:center;
+  gap:18px;
+  padding:16px 20px;
+  margin:12px 0;
+  border-radius:20px;
+  background: linear-gradient(180deg, #0f1c26, #0a141d);
+  box-shadow: 0 18px 40px rgba(0,0,0,.45);
+}
+
+.score-team{
+  display:flex;
+  align-items:center;
+}
+.score-team.right{
+  justify-content:flex-end;
+  text-align:right;
+}
+
+.score-name{
+  font-size:1rem;
+  font-weight:600;
+  color:#fff;
+  white-space:nowrap;
+}
+
+.score-center{
+  text-align:center;
+  min-width:120px;
+}
+
+.score-status{
+  font-size:.65rem;
+  letter-spacing:1px;
+  opacity:.55;
+  margin-bottom:4px;
+}
+
+.score-main{
+  font-size:1.9rem;
+  font-weight:800;
+  line-height:1;
+}
+
+.score-sep{
+  opacity:.4;
+  padding:0 6px;
+}
+
+.score-extra{
+  font-size:.7rem;
+  opacity:.6;
+  margin-top:2px;
+}
+
+.score-highlight{
+  margin-top:6px;
+}
+
+.highlight-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.35);
+  background: rgba(0,0,0,.35);
+  color:#ffcc66;
+  text-decoration:none;
+}
+.highlight-link:hover{
+  background: rgba(255,204,102,.18);
+  border-color:#ffcc66;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
