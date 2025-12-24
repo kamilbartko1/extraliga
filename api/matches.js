@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 // === Middleware ===
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../public"))); // ✅ frontend = public
+app.use(express.static(path.join(__dirname, "../public"))); // frontend = public
 
 // === KONŠTANTY PRE RATING ===
 const START_TEAM_RATING = 1500;
@@ -36,6 +36,7 @@ const formatDate = (d) => {
   const dd = String(d.getDate()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd}`;
 };
+
 function getDaysRange(fromStr, toStr) {
   const start = new Date(fromStr);
   const end = new Date(toStr);
@@ -45,11 +46,13 @@ function getDaysRange(fromStr, toStr) {
   }
   return days;
 }
+
 function chunk(array, size) {
   const out = [];
   for (let i = 0; i < array.length; i += size) out.push(array.slice(i, i + size));
   return out;
 }
+
 function toiToMinutes(toi) {
   if (!toi) return 0;
   const parts = String(toi).split(":").map(Number);
@@ -64,7 +67,7 @@ let cacheTime = 0;
 let cacheKey = "";
 
 // ======================================================
-// ENDPOINT: /api/matches
+// ENDPOINT: /api/matches  (ROZŠÍRENÝ O STANDINGS)
 // ======================================================
 app.get("/api/matches", async (req, res) => {
   try {
@@ -76,6 +79,7 @@ app.get("/api/matches", async (req, res) => {
     const key = `${from}_${to}`;
     const now = Date.now();
 
+    // === CACHE HIT ===
     if (!refresh && cacheData && cacheKey === key && now - cacheTime < 3 * 60 * 60 * 1000) {
       console.log(`⚡ Cache hit (${from}–${to})`);
       return res.json(cacheData);
@@ -88,6 +92,7 @@ app.get("/api/matches", async (req, res) => {
     const teamRatings = {};
     const playerRatings = {};
 
+    // === SCOREBOARD ===
     const batches = chunk(days, 4);
     for (const batch of batches) {
       const results = await Promise.allSettled(
@@ -105,12 +110,10 @@ app.get("/api/matches", async (req, res) => {
             const hs = g.homeTeam?.score ?? 0;
             const as = g.awayTeam?.score ?? 0;
 
-            // zisti OT / SO z API
             let outcome = null;
             if (g.gameOutcome?.lastPeriodType === "OT") outcome = "OT";
             if (g.gameOutcome?.lastPeriodType === "SO") outcome = "SO";
 
-            // uložíme zápas aj s outcome
             matches.push({
               id: g.id,
               date: day,
@@ -119,10 +122,9 @@ app.get("/api/matches", async (req, res) => {
               away_team: away,
               home_score: hs,
               away_score: as,
-              outcome,  // 🔥 pridali sme OT / SO / null
+              outcome,
             });
 
-            // rating tímov
             if (!teamRatings[home]) teamRatings[home] = START_TEAM_RATING;
             if (!teamRatings[away]) teamRatings[away] = START_TEAM_RATING;
 
@@ -139,15 +141,15 @@ app.get("/api/matches", async (req, res) => {
           }
         })
       );
+
       results.forEach((r, i) => {
-        if (r.status === "rejected")
+        if (r.status === "rejected") {
           console.warn(`⚠️ ${batch[i]}: ${r.reason?.message || r.reason}`);
+        }
       });
     }
 
-    console.log(`✅ Zápasov: ${matches.length} | počítam hráčov...`);
-
-    // === Boxscore rating hráčov (limit 6 paralelne) ===
+    // === BOXSCORE – HRÁČI ===
     const CONCURRENCY = 6;
     let index = 0;
 
@@ -160,39 +162,26 @@ app.get("/api/matches", async (req, res) => {
           const resp = await axios.get(boxUrl, { timeout: 100000 });
           const box = resp.data;
 
-          const homePlayers = Array.isArray(box?.playerByGameStats?.homeTeam?.forwards)
-            ? box.playerByGameStats.homeTeam.forwards
-            : [];
-          const homeDef = Array.isArray(box?.playerByGameStats?.homeTeam?.defense)
-            ? box.playerByGameStats.homeTeam.defense
-            : [];
-          const awayPlayers = Array.isArray(box?.playerByGameStats?.awayTeam?.forwards)
-            ? box.playerByGameStats.awayTeam.forwards
-            : [];
-          const awayDef = Array.isArray(box?.playerByGameStats?.awayTeam?.defense)
-            ? box.playerByGameStats.awayTeam.defense
-            : [];
-
-          const all = [...homePlayers, ...homeDef, ...awayPlayers, ...awayDef];
+          const all = [
+            ...(box?.playerByGameStats?.homeTeam?.forwards || []),
+            ...(box?.playerByGameStats?.homeTeam?.defense || []),
+            ...(box?.playerByGameStats?.awayTeam?.forwards || []),
+            ...(box?.playerByGameStats?.awayTeam?.defense || []),
+          ];
 
           for (const p of all) {
             const name =
               p?.name?.default ||
               [p?.firstName?.default, p?.lastName?.default].filter(Boolean).join(" ").trim();
-            if (!name) continue;
 
+            if (!name) continue;
             if (!playerRatings[name]) playerRatings[name] = START_PLAYER_RATING;
 
-            const goals = Number(p.goals || 0);
-            const assists = Number(p.assists || 0);
-            const ppGoals = Number(p.powerPlayGoals || 0);
-            const toi = toiToMinutes(p.toi);
-
             playerRatings[name] +=
-              goals * GOAL_POINTS +
-              assists * ASSIST_POINTS +
-              ppGoals * PP_GOAL_POINTS +
-              toi * TOI_PER_MIN;
+              (p.goals || 0) * GOAL_POINTS +
+              (p.assists || 0) * ASSIST_POINTS +
+              (p.powerPlayGoals || 0) * PP_GOAL_POINTS +
+              toiToMinutes(p.toi) * TOI_PER_MIN;
           }
         } catch (err) {
           console.warn(`⚠️ boxscore ${game.id}: ${err.message}`);
@@ -200,8 +189,7 @@ app.get("/api/matches", async (req, res) => {
       }
     }
 
-    const workers = Array(CONCURRENCY).fill(0).map(() => worker());
-    await Promise.all(workers);
+    await Promise.all(Array(CONCURRENCY).fill(0).map(worker));
 
     const topPlayers = Object.entries(playerRatings)
       .sort((a, b) => b[1] - a[1])
@@ -211,7 +199,25 @@ app.get("/api/matches", async (req, res) => {
         return acc;
       }, {});
 
-    const result = { matches, teamRatings, playerRatings: topPlayers };
+    // === STANDINGS (SERVER → SERVER, FAIL-SAFE) ===
+    let standings = [];
+    try {
+      const s = await axios.get(
+        "https://api-web.nhle.com/v1/standings/now",
+        { timeout: 10000 }
+      );
+      standings = Array.isArray(s.data?.standings) ? s.data.standings : [];
+    } catch (e) {
+      console.warn("⚠️ standings fetch failed:", e.message);
+    }
+
+    const result = {
+      matches,
+      teamRatings,
+      playerRatings: topPlayers,
+      standings, // 👈 JEDINÁ PRIDANÁ VEC
+    };
+
     cacheData = result;
     cacheKey = key;
     cacheTime = Date.now();

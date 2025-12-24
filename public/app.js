@@ -336,48 +336,73 @@ function computeTeamRatings(matches) {
 // === Hlavné načítanie ===
 async function fetchMatches() {
   const statusEl = document.getElementById("load-status");
-  if (statusEl) statusEl.textContent = "⏳ Načítavam zápasy a ratingy...";
+  if (statusEl) {
+    statusEl.textContent = "⏳ Načítavam zápasy a ratingy...";
+  }
 
   try {
-    const response = await fetch(`${API_BASE}/api/matches`);
+    const response = await fetch(`${API_BASE}/api/matches`, {
+      cache: "no-store",
+    });
 
     if (!response.ok) {
       const txt = await response.text();
       console.error("❌ Server vrátil chybu:", txt);
-      if (statusEl) statusEl.textContent = "❌ Server vrátil chybu pri načítaní dát.";
+      if (statusEl) {
+        statusEl.textContent = "❌ Server vrátil chybu pri načítaní dát.";
+      }
       return;
     }
 
     const data = await response.json();
     console.log("✅ Dáta z backendu:", data);
 
+    // === STATUS TEXT ===
     const totalGames = Array.isArray(data.matches) ? data.matches.length : 0;
-    const totalPlayers = data.playerRatings ? Object.keys(data.playerRatings).length : 0;
-    if (statusEl)
-      statusEl.textContent = `✅ Dokončené: ${totalGames} zápasov | ${totalPlayers} hráčov v rebríčku`;
+    const totalPlayers = data.playerRatings
+      ? Object.keys(data.playerRatings).length
+      : 0;
 
-    allMatches = Array.isArray(data.matches) ? data.matches : [];
-    
-    if (!allMatches.length) {
-      console.warn("⚠️ Žiadne zápasy v data.matches");
-      if (statusEl) statusEl.textContent = "⚠️ Žiadne odohrané zápasy";
+    if (statusEl) {
+      statusEl.textContent = `✅ Dokončené: ${totalGames} zápasov | ${totalPlayers} hráčov v rebríčku`;
     }
 
-    displayMatches(allMatches);
+    // === ZÁPASY ===
+    allMatches = Array.isArray(data.matches) ? data.matches : [];
+
+    if (!allMatches.length) {
+      console.warn("⚠️ Žiadne zápasy v data.matches");
+      if (statusEl) {
+        statusEl.textContent = "⚠️ Žiadne odohrané zápasy";
+      }
+    } else {
+      displayMatches(allMatches);
+    }
+
+    // === RATINGY ===
     teamRatings = data.teamRatings || {};
     playerRatings = data.playerRatings || {};
+
     displayPlayerRatings();
     displayMantingal();
-    loadStandings();
+
+    // === NHL STANDINGS (NOVÉ – LEN RENDER, ŽIADNY FETCH) ===
+    if (Array.isArray(data.standings)) {
+      renderStandings(data.standings);
+    } else {
+      console.warn("⚠️ Standings nie sú v odpovedi backendu");
+    }
 
   } catch (err) {
     console.error("❌ Chyba pri načítaní zápasov:", err);
-    if (statusEl)
-      statusEl.textContent = "❌ Chyba pri načítaní dát. Skús obnoviť stránku.";
+    if (statusEl) {
+      statusEl.textContent =
+        "❌ Chyba pri načítaní dát. Skús obnoviť stránku.";
+    }
   }
 }
 
-let matchesExpanded = false; // globalny flag pre Zobraziť viac
+let matchesExpanded = false; // globálny flag pre Zobraziť viac
 
 // === Zápasy ===
 async function displayMatches(matches) {
@@ -550,69 +575,45 @@ function toggleMoreMatches() {
   }
 }
 
-// === NHL STANDINGS (pravý box vo Výsledkoch) ===
-async function loadStandings() {
+function renderStandings(standings) {
   const box = document.getElementById("standings-table");
   if (!box) return;
 
-  box.innerHTML = `<p class="nhl-muted">Načítavam tabuľku NHL…</p>`;
-
-  try {
-    const resp = await fetch("https://api-web.nhle.com/v1/standings/now", {
-      cache: "no-store",
-    });
-
-    if (!resp.ok) throw new Error("NHL API error");
-
-    const data = await resp.json();
-
-    if (!Array.isArray(data.standings) || data.standings.length === 0) {
-      box.innerHTML = `<p class="nhl-muted">Tabuľka nie je dostupná.</p>`;
-      return;
-    }
-
-    // 🔥 celkové poradie ligy (top 16 pre box)
-    const rows = data.standings
-      .slice() // bezpečná kópia
-      .sort((a, b) => b.points - a.points)
-      .slice(0, 16);
-
-    box.innerHTML = `
-      <table class="standings-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Tím</th>
-            <th>Z</th>
-            <th>B</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rows.map((t, i) => {
-            const teamName =
-              t.teamName?.default ||
-              `${t.placeName?.default || ""} ${t.teamCommonName?.default || ""}`.trim() ||
-              "Tím";
-
-            return `
-              <tr>
-                <td>${i + 1}</td>
-                <td class="team-cell">
-                  <img src="${t.teamLogo}" alt="${teamName}">
-                  <span>${teamName}</span>
-                </td>
-                <td>${t.gamesPlayed ?? "-"}</td>
-                <td class="points">${t.points ?? 0}</td>
-              </tr>
-            `;
-          }).join("")}
-        </tbody>
-      </table>
-    `;
-  } catch (err) {
-    console.error("❌ Standings error:", err);
-    box.innerHTML = `<p class="nhl-muted">Chyba tabuľky NHL</p>`;
+  if (!Array.isArray(standings) || standings.length === 0) {
+    box.innerHTML = `<p class="nhl-muted">Tabuľka nie je dostupná.</p>`;
+    return;
   }
+
+  const rows = standings
+    .slice()
+    .sort((a, b) => b.points - a.points)
+    .slice(0, 16);
+
+  box.innerHTML = `
+    <table class="standings-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Tím</th>
+          <th>Z</th>
+          <th>B</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map((t, i) => `
+          <tr>
+            <td>${i + 1}</td>
+            <td class="team-cell">
+              <img src="${t.teamLogo}">
+              ${t.teamName?.default || "Tím"}
+            </td>
+            <td>${t.gamesPlayed}</td>
+            <td class="points">${t.points}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
 }
 
 // === RATING TÍMOV ===
