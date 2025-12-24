@@ -5692,6 +5692,48 @@ body {
   opacity:1;
 }
 
+/* ===============================
+   MOBILE COMPACT MODE
+================================ */
+@media (max-width: 600px) {
+
+  .score-row {
+    padding: 8px 10px;
+    margin: 5px 0;
+    border-radius: 12px;
+  }
+
+  .team-name {
+    font-size: 0.8rem;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .team-logo {
+    width: 16px;
+    height: 16px;
+  }
+
+  .score-center {
+    font-size: 1rem;
+  }
+
+  .score {
+    font-size: 1.1rem;
+  }
+
+  .highlight-link {
+    font-size: 0.8rem;
+  }
+
+  .match-day-header {
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
