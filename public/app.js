@@ -1423,7 +1423,7 @@ async function loadPremiumPlayers() {
   <td>${formatPlayerName(name)}</td>
   <td>${p.stake}</td>
   <td>${p.streak}</td>
-  <td>${Number(p.balance).toFixed(2)} €</td>
+  <td class="balance">${Number(p.balance).toFixed(2)} €</td>
   <td>${Number(p.odds || 2.2).toFixed(2)}</td>
 
   <td class="premium-actions">
@@ -1488,7 +1488,7 @@ async function showVipMantingalDetail(player) {
           <td>${h.goals === null ? "-" : h.goals}</td>
           <td>${h.result}</td>
           <td>${h.profitChange}</td>
-          <td>${h.balanceAfter}</td>
+          <td class="balance">${h.balanceAfter}</td>
         </tr>
       `;
     });
