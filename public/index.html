@@ -61,37 +61,43 @@
 <!-- 🏒 Výsledky + Standings -->
 <div class="section" id="matches-section">
 
-  <h2>Výsledky & tabuľka NHL</h2>
+  <h2 class="section-title">Výsledky & tabuľka NHL</h2>
 
   <div class="matches-layout">
 
-    <!-- LEFT: VÝSLEDKY -->
+    <!-- ================= LEFT: VÝSLEDKY ================= -->
     <div class="matches-left">
 
       <div class="matches-box">
-        <h3>Posledné zápasy (7 dní)</h3>
+        <h3 class="box-title">Posledné zápasy (7 dní)</h3>
 
-        <div id="matches-recent"></div>
+        <!-- POSLEDNÉ ZÁPASY -->
+        <div id="matches-recent" class="matches-list"></div>
 
-        <button
-          id="matches-more-btn"
-          class="nhl-btn nhl-btn-ghost"
-          onclick="toggleMoreMatches()"
-        >
-          Zobraziť viac ↓
-        </button>
+        <!-- BUTTON -->
+        <div class="matches-actions">
+          <button
+            id="matches-more-btn"
+            class="nhl-btn nhl-btn-ghost"
+            onclick="toggleMoreMatches()"
+          >
+            Zobraziť viac ↓
+          </button>
+        </div>
 
-        <div id="matches-older" class="hidden"></div>
+        <!-- STARŠIE ZÁPASY -->
+        <div id="matches-older" class="matches-list hidden"></div>
       </div>
 
     </div>
 
-    <!-- RIGHT: STANDINGS -->
+    <!-- ================= RIGHT: TABUĽKA ================= -->
     <div class="matches-right">
 
       <div class="standings-box">
-        <h3>Tabuľka NHL</h3>
-        <div id="standings-table">
+        <h3 class="box-title">Tabuľka NHL</h3>
+
+        <div id="standings-table" class="standings-wrapper">
           <p class="nhl-muted">Načítavam tabuľku…</p>
         </div>
       </div>
