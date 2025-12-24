@@ -5836,6 +5836,28 @@ body {
   }
 }
 
+/* pravý stĺpec tímu */
+.team-right {
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ikonka videa */
+.highlight-slot {
+  display: flex;
+  align-items: center;
+  margin-left: 6px;
+}
+
+.highlight-link {
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+.highlight-link:hover {
+  opacity: 1;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
