@@ -422,7 +422,7 @@ async function displayMatches(matches) {
   }
 
   // ===============================
-  // MAPA NÁZOV → SKRATKA (LOKÁLNE)
+  // MAPA NÁZOV → SKRATKA
   // ===============================
   const TEAM_NAME_TO_ABBREV = {
     "Maple Leafs":"TOR","Penguins":"PIT","Red Wings":"DET","Stars":"DAL",
@@ -432,7 +432,8 @@ async function displayMatches(matches) {
     "Blackhawks":"CHI","Flyers":"PHI","Avalanche":"COL","Oilers":"EDM",
     "Flames":"CGY","Golden Knights":"VGK","Kings":"LAK","Kraken":"SEA",
     "Sharks":"SJS","Ducks":"ANA","Lightning":"TBL","Jets":"WPG",
-    "Coyotes":"ARI","Blues":"STL","Blue Jackets":"CBJ"
+    "Coyotes":"ARI","Blues":"STL","Blue Jackets":"CBJ",
+    "Mammoth":"UTA"
   };
 
   // ===============================
@@ -479,39 +480,39 @@ async function displayMatches(matches) {
 
       const recapId = `recap-${match.id}`;
 
-      const homeAbbr = TEAM_NAME_TO_ABBREV[home];
-      const awayAbbr = TEAM_NAME_TO_ABBREV[away];
+      const homeAbbr = TEAM_NAME_TO_ABBREV[home] || home.slice(0,3).toUpperCase();
+      const awayAbbr = TEAM_NAME_TO_ABBREV[away] || away.slice(0,3).toUpperCase();
 
-      const homeLogo = homeAbbr
+      const homeLogo = TEAM_NAME_TO_ABBREV[home]
         ? `https://assets.nhle.com/logos/nhl/svg/${homeAbbr}_light.svg`
         : "";
 
-      const awayLogo = awayAbbr
+      const awayLogo = TEAM_NAME_TO_ABBREV[away]
         ? `https://assets.nhle.com/logos/nhl/svg/${awayAbbr}_light.svg`
         : "";
 
-         dayHtml += `
-  <div class="score-row">
+      dayHtml += `
+        <div class="score-row">
 
-    <div class="team team-left">
-      ${homeLogo ? `<img src="${homeLogo}" class="team-logo" alt="${home}">` : ""}
-      <span class="team-name">${home}</span>
-    </div>
+          <div class="team team-left">
+            ${homeLogo ? `<img src="${homeLogo}" class="team-logo" alt="${home}">` : ""}
+            <span class="team-name">${homeAbbr}</span>
+          </div>
 
-    <div class="score-center">
-      <span class="score ${homeWin ? "win" : ""}">${hs}</span>
-      <span class="sep">:</span>
-      <span class="score ${awayWin ? "win" : ""}">${as}</span>
-    </div>
+          <div class="score-center">
+            <span class="score ${homeWin ? "win" : ""}">${hs}</span>
+            <span class="sep">:</span>
+            <span class="score ${awayWin ? "win" : ""}">${as}</span>
+          </div>
 
-    <div class="team team-right">
-      <span class="team-name">${away}</span>
-      ${awayLogo ? `<img src="${awayLogo}" class="team-logo" alt="${away}">` : ""}
-      <div id="${recapId}" class="highlight-slot"></div>
-    </div>
+          <div class="team team-right">
+            <span class="team-name">${awayAbbr}</span>
+            ${awayLogo ? `<img src="${awayLogo}" class="team-logo" alt="${away}">` : ""}
+            <div id="${recapId}" class="highlight-slot"></div>
+          </div>
 
-  </div>
-`;
+        </div>
+      `;
     }
 
     dayHtml += `</div>`;
@@ -542,7 +543,7 @@ async function displayMatches(matches) {
   }
 
   // ===============================
-  // 🎥 Zostrihy (nezmenené)
+  // 🎥 Zostrihy – BEZ ZMENY LOGIKY
   // ===============================
   for (const day of days) {
     for (const match of grouped[day]) {

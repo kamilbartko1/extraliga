@@ -5858,6 +5858,16 @@ body {
   opacity: 1;
 }
 
+.score-row {
+  padding: 8px 10px;
+  margin-bottom: 6px;
+}
+
+.team-name {
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
