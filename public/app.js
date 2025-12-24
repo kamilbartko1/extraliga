@@ -1493,6 +1493,15 @@ async function showVipMantingalDetail(player) {
       `;
     });
 
+     // 🎨 Zafarbenie balance (plus / mínus)
+tbody.querySelectorAll("td.balance").forEach(td => {
+  const value = parseFloat(td.textContent.replace(",", "."));
+  if (isNaN(value)) return;
+
+  if (value > 0) td.classList.add("balance-plus");
+  else if (value < 0) td.classList.add("balance-minus");
+});
+
   const detailBox = document.getElementById("vip-mantingale-detail");
   detailBox.classList.remove("hidden");
 
