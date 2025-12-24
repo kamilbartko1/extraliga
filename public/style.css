@@ -5820,26 +5820,6 @@ body {
   font-size: 1rem;
 }
 
-.score-row {
-  display: grid;
-  grid-template-columns: 1fr 88px 1.25fr;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 10px;
-  margin-bottom: 6px;
-  border-radius: 14px;
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,0.04),
-    rgba(0,0,0,0.25)
-  );
-}
-
-.score-center {
-  justify-content: center;
-  text-align: center;
-}
-
 /* === MOBILE TWEAK === */
 @media (max-width: 600px) {
   .score-row {
@@ -5886,6 +5866,26 @@ body {
 .team-name {
   font-size: 0.85rem;
   letter-spacing: 0.04em;
+}
+
+.score-row {
+  display: grid;
+  grid-template-columns: 1fr 88px 1.25fr;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border-radius: 14px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.04),
+    rgba(0,0,0,0.25)
+  );
+}
+
+.score-center {
+  justify-content: center;
+  text-align: center;
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
