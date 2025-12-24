@@ -422,6 +422,20 @@ async function displayMatches(matches) {
   }
 
   // ===============================
+  // MAPA NÁZOV → SKRATKA (LOKÁLNE)
+  // ===============================
+  const TEAM_NAME_TO_ABBREV = {
+    "Maple Leafs":"TOR","Penguins":"PIT","Red Wings":"DET","Stars":"DAL",
+    "Capitals":"WSH","Rangers":"NYR","Bruins":"BOS","Canadiens":"MTL",
+    "Senators":"OTT","Sabres":"BUF","Islanders":"NYI","Devils":"NJD",
+    "Hurricanes":"CAR","Panthers":"FLA","Wild":"MIN","Predators":"NSH",
+    "Blackhawks":"CHI","Flyers":"PHI","Avalanche":"COL","Oilers":"EDM",
+    "Flames":"CGY","Golden Knights":"VGK","Kings":"LAK","Kraken":"SEA",
+    "Sharks":"SJS","Ducks":"ANA","Lightning":"TBL","Jets":"WPG",
+    "Coyotes":"ARI","Blues":"STL","Blue Jackets":"CBJ"
+  };
+
+  // ===============================
   // Zoskupenie podľa dátumu
   // ===============================
   const grouped = {};
@@ -465,13 +479,22 @@ async function displayMatches(matches) {
 
       const recapId = `recap-${match.id}`;
 
+      const homeAbbr = TEAM_NAME_TO_ABBREV[home];
+      const awayAbbr = TEAM_NAME_TO_ABBREV[away];
+
+      const homeLogo = homeAbbr
+        ? `https://assets.nhle.com/logos/nhl/svg/${homeAbbr}_light.svg`
+        : "";
+
+      const awayLogo = awayAbbr
+        ? `https://assets.nhle.com/logos/nhl/svg/${awayAbbr}_light.svg`
+        : "";
+
       dayHtml += `
         <div class="score-row">
 
           <div class="team left">
-            <img src="https://assets.nhle.com/logos/nhl/svg/${match.home_abbrev}_light.svg"
-                 class="team-logo"
-                 alt="${home}">
+            ${homeLogo ? `<img src="${homeLogo}" class="team-logo" alt="${home}">` : ""}
             <span class="team-name">${home}</span>
           </div>
 
@@ -484,9 +507,7 @@ async function displayMatches(matches) {
 
           <div class="team right">
             <span class="team-name">${away}</span>
-            <img src="https://assets.nhle.com/logos/nhl/svg/${match.away_abbrev}_light.svg"
-                 class="team-logo"
-                 alt="${away}">
+            ${awayLogo ? `<img src="${awayLogo}" class="team-logo" alt="${away}">` : ""}
           </div>
 
         </div>
