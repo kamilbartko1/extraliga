@@ -1445,13 +1445,7 @@ async function loadPremiumPlayers() {
       tbody.appendChild(tr);
     }
 
-  } catch (err) {
-    console.error(err);
-    if (msg) msg.textContent = "Chyba pri načítaní hráčov.";
-  }
-}
-
- // 🎨 Zafarbenie balance (plus / mínus)
+     // 🎨 Zafarbenie balance (plus / mínus)
 tbody.querySelectorAll("td.balance").forEach(td => {
   const value = parseFloat(td.textContent.replace(",", "."));
   if (isNaN(value)) return;
@@ -1459,6 +1453,12 @@ tbody.querySelectorAll("td.balance").forEach(td => {
   if (value > 0) td.classList.add("balance-plus");
   else if (value < 0) td.classList.add("balance-minus");
 });
+
+  } catch (err) {
+    console.error(err);
+    if (msg) msg.textContent = "Chyba pri načítaní hráčov.";
+  }
+}
 
 // ===================================
 // 👑 VIP – HISTÓRIA HRÁČA
