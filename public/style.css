@@ -5625,6 +5625,73 @@ body {
   border-color:#ffcc66;
 }
 
+/* ===== COMPACT SCORE ROW ===== */
+
+.score-row{
+  display:grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items:center;
+  padding:10px 14px;
+  margin:6px 0;
+  border-radius:14px;
+  background: linear-gradient(180deg, #0f1b24, #0b141c);
+  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+}
+
+.team{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.team.right{
+  justify-content:flex-end;
+  text-align:right;
+}
+
+.team-logo{
+  width:20px;
+  height:20px;
+}
+
+.team-name{
+  font-size:.9rem;
+  font-weight:600;
+  color:#fff;
+  white-space:nowrap;
+}
+
+.score-center{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:1.2rem;
+  font-weight:800;
+}
+
+.sep{
+  opacity:.5;
+}
+
+.score{
+  color:#e6e6e6;
+}
+.score.win{
+  color:#00ff9c;
+}
+
+.highlight-slot{
+  margin-left:8px;
+}
+
+.highlight-link{
+  font-size:.9rem;
+  text-decoration:none;
+  opacity:.85;
+}
+.highlight-link:hover{
+  opacity:1;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {

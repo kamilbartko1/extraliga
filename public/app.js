@@ -426,24 +426,18 @@ async function displayMatches(matches) {
   // ===============================
   const grouped = {};
   for (const m of matches) {
-    const date =
-      m.date ||
-      new Date(m.sport_event?.start_time || "").toISOString().slice(0, 10);
+    const date = m.date;
     if (!grouped[date]) grouped[date] = [];
     grouped[date].push(m);
   }
 
   const days = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
-
   const today = new Date();
   const RECENT_LIMIT_DAYS = 7;
 
   let recentHtml = "";
   let olderHtml  = "";
 
-  // ===============================
-  // Render zápasov – SCOREBOARD CARD
-  // ===============================
   for (const day of days) {
     const d = new Date(day);
     const diffDays = Math.round((today - d) / (1000 * 60 * 60 * 24));
@@ -460,42 +454,39 @@ async function displayMatches(matches) {
     `;
 
     for (const match of grouped[day]) {
-      const home = match.home_team || "Home";
-      const away = match.away_team || "Away";
+      const home = match.home_team;
+      const away = match.away_team;
 
       const hs = match.home_score ?? "-";
       const as = match.away_score ?? "-";
 
-      const status = (match.status || "").toLowerCase();
-
-      let suffix = "";
-      if (match.outcome === "OT") suffix = "PP";
-      else if (match.outcome === "SO") suffix = "SN";
+      const homeWin = hs > as;
+      const awayWin = as > hs;
 
       const recapId = `recap-${match.id}`;
 
       dayHtml += `
-        <div class="score-card">
+        <div class="score-row">
 
-          <div class="score-team left">
-            <div class="score-name">${home}</div>
+          <div class="team left">
+            <img src="https://assets.nhle.com/logos/nhl/svg/${match.home_abbrev}_light.svg"
+                 class="team-logo"
+                 alt="${home}">
+            <span class="team-name">${home}</span>
           </div>
 
           <div class="score-center">
-            <div class="score-status">FINAL</div>
-            <div class="score-main">
-              <span>${hs}</span>
-              <span class="score-sep">:</span>
-              <span>${as}</span>
-            </div>
-            ${suffix ? `<div class="score-extra">${suffix}</div>` : ``}
-            <div id="${recapId}" class="score-highlight">
-              ${status === "closed" ? "⏳" : ""}
-            </div>
+            <span class="score ${homeWin ? "win" : ""}">${hs}</span>
+            <span class="sep">:</span>
+            <span class="score ${awayWin ? "win" : ""}">${as}</span>
+            <div id="${recapId}" class="highlight-slot"></div>
           </div>
 
-          <div class="score-team right">
-            <div class="score-name">${away}</div>
+          <div class="team right">
+            <span class="team-name">${away}</span>
+            <img src="https://assets.nhle.com/logos/nhl/svg/${match.away_abbrev}_light.svg"
+                 class="team-logo"
+                 alt="${away}">
           </div>
 
         </div>
@@ -508,12 +499,11 @@ async function displayMatches(matches) {
     else olderHtml += dayHtml;
   }
 
-  recentBox.innerHTML =
-    recentHtml || `<p class="nhl-muted">Žiadne zápasy za posledný týždeň.</p>`;
-  olderBox.innerHTML = olderHtml;
+  recentBox.innerHTML = recentHtml;
+  olderBox.innerHTML  = olderHtml;
 
   // ===============================
-  // Zobraziť / skryť staršie
+  // Toggle starších
   // ===============================
   if (moreBtn) {
     if (olderHtml) {
@@ -531,7 +521,7 @@ async function displayMatches(matches) {
   }
 
   // ===============================
-  // 🎥 Zostrihy – BEZ ZMENY LOGIKY
+  // 🎥 Zostrihy (nezmenené)
   // ===============================
   for (const day of days) {
     for (const match of grouped[day]) {
@@ -548,13 +538,8 @@ async function displayMatches(matches) {
 
         if (data.ok && data.highlight) {
           cell.innerHTML = `<a href="${data.highlight}" target="_blank" class="highlight-link">🎥</a>`;
-        } else {
-          cell.textContent = "";
         }
-      } catch {
-        const cell = document.getElementById(`recap-${match.id}`);
-        if (cell) cell.textContent = "";
-      }
+      } catch {}
     }
   }
 }
