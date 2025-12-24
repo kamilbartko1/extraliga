@@ -816,12 +816,21 @@ async function loadMantingal() {
       <td>${name}</td>
       <td>${p.stake}</td>
       <td>${p.streak}</td>
-      <td>${p.balance.toFixed(2)}</td>
+      <td class="balance">${p.balance.toFixed(2)}</td>
       <td><button class="mtg-detail-btn" data-player="${name}">Detail</button></td>
     `;
 
     tbody.appendChild(tr);
   });
+
+  // 🎨 Zafarbenie balance (plus / mínus)
+tbody.querySelectorAll("td.balance").forEach(td => {
+  const value = parseFloat(td.textContent.replace(",", "."));
+  if (isNaN(value)) return;
+
+  if (value > 0) td.classList.add("balance-plus");
+  else if (value < 0) td.classList.add("balance-minus");
+});
 
   // kliknutie na detail hráča
   document.querySelectorAll(".mtg-detail-btn").forEach((btn) => {
