@@ -433,7 +433,7 @@ async function displayMatches(matches) {
     "Flames":"CGY","Golden Knights":"VGK","Kings":"LAK","Kraken":"SEA",
     "Sharks":"SJS","Ducks":"ANA","Lightning":"TBL","Jets":"WPG",
     "Coyotes":"ARI","Blues":"STL","Blue Jackets":"CBJ",
-    "Mammoth":"UTA"
+    "Mammoth":"UTA","Canucks":"VAN"
   };
 
   // ===============================
