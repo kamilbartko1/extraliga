@@ -554,20 +554,19 @@ async function loadStandings() {
   const box = document.getElementById("standings-table");
   if (!box) return;
 
-  box.innerHTML = `<p class="nhl-muted">Načítavam tabuľku…</p>`;
+  box.innerHTML = `<p class="nhl-muted">Načítavam tabuľku NHL…</p>`;
 
   try {
-    const resp = await fetch("/api/matches", { cache: "no-store" });
-    const payload = await resp.json();
+    const resp = await fetch("https://api-web.nhle.com/v1/standings/now", {
+      cache: "no-store"
+    });
 
-    if (!payload.ok) {
-      throw new Error(payload.error || "Nepodarilo sa načítať tabuľku");
-    }
+    if (!resp.ok) throw new Error("NHL standings error");
 
-    const data = payload.data || {};
-    const rows = (data.standings || []).slice(0, 16); // prvých 16 tímov
+    const data = await resp.json();
+    const rows = data.standings?.slice(0, 16);
 
-    if (!rows.length) {
+    if (!rows || !rows.length) {
       box.innerHTML = `<p class="nhl-muted">Tabuľka nie je dostupná.</p>`;
       return;
     }
@@ -583,23 +582,20 @@ async function loadStandings() {
           </tr>
         </thead>
         <tbody>
-          ${rows
-            .map(
-              (t, i) => `
+          ${rows.map((t, i) => `
             <tr>
               <td>${i + 1}</td>
-              <td>${t.teamName?.default || t.teamAbbrev}</td>
+              <td>${t.teamName.default}</td>
               <td>${t.gamesPlayed}</td>
               <td>${t.points}</td>
-            </tr>`
-            )
-            .join("")}
+            </tr>
+          `).join("")}
         </tbody>
       </table>
     `;
   } catch (err) {
-    console.warn("❌ loadStandings:", err);
-    box.innerHTML = `<p class="nhl-muted">Chyba tabuľky</p>`;
+    console.warn("Standings error:", err);
+    box.innerHTML = `<p class="nhl-muted">Chyba tabuľky NHL</p>`;
   }
 }
 
@@ -1835,8 +1831,7 @@ document.querySelectorAll("nav button").forEach(btn => {
         break;
 
       case "matches-section":
-        await fetchMatches();
-        await loadStandings();
+        fetchMatches();
         break;
 
       case "teams-section":
@@ -2114,5 +2109,6 @@ document.getElementById("premium-add-player-btn")
   setTimeout(() => {
     console.log("🔁 Aktualizujem dáta po načítaní...");
     fetchMatches();
+    loadStandings();
   }, 3000);
 });
