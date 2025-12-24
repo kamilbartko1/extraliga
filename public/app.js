@@ -575,6 +575,7 @@ function toggleMoreMatches() {
   }
 }
 
+// === Tabulka render
 function renderStandings(standings) {
   const box = document.getElementById("standings-table");
   if (!box) return;
@@ -586,8 +587,7 @@ function renderStandings(standings) {
 
   const rows = standings
     .slice()
-    .sort((a, b) => b.points - a.points)
-    .slice(0, 16);
+    .sort((a, b) => b.points - a.points);
 
   box.innerHTML = `
     <table class="standings-table">
@@ -597,20 +597,34 @@ function renderStandings(standings) {
           <th>Tím</th>
           <th>Z</th>
           <th>B</th>
+          <th>GF</th>
+          <th>GA</th>
+          <th>+/-</th>
         </tr>
       </thead>
       <tbody>
-        ${rows.map((t, i) => `
-          <tr>
-            <td>${i + 1}</td>
-            <td class="team-cell">
-              <img src="${t.teamLogo}">
-              ${t.teamName?.default || "Tím"}
-            </td>
-            <td>${t.gamesPlayed}</td>
-            <td class="points">${t.points}</td>
-          </tr>
-        `).join("")}
+        ${rows.map((t, i) => {
+          const gf = t.goalFor ?? 0;
+          const ga = t.goalAgainst ?? 0;
+          const diff = gf - ga;
+
+          return `
+            <tr>
+              <td>${i + 1}</td>
+              <td class="team-cell">
+                <img src="${t.teamLogo}" alt="${t.teamName?.default}">
+                <span>${t.teamName?.default}</span>
+              </td>
+              <td>${t.gamesPlayed}</td>
+              <td class="points">${t.points}</td>
+              <td>${gf}</td>
+              <td>${ga}</td>
+              <td class="${diff >= 0 ? "pos" : "neg"}">
+                ${diff > 0 ? "+" : ""}${diff}
+              </td>
+            </tr>
+          `;
+        }).join("")}
       </tbody>
     </table>
   `;
