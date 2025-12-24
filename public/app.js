@@ -421,7 +421,9 @@ async function displayMatches(matches) {
     return;
   }
 
+  // ===============================
   // Zoskupenie podľa dátumu
+  // ===============================
   const grouped = {};
   for (const m of matches) {
     const date =
@@ -439,6 +441,9 @@ async function displayMatches(matches) {
   let recentHtml = "";
   let olderHtml  = "";
 
+  // ===============================
+  // Render HTML (bez fetchov)
+  // ===============================
   for (const day of days) {
     const d = new Date(day);
     const diffDays = Math.round(
@@ -451,8 +456,9 @@ async function displayMatches(matches) {
       year: "numeric",
     });
 
-    let dayHtml = `<div class="match-day">
-      <div class="match-day-header">${formatted}</div>
+    let dayHtml = `
+      <div class="match-day">
+        <div class="match-day-header">${formatted}</div>
     `;
 
     for (const match of grouped[day]) {
@@ -460,6 +466,7 @@ async function displayMatches(matches) {
         match.home_team ||
         match.sport_event?.competitors?.[0]?.name ||
         "Home";
+
       const away =
         match.away_team ||
         match.sport_event?.competitors?.[1]?.name ||
@@ -467,6 +474,7 @@ async function displayMatches(matches) {
 
       const hs =
         match.home_score ?? match.sport_event_status?.home_score ?? "-";
+
       const as =
         match.away_score ?? match.sport_event_status?.away_score ?? "-";
 
@@ -481,17 +489,25 @@ async function displayMatches(matches) {
 
       dayHtml += `
         <div class="match-row">
+
           <div class="match-teams">
-            <span class="match-team">${home}</span>
-            <span class="match-vs">vs</span>
-            <span class="match-team">${away}</span>
+            <div class="team-line">
+              <span class="team-name">${home}</span>
+            </div>
+            <div class="team-line away">
+              <span class="team-name">${away}</span>
+            </div>
           </div>
+
           <div class="match-score">
-            ${hs} : ${as}${suffix.toLowerCase()}
-            <span id="${recapId}" class="match-highlight">
+            <div class="score">
+              ${hs} : ${as}<span class="suffix">${suffix.toLowerCase()}</span>
+            </div>
+            <div id="${recapId}" class="match-highlight">
               ${status === "closed" ? "⏳" : ""}
-            </span>
+            </div>
           </div>
+
         </div>
       `;
     }
@@ -505,10 +521,13 @@ async function displayMatches(matches) {
     }
   }
 
-  recentBox.innerHTML = recentHtml || `<p class="nhl-muted">Žiadne zápasy za posledný týždeň.</p>`;
-  olderBox.innerHTML  = olderHtml;
+  recentBox.innerHTML =
+    recentHtml || `<p class="nhl-muted">Žiadne zápasy za posledný týždeň.</p>`;
+  olderBox.innerHTML = olderHtml;
 
-  // Nastav tlačidlo "Zobraziť viac" len ak vôbec nejaké staršie dni existujú
+  // ===============================
+  // Zobraziť / skryť staršie
+  // ===============================
   if (moreBtn) {
     if (olderHtml) {
       moreBtn.style.display = "inline-block";
@@ -524,7 +543,9 @@ async function displayMatches(matches) {
     }
   }
 
-  // 🎥 Zostrihy – rovnako ako predtým, len do nového HTML
+  // ===============================
+  // 🎥 Zostrihy – BEZ ZMENY LOGIKY
+  // ===============================
   for (const day of days) {
     for (const match of grouped[day]) {
       const status = (match.status || "").toLowerCase();
@@ -545,7 +566,12 @@ async function displayMatches(matches) {
         if (!cell) continue;
 
         if (data.ok && data.highlight) {
-          cell.innerHTML = `<a href="${data.highlight}" target="_blank" class="highlight-link" title="Zostrih zápasu">🎥</a>`;
+          cell.innerHTML = `
+            <a href="${data.highlight}"
+               target="_blank"
+               class="highlight-link"
+               title="Zostrih zápasu">🎥</a>
+          `;
         } else {
           cell.textContent = "";
         }
@@ -555,23 +581,6 @@ async function displayMatches(matches) {
         if (cell) cell.textContent = "";
       }
     }
-  }
-}
-
-// toggle pre button
-function toggleMoreMatches() {
-  const olderBox = document.getElementById("matches-older");
-  const moreBtn  = document.getElementById("matches-more-btn");
-  if (!olderBox || !moreBtn) return;
-
-  matchesExpanded = !matchesExpanded;
-
-  if (matchesExpanded) {
-    olderBox.classList.remove("hidden");
-    moreBtn.textContent = "Skryť staršie ↑";
-  } else {
-    olderBox.classList.add("hidden");
-    moreBtn.textContent = "Zobraziť viac ↓";
   }
 }
 
