@@ -511,6 +511,47 @@ async function displayMatches(matches) {
   }
 }
 
+// === Nacitanie tabuliek ===
+async function loadStandings() {
+  const box = document.getElementById("standings-table");
+  if (!box) return;
+
+  try {
+    const resp = await fetch(
+      "https://api-web.nhle.com/v1/standings/now",
+      { cache: "no-store" }
+    );
+    const data = await resp.json();
+
+    const rows = data.standings.slice(0, 16);
+
+    box.innerHTML = `
+      <table class="standings-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tím</th>
+            <th>Z</th>
+            <th>B</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map((t, i) => `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${t.teamName.default}</td>
+              <td>${t.gamesPlayed}</td>
+              <td>${t.points}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+  } catch (e) {
+    box.innerHTML = `<p class="nhl-muted">Chyba tabuľky</p>`;
+  }
+}
+
 // === RATING TÍMOV ===
 async function displayTeamRatings() {
   const tableBody = document.querySelector("#teamRatings tbody");
@@ -1743,7 +1784,8 @@ document.querySelectorAll("nav button").forEach(btn => {
         break;
 
       case "matches-section":
-        await fetchMatches();
+        fetchMatches();
+        loadStandings();
         break;
 
       case "teams-section":
