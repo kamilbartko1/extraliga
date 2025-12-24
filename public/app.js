@@ -856,19 +856,28 @@ async function showMantingalDetail(player) {
   tbody.innerHTML = "";
 
   data.history
-    .filter(h => h.result !== "skip")
-    .forEach((h) => {
-      tbody.innerHTML += `
-        <tr>
-          <td>${h.date}</td>
-          <td>${h.gameId || "-"}</td>
-          <td>${h.goals === null ? "-" : h.goals}</td>
-          <td>${h.result}</td>
-          <td>${h.profitChange}</td>
-          <td>${h.balanceAfter}</td>
-        </tr>
-      `;
-    });
+  .filter(h => h.result !== "skip")
+  .forEach((h) => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${h.date}</td>
+        <td>${h.gameId || "-"}</td>
+        <td>${h.goals === null ? "-" : h.goals}</td>
+        <td>${h.result}</td>
+        <td>${h.profitChange}</td>
+        <td class="balance">${h.balanceAfter}</td>
+      </tr>
+    `;
+  });
+
+  // 🎨 Zafarbenie balance (plus / mínus)
+tbody.querySelectorAll("td.balance").forEach(td => {
+  const value = parseFloat(td.textContent.replace(",", "."));
+  if (isNaN(value)) return;
+
+  if (value > 0) td.classList.add("balance-plus");
+  else if (value < 0) td.classList.add("balance-minus");
+});
 
   const detailBox = document.getElementById("mantingale-detail");
   detailBox.classList.remove("hidden");

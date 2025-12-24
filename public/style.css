@@ -5909,6 +5909,16 @@ body {
   opacity: 0.85;
 }
 
+.balance-plus {
+  color: #2ecc71;
+  font-weight: 600;
+}
+
+.balance-minus {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
