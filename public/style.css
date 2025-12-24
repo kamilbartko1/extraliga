@@ -5870,10 +5870,10 @@ body {
 
 .score-row {
   display: grid;
-  grid-template-columns: 1fr 88px 1.25fr;
+  grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
-  gap: 6px;
   padding: 8px 10px;
+  position: relative;
   margin-bottom: 6px;
   border-radius: 14px;
   background: linear-gradient(
@@ -5883,9 +5883,30 @@ body {
   );
 }
 
+.team-left {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.team-right {
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .score-center {
-  justify-content: center;
+  justify-self: center;
   text-align: center;
+  font-weight: 600;
+}
+
+.highlight-slot {
+  position: absolute;
+  right: 10px;
+  opacity: 0.85;
 }
 
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
