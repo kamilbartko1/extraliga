@@ -5734,6 +5734,108 @@ body {
   }
 }
 
+/* === SCORE ROW LAYOUT === */
+.score-row {
+  display: grid;
+  grid-template-columns: 1fr 110px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 14px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.04),
+    rgba(0,0,0,0.25)
+  );
+}
+
+/* === TEAM SIDES === */
+.team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Inter", "Roboto Condensed", sans-serif;
+  font-size: 0.95rem;
+  color: #eafaff;
+  min-width: 0;
+}
+
+.team-left {
+  justify-content: flex-start;
+}
+
+.team-right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+/* === TEAM LOGO === */
+.team-logo {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+/* === TEAM NAME === */
+.team-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* === CENTER SCORE === */
+.score-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #ffffff;
+}
+
+/* === SCORE NUMBERS === */
+.score {
+  min-width: 20px;
+  text-align: center;
+}
+
+.score.win {
+  color: #00ff88;
+}
+
+/* === SEPARATOR === */
+.sep {
+  opacity: 0.6;
+}
+
+/* === HIGHLIGHT ICON === */
+.highlight-slot {
+  margin-left: 6px;
+}
+
+.highlight-link {
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+/* === MOBILE TWEAK === */
+@media (max-width: 600px) {
+  .score-row {
+    grid-template-columns: 1fr 96px 1fr;
+    padding: 9px 10px;
+  }
+
+  .team-name {
+    font-size: 0.9rem;
+  }
+
+  .score-center {
+    font-size: 1rem;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {

@@ -490,28 +490,28 @@ async function displayMatches(matches) {
         ? `https://assets.nhle.com/logos/nhl/svg/${awayAbbr}_light.svg`
         : "";
 
-      dayHtml += `
-        <div class="score-row">
+          dayHtml += `
+      <div class="score-row">
 
-          <div class="team left">
-            ${homeLogo ? `<img src="${homeLogo}" class="team-logo" alt="${home}">` : ""}
-            <span class="team-name">${home}</span>
-          </div>
-
-          <div class="score-center">
-            <span class="score ${homeWin ? "win" : ""}">${hs}</span>
-            <span class="sep">:</span>
-            <span class="score ${awayWin ? "win" : ""}">${as}</span>
-            <div id="${recapId}" class="highlight-slot"></div>
-          </div>
-
-          <div class="team right">
-            <span class="team-name">${away}</span>
-            ${awayLogo ? `<img src="${awayLogo}" class="team-logo" alt="${away}">` : ""}
-          </div>
-
+        <div class="team team-left">
+          ${homeLogo ? `<img src="${homeLogo}" class="team-logo" alt="${home}">` : ""}
+          <span class="team-name">${home}</span>
         </div>
-      `;
+
+        <div class="score-center">
+          <span class="score ${homeWin ? "win" : ""}">${hs}</span>
+          <span class="sep">:</span>
+          <span class="score ${awayWin ? "win" : ""}">${as}</span>
+          <div id="${recapId}" class="highlight-slot"></div>
+        </div>
+
+        <div class="team team-right">
+          <span class="team-name">${away}</span>
+          ${awayLogo ? `<img src="${awayLogo}" class="team-logo" alt="${away}">` : ""}
+        </div>
+
+      </div>
+    `;
     }
 
     dayHtml += `</div>`;
