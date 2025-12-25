@@ -5932,6 +5932,20 @@ body {
   }
 }
 
+/* BODY (PTS) – zvýraznenie */
+.standings-table td.pts,
+.standings-table th.pts {
+  color: #2ecc71;          /* NHL zelená */
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+/* jemné pozadie len pre bunku */
+.standings-table td.pts {
+  background: rgba(46, 204, 113, 0.08);
+  border-radius: 6px;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
