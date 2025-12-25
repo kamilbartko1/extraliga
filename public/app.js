@@ -1801,8 +1801,6 @@ function renderPremiumAnalytics(standings) {
   `).join("");
 }
 
-renderPremiumAnalytics(standings);
-
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
 async function displayShootingLeaders() {
   const grid = document.getElementById("stats-grid");
