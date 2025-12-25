@@ -581,13 +581,17 @@ function renderStandings(standings) {
     .sort((a, b) => b.points - a.points);
 
   box.innerHTML = `
-    <table class="standings-table">
+    <table class="standings-table wide">
       <thead>
         <tr>
           <th>#</th>
           <th>Tím</th>
-          <th>Z</th>
-          <th>B</th>
+          <th>GP</th>
+          <th>W</th>
+          <th>L</th>
+          <th>OTW</th>
+          <th>OTL</th>
+          <th class="pts">PTS</th>
           <th>GF</th>
           <th>GA</th>
           <th>+/-</th>
@@ -603,11 +607,15 @@ function renderStandings(standings) {
             <tr>
               <td>${i + 1}</td>
               <td class="team-cell">
-                <img src="${t.teamLogo}" alt="${t.teamName?.default}">
-                <span>${t.teamName?.default}</span>
+                <img src="${t.teamLogo}" alt="">
+                <span>${t.teamAbbrev?.default || ""}</span>
               </td>
               <td>${t.gamesPlayed}</td>
-              <td class="points">${t.points}</td>
+              <td>${t.wins}</td>
+              <td>${t.losses}</td>
+              <td>${t.regulationPlusOtWins}</td>
+              <td>${t.otLosses}</td>
+              <td class="pts">${t.points}</td>
               <td>${gf}</td>
               <td>${ga}</td>
               <td class="${diff >= 0 ? "pos" : "neg"}">
