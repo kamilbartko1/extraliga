@@ -566,7 +566,7 @@ async function displayMatches(matches) {
   }
 }
 
-// === Tabulka render
+// === Tabuľka NHL – finálna verzia podľa NHL API ===
 function renderStandings(standings) {
   const box = document.getElementById("standings-table");
   if (!box) return;
@@ -576,6 +576,7 @@ function renderStandings(standings) {
     return;
   }
 
+  // zoradenie podľa bodov
   const rows = standings
     .slice()
     .sort((a, b) => b.points - a.points);
@@ -599,27 +600,41 @@ function renderStandings(standings) {
       </thead>
       <tbody>
         ${rows.map((t, i) => {
-          const gf = t.goalFor ?? 0;
-          const ga = t.goalAgainst ?? 0;
-          const diff = gf - ga;
+          const GP  = t.gamesPlayed ?? 0;
+          const W   = t.wins ?? 0;
+          const L   = t.losses ?? 0;
+          const OTL = t.otLosses ?? 0;
+
+          // OTW sa NEDÁ čítať priamo – musí sa dopočítať
+          const regWins = t.regulationWins ?? 0;
+          const OTW = Math.max(0, W - regWins);
+
+          const GF = t.goalFor ?? 0;
+          const GA = t.goalAgainst ?? 0;
+          const DIFF = t.goalDifferential ?? (GF - GA);
 
           return `
             <tr>
               <td>${i + 1}</td>
+
               <td class="team-cell">
-                <img src="${t.teamLogo}" alt="">
+                <img src="${t.teamLogo}" alt="${t.teamName?.default || ""}">
                 <span>${t.teamAbbrev?.default || ""}</span>
               </td>
-              <td>${t.gamesPlayed}</td>
-              <td>${t.wins}</td>
-              <td>${t.losses}</td>
-              <td>${t.regulationPlusOtWins}</td>
-              <td>${t.otLosses}</td>
+
+              <td>${GP}</td>
+              <td>${W}</td>
+              <td>${L}</td>
+              <td>${OTW}</td>
+              <td>${OTL}</td>
+
               <td class="pts">${t.points}</td>
-              <td>${gf}</td>
-              <td>${ga}</td>
-              <td class="${diff >= 0 ? "pos" : "neg"}">
-                ${diff > 0 ? "+" : ""}${diff}
+
+              <td>${GF}</td>
+              <td>${GA}</td>
+
+              <td class="${DIFF >= 0 ? "pos" : "neg"}">
+                ${DIFF > 0 ? "+" : ""}${DIFF}
               </td>
             </tr>
           `;
