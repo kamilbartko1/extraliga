@@ -33,8 +33,7 @@
     <button onclick="showSection('players-section')">Rating hráčov</button>
     <button onclick="showSection('premium-section')">NHLPRO PREMIUM</button>
     <button onclick="showSection('stats-section')">Štatistiky hráčov</button>
-    <button onclick="showSection('strategies-section')">Databáza hráčov</button>
-    <button onclick="showSection('mantingale-section')">ABS</button>
+    <button onclick="showSection('mantingale-section')">AdvancedBettingStrategy</button>
   </nav>
 
   <!-- 📱 MOBILNÉ MENU -->
@@ -46,8 +45,7 @@
       <option value="players">Rating hráčov</option>
       <option value="premium">NHLPRO PREMIUM</option>
       <option value="stats">Štatistiky hráčov</option>
-      <option value="strategies">Databáza hráčov</option>
-      <option value="mantingal">ABS</option>
+      <option value="mantingal">AdvancedBettingStrategy</option>
     </select>
   </div>
 
@@ -270,6 +268,9 @@
     <p>
       V tabuľke nižšie vidíš aktuálnu stávku, streak, profit a detailnú
       históriu každého hráča vrátane jednotlivých zápasov a zmien banku.
+      Do tejto tabuľky sú hráči pridávaní automaticky na základe ich
+      výkonnosti a pravdepodobnosti strelenia gólu. V NHLPRO PREMIUM
+      môžeš pridávať vlastných hráčov podľa svojho výberu.
     </p>
 
     <p class="abs-warning">
@@ -657,10 +658,6 @@
   </div>
 </div>
 
-    <!-- 💡 Databáza hráčov -->
-    <div class="section" id="strategies-section">
-      <h2>Databáza hráčov</h2>
-    </div>
   </div>
   <script src="app.js"></script>
 
