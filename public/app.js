@@ -566,7 +566,7 @@ async function displayMatches(matches) {
   }
 }
 
-// === Tabuľka NHL – finálna verzia podľa NHL API ===
+// === Tabuľka NHL – zjednodušená (prehľadná) ===
 function renderStandings(standings) {
   const box = document.getElementById("standings-table");
   if (!box) return;
@@ -576,7 +576,6 @@ function renderStandings(standings) {
     return;
   }
 
-  // zoradenie podľa bodov
   const rows = standings
     .slice()
     .sort((a, b) => b.points - a.points);
@@ -590,8 +589,6 @@ function renderStandings(standings) {
           <th>GP</th>
           <th>W</th>
           <th>L</th>
-          <th>OTW</th>
-          <th>OTL</th>
           <th class="pts">PTS</th>
           <th>GF</th>
           <th>GA</th>
@@ -600,14 +597,11 @@ function renderStandings(standings) {
       </thead>
       <tbody>
         ${rows.map((t, i) => {
-          const GP  = t.gamesPlayed ?? 0;
-          const W   = t.wins ?? 0;
-          const L   = t.losses ?? 0;
-          const OTL = t.otLosses ?? 0;
+          const GP = t.gamesPlayed ?? 0;
+          const W  = t.wins ?? 0;
 
-          // OTW sa NEDÁ čítať priamo – musí sa dopočítať
-          const regWins = t.regulationWins ?? 0;
-          const OTW = Math.max(0, W - regWins);
+          // L = regulárne prehry + OT/SO prehry
+          const L  = (t.losses ?? 0) + (t.otLosses ?? 0);
 
           const GF = t.goalFor ?? 0;
           const GA = t.goalAgainst ?? 0;
@@ -625,8 +619,6 @@ function renderStandings(standings) {
               <td>${GP}</td>
               <td>${W}</td>
               <td>${L}</td>
-              <td>${OTW}</td>
-              <td>${OTL}</td>
 
               <td class="pts">${t.points}</td>
 
