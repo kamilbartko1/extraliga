@@ -613,7 +613,7 @@ function renderStandings(standings) {
 
               <td class="team-cell">
                 <img src="${t.teamLogo}" alt="${t.teamName?.default || ""}">
-                <span>${t.teamAbbrev?.default || ""}</span>
+                <span>${t.teamName?.default || ""}</span>
               </td>
 
               <td>${GP}</td>
