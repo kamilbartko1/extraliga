@@ -1725,6 +1725,17 @@ async function addPremiumPlayer() {
   }
 }
 
+// Presun na analyticke statistiky v premium ===
+function scrollToPremiumAnalytics() {
+  const section = document.getElementById("premium-analytics");
+  if (!section) return;
+
+  section.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
 async function displayShootingLeaders() {
   const grid = document.getElementById("stats-grid");
