@@ -1736,6 +1736,73 @@ function scrollToPremiumAnalytics() {
   });
 }
 
+function renderPremiumAnalytics(standings) {
+  if (!Array.isArray(standings) || !standings.length) return;
+
+  // ===== 1. TOP FORMA (L10 POINTS) =====
+  const byForm = standings
+    .slice()
+    .sort((a, b) => (b.l10Points ?? 0) - (a.l10Points ?? 0))
+    .slice(0, 5);
+
+  document.getElementById("box-l10-form").innerHTML = byForm.map(t => `
+    <div class="analytics-row">
+      <img src="${t.teamLogo}" alt="">
+      <span class="team">${t.teamAbbrev.default}</span>
+      <span class="value">${t.l10Points} b</span>
+      <span class="sub">
+        ${t.l10Wins}-${t.l10Losses}-${t.l10OtLosses}
+      </span>
+    </div>
+  `).join("");
+
+  // ===== 2. TOP OFENZÍVA (L10 GOALS FOR) =====
+  const byOffense = standings
+    .slice()
+    .sort((a, b) => (b.l10GoalsFor ?? 0) - (a.l10GoalsFor ?? 0))
+    .slice(0, 5);
+
+  document.getElementById("box-l10-offense").innerHTML = byOffense.map(t => `
+    <div class="analytics-row">
+      <img src="${t.teamLogo}" alt="">
+      <span class="team">${t.teamAbbrev.default}</span>
+      <span class="value">${t.l10GoalsFor}</span>
+    </div>
+  `).join("");
+
+  // ===== 3. NAJSLABŠIA OBRANA (L10 GOALS AGAINST) =====
+  const byDefense = standings
+    .slice()
+    .sort((a, b) => (b.l10GoalsAgainst ?? 0) - (a.l10GoalsAgainst ?? 0))
+    .slice(0, 5);
+
+  document.getElementById("box-l10-defense").innerHTML = byDefense.map(t => `
+    <div class="analytics-row">
+      <img src="${t.teamLogo}" alt="">
+      <span class="team">${t.teamAbbrev.default}</span>
+      <span class="value">${t.l10GoalsAgainst}</span>
+    </div>
+  `).join("");
+
+  // ===== 4. GÓLOVÝ ROZDIEL (L10 DIFF) =====
+  const byDiff = standings
+    .slice()
+    .sort((a, b) => (b.l10GoalDifferential ?? 0) - (a.l10GoalDifferential ?? 0))
+    .slice(0, 5);
+
+  document.getElementById("box-l10-diff").innerHTML = byDiff.map(t => `
+    <div class="analytics-row">
+      <img src="${t.teamLogo}" alt="">
+      <span class="team">${t.teamAbbrev.default}</span>
+      <span class="value ${t.l10GoalDifferential >= 0 ? "pos" : "neg"}">
+        ${t.l10GoalDifferential > 0 ? "+" : ""}${t.l10GoalDifferential}
+      </span>
+    </div>
+  `).join("");
+}
+
+renderPremiumAnalytics(standings);
+
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
 async function displayShootingLeaders() {
   const grid = document.getElementById("stats-grid");
