@@ -634,6 +634,9 @@ function renderStandings(standings) {
       </tbody>
     </table>
   `;
+
+     // 👑 PREMIUM – analytické boxy (L10)
+     renderPremiumAnalytics(standings);
 }
 
 // === RATING TÍMOV ===
