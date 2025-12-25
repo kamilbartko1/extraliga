@@ -5919,6 +5919,19 @@ body {
   font-weight: 600;
 }
 
+.matches-layout {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr; /* výsledky užšie, tabuľka širšia */
+  gap: 20px;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .matches-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
