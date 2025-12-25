@@ -5946,6 +5946,60 @@ body {
   border-radius: 6px;
 }
 
+/* ===============================
+   PREMIUM ANALYTICS
+   =============================== */
+
+.premium-analytics {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.analytics-header {
+  margin-bottom: 20px;
+}
+
+.analytics-header h2 {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.analytics-header p {
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.analytics-box {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 14px;
+  min-height: 180px;
+}
+
+.analytics-box h3 {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.analytics-content {
+  font-size: 13px;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu, bez tohto štýlu */
 @media (max-width: 768px) {
   nav {
