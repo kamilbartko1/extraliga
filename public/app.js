@@ -1789,7 +1789,7 @@ function renderPremiumAnalytics(standings) {
   document.getElementById("box-offense-l10").innerHTML = `
     <table class="analytics-table">
       <thead>
-        <tr><th>#</th><th>Tím</th><th>Góly</th><th></th></tr>
+        <tr><th>#</th><th>Tím</th><th>G</th><th></th></tr>
       </thead>
       <tbody>
         ${byOffense.map((t, i) =>
@@ -1807,7 +1807,7 @@ function renderPremiumAnalytics(standings) {
   document.getElementById("box-defense-l10").innerHTML = `
     <table class="analytics-table">
       <thead>
-        <tr><th>#</th><th>Tím</th><th>Inkasované</th><th></th></tr>
+        <tr><th>#</th><th>Tím</th><th>GA</th><th></th></tr>
       </thead>
       <tbody>
         ${byDefense.map((t, i) =>
