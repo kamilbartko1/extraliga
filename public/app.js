@@ -1739,69 +1739,106 @@ function scrollToPremiumAnalytics() {
   });
 }
 
+// Analyticke statistiky v premium ===
 function renderPremiumAnalytics(standings) {
   if (!Array.isArray(standings) || !standings.length) return;
+
+  // Pomocná funkcia – riadok tabuľky
+  const row = (t, i, value, sub = "") => `
+    <tr>
+      <td>${i + 1}</td>
+      <td class="team-cell">
+        <img src="${t.teamLogo}" alt="">
+        <span>${t.teamAbbrev?.default}</span>
+      </td>
+      <td class="value">${value}</td>
+      <td class="sub">${sub}</td>
+    </tr>
+  `;
 
   // ===== 1. TOP FORMA (L10 POINTS) =====
   const byForm = standings
     .slice()
     .sort((a, b) => (b.l10Points ?? 0) - (a.l10Points ?? 0))
-    .slice(0, 5);
+    .slice(0, 10);
 
-  document.getElementById("box-form-l10").innerHTML = byForm.map(t => `
-    <div class="analytics-row">
-      <img src="${t.teamLogo}" alt="">
-      <span class="team">${t.teamAbbrev?.default}</span>
-      <span class="value">${t.l10Points} b</span>
-      <span class="sub">
-        ${t.l10Wins}-${t.l10Losses}-${t.l10OtLosses}
-      </span>
-    </div>
-  `).join("");
+  document.getElementById("box-form-l10").innerHTML = `
+    <table class="analytics-table">
+      <thead>
+        <tr><th>#</th><th>Tím</th><th>Body</th><th>Bilancia</th></tr>
+      </thead>
+      <tbody>
+        ${byForm.map((t, i) =>
+          row(
+            t,
+            i,
+            t.l10Points,
+            `${t.l10Wins}-${t.l10Losses}-${t.l10OtLosses}`
+          )
+        ).join("")}
+      </tbody>
+    </table>
+  `;
 
   // ===== 2. TOP OFENZÍVA (L10 GOALS FOR) =====
   const byOffense = standings
     .slice()
     .sort((a, b) => (b.l10GoalsFor ?? 0) - (a.l10GoalsFor ?? 0))
-    .slice(0, 5);
+    .slice(0, 10);
 
-  document.getElementById("box-offense-l10").innerHTML = byOffense.map(t => `
-    <div class="analytics-row">
-      <img src="${t.teamLogo}" alt="">
-      <span class="team">${t.teamAbbrev?.default}</span>
-      <span class="value">${t.l10GoalsFor}</span>
-    </div>
-  `).join("");
+  document.getElementById("box-offense-l10").innerHTML = `
+    <table class="analytics-table">
+      <thead>
+        <tr><th>#</th><th>Tím</th><th>Góly</th><th></th></tr>
+      </thead>
+      <tbody>
+        ${byOffense.map((t, i) =>
+          row(t, i, t.l10GoalsFor)
+        ).join("")}
+      </tbody>
+    </table>
+  `;
 
   // ===== 3. NAJSLABŠIA OBRANA (L10 GOALS AGAINST) =====
   const byDefense = standings
     .slice()
     .sort((a, b) => (b.l10GoalsAgainst ?? 0) - (a.l10GoalsAgainst ?? 0))
-    .slice(0, 5);
-
-  document.getElementById("box-defense-l10").innerHTML = byDefense.map(t => `
-    <div class="analytics-row">
-      <img src="${t.teamLogo}" alt="">
-      <span class="team">${t.teamAbbrev?.default}</span>
-      <span class="value">${t.l10GoalsAgainst}</span>
-    </div>
-  `).join("");
+    .slice(0, 10);
+  document.getElementById("box-defense-l10").innerHTML = `
+    <table class="analytics-table">
+      <thead>
+        <tr><th>#</th><th>Tím</th><th>Inkasované</th><th></th></tr>
+      </thead>
+      <tbody>
+        ${byDefense.map((t, i) =>
+          row(t, i, t.l10GoalsAgainst)
+        ).join("")}
+      </tbody>
+    </table>
+  `;
 
   // ===== 4. TREND (L10 GOAL DIFFERENTIAL) =====
   const byTrend = standings
     .slice()
     .sort((a, b) => (b.l10GoalDifferential ?? 0) - (a.l10GoalDifferential ?? 0))
-    .slice(0, 5);
+    .slice(0, 10);
 
-  document.getElementById("box-trend-l10").innerHTML = byTrend.map(t => `
-    <div class="analytics-row">
-      <img src="${t.teamLogo}" alt="">
-      <span class="team">${t.teamAbbrev?.default}</span>
-      <span class="value ${t.l10GoalDifferential >= 0 ? "pos" : "neg"}">
-        ${t.l10GoalDifferential > 0 ? "+" : ""}${t.l10GoalDifferential}
-      </span>
-    </div>
-  `).join("");
+  document.getElementById("box-trend-l10").innerHTML = `
+    <table class="analytics-table">
+      <thead>
+        <tr><th>#</th><th>Tím</th><th>Rozdiel</th><th></th></tr>
+      </thead>
+      <tbody>
+        ${byTrend.map((t, i) =>
+          row(
+            t,
+            i,
+            `${t.l10GoalDifferential > 0 ? "+" : ""}${t.l10GoalDifferential}`
+          )
+        ).join("")}
+      </tbody>
+    </table>
+  `;
 }
 
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
