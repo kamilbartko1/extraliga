@@ -636,7 +636,7 @@ function renderStandings(standings) {
   `;
 
      // 👑 PREMIUM – analytické boxy (L10)
-     renderPremiumAnalytics(standings.standings);
+     renderPremiumAnalytics(standings);
 }
 
 // === RATING TÍMOV ===
@@ -1748,10 +1748,10 @@ function renderPremiumAnalytics(standings) {
     .sort((a, b) => (b.l10Points ?? 0) - (a.l10Points ?? 0))
     .slice(0, 5);
 
-  document.getElementById("box-l10-form").innerHTML = byForm.map(t => `
+  document.getElementById("box-form-l10").innerHTML = byForm.map(t => `
     <div class="analytics-row">
       <img src="${t.teamLogo}" alt="">
-      <span class="team">${t.teamAbbrev.default}</span>
+      <span class="team">${t.teamAbbrev?.default}</span>
       <span class="value">${t.l10Points} b</span>
       <span class="sub">
         ${t.l10Wins}-${t.l10Losses}-${t.l10OtLosses}
@@ -1765,10 +1765,10 @@ function renderPremiumAnalytics(standings) {
     .sort((a, b) => (b.l10GoalsFor ?? 0) - (a.l10GoalsFor ?? 0))
     .slice(0, 5);
 
-  document.getElementById("box-l10-offense").innerHTML = byOffense.map(t => `
+  document.getElementById("box-offense-l10").innerHTML = byOffense.map(t => `
     <div class="analytics-row">
       <img src="${t.teamLogo}" alt="">
-      <span class="team">${t.teamAbbrev.default}</span>
+      <span class="team">${t.teamAbbrev?.default}</span>
       <span class="value">${t.l10GoalsFor}</span>
     </div>
   `).join("");
@@ -1779,24 +1779,24 @@ function renderPremiumAnalytics(standings) {
     .sort((a, b) => (b.l10GoalsAgainst ?? 0) - (a.l10GoalsAgainst ?? 0))
     .slice(0, 5);
 
-  document.getElementById("box-l10-defense").innerHTML = byDefense.map(t => `
+  document.getElementById("box-defense-l10").innerHTML = byDefense.map(t => `
     <div class="analytics-row">
       <img src="${t.teamLogo}" alt="">
-      <span class="team">${t.teamAbbrev.default}</span>
+      <span class="team">${t.teamAbbrev?.default}</span>
       <span class="value">${t.l10GoalsAgainst}</span>
     </div>
   `).join("");
 
-  // ===== 4. GÓLOVÝ ROZDIEL (L10 DIFF) =====
-  const byDiff = standings
+  // ===== 4. TREND (L10 GOAL DIFFERENTIAL) =====
+  const byTrend = standings
     .slice()
     .sort((a, b) => (b.l10GoalDifferential ?? 0) - (a.l10GoalDifferential ?? 0))
     .slice(0, 5);
 
-  document.getElementById("box-l10-diff").innerHTML = byDiff.map(t => `
+  document.getElementById("box-trend-l10").innerHTML = byTrend.map(t => `
     <div class="analytics-row">
       <img src="${t.teamLogo}" alt="">
-      <span class="team">${t.teamAbbrev.default}</span>
+      <span class="team">${t.teamAbbrev?.default}</span>
       <span class="value ${t.l10GoalDifferential >= 0 ? "pos" : "neg"}">
         ${t.l10GoalDifferential > 0 ? "+" : ""}${t.l10GoalDifferential}
       </span>
