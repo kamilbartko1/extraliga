@@ -2439,7 +2439,8 @@
     "birthDate": "1994-08-10",
     "birthCity": "Staten Island",
     "country": "USA",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "15.00"
   },
   {
     "id": 8482475,
@@ -2467,7 +2468,8 @@
     "birthDate": "1992-03-02",
     "birthCity": "East Weymouth",
     "country": "USA",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "5.80"
   },
   {
     "id": 8484166,
@@ -2481,7 +2483,8 @@
     "birthDate": "2004-10-12",
     "birthCity": "Nobleton",
     "country": "CAN",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "3.20"
   },
   {
     "id": 8476432,
@@ -2495,7 +2498,8 @@
     "birthDate": "1993-06-15",
     "birthCity": "Dorchester",
     "country": "CAN",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "4.00"
   },
   {
     "id": 8482660,
@@ -2509,7 +2513,8 @@
     "birthDate": "2002-10-18",
     "birthCity": "Port Moody",
     "country": "CAN",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "5.00"
   },
   {
     "id": 8480806,
@@ -2537,7 +2542,8 @@
     "birthDate": "2000-07-21",
     "birthCity": "Barnaul",
     "country": "RUS",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "3.20"
   },
   {
     "id": 8477497,
@@ -2551,7 +2557,8 @@
     "birthDate": "1994-10-12",
     "birthCity": "Brampton",
     "country": "CAN",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "4.20"
   },
   {
     "id": 8479671,
@@ -2565,7 +2572,8 @@
     "birthDate": "1997-02-11",
     "birthCity": "Biloxi",
     "country": "USA",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "6.00"
   },
   {
     "id": 8482705,
@@ -2579,7 +2587,8 @@
     "birthDate": "2003-05-16",
     "birthCity": "Columbus",
     "country": "USA",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "6.00"
   },
   {
     "id": 8481716,
@@ -2593,7 +2602,8 @@
     "birthDate": "2000-09-10",
     "birthCity": "Angarsk",
     "country": "RUS",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "3.20"
   },
   {
     "id": 8477425,
@@ -2607,7 +2617,8 @@
     "birthDate": "1995-09-13",
     "birthCity": "Buffalo",
     "country": "USA",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "6.00"
   },
   {
     "id": 8481161,
@@ -2621,7 +2632,8 @@
     "birthDate": "1999-09-12",
     "birthCity": "West Vancouver",
     "country": "CAN",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "13.00"
   },
   {
     "id": 8479371,
@@ -2635,7 +2647,8 @@
     "birthDate": "1998-06-20",
     "birthCity": "Coquitlam",
     "country": "CAN",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "12.00"
   },
   {
     "id": 8475790,
@@ -2663,7 +2676,8 @@
     "birthDate": "2004-07-12",
     "birthCity": "Winnipeg",
     "country": "CAN",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "6.80"
   },
   {
     "id": 8478062,
@@ -2691,7 +2705,8 @@
     "birthDate": "1997-01-13",
     "birthCity": "Yaroslavl",
     "country": "RUS",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "7.50"
   },
   {
     "id": 8476923,
@@ -2705,7 +2720,8 @@
     "birthDate": "1994-08-07",
     "birthCity": "Melville",
     "country": "CAN",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "8.50"
   },
   {
     "id": 8478460,
@@ -2719,7 +2735,8 @@
     "birthDate": "1997-07-19",
     "birthCity": "Grosse Pointe",
     "country": "USA",
-    "team": "Columbus Blue Jackets"
+    "team": "Columbus Blue Jackets",
+    "odds": "4.00"
   },
   {
     "id": 8482982,
@@ -9051,7 +9068,8 @@
     "birthDate": "1995-04-10",
     "birthCity": "Herning",
     "country": "DNK",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "3.80"
   },
   {
     "id": 8478519,
@@ -9108,7 +9126,8 @@
     "birthDate": "1994-01-05",
     "birthCity": "Riga",
     "country": "LVA",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "7.00"
   },
   {
     "id": 8482201,
@@ -9122,7 +9141,8 @@
     "birthDate": "2001-01-16",
     "birthCity": "Mission",
     "country": "CAN",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "5.50"
   },
   {
     "id": 8476826,
@@ -9136,7 +9156,8 @@
     "birthDate": "1991-12-15",
     "birthCity": "Saint-Narcisse",
     "country": "CAN",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "4.70"
   },
   {
     "id": 8477404,
@@ -9150,7 +9171,8 @@
     "birthDate": "1994-10-06",
     "birthCity": "Omaha",
     "country": "USA",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "2.60"
   },
   {
     "id": 8479542,
@@ -9164,7 +9186,8 @@
     "birthDate": "1998-08-27",
     "birthCity": "Saskatoon",
     "country": "CAN",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "2.60"
   },
   {
     "id": 8480995,
@@ -9178,7 +9201,8 @@
     "birthDate": "1999-03-09",
     "birthCity": "Vasteras",
     "country": "SWE",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "5.80"
   },
   {
     "id": 8483752,
@@ -9192,7 +9216,8 @@
     "birthDate": "2002-07-03",
     "birthCity": "Plymouth",
     "country": "USA",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "7.50"
   },
   {
     "id": 8476453,
@@ -9206,7 +9231,8 @@
     "birthDate": "1993-06-17",
     "birthCity": "Maykop",
     "country": "RUS",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "2.50"
   },
   {
     "id": 8477426,
@@ -9220,7 +9246,8 @@
     "birthDate": "1995-03-20",
     "birthCity": "Mississauga",
     "country": "CAN",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "4.70"
   },
   {
     "id": 8478010,
@@ -9234,7 +9261,8 @@
     "birthDate": "1996-03-13",
     "birthCity": "Calgary",
     "country": "CAN",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "2.80"
   },
   {
     "id": 8478416,
@@ -9262,7 +9290,8 @@
     "birthDate": "2000-04-19",
     "birthCity": "Calgary",
     "country": "CAN",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "13.00"
   },
   {
     "id": 8480426,
@@ -9276,7 +9305,8 @@
     "birthDate": "1998-04-21",
     "birthCity": "Rimouski",
     "country": "CAN",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "10.00"
   },
   {
     "id": 8475167,
@@ -9290,7 +9320,8 @@
     "birthDate": "1990-12-18",
     "birthCity": "Ornskoldsvik",
     "country": "SWE",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "4.50"
   },
   {
     "id": 8482929,
@@ -9304,7 +9335,8 @@
     "birthDate": "2001-02-02",
     "birthCity": "Sarpsborg",
     "country": "NOR",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "15.00"
   },
   {
     "id": 8474151,
@@ -9318,7 +9350,8 @@
     "birthDate": "1989-06-13",
     "birthCity": "St. Paul",
     "country": "USA",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "6.50"
   },
   {
     "id": 8482655,
@@ -9332,7 +9365,8 @@
     "birthDate": "2000-06-06",
     "birthCity": "Biel",
     "country": "CHE",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "11.00"
   },
   {
     "id": 8478178,
@@ -9346,7 +9380,8 @@
     "birthDate": "1996-02-28",
     "birthCity": "Toronto",
     "country": "CAN",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "5.00"
   },
   {
     "id": 8477992,
@@ -9360,7 +9395,8 @@
     "birthDate": "1995-09-19",
     "birthCity": "Gavle",
     "country": "SWE",
-    "team": "Tampa Bay Lightning"
+    "team": "Tampa Bay Lightning",
+    "odds": "15.00"
   },
   {
     "id": 8476883,
