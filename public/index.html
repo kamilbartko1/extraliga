@@ -21,45 +21,59 @@
       <img src="/nhl_logo.png" alt="NHL logo">
       <span>NHL 2025 – 2026</span>
     </div>
-    <div class="header-center">Tipuj NHL ako profík!</div>
-    <div class="ai-watermark">Powered by <span>AI-Logic</span></div>
+    <div class="header-center" data-i18n="header.tagline">Tipuj NHL ako profík!</div>
+    <div class="header-right">
+      <div class="ai-watermark" data-i18n-html="header.powered">Powered by <span>AI-Logic</span></div>
+
+      <!-- 🌍 Jazyk (SK/EN) -->
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" class="lang-btn" data-lang="sk" id="langBtnSk" aria-label="Slovenčina">
+          <span class="lang-flag" aria-hidden="true">🇸🇰</span>
+          <span class="lang-code">SK</span>
+        </button>
+        <button type="button" class="lang-btn" data-lang="en" id="langBtnEn" aria-label="English">
+          <span class="lang-flag" aria-hidden="true">🇬🇧</span>
+          <span class="lang-code">EN</span>
+        </button>
+      </div>
+    </div>
   </header>
 
   <!-- 🔹 NAVIGÁCIA (PC) -->
   <nav>
-    <button onclick="showSection('home-section')">Domov</button>
-    <button onclick="showSection('matches-section')">Výsledky</button>
-    <button onclick="showSection('teams-section')">Rating tímov</button>
-    <button onclick="showSection('players-section')">Rating hráčov</button>
-    <button onclick="showSection('stats-section')">Štatistiky hráčov</button>
-    <button onclick="showSection('mantingale-section')">AdvancedBettingStrategy</button>
-    <button onclick="showSection('premium-section')">NHLPRO PREMIUM</button>
+    <button onclick="showSection('home-section')" data-i18n="nav.home">Domov</button>
+    <button onclick="showSection('matches-section')" data-i18n="nav.results">Výsledky</button>
+    <button onclick="showSection('teams-section')" data-i18n="nav.teamRating">Rating tímov</button>
+    <button onclick="showSection('players-section')" data-i18n="nav.playerRating">Rating hráčov</button>
+    <button onclick="showSection('stats-section')" data-i18n="nav.stats">Štatistiky hráčov</button>
+    <button onclick="showSection('mantingale-section')" data-i18n="nav.abs">AdvancedBettingStrategy</button>
+    <button onclick="showSection('premium-section')" data-i18n="nav.premium">NHLPRO PREMIUM</button>
   </nav>
 
   <!-- 📱 MOBILNÉ MENU -->
   <div class="mobile-menu">
     <select id="mobileSelect">
-      <option value="home">Domov</option>
-      <option value="matches">Výsledky</option>
-      <option value="teams">Rating tímov</option>
-      <option value="players">Rating hráčov</option>
-      <option value="stats">Štatistiky hráčov</option>
-      <option value="mantingal">AdvancedBettingStrategy</option>
-      <option value="premium">NHLPRO PREMIUM</option>
+      <option value="home" data-i18n="nav.home">Domov</option>
+      <option value="matches" data-i18n="nav.results">Výsledky</option>
+      <option value="teams" data-i18n="nav.teamRating">Rating tímov</option>
+      <option value="players" data-i18n="nav.playerRating">Rating hráčov</option>
+      <option value="stats" data-i18n="nav.stats">Štatistiky hráčov</option>
+      <option value="mantingal" data-i18n="nav.abs">AdvancedBettingStrategy</option>
+      <option value="premium" data-i18n="nav.premium">NHLPRO PREMIUM</option>
     </select>
   </div>
 
     <!-- Domovska stranka -->
     <div class="container">
       <div id="home-section" class="section" style="display:none;">
-      <h2>Domov</h2>
+      <h2 data-i18n="sections.home">Domov</h2>
       <div id="home-content"></div>
     </div>
 
 <!-- 🏒 Výsledky + Standings -->
 <div class="section" id="matches-section">
 
-  <h2 class="section-title">Výsledky & tabuľka NHL</h2>
+  <h2 class="section-title" data-i18n="sections.resultsTitle">Výsledky & tabuľka NHL</h2>
 
   <div class="matches-layout">
 
@@ -67,7 +81,7 @@
     <div class="matches-left">
 
       <div class="matches-box">
-        <h3 class="box-title">Výsledky</h3>
+        <h3 class="box-title" data-i18n="matches.resultsBox">Výsledky</h3>
 
         <!-- POSLEDNÉ ZÁPASY -->
         <div id="matches-recent" class="matches-list"></div>
@@ -79,7 +93,7 @@
             class="nhl-btn nhl-btn-ghost"
             onclick="toggleMoreMatches()"
           >
-            Zobraziť viac ↓
+            <span data-i18n="matches.more">Zobraziť viac ↓</span>
           </button>
         </div>
 
@@ -93,10 +107,10 @@
     <div class="matches-right">
 
       <div class="standings-box">
-        <h3 class="box-title">Tabuľka NHL</h3>
+        <h3 class="box-title" data-i18n="matches.standingsBox">Tabuľka NHL</h3>
 
         <div id="standings-table" class="standings-wrapper">
-          <p class="nhl-muted">Načítavam tabuľku…</p>
+          <p class="nhl-muted" data-i18n="matches.loadingStandings">Načítavam tabuľku…</p>
         </div>
       </div>
 
@@ -112,15 +126,15 @@
 <!-- 📊 Rating tímov -->
 <div class="section" id="teams-section">
   <h2>
-    Rating tímov
+    <span data-i18n="sections.teamRating">Rating tímov</span>
     <span class="rating-info-btn" onclick="openTeamRatingModal()">ℹ️</span>
   </h2>
 
   <table id="teamRatings">
     <thead>
       <tr>
-        <th>Tím</th>
-        <th>Rating</th>
+        <th data-i18n="table.team">Tím</th>
+        <th data-i18n="table.rating">Rating</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -129,68 +143,21 @@
 
 <!-- ⭐ MODAL: Ako funguje Rating tímov -->
 <div id="teamRatingModal" class="modal-overlay" onclick="closeTeamRatingModal(event)">
-  <div class="modal-content">
-
-    <h2>🧠 Ako funguje NHLPRO Rating tímov?</h2>
-
-    <p>
-      <b>NHLPRO Team Rating</b> je vlastný analytický index výkonnosti tímov,
-      ktorý kombinuje výsledky, formu, ofenzívu, defenzívu, presilovky a
-      celkovú stabilitu tímu počas celej sezóny. Ide o unikátny systém, ktorý
-      nenájdete na žiadnom inom portáli.
-    </p>
-
-    <h3>🔥 Výsledky & forma</h3>
-    <ul>
-      <li>Víťazstvá</li>
-      <li>Prehry</li>
-      <li>Séria výhier / prehier</li>
-    </ul>
-
-    <h3>🎯 Ofenzíva</h3>
-    <ul>
-      <li>Počet strelených gólov</li>
-      <li>Efektivita presiloviek (PP %)</li>
-    </ul>
-
-    <h3>🛡️ Defenzíva</h3>
-    <ul>
-      <li>Inkasované góly</li>
-      <li>Účinnosť oslabení (PK %)</li>
-      <li>Brankársky výkon (základný vplyv)</li>
-    </ul>
-
-    <h3>⚡ Špeciálne formácie</h3>
-    <ul>
-      <li>Presilovky (PP efektivita)</li>
-      <li>Oslabenia (PK efektivita)</li>
-      <li>Presilovkové góly</li>
-      <li>Defenzíva v oslabení</li>
-    </ul>
-
-    <h3>📈 Celková stabilita</h3>
-    <p>
-      Rating sleduje dlhodobú konzistentnosť tímu a rovnováhu medzi útokom a
-      obranou. Tímy so stabilnými výkonmi počas celej sezóny dosahujú najvyššie
-      hodnoty.
-    </p>
-
-    <button class="close-modal-btn" onclick="closeTeamRatingModal()">Zavrieť</button>
-  </div>
+  <div class="modal-content" id="teamRatingModalContent"></div>
 </div>
 
    <!-- 🧑‍🚀 Rating hráčov -->
 <div class="section" id="players-section">
   <h2>
-    Rating hráčov
+    <span data-i18n="sections.playerRating">Rating hráčov</span>
     <span class="rating-info-btn" onclick="openRatingModal()">ℹ️</span>
   </h2>
 
   <table id="playerRatings">
     <thead>
       <tr>
-        <th>Hráč</th>
-        <th>Rating</th>
+        <th data-i18n="table.player">Hráč</th>
+        <th data-i18n="table.rating">Rating</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -199,45 +166,7 @@
 
 <!-- ⭐ MODAL: Ako funguje rating hráčov -->
 <div id="ratingModal" class="modal-overlay" onclick="closeRatingModal(event)">
-  <div class="modal-content">
-    <h2>🧠 Ako funguje NHLPRO Rating hráčov?</h2>
-
-    <p><b>NHLPRO Rating</b> je vlastný analytický index.
-    Kombinuje góly, asistencie, strely, presilovky, formu aj dlhodobú výkonnosť hráča.
-    Tento systém je unikátny – nenájdete ho na žiadnom inom portáli!</p>
-
-    <h3>🔥 1. Produktivita</h3>
-    <ul>
-      <li>Góly</li>
-      <li>Asistencie</li>
-      <li>Dôležité góly majú vyššiu váhu</li>
-      <li>Presilovkové góly majú bonus</li>
-    </ul>
-
-    <h3>🎯 2. Ofenzívna aktivita</h3>
-    <ul>
-      <li>Počet striel</li>
-      <li>Útočná aktivita</li>
-    </ul>
-
-    <h3>⚡ 3. Špeciálne formácie</h3>
-    <ul>
-      <li>Výkon v presilovkách (PP)</li>
-      <li>Oslabenia (PK)</li>
-      <li>Kľúčové momenty zápasov</li>
-    </ul>
-
-    <h3>📈 4. Aktuálna forma</h3>
-    <p>Rating sa mení podľa posledných zápasov – rýchlo rastie pri dobrej forme, klesá pri slabých výkonoch.</p>
-
-    <h3>🎚️ 5. Celosezónna stabilita</h3>
-    <p>Systém započítava celú sezónu, aby hodnotenie nekolísalo len podľa jedného zápasu.</p>
-
-    <p><b>NHLPRO Rating</b> je navrhnutý pre predikcie, analýzy a výber strelcov.  
-    Ide o unikátny model.</p>
-
-    <button class="close-modal-btn" onclick="closeRatingModal()">Zavrieť</button>
-  </div>
+  <div class="modal-content" id="playerRatingModalContent"></div>
 </div>
 <div id="mantingal-container-pc"></div>
 </div>
@@ -247,48 +176,11 @@
   <!-- ===============================
      🧠 ABS – INFO BOX
      =============================== -->
-<div class="abs-info-box">
-
-  <h2>🧠 ABS – Advanced Betting Strategy</h2>
-
-  <!-- KRÁTKA VERZIA (VŽDY VIDITEĽNÁ) -->
-  <p class="abs-intro">
-    ABS je analytická stávková stratégia založená na systematickom bankroll
-    manažmente a progresívnom vyhodnocovaní výkonov konkrétnych hráčov NHL.
-  </p>
-
-  <!-- ROZBALITEĽNÝ OBSAH -->
-  <div class="abs-more" id="abs-more">
-    <p>
-      Každý hráč má vlastnú stávkovú sériu, ktorá sa vyhodnocuje nezávisle.
-      Po výhre sa séria resetuje, po prehre sa výška stávky upravuje podľa
-      presne definovaných pravidiel stratégie.
-    </p>
-
-    <p>
-      V tabuľke nižšie vidíš aktuálnu stávku, streak, profit a detailnú
-      históriu každého hráča vrátane jednotlivých zápasov a zmien banku.
-      Do tejto tabuľky sú hráči pridávaní automaticky na základe ich
-      výkonnosti a pravdepodobnosti strelenia gólu. V NHLPRO PREMIUM
-      môžeš pridávať vlastných hráčov podľa svojho výberu.
-    </p>
-
-    <p class="abs-warning">
-      ⚠️ ABS nie je záruka výhry. Ide o štatistickú stratégiu určenú pre
-      disciplinovaných používateľov so zodpovedným prístupom k bankrollu.
-    </p>
-  </div>
-
-  <!-- TOGGLE -->
-  <button class="abs-toggle" id="abs-toggle">
-    Zobraziť viac ↓
-  </button>
-
-</div>
+<div class="abs-info-box" id="absInfoBox"></div>
   
   <div id="mantingale-summary">
       <div class="abs-profit-box">
-    <div class="abs-profit-label">CELKOVÝ PROFIT</div>
+    <div class="abs-profit-label" data-i18n="mantingale.totalProfit">CELKOVÝ PROFIT</div>
 
     <div class="abs-profit-value">
       <span id="mtg-total-profit">0.00</span>
@@ -301,11 +193,11 @@
   <table class="mantingale-table">
     <thead>
       <tr>
-        <th>Hráč</th>
-        <th>Stávka /EUR/</th>
-        <th>Streak</th>
-        <th>Balance (€)</th>
-        <th>Detail</th>
+        <th data-i18n="table.player">Hráč</th>
+        <th data-i18n="mantingale.stake">Stávka /EUR/</th>
+        <th data-i18n="mantingale.streak">Streak</th>
+        <th data-i18n="mantingale.balance">Balance (€)</th>
+        <th data-i18n="mantingale.detail">Detail</th>
       </tr>
     </thead>
     <tbody id="mantingale-table-body"></tbody>
@@ -319,18 +211,18 @@
     <table class="mantingale-history">
       <thead>
         <tr>
-          <th>Dátum</th>
-          <th>Zápas</th>
-          <th>Góly</th>
-          <th>Výsledok</th>
-          <th>Zmena (€)</th>
-          <th>Balance (€)</th>
+          <th data-i18n="mantingale.date">Dátum</th>
+          <th data-i18n="mantingale.game">Zápas</th>
+          <th data-i18n="mantingale.goals">Góly</th>
+          <th data-i18n="mantingale.result">Výsledok</th>
+          <th data-i18n="mantingale.change">Zmena (€)</th>
+          <th data-i18n="mantingale.balance">Balance (€)</th>
         </tr>
       </thead>
       <tbody id="mtg-history-body"></tbody>
     </table>
 
-    <button id="mtg-back-btn">← Späť</button>
+    <button id="mtg-back-btn" data-i18n="common.back">← Späť</button>
   </div>
 </section>
 
@@ -344,29 +236,29 @@
 
     <!-- ===== HEADER ===== -->
     <header class="premium-header">
-      <h1>👑 NHLPRO PREMIUM</h1>
-      <p>Advanced betting strategy</p>
+      <h1 data-i18n="premium.title">👑 NHLPRO PREMIUM</h1>
+      <p data-i18n="premium.subtitle">Advanced betting strategy</p>
     </header>
 
     <!-- 🔐 NOT LOGGED -->
     <div id="premium-not-logged" class="premium-state" style="display:none;">
-      <p class="premium-info-text">
+      <p class="premium-info-text" data-i18n="premium.loginHint">
         Najprv sa prihlás, aby si mohol používať NHLPRO PREMIUM.
       </p>
 
       <div class="premium-auth-box">
-        <input id="premium-email" type="email" placeholder="Email" />
-        <input id="premium-pass" type="password" placeholder="Heslo" />
-        <button id="premium-login-btn">Prihlásiť</button>
+        <input id="premium-email" type="email" placeholder="Email" data-i18n-placeholder="premium.email" />
+        <input id="premium-pass" type="password" placeholder="Heslo" data-i18n-placeholder="premium.password" />
+        <button id="premium-login-btn" data-i18n="premium.login">Prihlásiť</button>
       </div>
 
-      <button id="premium-signup-btn" class="premium-link-btn">
+      <button id="premium-signup-btn" class="premium-link-btn" data-i18n="premium.register">
         Registrovať sa
       </button>
 
       <p id="premium-auth-msg" class="premium-msg"></p>
       <div class="form-footer">
-        <a href="/" class="back-link">← Späť na hlavnú stránku</a>
+        <a href="/" class="back-link" data-i18n="premium.backHome">← Späť na hlavnú stránku</a>
       </div>
 
     </div>
@@ -377,31 +269,30 @@
       class="premium-register-box premium-state"
       style="display:none;"
     >
-      <h3>📝 Registrácia do NHLPRO</h3>
+      <h3 data-i18n="premium.registerTitle">📝 Registrácia do NHLPRO</h3>
 
-      <input id="reg-email" type="email" placeholder="Email" />
-      <input id="reg-pass" type="password" placeholder="Heslo" />
-      <input id="reg-pass2" type="password" placeholder="Zopakuj heslo" />
+      <input id="reg-email" type="email" placeholder="Email" data-i18n-placeholder="premium.email" />
+      <input id="reg-pass" type="password" placeholder="Heslo" data-i18n-placeholder="premium.password" />
+      <input id="reg-pass2" type="password" placeholder="Zopakuj heslo" data-i18n-placeholder="premium.passwordRepeat" />
 
-      <button id="premium-register-confirm">
+      <button id="premium-register-confirm" data-i18n="premium.registerConfirm">
         Zaregistrovať sa
       </button>
 
       <p id="premium-register-msg" class="premium-msg"></p>
 
       <div class="form-footer">
-        <a href="/" class="back-link">← Späť na hlavnú stránku</a>
+        <a href="/" class="back-link" data-i18n="premium.backHome">← Späť na hlavnú stránku</a>
       </div>
     </div>
 
     <!-- 🔒 LOGGED BUT NOT VIP -->
     <div id="premium-locked" class="premium-state" style="display:none;">
-      <p class="premium-info-text">
-        Táto sekcia je dostupná len pre členov
-        <strong>NHLPRO PREMIUM</strong>.
+      <p class="premium-info-text" data-i18n-html="premium.lockedHint">
+        Táto sekcia je dostupná len pre členov <strong>NHLPRO PREMIUM</strong>.
       </p>
 
-      <button id="premium-upgrade-btn" class="premium-upgrade-btn">
+      <button id="premium-upgrade-btn" class="premium-upgrade-btn" data-i18n="premium.upgrade">
         Staň sa NHLPRO PREMIUM
       </button>
     </div>
@@ -412,14 +303,14 @@
       <!-- ===== TOP BAR ===== -->
       <div class="premium-topbar">
         <span class="premium-welcome">
-          Vitaj v NHLPRO PREMIUM 👑
+          <span data-i18n="premium.welcome">Vitaj v NHLPRO PREMIUM 👑</span>
         </span>
 
         <button
           id="premium-logout-btn"
           class="premium-logout-btn"
         >
-          Odhlásiť sa
+          <span data-i18n="premium.logout">Odhlásiť sa</span>
         </button>
       </div>
 
@@ -427,21 +318,21 @@
       <div class="premium-toolbar">
 
         <div class="premium-field">
-          <label for="premium-team-select">Vyber klub</label>
+          <label for="premium-team-select" data-i18n="premium.pickTeam">Vyber klub</label>
           <select id="premium-team-select">
-            <option value="">-- vyber klub --</option>
+            <option value="" data-i18n="premium.selectTeamPlaceholder">-- vyber klub --</option>
           </select>
         </div>
 
         <div class="premium-field">
-          <label for="premium-player-select">Vyber hráča</label>
+          <label for="premium-player-select" data-i18n="premium.pickPlayer">Vyber hráča</label>
           <select id="premium-player-select" disabled>
-            <option value="">-- najprv vyber klub --</option>
+            <option value="" data-i18n="premium.selectTeamFirst">-- najprv vyber klub --</option>
           </select>
         </div>
 
         <div class="premium-field premium-field-action">
-          <button id="premium-add-player-btn">
+          <button id="premium-add-player-btn" data-i18n="premium.addPlayer">
             Pridať hráča
           </button>
 
@@ -449,7 +340,7 @@
             id="premium-analytics-btn"
             class="nhl-btn nhl-btn-ghost"
             onclick="scrollToPremiumAnalytics()">          
-            📊 Pokročilé štatistiky
+            <span data-i18n="premium.advancedStats">📊 Pokročilé štatistiky</span>
           </button>
         </div>
 
@@ -457,7 +348,7 @@
 
       <!-- ===== SUMMARY ===== -->
       <div class="premium-summary">
-        <span>Celkový profit</span>
+        <span data-i18n="premium.totalProfit">Celkový profit</span>
         <strong>
           <span id="premium-total-profit">0.00</span> €
         </strong>
@@ -468,12 +359,12 @@
         <table class="mantingale-table premium-table">
           <thead>
             <tr>
-              <th>Hráč</th>
-              <th>Stávka</th>
-              <th>Streak</th>
-              <th>Balance</th>
-              <th>Kurzy</th>
-              <th>Akcie</th>
+              <th data-i18n="table.player">Hráč</th>
+              <th data-i18n="premium.tableStake">Stávka</th>
+              <th data-i18n="premium.tableStreak">Streak</th>
+              <th data-i18n="premium.tableBalance">Balance</th>
+              <th data-i18n="premium.tableOdds">Kurzy</th>
+              <th data-i18n="premium.tableActions">Akcie</th>
             </tr>
           </thead>
           <tbody id="premium-players-body"></tbody>
@@ -490,18 +381,18 @@
       <table class="mantingale-history">
         <thead>
           <tr>
-            <th>Dátum</th>
-            <th>Zápas</th>
-            <th>Góly</th>
-            <th>Výsledok</th>
-            <th>Zmena (€)</th>
-            <th>Balance (€)</th>
+            <th data-i18n="mantingale.date">Dátum</th>
+            <th data-i18n="mantingale.game">Zápas</th>
+            <th data-i18n="mantingale.goals">Góly</th>
+            <th data-i18n="mantingale.result">Výsledok</th>
+            <th data-i18n="mantingale.change">Zmena (€)</th>
+            <th data-i18n="mantingale.balance">Balance (€)</th>
           </tr>
         </thead>
         <tbody id="vip-mtg-history-body"></tbody>
       </table>
 
-      <button id="vip-mtg-back-btn">← Späť</button>
+      <button id="vip-mtg-back-btn" data-i18n="common.back">← Späť</button>
     </div>
 
       <!-- ===== MESSAGE ===== -->
@@ -513,41 +404,41 @@
 <section id="premium-analytics" class="premium-analytics">
 
   <div class="analytics-header">
-    <h2>📊 Detailné štatistiky (posledných 10 zápasov)</h2>
-    <p>Pokročilá forma, ofenzíva a defenzíva tímov NHL</p>
+    <h2 data-i18n="premium.analyticsTitle">📊 Detailné štatistiky (posledných 10 zápasov)</h2>
+    <p data-i18n="premium.analyticsSubtitle">Pokročilá forma, ofenzíva a defenzíva tímov NHL</p>
   </div>
 
   <div class="analytics-grid">
 
     <!-- BOX 1 -->
     <div class="analytics-box">
-      <h3>🔥 TOP forma (L10)</h3>
+      <h3 data-i18n="premium.boxForm">🔥 TOP forma (L10)</h3>
       <div id="box-form-l10" class="analytics-content">
-        <p class="nhl-muted">Načítavam dáta…</p>
+        <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
       </div>
     </div>
 
     <!-- BOX 2 -->
     <div class="analytics-box">
-      <h3>🥅 TOP ofenzíva (L10)</h3>
+      <h3 data-i18n="premium.boxOffense">🥅 TOP ofenzíva (L10)</h3>
       <div id="box-offense-l10" class="analytics-content">
-        <p class="nhl-muted">Načítavam dáta…</p>
+        <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
       </div>
     </div>
 
     <!-- BOX 3 -->
     <div class="analytics-box">
-      <h3>🚨 Najslabšia obrana (L10)</h3>
+      <h3 data-i18n="premium.boxDefense">🚨 Najslabšia obrana (L10)</h3>
       <div id="box-defense-l10" class="analytics-content">
-        <p class="nhl-muted">Načítavam dáta…</p>
+        <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
       </div>
     </div>
 
     <!-- BOX 4 -->
     <div class="analytics-box">
-      <h3>📈 Zmena formy (trend)</h3>
+      <h3 data-i18n="premium.boxTrend">📈 Zmena formy (trend)</h3>
       <div id="box-trend-l10" class="analytics-content">
-        <p class="nhl-muted">Načítavam dáta…</p>
+        <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
       </div>
     </div>
 
@@ -559,14 +450,14 @@
 </section>
 
   <section id="stats-section" class="content-section" style="display:none;">
-  <div class="stat-players"><h4>📊 ŠTATISTIKY HRÁČOV NHL</h4></div>
+  <div class="stat-players"><h4 data-i18n="sections.statsTitle">📊 ŠTATISTIKY HRÁČOV NHL</h4></div>
 
   <div id="stats-grid" class="stats-grid">
     <div class="stat-box" data-type="goals">
       <h4>
         <span class="top">Top 50</span>
         <div class="divider"></div>
-        <span class="bottom">Góly</span>
+        <span class="bottom" data-i18n="stats.goals">Góly</span>
       </h4>
     </div>
 
@@ -574,7 +465,7 @@
       <h4>
         <span class="top">Top 50</span>
         <div class="divider"></div>
-        <span class="bottom">Asistencie</span>
+        <span class="bottom" data-i18n="stats.assists">Asistencie</span>
       </h4>
     </div>
 
@@ -582,7 +473,7 @@
       <h4>
         <span class="top">Top 50</span>
         <div class="divider"></div>
-        <span class="bottom">Kanadské body</span>
+        <span class="bottom" data-i18n="stats.points">Kanadské body</span>
       </h4>
     </div>
 
@@ -590,7 +481,7 @@
       <h4>
         <span class="top">Top 50</span>
         <div class="divider"></div>
-        <span class="bottom">Strely</span>
+        <span class="bottom" data-i18n="stats.shots">Strely</span>
       </h4>
     </div>
 
@@ -598,7 +489,7 @@
       <h4>
         <span class="top">Top 50</span>
         <div class="divider"></div>
-        <span class="bottom">Percentá streľby</span>
+        <span class="bottom" data-i18n="stats.accuracy">Percentá streľby</span>
       </h4>
     </div>
 
@@ -606,7 +497,7 @@
       <h4>
         <span class="top">Top 50</span>
         <div class="divider"></div>
-        <span class="bottom">Plus / mínus</span>
+        <span class="bottom" data-i18n="stats.plusminus">Plus / mínus</span>
       </h4>
     </div>
 
@@ -614,7 +505,7 @@
       <h4>
         <span class="top">Top 50</span>
         <div class="divider"></div>
-        <span class="bottom">Góly v presilovkách</span>
+        <span class="bottom" data-i18n="stats.ppg">Góly v presilovkách</span>
       </h4>
     </div>
 
@@ -622,7 +513,7 @@
       <h4>
         <span class="top">Top 50</span>
         <div class="divider"></div>
-        <span class="bottom">Odohrané minúty</span>
+        <span class="bottom" data-i18n="stats.toi">Odohrané minúty</span>
       </h4>
     </div>
 
@@ -630,7 +521,7 @@
       <h4>
         <span class="top">Top 50</span>
         <div class="divider"></div>
-        <span class="bottom">Vylúčenia</span>
+        <span class="bottom" data-i18n="stats.pim">Vylúčenia</span>
       </h4>
     </div>
   </div>
@@ -643,7 +534,7 @@
     <span>© 2025 NHLPRO.sk</span>
 
     <button id="open-disclaimer" class="footer-link">
-      ⚖️ Právny disclaimer
+      <span data-i18n="footer.disclaimer">⚖️ Právny disclaimer</span>
     </button>
   </div>
 </footer>
@@ -652,71 +543,7 @@
 <div id="disclaimer-modal" class="disclaimer-modal hidden">
   <div class="disclaimer-box">
     <button id="close-disclaimer" class="disclaimer-close">✕</button>
-
-    <h2>⚖️ PRÁVNY DISCLAIMER – NHLPRO.sk</h2>
-
-    <h3>1️⃣ Všeobecné upozornenie</h3>
-    <p>
-      Webová stránka <strong>NHLPRO.sk</strong> slúži výhradne na informačné,
-      analytické a vzdelávacie účely. Obsah stránky nepredstavuje stávkové
-      poradenstvo, investičné odporúčanie ani výzvu na uzatváranie stávok
-      v zmysle platných právnych predpisov.
-    </p>
-    <p>
-      Používateľ berie na vedomie, že všetky informácie, štatistiky, modely,
-      hodnotenia a stratégie zverejnené na stránke sú poskytované bez akejkoľvek
-      záruky úspechu alebo zisku.
-    </p>
-
-    <h3>2️⃣ Riziko a zodpovednosť používateľa</h3>
-    <p>
-      Stávkovanie a hazardné hry sú spojené s finančným rizikom a môžu viesť
-      k strate peňazí. Používateľ používa informácie zverejnené na stránke
-      výlučne na vlastnú zodpovednosť.
-    </p>
-    <p>
-      Prevádzkovateľ stránky nezodpovedá za žiadne finančné straty, ktoré môžu
-      vzniknúť v dôsledku použitia informácií, stratégií alebo nástrojov
-      dostupných na stránke.
-    </p>
-
-    <h3>3️⃣ Advanced betting strategy a analytické modely</h3>
-    <p>
-      Stratégie a modely (vrátane tzv. Pokročil stávkovej stratégie) nepredstavujú
-      zaručený spôsob dosahovania zisku. Ide o teoretické a analytické prístupy.
-    </p>
-    <p>
-      Minulé výsledky nie sú zárukou budúcich výsledkov.
-    </p>
-
-    <h3>4️⃣ Transparentnosť údajov</h3>
-    <p>
-      NHLPRO.sk zverejňuje kompletné historické údaje vrátane výhier, prehier
-      a vynechaných zápasov. Tieto údaje slúžia výhradne na prehľad a analýzu.
-    </p>
-
-    <h3>5️⃣ Nezávislosť od stávkových kancelárií</h3>
-    <p>
-      NHLPRO.sk nie je stávkovou kanceláriou a neprijíma stávky ani finančné
-      vklady.
-    </p>
-
-    <h3>6️⃣ Vekové obmedzenie</h3>
-    <p>
-      Používanie stránky je určené výhradne osobám starším ako 18 rokov.
-    </p>
-
-    <h3>7️⃣ VIP / Premium služby</h3>
-    <p>
-      Zakúpením VIP služby používateľ nezískava žiadnu záruku zisku ani osobné
-      stávkové poradenstvo.
-    </p>
-
-    <h3>8️⃣ Záverečné ustanovenia</h3>
-    <p>
-      Používaním stránky NHLPRO.sk používateľ vyjadruje súhlas s týmto právnym
-      upozornením. Ak s podmienkami používania nesúhlasí, je zakázané akékoľvek používanie web portálu nhlpro.sk!
-    </p>
+    <div id="disclaimerContent"></div>
   </div>
 </div>
 
