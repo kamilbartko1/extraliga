@@ -15,6 +15,610 @@ const BASE_STAKE = 1;
 const ODDS = 2.5;
 const API_BASE = "";
 
+// =========================================================
+// i18n (SK / EN) – frontend only (backend untouched)
+// =========================================================
+
+const I18N = {
+  sk: {
+    "header.tagline": "Tipuj NHL ako profík!",
+    "header.powered": "Powered by <span>AI-Logic</span>",
+
+    "nav.home": "Domov",
+    "nav.results": "Výsledky",
+    "nav.teamRating": "Rating tímov",
+    "nav.playerRating": "Rating hráčov",
+    "nav.stats": "Štatistiky hráčov",
+    "nav.abs": "AdvancedBettingStrategy",
+    "nav.premium": "NHLPRO PREMIUM",
+
+    "sections.home": "Domov",
+    "sections.resultsTitle": "Výsledky & tabuľka NHL",
+    "sections.teamRating": "Rating tímov",
+    "sections.playerRating": "Rating hráčov",
+    "sections.statsTitle": "📊 ŠTATISTIKY HRÁČOV NHL",
+
+    "table.team": "Tím",
+    "table.player": "Hráč",
+    "table.rating": "Rating",
+
+    "common.loading": "Načítavam…",
+    "common.showMore": "Zobraziť viac ↓",
+    "common.hide": "Skryť ↑",
+    "common.back": "← Späť",
+    "common.close": "Zavrieť",
+    "common.detail": "Detail",
+    "common.delete": "Vymazať",
+
+    "footer.disclaimer": "⚖️ Právny disclaimer",
+
+    "home.loading": "⏳ Načítavam domovskú stránku...",
+    "home.todaysGames": "🏒 Dnešné zápasy NHL",
+    "home.gamesCount": "{count} zápasov",
+    "home.noGamesToday": "Dnes nie sú žiadne zápasy.",
+    "home.viewAll": "Zobraziť všetky →",
+    "home.aiScorer": "🎯 AI strelec dňa",
+    "home.aiLoading": "Načítavam AI tip…",
+    "home.aiFailed": "AI strelec sa nepodarilo vypočítať.",
+    "home.aiHistory": "📅 História AI tipov",
+    "home.noTips": "Žiadne vyhodnotené tipy",
+    "home.topStats": "📊 Top štatistiky hráčov",
+    "home.viewAllStats": "Zobraziť všetky",
+    "home.topGoals": "Top Góly",
+    "home.topAssists": "Top Asistencie",
+    "home.topPoints": "Top Body",
+    "home.topPP": "Top PP",
+    "home.topShots": "Top Strely",
+    "home.statGoals": "{n} gólov",
+    "home.statAssists": "{n} asistencií",
+    "home.statPoints": "{n} bodov",
+    "home.statShots": "{n} striel",
+
+    "matches.loading": "⏳ Načítavam zápasy a ratingy...",
+    "matches.serverError": "❌ Server vrátil chybu pri načítaní dát.",
+    "matches.done": "✅ Dokončené: {games} zápasov | {players} hráčov v rebríčku",
+    "matches.noGames": "⚠️ Žiadne odohrané zápasy",
+    "matches.noFinished": "Žiadne odohrané zápasy.",
+    "matches.more": "Zobraziť viac ↓",
+    "matches.less": "Skryť staršie ↑",
+    "matches.resultsBox": "Výsledky",
+    "matches.standingsBox": "Tabuľka NHL",
+    "matches.loadingStandings": "Načítavam tabuľku…",
+    "matches.standingsUnavailable": "Tabuľka nie je dostupná.",
+
+    "mantingale.totalProfit": "CELKOVÝ PROFIT",
+    "mantingale.stake": "Stávka /EUR/",
+    "mantingale.streak": "Streak",
+    "mantingale.balance": "Balance (€)",
+    "mantingale.detail": "Detail",
+    "mantingale.date": "Dátum",
+    "mantingale.game": "Zápas",
+    "mantingale.goals": "Góly",
+    "mantingale.result": "Výsledok",
+    "mantingale.change": "Zmena (€)",
+
+    "stats.goals": "Góly",
+    "stats.assists": "Asistencie",
+    "stats.points": "Kanadské body",
+    "stats.shots": "Strely",
+    "stats.accuracy": "Percentá streľby",
+    "stats.plusminus": "Plus / mínus",
+    "stats.ppg": "Góly v presilovkách",
+    "stats.toi": "Odohrané minúty",
+    "stats.pim": "Vylúčenia",
+
+    "premium.title": "👑 NHLPRO PREMIUM",
+    "premium.subtitle": "Advanced betting strategy",
+    "premium.loginHint": "Najprv sa prihlás, aby si mohol používať NHLPRO PREMIUM.",
+    "premium.email": "Email",
+    "premium.password": "Heslo",
+    "premium.passwordRepeat": "Zopakuj heslo",
+    "premium.login": "Prihlásiť",
+    "premium.logout": "Odhlásiť sa",
+    "premium.register": "Registrovať sa",
+    "premium.registerTitle": "📝 Registrácia do NHLPRO",
+    "premium.registerConfirm": "Zaregistrovať sa",
+    "premium.backHome": "← Späť na hlavnú stránku",
+    "premium.lockedHint": "Táto sekcia je dostupná len pre členov <strong>NHLPRO PREMIUM</strong>.",
+    "premium.upgrade": "Staň sa NHLPRO PREMIUM",
+    "premium.welcome": "Vitaj v NHLPRO PREMIUM 👑",
+    "premium.pickTeam": "Vyber klub",
+    "premium.pickPlayer": "Vyber hráča",
+    "premium.addPlayer": "Pridať hráča",
+    "premium.advancedStats": "📊 Pokročilé štatistiky",
+    "premium.totalProfit": "Celkový profit",
+    "premium.tableStake": "Stávka",
+    "premium.tableStreak": "Streak",
+    "premium.tableBalance": "Balance",
+    "premium.tableOdds": "Kurzy",
+    "premium.tableActions": "Akcie",
+    "premium.loginNeed": "Zadaj email aj heslo",
+    "premium.loginFailed": "Chyba pri prihlásení",
+    "premium.loginExpired": "Prihlásenie vypršalo. Prihlás sa znova.",
+    "premium.connectionError": "Chyba spojenia. Skús to znova.",
+    "premium.fillAll": "Vyplň všetky polia.",
+    "premium.passMin": "Heslo musí mať minimálne 8 znakov.",
+    "premium.passMismatch": "Heslá sa nezhodujú.",
+    "premium.creatingAccount": "⏳ Vytváram účet...",
+    "premium.accountCreated": "✅ Účet vytvorený. Skontroluj email.",
+    "premium.registerError": "❌ Chyba pri registrácii.",
+    "premium.paymentStartError": "Chyba pri spustení platby.",
+    "premium.addPick": "Vyber klub aj hráča.",
+    "premium.noOdds": "❌ Hráč nemá nastavený kurz (odds).",
+    "premium.adding": "⏳ Pridávam hráča...",
+    "premium.added": "✅ {player} pridaný (kurz {odds})",
+    "premium.serverError": "❌ Chyba servera",
+    "premium.loadPlayersError": "Chyba pri načítaní hráčov.",
+    "premium.confirmDelete": "Naozaj chceš vymazať {name}?",
+    "premium.selectTeamPlaceholder": "-- vyber klub --",
+    "premium.selectTeamFirst": "-- najprv vyber klub --",
+    "premium.selectPlayerPlaceholder": "-- vyber hráča --",
+    "premium.teamsLoadError": "⚠️ Chyba načítania tímov",
+    "premium.analyticsTitle": "📊 Detailné štatistiky (posledných 10 zápasov)",
+    "premium.analyticsSubtitle": "Pokročilá forma, ofenzíva a defenzíva tímov NHL",
+    "premium.boxForm": "🔥 TOP forma (L10)",
+    "premium.boxOffense": "🥅 TOP ofenzíva (L10)",
+    "premium.boxDefense": "🚨 Najslabšia obrana (L10)",
+    "premium.boxTrend": "📈 Zmena formy (trend)",
+
+    "modal.team.title": "🧠 Ako funguje NHLPRO Rating tímov?",
+    "modal.player.title": "🧠 Ako funguje NHLPRO Rating hráčov?",
+
+    "abs.title": "🧠 ABS – Advanced Betting Strategy",
+    "abs.intro": "ABS je analytická stávková stratégia založená na systematickom bankroll manažmente a progresívnom vyhodnocovaní výkonov konkrétnych hráčov NHL.",
+    "abs.more1": "Každý hráč má vlastnú stávkovú sériu, ktorá sa vyhodnocuje nezávisle. Po výhre sa séria resetuje, po prehre sa výška stávky upravuje podľa presne definovaných pravidiel stratégie.",
+    "abs.more2": "V tabuľke nižšie vidíš aktuálnu stávku, streak, profit a detailnú históriu každého hráča. V NHLPRO PREMIUM môžeš pridávať vlastných hráčov podľa svojho výberu.",
+    "abs.warn": "⚠️ ABS nie je záruka výhry. Ide o štatistickú stratégiu určenú pre disciplinovaných používateľov so zodpovedným prístupom k bankrollu.",
+
+    "disclaimer.title": "⚖️ PRÁVNY DISCLAIMER – NHLPRO.sk",
+
+    "common.noData": "⚠️ Žiadne dáta.",
+    "common.failedToLoad": "Nepodarilo sa načítať dáta.",
+
+    "mantingale.title": "Mantingal stratégia",
+    "mantingale.loadingData": "Načítavam dáta...",
+    "mantingale.loadFailed": "❌ Nepodarilo sa načítať dáta Mantingal.",
+    "mantingale.historyTitle": "História stávok Mantingalu",
+    "mantingale.historyLoadFailed": "❌ Nepodarilo sa načítať históriu stávok.",
+    "mantingale.historyEmpty": "Zatiaľ žiadne dáta.",
+
+    "strategies.title": "Databáza hráčov NHL",
+    "strategies.loading": "Načítavam údaje z lokálnej databázy...",
+    "strategies.count": "Počet hráčov v databáze: <b>{count}</b>",
+    "strategies.showFirst": "Zobrazených prvých 300 hráčov:",
+
+    "premium.mustLoginFirst": "Najprv sa musíš prihlásiť.",
+    "premium.paymentCreateFailed": "Nepodarilo sa vytvoriť platbu.",
+    "premium.historyLoadFailed": "Nepodarilo sa načítať históriu",
+    "premium.noPlayers": "Zatiaľ nemáš pridaných žiadnych hráčov.",
+    "premium.registeringUser": "⏳ Registrujem používateľa...",
+    "premium.signupSuccess": "✅ Registrácia prebehla úspešne.",
+    "premium.checkEmailConfirm": " Skontroluj email pre potvrdenie.",
+    "premium.signupFailed": "Registrácia zlyhala.",
+  },
+  en: {
+    "header.tagline": "Bet NHL like a pro!",
+    "header.powered": "Powered by <span>AI-Logic</span>",
+
+    "nav.home": "Home",
+    "nav.results": "Results",
+    "nav.teamRating": "Team rating",
+    "nav.playerRating": "Player rating",
+    "nav.stats": "Player stats",
+    "nav.abs": "AdvancedBettingStrategy",
+    "nav.premium": "NHLPRO PREMIUM",
+
+    "sections.home": "Home",
+    "sections.resultsTitle": "Results & NHL standings",
+    "sections.teamRating": "Team rating",
+    "sections.playerRating": "Player rating",
+    "sections.statsTitle": "📊 NHL PLAYER STATS",
+
+    "table.team": "Team",
+    "table.player": "Player",
+    "table.rating": "Rating",
+
+    "common.loading": "Loading…",
+    "common.showMore": "Show more ↓",
+    "common.hide": "Hide ↑",
+    "common.back": "← Back",
+    "common.close": "Close",
+    "common.detail": "Detail",
+    "common.delete": "Delete",
+
+    "footer.disclaimer": "⚖️ Legal disclaimer",
+
+    "home.loading": "⏳ Loading home…",
+    "home.todaysGames": "🏒 Today's NHL games",
+    "home.gamesCount": "{count} games",
+    "home.noGamesToday": "No games today.",
+    "home.viewAll": "View all →",
+    "home.aiScorer": "🎯 AI scorer of the day",
+    "home.aiLoading": "Loading AI pick…",
+    "home.aiFailed": "Could not compute today's AI scorer.",
+    "home.aiHistory": "📅 AI picks history",
+    "home.noTips": "No evaluated picks yet",
+    "home.topStats": "📊 Top player stats",
+    "home.viewAllStats": "View all",
+    "home.topGoals": "Top Goals",
+    "home.topAssists": "Top Assists",
+    "home.topPoints": "Top Points",
+    "home.topPP": "Top PP",
+    "home.topShots": "Top Shots",
+    "home.statGoals": "{n} goals",
+    "home.statAssists": "{n} assists",
+    "home.statPoints": "{n} points",
+    "home.statShots": "{n} shots",
+
+    "matches.loading": "⏳ Loading games and ratings…",
+    "matches.serverError": "❌ Server returned an error while loading data.",
+    "matches.done": "✅ Done: {games} games | {players} players in rankings",
+    "matches.noGames": "⚠️ No finished games",
+    "matches.noFinished": "No finished games.",
+    "matches.more": "Show more ↓",
+    "matches.less": "Hide older ↑",
+    "matches.resultsBox": "Results",
+    "matches.standingsBox": "NHL standings",
+    "matches.loadingStandings": "Loading standings…",
+    "matches.standingsUnavailable": "Standings are not available.",
+
+    "mantingale.totalProfit": "TOTAL PROFIT",
+    "mantingale.stake": "Stake (EUR)",
+    "mantingale.streak": "Streak",
+    "mantingale.balance": "Balance (€)",
+    "mantingale.detail": "Detail",
+    "mantingale.date": "Date",
+    "mantingale.game": "Game",
+    "mantingale.goals": "Goals",
+    "mantingale.result": "Result",
+    "mantingale.change": "Change (€)",
+
+    "stats.goals": "Goals",
+    "stats.assists": "Assists",
+    "stats.points": "Points",
+    "stats.shots": "Shots",
+    "stats.accuracy": "Shooting %",
+    "stats.plusminus": "Plus / minus",
+    "stats.ppg": "Power-play goals",
+    "stats.toi": "Time on ice",
+    "stats.pim": "Penalty minutes",
+
+    "premium.title": "👑 NHLPRO PREMIUM",
+    "premium.subtitle": "Advanced betting strategy",
+    "premium.loginHint": "Log in first to use NHLPRO PREMIUM.",
+    "premium.email": "Email",
+    "premium.password": "Password",
+    "premium.passwordRepeat": "Repeat password",
+    "premium.login": "Log in",
+    "premium.logout": "Log out",
+    "premium.register": "Create account",
+    "premium.registerTitle": "📝 Create NHLPRO account",
+    "premium.registerConfirm": "Create account",
+    "premium.backHome": "← Back to homepage",
+    "premium.lockedHint": "This section is available only to <strong>NHLPRO PREMIUM</strong> members.",
+    "premium.upgrade": "Become NHLPRO PREMIUM",
+    "premium.welcome": "Welcome to NHLPRO PREMIUM 👑",
+    "premium.pickTeam": "Select team",
+    "premium.pickPlayer": "Select player",
+    "premium.addPlayer": "Add player",
+    "premium.advancedStats": "📊 Advanced stats",
+    "premium.totalProfit": "Total profit",
+    "premium.tableStake": "Stake",
+    "premium.tableStreak": "Streak",
+    "premium.tableBalance": "Balance",
+    "premium.tableOdds": "Odds",
+    "premium.tableActions": "Actions",
+    "premium.loginNeed": "Please enter email and password",
+    "premium.loginFailed": "Login failed",
+    "premium.loginExpired": "Session expired. Please log in again.",
+    "premium.connectionError": "Connection error. Please try again.",
+    "premium.fillAll": "Please fill in all fields.",
+    "premium.passMin": "Password must be at least 8 characters.",
+    "premium.passMismatch": "Passwords do not match.",
+    "premium.creatingAccount": "⏳ Creating account...",
+    "premium.accountCreated": "✅ Account created. Check your email.",
+    "premium.registerError": "❌ Registration error.",
+    "premium.paymentStartError": "Error while starting payment.",
+    "premium.addPick": "Select a team and a player.",
+    "premium.noOdds": "❌ This player has no odds set.",
+    "premium.adding": "⏳ Adding player...",
+    "premium.added": "✅ {player} added (odds {odds})",
+    "premium.serverError": "❌ Server error",
+    "premium.loadPlayersError": "Failed to load players.",
+    "premium.confirmDelete": "Are you sure you want to delete {name}?",
+    "premium.selectTeamPlaceholder": "-- select team --",
+    "premium.selectTeamFirst": "-- select team first --",
+    "premium.selectPlayerPlaceholder": "-- select player --",
+    "premium.teamsLoadError": "⚠️ Failed to load teams",
+    "premium.analyticsTitle": "📊 Detailed stats (last 10 games)",
+    "premium.analyticsSubtitle": "Advanced form, offense and defense for NHL teams",
+    "premium.boxForm": "🔥 TOP form (L10)",
+    "premium.boxOffense": "🥅 TOP offense (L10)",
+    "premium.boxDefense": "🚨 Weakest defense (L10)",
+    "premium.boxTrend": "📈 Form change (trend)",
+
+    "modal.team.title": "🧠 How does NHLPRO team rating work?",
+    "modal.player.title": "🧠 How does NHLPRO player rating work?",
+
+    "abs.title": "🧠 ABS – Advanced Betting Strategy",
+    "abs.intro": "ABS is an analytics-driven betting strategy focused on bankroll management and progressive evaluation of specific NHL players.",
+    "abs.more1": "Each player has an independent betting series. After a win, the series resets; after a loss, the stake adjusts based on predefined rules.",
+    "abs.more2": "In the table below you can see the current stake, streak, profit and detailed history per player. In NHLPRO PREMIUM you can add your own players.",
+    "abs.warn": "⚠️ ABS is not a guarantee of profit. It is intended for disciplined users with responsible bankroll management.",
+
+    "disclaimer.title": "⚖️ LEGAL DISCLAIMER – NHLPRO.sk",
+
+    "common.noData": "⚠️ No data.",
+    "common.failedToLoad": "Failed to load data.",
+
+    "mantingale.title": "Mantingale strategy",
+    "mantingale.loadingData": "Loading data...",
+    "mantingale.loadFailed": "❌ Failed to load Mantingale data.",
+    "mantingale.historyTitle": "Mantingale bet history",
+    "mantingale.historyLoadFailed": "❌ Failed to load bet history.",
+    "mantingale.historyEmpty": "No data yet.",
+
+    "strategies.title": "NHL players database",
+    "strategies.loading": "Loading from local database...",
+    "strategies.count": "Players in database: <b>{count}</b>",
+    "strategies.showFirst": "Showing first 300 players:",
+
+    "premium.mustLoginFirst": "Please log in first.",
+    "premium.paymentCreateFailed": "Could not create payment.",
+    "premium.historyLoadFailed": "Failed to load history",
+    "premium.noPlayers": "You haven't added any players yet.",
+    "premium.registeringUser": "⏳ Creating user...",
+    "premium.signupSuccess": "✅ Registration successful.",
+    "premium.checkEmailConfirm": " Check your email to confirm.",
+    "premium.signupFailed": "Registration failed.",
+  }
+};
+
+let CURRENT_LANG = (localStorage.getItem("nhlpro_lang") || "").toLowerCase();
+if (!["sk", "en"].includes(CURRENT_LANG)) {
+  const navLang = (navigator.language || "sk").toLowerCase();
+  CURRENT_LANG = navLang.startsWith("en") ? "en" : "sk";
+}
+
+function t(key, vars = {}) {
+  const raw = I18N[CURRENT_LANG]?.[key] ?? I18N.sk[key] ?? key;
+  return String(raw).replace(/\{(\w+)\}/g, (_, k) => (vars[k] ?? `{${k}}`));
+}
+
+function applyStaticI18n() {
+  document.documentElement.setAttribute("lang", CURRENT_LANG);
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    if (!key) return;
+    el.textContent = t(key);
+  });
+  document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-html");
+    if (!key) return;
+    el.innerHTML = t(key);
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-placeholder");
+    if (!key) return;
+    el.setAttribute("placeholder", t(key));
+  });
+}
+
+function renderTeamRatingModalContent() {
+  // Keep it short and clear
+  const items = CURRENT_LANG === "en"
+    ? {
+        intro: "<b>NHLPRO Team Rating</b> is a custom performance index that combines results, form, offense, defense and special teams across the season.",
+        form: ["Wins", "Losses", "Winning / losing streaks"],
+        off: ["Goals scored", "Power play efficiency (PP %)"],
+        def: ["Goals against", "Penalty kill efficiency (PK %)", "Goalie impact (basic)"],
+        spec: ["Power play", "Penalty kill", "Power-play goals", "Short-handed defense"],
+        stab: "The rating tracks long-term consistency and balance between offense and defense.",
+      }
+    : {
+        intro: "<b>NHLPRO Team Rating</b> je vlastný analytický index výkonnosti tímov, ktorý kombinuje výsledky, formu, ofenzívu, defenzívu a špeciálne formácie počas sezóny.",
+        form: ["Víťazstvá", "Prehry", "Séria výhier / prehier"],
+        off: ["Počet strelených gólov", "Efektivita presiloviek (PP %)"],
+        def: ["Inkasované góly", "Účinnosť oslabení (PK %)", "Brankársky výkon (základný vplyv)"],
+        spec: ["Presilovky", "Oslabenia", "Presilovkové góly", "Defenzíva v oslabení"],
+        stab: "Rating sleduje dlhodobú konzistentnosť tímu a rovnováhu medzi útokom a obranou.",
+      };
+
+  return `
+    <h2>${t("modal.team.title")}</h2>
+    <p>${items.intro}</p>
+
+    <h3>${CURRENT_LANG === "en" ? "🔥 Results & form" : "🔥 Výsledky & forma"}</h3>
+    <ul>${items.form.map((x) => `<li>${x}</li>`).join("")}</ul>
+
+    <h3>${CURRENT_LANG === "en" ? "🎯 Offense" : "🎯 Ofenzíva"}</h3>
+    <ul>${items.off.map((x) => `<li>${x}</li>`).join("")}</ul>
+
+    <h3>${CURRENT_LANG === "en" ? "🛡️ Defense" : "🛡️ Defenzíva"}</h3>
+    <ul>${items.def.map((x) => `<li>${x}</li>`).join("")}</ul>
+
+    <h3>${CURRENT_LANG === "en" ? "⚡ Special teams" : "⚡ Špeciálne formácie"}</h3>
+    <ul>${items.spec.map((x) => `<li>${x}</li>`).join("")}</ul>
+
+    <h3>${CURRENT_LANG === "en" ? "📈 Long-term stability" : "📈 Celková stabilita"}</h3>
+    <p>${items.stab}</p>
+
+    <button class="close-modal-btn" onclick="closeTeamRatingModal()">${t("common.close")}</button>
+  `;
+}
+
+function renderPlayerRatingModalContent() {
+  const intro = CURRENT_LANG === "en"
+    ? "<b>NHLPRO Rating</b> is a custom index combining goals, assists, shots, power-play impact, current form and season stability."
+    : "<b>NHLPRO Rating</b> je vlastný analytický index. Kombinuje góly, asistencie, strely, presilovky, formu aj dlhodobú výkonnosť hráča.";
+
+  const prod = CURRENT_LANG === "en"
+    ? ["Goals", "Assists", "Key goals have higher weight", "Power-play goals get a bonus"]
+    : ["Góly", "Asistencie", "Dôležité góly majú vyššiu váhu", "Presilovkové góly majú bonus"];
+
+  const off = CURRENT_LANG === "en"
+    ? ["Shots", "Offensive involvement"]
+    : ["Počet striel", "Útočná aktivita"];
+
+  const spec = CURRENT_LANG === "en"
+    ? ["Power-play impact (PP)", "Penalty kill (PK)", "Key moments"]
+    : ["Výkon v presilovkách (PP)", "Oslabenia (PK)", "Kľúčové momenty zápasov"];
+
+  const form = CURRENT_LANG === "en"
+    ? "The rating reacts to recent games — rises quickly in good form and drops on weak performances."
+    : "Rating sa mení podľa posledných zápasov – rýchlo rastie pri dobrej forme, klesá pri slabých výkonoch.";
+
+  const stab = CURRENT_LANG === "en"
+    ? "Season-long weighting is used so the rating doesn't swing based on a single game."
+    : "Systém započítava celú sezónu, aby hodnotenie nekolísalo len podľa jedného zápasu.";
+
+  return `
+    <h2>${t("modal.player.title")}</h2>
+    <p>${intro}</p>
+
+    <h3>${CURRENT_LANG === "en" ? "🔥 1. Production" : "🔥 1. Produktivita"}</h3>
+    <ul>${prod.map((x) => `<li>${x}</li>`).join("")}</ul>
+
+    <h3>${CURRENT_LANG === "en" ? "🎯 2. Offensive activity" : "🎯 2. Ofenzívna aktivita"}</h3>
+    <ul>${off.map((x) => `<li>${x}</li>`).join("")}</ul>
+
+    <h3>${CURRENT_LANG === "en" ? "⚡ 3. Special teams" : "⚡ 3. Špeciálne formácie"}</h3>
+    <ul>${spec.map((x) => `<li>${x}</li>`).join("")}</ul>
+
+    <h3>${CURRENT_LANG === "en" ? "📈 4. Current form" : "📈 4. Aktuálna forma"}</h3>
+    <p>${form}</p>
+
+    <h3>${CURRENT_LANG === "en" ? "🎚️ 5. Season stability" : "🎚️ 5. Celosezónna stabilita"}</h3>
+    <p>${stab}</p>
+
+    <button class="close-modal-btn" onclick="closeRatingModal()">${t("common.close")}</button>
+  `;
+}
+
+function renderAbsInfoBox() {
+  return `
+    <h2>${t("abs.title")}</h2>
+    <p class="abs-intro">${t("abs.intro")}</p>
+
+    <div class="abs-more" id="abs-more" style="display:none;">
+      <p>${t("abs.more1")}</p>
+      <p>${t("abs.more2")}</p>
+      <p class="abs-warning">${t("abs.warn")}</p>
+    </div>
+
+    <button class="abs-toggle" id="abs-toggle">${t("common.showMore")}</button>
+  `;
+}
+
+function renderDisclaimer() {
+  if (CURRENT_LANG === "en") {
+    return `
+      <h2>${t("disclaimer.title")}</h2>
+      <h3>1️⃣ General notice</h3>
+      <p><strong>NHLPRO.sk</strong> is for informational, analytical and educational purposes only. The content is not betting advice, investment advice, or a solicitation to place bets.</p>
+      <p>All information, statistics, models, ratings and strategies are provided without any guarantee of success or profit.</p>
+
+      <h3>2️⃣ Risk and user responsibility</h3>
+      <p>Betting and gambling involve financial risk and may lead to loss of money. You use the information on this website at your own risk.</p>
+      <p>The operator is not responsible for any financial losses resulting from the use of information, strategies or tools provided on the website.</p>
+
+      <h3>3️⃣ Advanced betting strategy and analytical models</h3>
+      <p>Strategies and models are not a guaranteed way to make profit. They are theoretical and analytical approaches.</p>
+      <p>Past results are not a guarantee of future results.</p>
+
+      <h3>4️⃣ Data transparency</h3>
+      <p>NHLPRO.sk publishes complete historical data (including wins, losses and skipped games) for transparency and analysis purposes.</p>
+
+      <h3>5️⃣ Independence from bookmakers</h3>
+      <p>NHLPRO.sk is not a bookmaker and does not accept bets or deposits.</p>
+
+      <h3>6️⃣ Age restriction</h3>
+      <p>This website is intended for users aged 18+ only.</p>
+
+      <h3>7️⃣ VIP / Premium services</h3>
+      <p>Purchasing VIP/Premium does not provide any guarantee of profit or personal betting advice.</p>
+
+      <h3>8️⃣ Final provisions</h3>
+      <p>By using NHLPRO.sk you agree to this legal disclaimer. If you do not agree, any use of the nhlpro.sk web portal is prohibited.</p>
+    `;
+  }
+
+  return `
+    <h2>${t("disclaimer.title")}</h2>
+    <h3>1️⃣ Všeobecné upozornenie</h3>
+    <p>Webová stránka <strong>NHLPRO.sk</strong> slúži výhradne na informačné, analytické a vzdelávacie účely. Obsah stránky nepredstavuje stávkové poradenstvo, investičné odporúčanie ani výzvu na uzatváranie stávok.</p>
+    <p>Používateľ berie na vedomie, že všetky informácie, štatistiky, modely, hodnotenia a stratégie zverejnené na stránke sú poskytované bez akejkoľvek záruky úspechu alebo zisku.</p>
+
+    <h3>2️⃣ Riziko a zodpovednosť používateľa</h3>
+    <p>Stávkovanie a hazardné hry sú spojené s finančným rizikom a môžu viesť k strate peňazí. Používateľ používa informácie zverejnené na stránke výlučne na vlastnú zodpovednosť.</p>
+    <p>Prevádzkovateľ stránky nezodpovedá za žiadne finančné straty, ktoré môžu vzniknúť v dôsledku použitia informácií, stratégií alebo nástrojov dostupných na stránke.</p>
+
+    <h3>3️⃣ Advanced betting strategy a analytické modely</h3>
+    <p>Stratégie a modely (vrátane tzv. Pokročilej stávkovej stratégie) nepredstavujú zaručený spôsob dosahovania zisku. Ide o teoretické a analytické prístupy.</p>
+    <p>Minulé výsledky nie sú zárukou budúcich výsledkov.</p>
+
+    <h3>4️⃣ Transparentnosť údajov</h3>
+    <p>NHLPRO.sk zverejňuje kompletné historické údaje vrátane výhier, prehier a vynechaných zápasov. Tieto údaje slúžia výhradne na prehľad a analýzu.</p>
+
+    <h3>5️⃣ Nezávislosť od stávkových kancelárií</h3>
+    <p>NHLPRO.sk nie je stávkovou kanceláriou a neprijíma stávky ani finančné vklady.</p>
+
+    <h3>6️⃣ Vekové obmedzenie</h3>
+    <p>Používanie stránky je určené výhradne osobám starším ako 18 rokov.</p>
+
+    <h3>7️⃣ VIP / Premium služby</h3>
+    <p>Zakúpením VIP služby používateľ nezískava žiadnu záruku zisku ani osobné stávkové poradenstvo.</p>
+
+    <h3>8️⃣ Záverečné ustanovenia</h3>
+    <p>Používaním stránky NHLPRO.sk používateľ vyjadruje súhlas s týmto právnym upozornením. Ak s podmienkami používania nesúhlasí, je zakázané akékoľvek používanie web portálu nhlpro.sk!</p>
+  `;
+}
+
+function applyI18n() {
+  applyStaticI18n();
+
+  // Render long blocks
+  const teamModal = document.getElementById("teamRatingModalContent");
+  if (teamModal) teamModal.innerHTML = renderTeamRatingModalContent();
+
+  const playerModal = document.getElementById("playerRatingModalContent");
+  if (playerModal) playerModal.innerHTML = renderPlayerRatingModalContent();
+
+  const abs = document.getElementById("absInfoBox");
+  if (abs) abs.innerHTML = renderAbsInfoBox();
+
+  const disc = document.getElementById("disclaimerContent");
+  if (disc) disc.innerHTML = renderDisclaimer();
+
+  // Update mobile select <option> labels too
+  document.querySelectorAll("#mobileSelect option[data-i18n]").forEach((opt) => {
+    const key = opt.getAttribute("data-i18n");
+    if (key) opt.textContent = t(key);
+  });
+}
+
+function setLanguage(lang) {
+  const next = String(lang || "").toLowerCase();
+  if (!["sk", "en"].includes(next)) return;
+  CURRENT_LANG = next;
+  localStorage.setItem("nhlpro_lang", next);
+  applyI18n();
+
+  // refresh visible section content (dynamic strings)
+  const visible = Array.from(document.querySelectorAll(".section, .content-section"))
+    .find((el) => el && el.style.display !== "none");
+  if (visible?.id && typeof window.showSection === "function") {
+    window.showSection(visible.id);
+  }
+}
+
+function syncLangButtonsUI() {
+  const skBtn = document.getElementById("langBtnSk");
+  const enBtn = document.getElementById("langBtnEn");
+  skBtn?.classList.toggle("is-active", CURRENT_LANG === "sk");
+  enBtn?.classList.toggle("is-active", CURRENT_LANG === "en");
+}
+
 // === Prihlasenie premium klientov cez supabase ===
 const SUPABASE_URL = "https://ztjyvzulbrilyzfcxogj.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_B8gvXJ59mQjIqytV8WnQqA__I3gpAat"; // ten začína sb_publishable_...
@@ -99,7 +703,7 @@ async function displayHome() {
   if (!home) return;
 
   home.innerHTML = `
-    <p style="text-align:center;color:#00eaff;">⏳ Načítavam domovskú stránku...</p>
+    <p style="text-align:center;color:#00eaff;">${t("home.loading")}</p>
   `;
 
   try {
@@ -126,6 +730,7 @@ async function displayHome() {
     const topShots = statsData?.topShots?.[0] || {};
 
     // 🔥 2️⃣ VŠETKO OKREM AI TIPU SA RENDERUJE HNEĎ
+    const gamesCountText = t("home.gamesCount", { count: homeData.matchesToday.length });
     let html = `
 <section class="nhl-home">
 
@@ -135,14 +740,14 @@ async function displayHome() {
     <!-- DNESNE ZAPASY -->
     <div class="nhl-card">
       <div class="nhl-card-head">
-        <h3>🏒 Dnešné zápasy NHL</h3>
-        <span class="nhl-card-hint">${homeData.matchesToday.length} zápasov</span>
+        <h3>${t("home.todaysGames")}</h3>
+        <span class="nhl-card-hint">${gamesCountText}</span>
       </div>
 
       <div class="nhl-games-list">
         ${
           homeData.matchesToday.length === 0
-            ? `<p class="nhl-muted">Dnes nie sú žiadne zápasy.</p>`
+            ? `<p class="nhl-muted">${t("home.noGamesToday")}</p>`
             : homeData.matchesToday.slice(0,6).map(m => `
               <div class="nhl-game-row" onclick="showSection('matches-section')">
                 <div class="nhl-game-teams">
@@ -159,31 +764,31 @@ async function displayHome() {
       </div>
 
       <button class="nhl-btn nhl-btn-link" onclick="showSection('matches-section')">
-        Zobraziť všetky →
+        ${t("home.viewAll")}
       </button>
     </div>
 
     <!-- AI STRELEC DNA -->
     <div class="nhl-card nhl-ai-card">
       <div class="nhl-card-head">
-        <h3>🎯 AI strelec dňa</h3>
+        <h3>${t("home.aiScorer")}</h3>
       </div>
 
       <div id="ai-today-loading" class="nhl-ai-center">
-        <p class="nhl-muted">Načítavam AI tip…</p>
+        <p class="nhl-muted">${t("home.aiLoading")}</p>
       </div>
     </div>
 
     <!-- HISTORIA AI -->
     <div class="nhl-card">
       <div class="nhl-card-head">
-        <h3>📅 História AI tipov</h3>
+        <h3>${t("home.aiHistory")}</h3>
       </div>
 
       <div class="nhl-ai-history">
         ${
           history.length === 0
-            ? `<p class="nhl-muted">Žiadne vyhodnotené tipy</p>`
+            ? `<p class="nhl-muted">${t("home.noTips")}</p>`
             : history.slice(0,6).map(h => `
               <div class="nhl-ai-row">
                 <span>${h.date}</span>
@@ -201,9 +806,9 @@ async function displayHome() {
 
   <!-- ================= TOP STATISTIKY ================= -->
   <div class="nhl-section-head">
-    <h2>📊 Top štatistiky hráčov</h2>
+    <h2>${t("home.topStats")}</h2>
     <button class="nhl-btn nhl-btn-ghost" onclick="showSection('stats-section')">
-      Zobraziť všetky
+      ${t("home.viewAllStats")}
     </button>
   </div>
 
@@ -213,45 +818,45 @@ async function displayHome() {
     <img src="${topGoal.headshot || "/icons/nhl_placeholder.svg"}">
     <div>
       <b>${topGoal.name || "-"}</b><br>
-      🥅 ${topGoal.goals || 0} gólov
+      🥅 ${t("home.statGoals", { n: (topGoal.goals || 0) })}
     </div>
-    <span class="stat-label">Top Góly</span>
+    <span class="stat-label">${t("home.topGoals")}</span>
   </div>
 
   <div class="top-player">
     <img src="${statsData?.topAssists?.[0]?.headshot || "/icons/nhl_placeholder.svg"}">
     <div>
       <b>${statsData?.topAssists?.[0]?.name || "-"}</b><br>
-      🅰️ ${statsData?.topAssists?.[0]?.assists || 0} asistencií
+      🅰️ ${t("home.statAssists", { n: (statsData?.topAssists?.[0]?.assists || 0) })}
     </div>
-    <span class="stat-label">Top Asistencie</span>
+    <span class="stat-label">${t("home.topAssists")}</span>
   </div>
 
   <div class="top-player">
     <img src="${topPoints.headshot || "/icons/nhl_placeholder.svg"}">
     <div>
       <b>${topPoints.name || "-"}</b><br>
-      ⚡ ${topPoints.points || 0} bodov
+      ⚡ ${t("home.statPoints", { n: (topPoints.points || 0) })}
     </div>
-    <span class="stat-label">Top Body</span>
+    <span class="stat-label">${t("home.topPoints")}</span>
   </div>
 
   <div class="top-player">
     <img src="${statsData?.topPowerPlayGoals?.[0]?.headshot || "/icons/nhl_placeholder.svg"}">
     <div>
       <b>${statsData?.topPowerPlayGoals?.[0]?.name || "-"}</b><br>
-      🔌 ${statsData?.topPowerPlayGoals?.[0]?.powerPlayGoals || 0} PP gólov
+      🔌 ${statsData?.topPowerPlayGoals?.[0]?.powerPlayGoals || 0} ${CURRENT_LANG === "en" ? "PP goals" : "PP gólov"}
     </div>
-    <span class="stat-label">Top PP</span>
+    <span class="stat-label">${t("home.topPP")}</span>
   </div>
 
   <div class="top-player">
     <img src="${topShots.headshot || "/icons/nhl_placeholder.svg"}">
     <div>
       <b>${topShots.name || "-"}</b><br>
-      🎯 ${topShots.shots || 0} striel
+      🎯 ${t("home.statShots", { n: (topShots.shots || 0) })}
     </div>
-    <span class="stat-label">Top Strely</span>
+    <span class="stat-label">${t("home.topShots")}</span>
   </div>
 
 </div>
@@ -274,7 +879,7 @@ home.innerHTML = html;
         if (!box) return;
 
         if (!ai) {
-          box.innerHTML = `<p style="color:#aaa;">AI strelec sa nepodarilo vypočítať.</p>`;
+          box.innerHTML = `<p style="color:#aaa;">${t("home.aiFailed")}</p>`;
           return;
         }
 
@@ -337,7 +942,7 @@ function computeTeamRatings(matches) {
 async function fetchMatches() {
   const statusEl = document.getElementById("load-status");
   if (statusEl) {
-    statusEl.textContent = "⏳ Načítavam zápasy a ratingy...";
+    statusEl.textContent = t("matches.loading");
   }
 
   try {
@@ -349,7 +954,7 @@ async function fetchMatches() {
       const txt = await response.text();
       console.error("❌ Server vrátil chybu:", txt);
       if (statusEl) {
-        statusEl.textContent = "❌ Server vrátil chybu pri načítaní dát.";
+        statusEl.textContent = t("matches.serverError");
       }
       return;
     }
@@ -364,7 +969,7 @@ async function fetchMatches() {
       : 0;
 
     if (statusEl) {
-      statusEl.textContent = `✅ Dokončené: ${totalGames} zápasov | ${totalPlayers} hráčov v rebríčku`;
+      statusEl.textContent = t("matches.done", { games: totalGames, players: totalPlayers });
     }
 
     // === ZÁPASY ===
@@ -373,7 +978,7 @@ async function fetchMatches() {
     if (!allMatches.length) {
       console.warn("⚠️ Žiadne zápasy v data.matches");
       if (statusEl) {
-        statusEl.textContent = "⚠️ Žiadne odohrané zápasy";
+        statusEl.textContent = t("matches.noGames");
       }
     } else {
       displayMatches(allMatches);
@@ -396,13 +1001,20 @@ async function fetchMatches() {
   } catch (err) {
     console.error("❌ Chyba pri načítaní zápasov:", err);
     if (statusEl) {
-      statusEl.textContent =
-        "❌ Chyba pri načítaní dát. Skús obnoviť stránku.";
+      statusEl.textContent = t("matches.serverError");
     }
   }
 }
 
 let matchesExpanded = false; // globálny flag pre Zobraziť viac
+
+// HTML uses onclick="toggleMoreMatches()"
+function toggleMoreMatches() {
+  matchesExpanded = !matchesExpanded;
+  if (Array.isArray(allMatches) && allMatches.length) {
+    displayMatches(allMatches);
+  }
+}
 
 // === Zápasy ===
 async function displayMatches(matches) {
@@ -416,7 +1028,7 @@ async function displayMatches(matches) {
   olderBox.innerHTML  = "";
 
   if (!matches || matches.length === 0) {
-    recentBox.innerHTML = `<p class="nhl-muted">Žiadne odohrané zápasy.</p>`;
+    recentBox.innerHTML = `<p class="nhl-muted">${t("matches.noFinished")}</p>`;
     if (moreBtn) moreBtn.style.display = "none";
     return;
   }
@@ -532,10 +1144,10 @@ async function displayMatches(matches) {
       moreBtn.style.display = "inline-block";
       if (!matchesExpanded) {
         olderBox.classList.add("hidden");
-        moreBtn.textContent = "Zobraziť viac ↓";
+        moreBtn.textContent = t("matches.more");
       } else {
         olderBox.classList.remove("hidden");
-        moreBtn.textContent = "Skryť staršie ↑";
+        moreBtn.textContent = t("matches.less");
       }
     } else {
       moreBtn.style.display = "none";
@@ -572,7 +1184,7 @@ function renderStandings(standings) {
   if (!box) return;
 
   if (!Array.isArray(standings) || standings.length === 0) {
-    box.innerHTML = `<p class="nhl-muted">Tabuľka nie je dostupná.</p>`;
+    box.innerHTML = `<p class="nhl-muted">${t("matches.standingsUnavailable")}</p>`;
     return;
   }
 
@@ -921,14 +1533,14 @@ async function displayMantingal() {
   const container = document.getElementById("mantingal-container");
   if (!container) return;
 
-  container.innerHTML = "<h2>Mantingal stratégia</h2><p>Načítavam dáta...</p>";
+  container.innerHTML = `<h2>${t("mantingale.title")}</h2><p>${t("mantingale.loadingData")}</p>`;
 
   try {
     const resp = await fetch("/api/mantingal", { cache: "no-store" });
     const data = await resp.json();
 
     if (!data.ok || !Array.isArray(data.players)) {
-      container.innerHTML = "<p>❌ Nepodarilo sa načítať dáta Mantingal.</p>";
+      container.innerHTML = `<p>${t("mantingale.loadFailed")}</p>`;
       return;
     }
 
@@ -939,24 +1551,31 @@ async function displayMantingal() {
     const roi = ((totalProfit / (totalBets * 1)) * 100).toFixed(1); // ak je base stake 1€
 
     // Info o spracovaní
+    const lblDate = CURRENT_LANG === "en" ? "Date" : "Dátum";
+    const lblGames = CURRENT_LANG === "en" ? "Games" : "Počet zápasov";
+    const lblScorers = CURRENT_LANG === "en" ? "Scorers" : "Počet strelcov";
+    const lblBets = CURRENT_LANG === "en" ? "Bets" : "Počet stávok";
+    const lblProfit = CURRENT_LANG === "en" ? "Total profit" : "Celkový zisk";
+    const lblRoi = "ROI";
+
     let html = `
-      <h2>Martingale stratégia</h2>
-      <p><b>Dátum:</b> ${dateChecked}</p>
-      <p><b>Počet zápasov:</b> ${totalGames}</p>
-      <p><b>Počet strelcov:</b> ${scorers}</p>
-      <p><b>Počet stávok:</b> ${totalBets}</p>
-      <p><b>Celkový zisk:</b> <span style="color:${totalProfit >= 0 ? "limegreen" : "red"}">
+      <h2>${t("mantingale.title")}</h2>
+      <p><b>${lblDate}:</b> ${dateChecked}</p>
+      <p><b>${lblGames}:</b> ${totalGames}</p>
+      <p><b>${lblScorers}:</b> ${scorers}</p>
+      <p><b>${lblBets}:</b> ${totalBets}</p>
+      <p><b>${lblProfit}:</b> <span style="color:${totalProfit >= 0 ? "limegreen" : "red"}">
         ${totalProfit.toFixed(2)} €
       </span></p>
-      <p><b>ROI:</b> <span style="color:${roi >= 0 ? "limegreen" : "red"}">${roi}%</span></p>
+      <p><b>${lblRoi}:</b> <span style="color:${roi >= 0 ? "limegreen" : "red"}">${roi}%</span></p>
       <table>
         <thead>
           <tr>
-            <th>Hráč</th>
-            <th>Stávka (€)</th>
-            <th>Zisk (€)</th>
-            <th>Streak</th>
-            <th>Výsledok</th>
+            <th>${t("table.player")}</th>
+            <th>${CURRENT_LANG === "en" ? "Stake (€)" : "Stávka (€)"}</th>
+            <th>${CURRENT_LANG === "en" ? "Profit (€)" : "Zisk (€)"}</th>
+            <th>${t("mantingale.streak")}</th>
+            <th>${CURRENT_LANG === "en" ? "Result" : "Výsledok"}</th>
           </tr>
         </thead>
         <tbody>
@@ -992,7 +1611,7 @@ async function displayMantingal() {
 
     container.innerHTML = html;
   } catch (err) {
-    container.innerHTML = `<p>❌ Chyba: ${err.message}</p>`;
+    container.innerHTML = `<p>❌ ${err.message}</p>`;
   }
 }
 
@@ -1004,7 +1623,7 @@ async function displayMantingalHistory() {
   // vytvor nový blok pre históriu
   const historyDiv = document.createElement("div");
   historyDiv.id = "mantingal-history";
-  historyDiv.innerHTML = "<h3>História stávok Mantingalu</h3><p>Načítavam dáta...</p>";
+  historyDiv.innerHTML = `<h3>${t("mantingale.historyTitle")}</h3><p>${t("mantingale.loadingData")}</p>`;
   mainContainer.appendChild(historyDiv);
 
   try {
@@ -1012,27 +1631,27 @@ async function displayMantingalHistory() {
     const data = await resp.json();
 
     if (!data.ok || !Array.isArray(data.bets)) {
-      historyDiv.innerHTML = "<p>❌ Nepodarilo sa načítať históriu stávok.</p>";
+      historyDiv.innerHTML = `<p>${t("mantingale.historyLoadFailed")}</p>`;
       return;
     }
 
     const bets = data.bets;
     if (!bets.length) {
-      historyDiv.innerHTML = "<h3>História stávok Mantingalu</h3><p>Zatiaľ žiadne dáta.</p>";
+      historyDiv.innerHTML = `<h3>${t("mantingale.historyTitle")}</h3><p>${t("mantingale.historyEmpty")}</p>`;
       return;
     }
 
     // vytvor tabuľku
     let html = `
-      <h3>História stávok Mantingalu</h3>
+      <h3>${t("mantingale.historyTitle")}</h3>
       <table>
         <thead>
           <tr>
-            <th>Dátum</th>
-            <th>Hráč</th>
-            <th>Výsledok</th>
-            <th>Stávka (€)</th>
-            <th>Profit po (€)</th>
+            <th>${t("mantingale.date")}</th>
+            <th>${t("table.player")}</th>
+            <th>${t("mantingale.result")}</th>
+            <th>${CURRENT_LANG === "en" ? "Stake (€)" : "Stávka (€)"}</th>
+            <th>${CURRENT_LANG === "en" ? "Profit after (€)" : "Profit po (€)"}</th>
           </tr>
         </thead>
         <tbody>
@@ -1050,7 +1669,7 @@ async function displayMantingalHistory() {
 
       html += `
         <tr class="${b.result}">
-          <td>${new Date(b.ts).toLocaleString("sk-SK")}</td>
+          <td>${new Date(b.ts).toLocaleString(CURRENT_LANG === "en" ? "en-US" : "sk-SK")}</td>
           <td>${b.name}</td>
           <td>${resultIcon}</td>
           <td>${b.stake.toFixed(2)}</td>
@@ -1072,8 +1691,8 @@ async function displayStrategies() {
   if (!wrap) return;
 
   wrap.innerHTML = `
-    <h2>Databáza hráčov NHL</h2>
-    <p>Načítavam údaje z lokálnej databázy...</p>
+    <h2>${t("strategies.title")}</h2>
+    <p>${t("strategies.loading")}</p>
   `;
 
   try {
@@ -1081,13 +1700,13 @@ async function displayStrategies() {
     const data = await resp.json();
 
     if (!data.ok || !Array.isArray(data.players)) {
-      throw new Error(data.error || "Nepodarilo sa načítať databázu hráčov");
+      throw new Error(data.error || t("common.failedToLoad"));
     }
 
     wrap.innerHTML = `
-      <h2>Databáza hráčov NHL</h2>
-      <p>Počet hráčov v databáze: <b>${data.count}</b></p>
-      <p>Zobrazených prvých 300 hráčov:</p>
+      <h2>${t("strategies.title")}</h2>
+      <p>${t("strategies.count", { count: data.count })}</p>
+      <p>${t("strategies.showFirst")}</p>
     `;
 
     const table = document.createElement("table");
@@ -1133,9 +1752,9 @@ async function displayStrategies() {
       <thead>
         <tr>
           <th>#</th>
-          <th>Meno</th>
-          <th>Tím</th>
-          <th>Krajina</th>
+          <th>${CURRENT_LANG === "en" ? "Name" : "Meno"}</th>
+          <th>${t("table.team")}</th>
+          <th>${CURRENT_LANG === "en" ? "Country" : "Krajina"}</th>
         </tr>
       </thead>
       <tbody>
@@ -1156,8 +1775,8 @@ async function displayStrategies() {
     wrap.appendChild(table);
   } catch (err) {
     wrap.innerHTML = `
-      <h2>Databáza hráčov NHL</h2>
-      <p style="color:red;">❌ Chyba: ${err.message}</p>
+      <h2>${t("strategies.title")}</h2>
+      <p style="color:red;">❌ ${CURRENT_LANG === "en" ? "Error" : "Chyba"}: ${err.message}</p>
     `;
   }
 }
@@ -1227,7 +1846,7 @@ async function checkPremiumStatus() {
       if (loginBox) loginBox.style.display = "block";
       if (signupBtn) signupBtn.style.display = "inline-block";
       if (logoutBtn) logoutBtn.style.display = "none";
-      if (authMsg) authMsg.textContent = "Prihlásenie vypršalo. Prihlás sa znova.";
+      if (authMsg) authMsg.textContent = t("premium.loginExpired");
       return;
     }
 
@@ -1241,7 +1860,7 @@ document.getElementById("premium-upgrade-btn")
 
     const token = localStorage.getItem("sb-access-token");
     if (!token) {
-      alert("Najprv sa musíš prihlásiť.");
+      alert(t("premium.mustLoginFirst"));
       return;
     }
 
@@ -1257,7 +1876,7 @@ document.getElementById("premium-upgrade-btn")
 
       const data = await res.json();
       if (!data.ok || !data.url) {
-        alert("Nepodarilo sa vytvoriť platbu.");
+        alert(t("premium.paymentCreateFailed"));
         return;
       }
 
@@ -1266,7 +1885,7 @@ document.getElementById("premium-upgrade-btn")
 
     } catch (err) {
       console.error(err);
-      alert("Chyba pri spustení platby.");
+      alert(t("premium.paymentStartError"));
     }
 });
     
@@ -1296,7 +1915,7 @@ if (data.ok && data.isVip === true) {
     if (loginBox) loginBox.style.display = "block";
     if (signupBtn) signupBtn.style.display = "inline-block";
     if (logoutBtn) logoutBtn.style.display = "none";
-    if (authMsg) authMsg.textContent = "Chyba spojenia. Skús to znova.";
+    if (authMsg) authMsg.textContent = t("premium.connectionError");
   }
 }
 
@@ -1336,21 +1955,21 @@ document.getElementById("premium-register-confirm")
     const msg = document.getElementById("premium-register-msg");
 
     if (!email || !pass || !pass2) {
-      msg.textContent = "Vyplň všetky polia.";
+      msg.textContent = t("premium.fillAll");
       return;
     }
 
     if (pass.length < 8) {
-      msg.textContent = "Heslo musí mať minimálne 8 znakov.";
+      msg.textContent = t("premium.passMin");
       return;
     }
 
     if (pass !== pass2) {
-      msg.textContent = "Heslá sa nezhodujú.";
+      msg.textContent = t("premium.passMismatch");
       return;
     }
 
-    msg.textContent = "⏳ Vytváram účet...";
+    msg.textContent = t("premium.creatingAccount");
 
     try {
       const r = await fetch(
@@ -1368,11 +1987,11 @@ document.getElementById("premium-register-confirm")
       const data = await r.json();
 
       if (!r.ok) {
-        msg.textContent = data?.error_description || data?.error || "Registrácia zlyhala.";
+        msg.textContent = data?.error_description || data?.error || t("premium.signupFailed");
         return;
       }
 
-      msg.textContent = "✅ Účet vytvorený. Skontroluj email.";
+      msg.textContent = t("premium.accountCreated");
 
       setTimeout(() => {
         hideAllPremiumUI();
@@ -1381,7 +2000,7 @@ document.getElementById("premium-register-confirm")
 
     } catch (err) {
       console.error(err);
-      msg.textContent = "❌ Chyba pri registrácii.";
+      msg.textContent = t("premium.registerError");
     }
 });
 
@@ -1430,7 +2049,7 @@ async function loadPremiumPlayers() {
     totalEl.textContent = Number(data.totalProfit || 0).toFixed(2);
 
     if (!entries.length) {
-      if (msg) msg.textContent = "Zatiaľ nemáš pridaných žiadnych hráčov.";
+      if (msg) msg.textContent = t("premium.noPlayers");
       return;
     }
 
@@ -1449,14 +2068,14 @@ async function loadPremiumPlayers() {
       class="btn-detail vip-mtg-detail-btn"
       data-player="${name}"
     >
-      Detail
+      ${t("common.detail")}
     </button>
 
     <button
       class="btn-delete"
       onclick="deletePremiumPlayer('${encodeURIComponent(name)}')"
     >
-      Vymazať
+      ${t("common.delete")}
     </button>
   </td>
 `;
@@ -1474,7 +2093,7 @@ tbody.querySelectorAll("td.balance").forEach(td => {
 
   } catch (err) {
     console.error(err);
-    if (msg) msg.textContent = "Chyba pri načítaní hráčov.";
+    if (msg) msg.textContent = t("premium.loadPlayersError");
   }
 }
 
@@ -1496,7 +2115,7 @@ async function showVipMantingalDetail(player) {
 
   const data = await res.json();
   if (!data.ok) {
-    alert("Nepodarilo sa načítať históriu");
+    alert(t("premium.historyLoadFailed"));
     return;
   }
 
@@ -1558,7 +2177,7 @@ async function deletePremiumPlayer(encodedName) {
   if (!token) return;
 
   const name = decodeURIComponent(encodedName);
-  if (!confirm(`Naozaj chceš vymazať ${name}?`)) return;
+  if (!confirm(t("premium.confirmDelete", { name }))) return;
 
   await fetch(`/api/vip?task=delete_player&player=${encodeURIComponent(name)}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -1576,8 +2195,8 @@ async function loadPremiumTeams() {
 
   if (!teamSelect || !playerSelect) return;
 
-  teamSelect.innerHTML = `<option value="">-- vyber klub --</option>`;
-  playerSelect.innerHTML = `<option value="">-- najprv vyber klub --</option>`;
+  teamSelect.innerHTML = `<option value="">${t("premium.selectTeamPlaceholder")}</option>`;
+  playerSelect.innerHTML = `<option value="">${t("premium.selectTeamFirst")}</option>`;
   playerSelect.disabled = true;
 
   try {
@@ -1609,7 +2228,7 @@ async function loadPremiumTeams() {
     teamSelect.onchange = () => {
       const team = teamSelect.value;
 
-      playerSelect.innerHTML = `<option value="">-- vyber hráča --</option>`;
+      playerSelect.innerHTML = `<option value="">${t("premium.selectPlayerPlaceholder")}</option>`;
       playerSelect.disabled = !team;
 
       if (!team) return;
@@ -1627,7 +2246,7 @@ async function loadPremiumTeams() {
 
   } catch (err) {
     console.error("❌ loadPremiumTeams error:", err);
-    teamSelect.innerHTML = `<option value="">⚠️ Chyba načítania tímov</option>`;
+    teamSelect.innerHTML = `<option value="">${t("premium.teamsLoadError")}</option>`;
   }
 }
 
@@ -1651,11 +2270,11 @@ function renderPremiumPlayersForTeam(team) {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   if (!players.length) {
-    playerSelect.innerHTML = `<option value="">Žiadni hráči</option>`;
+    playerSelect.innerHTML = `<option value="">${CURRENT_LANG === "en" ? "No players" : "Žiadni hráči"}</option>`;
     return;
   }
 
-  playerSelect.innerHTML = `<option value="">-- vyber hráča --</option>`;
+  playerSelect.innerHTML = `<option value="">${t("premium.selectPlayerPlaceholder")}</option>`;
 
   players.forEach(p => {
     const opt = document.createElement("option");
@@ -1679,7 +2298,7 @@ async function addPremiumPlayer() {
   const msg = document.getElementById("premium-msg");
 
   if (!token || !teamSelect?.value || !playerSelect?.value) {
-    if (msg) msg.textContent = "Vyber klub aj hráča.";
+    if (msg) msg.textContent = t("premium.addPick");
     return;
   }
 
@@ -1692,11 +2311,11 @@ async function addPremiumPlayer() {
   const odds = selectedOption?.dataset?.odds;
 
   if (!odds) {
-    if (msg) msg.textContent = "❌ Hráč nemá nastavený kurz (odds).";
+    if (msg) msg.textContent = t("premium.noOdds");
     return;
   }
 
-  if (msg) msg.textContent = "⏳ Pridávam hráča...";
+  if (msg) msg.textContent = t("premium.adding");
 
   try {
     const res = await fetch(
@@ -1715,16 +2334,16 @@ async function addPremiumPlayer() {
     console.log("📦 add_player response:", data);
 
     if (!data.ok) {
-      if (msg) msg.textContent = data.error || "Chyba pri pridávaní.";
+      if (msg) msg.textContent = data.error || t("premium.serverError");
       return;
     }
 
-    if (msg) msg.textContent = `✅ ${player} pridaný (kurz ${odds})`;
+    if (msg) msg.textContent = t("premium.added", { player, odds });
     await loadPremiumPlayers();
 
   } catch (err) {
     console.error(err);
-    if (msg) msg.textContent = "❌ Chyba servera";
+    if (msg) msg.textContent = t("premium.serverError");
   }
 }
 
@@ -1852,27 +2471,63 @@ async function displayShootingLeaders() {
 
   // 💎 Vykreslenie tabuľky v modernom kompaktnom mobile-friendly režime
   function renderStats(data, type) {
-    detail.innerHTML = `<p style="text-align:center;color:#00eaff;">📊 Načítavam štatistiky...</p>`;
+    detail.innerHTML = `<p style="text-align:center;color:#00eaff;">📊 ${CURRENT_LANG === "en" ? "Loading stats..." : "Načítavam štatistiky..."}</p>`;
 
     let players = [];
     let title = "";
     let columns = "";
 
     const TYPES = {
-      accuracy: { list: "topAccuracy", title: "🎯 Najlepšia strelecká úspešnosť", cols: "<th>Góly</th><th>Strely</th><th>%</th>" },
-      shots: { list: "topShots", title: "🔥 Najviac striel", cols: "<th>Strely</th>" },
-      goals: { list: "topGoals", title: "🥅 Najviac gólov", cols: "<th>Góly</th>" },
-      assists: { list: "topAssists", title: "🎩 Najviac asistencií", cols: "<th>A</th>" },
-      points: { list: "topPoints", title: "⚡ Najviac bodov", cols: "<th>Body</th>" },
-      plusminus: { list: "topPlusMinus", title: "➕➖ Najlepšie +/-", cols: "<th>+/-</th>" },
-      pim: { list: "topPIM", title: "⛓️ Najviac trestov", cols: "<th>PIM</th>" },
-      toi: { list: "topTOI", title: "🕒 Najviac TOI (min)", cols: "<th>Min</th>" },
-      powerPlayGoals: { list: "topPowerPlayGoals", title: "🥈 Najviac PP gólov", cols: "<th>PP</th>" }
+      accuracy: {
+        list: "topAccuracy",
+        title: CURRENT_LANG === "en" ? "🎯 Best shooting %" : "🎯 Najlepšia strelecká úspešnosť",
+        cols: CURRENT_LANG === "en" ? "<th>Goals</th><th>Shots</th><th>%</th>" : "<th>Góly</th><th>Strely</th><th>%</th>",
+      },
+      shots: {
+        list: "topShots",
+        title: CURRENT_LANG === "en" ? "🔥 Most shots" : "🔥 Najviac striel",
+        cols: CURRENT_LANG === "en" ? "<th>Shots</th>" : "<th>Strely</th>",
+      },
+      goals: {
+        list: "topGoals",
+        title: CURRENT_LANG === "en" ? "🥅 Most goals" : "🥅 Najviac gólov",
+        cols: CURRENT_LANG === "en" ? "<th>Goals</th>" : "<th>Góly</th>",
+      },
+      assists: {
+        list: "topAssists",
+        title: CURRENT_LANG === "en" ? "🎩 Most assists" : "🎩 Najviac asistencií",
+        cols: CURRENT_LANG === "en" ? "<th>A</th>" : "<th>A</th>",
+      },
+      points: {
+        list: "topPoints",
+        title: CURRENT_LANG === "en" ? "⚡ Most points" : "⚡ Najviac bodov",
+        cols: CURRENT_LANG === "en" ? "<th>PTS</th>" : "<th>Body</th>",
+      },
+      plusminus: {
+        list: "topPlusMinus",
+        title: CURRENT_LANG === "en" ? "➕➖ Best +/-" : "➕➖ Najlepšie +/-",
+        cols: "<th>+/-</th>",
+      },
+      pim: {
+        list: "topPIM",
+        title: CURRENT_LANG === "en" ? "⛓️ Most penalty minutes" : "⛓️ Najviac trestov",
+        cols: "<th>PIM</th>",
+      },
+      toi: {
+        list: "topTOI",
+        title: CURRENT_LANG === "en" ? "🕒 Most TOI (min)" : "🕒 Najviac TOI (min)",
+        cols: CURRENT_LANG === "en" ? "<th>MIN</th>" : "<th>Min</th>",
+      },
+      powerPlayGoals: {
+        list: "topPowerPlayGoals",
+        title: CURRENT_LANG === "en" ? "🥈 Most PP goals" : "🥈 Najviac PP gólov",
+        cols: "<th>PP</th>",
+      }
     };
 
     const sel = TYPES[type];
     if (!sel) {
-      detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Štatistika nie je dostupná.</p>`;
+      detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ ${CURRENT_LANG === "en" ? "Statistic is not available." : "Štatistika nie je dostupná."}</p>`;
       return;
     }
 
@@ -1881,7 +2536,7 @@ async function displayShootingLeaders() {
     columns = sel.cols;
 
     if (!players.length) {
-      detail.innerHTML = `<p style="text-align:center;color:#aaa;">⚠️ Žiadne dáta.</p>`;
+      detail.innerHTML = `<p style="text-align:center;color:#aaa;">${t("common.noData")}</p>`;
       return;
     }
 
@@ -1892,8 +2547,8 @@ async function displayShootingLeaders() {
         <thead>
           <tr>
             <th>#</th>
-            <th>Hráč</th>
-            <th>Tím</th>
+            <th>${t("table.player")}</th>
+            <th>${t("table.team")}</th>
             ${columns}
           </tr>
         </thead>
@@ -1955,7 +2610,7 @@ async function displayShootingLeaders() {
   grid.querySelectorAll(".stat-box").forEach((box) => {
     box.addEventListener("click", async () => {
       const type = box.dataset.type;
-      detail.innerHTML = `<p style="text-align:center;color:#00eaff;">⏳ Načítavam...</p>`;
+      detail.innerHTML = `<p style="text-align:center;color:#00eaff;">${t("common.loading")}</p>`;
       detail.scrollIntoView({ behavior: "smooth", block: "start" });
 
       try {
@@ -1967,7 +2622,7 @@ async function displayShootingLeaders() {
         }
 
         let resp = await fetch("/api/statistics", { cache: "no-store" });
-        if (!resp.ok) throw new Error("Nepodarilo sa načítať dáta.");
+        if (!resp.ok) throw new Error(t("common.failedToLoad"));
         const data = await resp.json();
 
         lastStats = data;
@@ -1995,7 +2650,7 @@ document.addEventListener("click", (e) => {
   const isOpen = more.style.display === "block";
 
   more.style.display = isOpen ? "none" : "block";
-  btn.textContent = isOpen ? "Zobraziť viac ↓" : "Skryť ↑";
+  btn.textContent = isOpen ? t("common.showMore") : t("common.hide");
 });
 
 // === Prepínanie sekcií a načítanie dát dynamicky ===
@@ -2116,6 +2771,19 @@ document.getElementById("mobileSelect")?.addEventListener("change", async (e) =>
 window.addEventListener("DOMContentLoaded", async () => {
   console.log("🚀 Spúšťam NHLPRO...");
 
+  // i18n init (static + long blocks)
+  applyI18n();
+  syncLangButtonsUI();
+
+  document.getElementById("langBtnSk")?.addEventListener("click", () => {
+    setLanguage("sk");
+    syncLangButtonsUI();
+  });
+  document.getElementById("langBtnEn")?.addEventListener("click", () => {
+    setLanguage("en");
+    syncLangButtonsUI();
+  });
+
   // 1️⃣ Načítaj databázu hráčov
   await loadPlayerTeams();
 
@@ -2147,7 +2815,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     const pass = document.getElementById("premium-pass")?.value;
 
     if (!email || !pass) {
-      alert("Zadaj email aj heslo");
+      alert(t("premium.loginNeed"));
       return;
     }
 
@@ -2168,7 +2836,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       const data = await r.json();
 
       if (!r.ok) {
-        alert(data?.error_description || "Login error");
+        alert(data?.error_description || t("premium.loginFailed"));
         return;
       }
 
@@ -2179,7 +2847,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       checkPremiumStatus();
 
     } catch (e) {
-      alert("Chyba pri prihlásení");
+      alert(t("premium.loginFailed"));
       console.error(e);
     }
   });
@@ -2216,16 +2884,16 @@ window.addEventListener("DOMContentLoaded", async () => {
     const msg = document.getElementById("premium-register-msg");
 
     if (!email || !pass || !pass2) {
-      msg.textContent = "Vyplň všetky polia.";
+      msg.textContent = t("premium.fillAll");
       return;
     }
 
     if (pass !== pass2) {
-      msg.textContent = "Heslá sa nezhodujú.";
+      msg.textContent = t("premium.passMismatch");
       return;
     }
 
-    msg.textContent = "⏳ Registrujem používateľa...";
+    msg.textContent = t("premium.registeringUser");
 
     try {
       const r = await fetch(
@@ -2247,11 +2915,11 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       if (!r.ok) {
         console.error("Supabase signup error:", data);
-        msg.textContent = data?.error_description || data?.error || "Registrácia zlyhala.";
+        msg.textContent = data?.error_description || data?.error || t("premium.signupFailed");
         return;
       }
 
-      msg.textContent = "✅ Registrácia prebehla úspešne.";
+      msg.textContent = t("premium.signupSuccess");
 
       // ⚠️ ak máš zapnuté email potvrdenie:
       // user sa NEPRIHLÁSI hneď
@@ -2263,12 +2931,12 @@ window.addEventListener("DOMContentLoaded", async () => {
         localStorage.setItem("sb-refresh-token", data.refresh_token);
         checkPremiumStatus();
       } else {
-        msg.textContent += " Skontroluj email pre potvrdenie.";
+        msg.textContent += t("premium.checkEmailConfirm");
       }
 
     } catch (e) {
       console.error(e);
-      msg.textContent = "❌ Chyba pri registrácii.";
+      msg.textContent = t("premium.registerError");
     }
 });
 
