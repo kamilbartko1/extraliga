@@ -185,6 +185,10 @@ const I18N = {
     "abs.more2": "V tabuľke nižšie vidíš aktuálnu stávku, streak, profit a detailnú históriu každého hráča. V NHLPRO PREMIUM môžeš pridávať vlastných hráčov podľa svojho výberu.",
     "abs.warn": "⚠️ ABS nie je záruka výhry. Ide o štatistickú stratégiu určenú pre disciplinovaných používateľov so zodpovedným prístupom k bankrollu.",
 
+    "absCta.title": "Chceš si vybrať vlastných hráčov do ABS?",
+    "absCta.subtitle": "Zaregistruj sa a odomkni možnosť pridávať vlastných hráčov a sledovať ich Martingale sériu.",
+    "absCta.button": "Registrovať sa (VIP)",
+
     "disclaimer.title": "⚖️ PRÁVNY DISCLAIMER – NHLPRO.sk",
 
     "common.noData": "⚠️ Žiadne dáta.",
@@ -374,6 +378,10 @@ const I18N = {
     "abs.more1": "Each player has an independent betting series. After a win, the series resets; after a loss, the stake adjusts based on predefined rules.",
     "abs.more2": "In the table below you can see the current stake, streak, profit and detailed history per player. In NHLPRO PREMIUM you can add your own players.",
     "abs.warn": "⚠️ ABS is not a guarantee of profit. It is intended for disciplined users with responsible bankroll management.",
+
+    "absCta.title": "Want to pick your own players for ABS?",
+    "absCta.subtitle": "Create an account to unlock adding custom players and tracking their Martingale series.",
+    "absCta.button": "Create account (VIP)",
 
     "disclaimer.title": "⚖️ LEGAL DISCLAIMER – NHLPRO.sk",
 
@@ -647,6 +655,47 @@ function syncLangButtonsUI() {
   skBtn?.classList.toggle("is-active", CURRENT_LANG === "sk");
   enBtn?.classList.toggle("is-active", CURRENT_LANG === "en");
 }
+
+// CTA from ABS → open Premium registration safely
+function openAbsRegisterCta() {
+  try {
+    if (typeof window.showSection === "function") {
+      window.showSection("premium-section");
+    } else {
+      document.getElementById("premium-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    const token = localStorage.getItem("sb-access-token");
+    if (token) {
+      // if already logged in, just refresh Premium UI
+      if (typeof window.checkPremiumStatus === "function") {
+        window.checkPremiumStatus();
+      }
+      return;
+    }
+
+    // show register box
+    if (typeof window.hideAllPremiumUI === "function") {
+      window.hideAllPremiumUI();
+    } else {
+      ["premium-not-logged", "premium-register-box", "premium-locked", "premium-content"].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+      });
+    }
+
+    const box = document.getElementById("premium-register-box");
+    if (box) {
+      box.style.display = "block";
+      box.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  } catch (e) {
+    console.error("openAbsRegisterCta failed:", e);
+  }
+}
+
+// expose for inline onclick
+window.openAbsRegisterCta = openAbsRegisterCta;
 
 // === Prihlasenie premium klientov cez supabase ===
 const SUPABASE_URL = "https://ztjyvzulbrilyzfcxogj.supabase.co";
@@ -1826,6 +1875,9 @@ function hideAllPremiumUI() {
   });
 }
 
+// expose for CTA helper
+window.hideAllPremiumUI = hideAllPremiumUI;
+
 async function checkPremiumStatus() {
   const section = document.getElementById("premium-section");
   if (!section) return;
@@ -1934,6 +1986,9 @@ if (data.ok && data.isVip === true) {
 
   return;
 }
+
+// expose for CTA helper
+window.checkPremiumStatus = checkPremiumStatus;
 
     // ===== PRIHLÁSENÝ, ALE NIE VIP =====
     if (lockedBox) lockedBox.style.display = "block";

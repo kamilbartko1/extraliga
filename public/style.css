@@ -6258,3 +6258,66 @@ header{
     grid-template-columns: 1fr;
   }
 }
+
+/* ===============================
+   ABS CTA (register)
+   =============================== */
+.abs-cta{
+  margin: 10px auto 14px;
+  max-width: 980px;
+  padding: 0 10px;
+}
+
+.abs-cta-inner{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,255,255,0.20);
+  background: linear-gradient(135deg, rgba(0,255,255,0.08), rgba(255,212,0,0.05));
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+
+.abs-cta-text h3{
+  margin: 0 0 6px;
+  font-size: 15px;
+  color: #eaf9ff;
+}
+
+.abs-cta-text p{
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255,255,255,0.70);
+}
+
+.abs-cta-btn{
+  flex: 0 0 auto;
+  border: 1px solid rgba(255,212,0,0.55);
+  background: rgba(255,212,0,0.14);
+  color: #ffe58a;
+  font-weight: 800;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.abs-cta-btn:hover{
+  background: rgba(255,212,0,0.20);
+  border-color: rgba(255,212,0,0.75);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px){
+  .abs-cta-inner{
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  .abs-cta-btn{
+    width: 100%;
+  }
+}
