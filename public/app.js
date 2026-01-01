@@ -10,6 +10,7 @@ let NHL_PLAYERS_BY_TEAM = {};
 let PREMIUM_PLAYERS_CACHE = [];
 let PREMIUM_SELECTS_READY = false;
 let premiumPlayersLoaded = false;
+let LAST_STANDINGS = [];
 
 const BASE_STAKE = 1;
 const ODDS = 2.5;
@@ -160,6 +161,20 @@ const I18N = {
     "premium.boxOffense": "🥅 TOP ofenzíva (L10)",
     "premium.boxDefense": "🚨 Najslabšia obrana (L10)",
     "premium.boxTrend": "📈 Zmena formy (trend)",
+
+    "vipTips.title": "🔥 VIP tipy na dnes",
+    "vipTips.subtitle": "Autonómne tipy na strelcov a góly podľa ratingov a L10 štatistík.",
+    "vipTips.loading": "Načítavam VIP tipy…",
+    "vipTips.noGames": "Dnes nie sú žiadne zápasy na tipovanie.",
+    "vipTips.sectionScorers": "Tipy na strelcov (Top 3)",
+    "vipTips.sectionTotals": "Tipy na góly v zápase",
+    "vipTips.confidence": "Confidence",
+    "vipTips.predictedTotal": "Odhad gólov",
+    "vipTips.reco": "Odporúčanie",
+    "vipTips.over": "Over",
+    "vipTips.under": "Under",
+    "vipTips.noReco": "Bez odporúčania",
+    "vipTips.vs": "vs",
 
     "modal.team.title": "🧠 Ako funguje NHLPRO Rating tímov?",
     "modal.player.title": "🧠 Ako funguje NHLPRO Rating hráčov?",
@@ -336,6 +351,20 @@ const I18N = {
     "premium.boxOffense": "🥅 TOP offense (L10)",
     "premium.boxDefense": "🚨 Weakest defense (L10)",
     "premium.boxTrend": "📈 Form change (trend)",
+
+    "vipTips.title": "🔥 VIP tips for today",
+    "vipTips.subtitle": "Autonomous scorer and goals tips based on ratings and L10 stats.",
+    "vipTips.loading": "Loading VIP tips…",
+    "vipTips.noGames": "No games to tip today.",
+    "vipTips.sectionScorers": "Scorer picks (Top 3)",
+    "vipTips.sectionTotals": "Game total goals picks",
+    "vipTips.confidence": "Confidence",
+    "vipTips.predictedTotal": "Estimated goals",
+    "vipTips.reco": "Recommendation",
+    "vipTips.over": "Over",
+    "vipTips.under": "Under",
+    "vipTips.noReco": "No recommendation",
+    "vipTips.vs": "vs",
 
     "modal.team.title": "🧠 How does NHLPRO team rating work?",
     "modal.player.title": "🧠 How does NHLPRO player rating work?",
@@ -993,6 +1022,7 @@ async function fetchMatches() {
 
     // === NHL STANDINGS (NOVÉ – LEN RENDER, ŽIADNY FETCH) ===
     if (Array.isArray(data.standings)) {
+      LAST_STANDINGS = data.standings;
       renderStandings(data.standings);
     } else {
       console.warn("⚠️ Standings nie sú v odpovedi backendu");
@@ -1899,6 +1929,9 @@ if (data.ok && data.isVip === true) {
     await loadPremiumPlayers();
   }
 
+  // VIP tips (today)
+  await renderVipTips();
+
   return;
 }
 
@@ -2457,6 +2490,218 @@ function renderPremiumAnalytics(standings) {
         ).join("")}
       </tbody>
     </table>
+  `;
+}
+
+// ===============================
+// 👑 VIP TIPY – strelci + góly (dnešné zápasy)
+// ===============================
+function teamNick(name) {
+  const parts = String(name || "").trim().replace(/\s+/g, " ").split(" ");
+  return parts.length ? parts[parts.length - 1] : "";
+}
+
+function findStandingByNick(nick) {
+  const n = String(nick || "").toLowerCase();
+  if (!n) return null;
+  return (LAST_STANDINGS || []).find((t) => {
+    const nm = String(t?.teamName?.default || "").toLowerCase();
+    const ab = String(t?.teamAbbrev?.default || "").toLowerCase();
+    return nm.includes(n) || ab === n;
+  }) || null;
+}
+
+function estimateGameTotal(homeNickName, awayNickName) {
+  const homeNick = teamNick(homeNickName) || String(homeNickName || "");
+  const awayNick = teamNick(awayNickName) || String(awayNickName || "");
+
+  const h = findStandingByNick(homeNick);
+  const a = findStandingByNick(awayNick);
+  if (!h || !a) return null;
+
+  const hGF = Number(h.l10GoalsFor ?? 0);
+  const hGA = Number(h.l10GoalsAgainst ?? 0);
+  const aGF = Number(a.l10GoalsFor ?? 0);
+  const aGA = Number(a.l10GoalsAgainst ?? 0);
+
+  if (![hGF, hGA, aGF, aGA].every((x) => Number.isFinite(x) && x > 0)) return null;
+
+  // per-game averages over last 10
+  const hGFpg = hGF / 10;
+  const hGApg = hGA / 10;
+  const aGFpg = aGF / 10;
+  const aGApg = aGA / 10;
+
+  // simple matchup model
+  const expHome = (hGFpg + aGApg) / 2;
+  const expAway = (aGFpg + hGApg) / 2;
+  const total = expHome + expAway;
+
+  // choose typical NHL total line
+  const line = total >= 6.0 ? 6.5 : 5.5;
+  const delta = total - line;
+
+  let reco = "none";
+  if (delta >= 0.35) reco = "over";
+  else if (delta <= -0.35) reco = "under";
+
+  const confidence = Math.round(50 + 25 * Math.min(1, Math.abs(delta) / 1.2));
+
+  return {
+    homeNick,
+    awayNick,
+    total: Number(total.toFixed(1)),
+    line,
+    reco,
+    confidence,
+  };
+}
+
+async function renderVipTips() {
+  const wrap = document.getElementById("vip-tips-body");
+  if (!wrap) return;
+
+  wrap.innerHTML = `<p class="nhl-muted">${t("vipTips.loading")}</p>`;
+
+  // Ensure we have matches/ratings/standings in memory
+  if (!LAST_STANDINGS?.length || !playerRatings || !Object.keys(playerRatings).length) {
+    try {
+      await fetchMatches();
+    } catch {
+      // ignore
+    }
+  }
+
+  let matchesToday = [];
+  try {
+    const homeResp = await fetch("/api/home", { cache: "no-store" });
+    const homeData = homeResp.ok ? await homeResp.json() : {};
+    matchesToday = Array.isArray(homeData.matchesToday) ? homeData.matchesToday : [];
+  } catch {
+    matchesToday = [];
+  }
+
+  if (!matchesToday.length) {
+    wrap.innerHTML = `<p class="nhl-muted">${t("vipTips.noGames")}</p>`;
+    return;
+  }
+
+  // Map team -> opponent for today's games
+  const matchPairs = matchesToday.map((m) => {
+    const homeName = m.homeName || "";
+    const awayName = m.awayName || "";
+    const home = teamNick(homeName) || homeName;
+    const away = teamNick(awayName) || awayName;
+    return {
+      homeName,
+      awayName,
+      homeNick: home,
+      awayNick: away,
+      startTime: m.startTime || "",
+      homeLogo: m.homeLogo || "",
+      awayLogo: m.awayLogo || "",
+    };
+  });
+
+  const teamToOpp = new Map();
+  matchPairs.forEach((p) => {
+    teamToOpp.set(String(p.homeNick), String(p.awayNick));
+    teamToOpp.set(String(p.awayNick), String(p.homeNick));
+  });
+
+  // ===== SCORER PICKS (Top 3) =====
+  const ratingEntries = Object.entries(playerRatings || {}).filter(([, r]) => Number.isFinite(Number(r)));
+  const candidates = [];
+  for (const [player, ratingRaw] of ratingEntries) {
+    const rating = Number(ratingRaw);
+    const parts = String(player).trim().split(" ");
+    const lastName = parts[parts.length - 1]?.replace(/\./g, "").toLowerCase();
+    const teamFull = lastName && playerTeams ? (playerTeams[lastName] || "") : "";
+    const nick = teamNick(teamFull);
+    if (!nick) continue;
+    if (!teamToOpp.has(nick)) continue;
+    candidates.push({ player, rating, teamNick: nick, oppNick: teamToOpp.get(nick) });
+  }
+
+  candidates.sort((a, b) => b.rating - a.rating);
+
+  const topCandidates = [];
+  const seenPlayers = new Set();
+  for (const c of candidates) {
+    if (seenPlayers.has(c.player)) continue;
+    seenPlayers.add(c.player);
+    topCandidates.push(c);
+    if (topCandidates.length >= 3) break;
+  }
+
+  const rMin = topCandidates.length ? Math.min(...topCandidates.map((x) => x.rating)) : 0;
+  const rMax = topCandidates.length ? Math.max(...topCandidates.map((x) => x.rating)) : 1;
+  const scorerRows = topCandidates.map((c, idx) => {
+    const pct = Math.round(55 + 35 * ((c.rating - rMin) / Math.max(1e-9, (rMax - rMin))));
+    return `
+      <div class="vip-tip-row">
+        <div class="vip-tip-left">
+          <div class="vip-tip-rank">${idx + 1}</div>
+          <div class="vip-tip-text">
+            <div class="vip-tip-title"><b>${c.player}</b></div>
+            <div class="vip-tip-meta">${c.teamNick} ${t("vipTips.vs")} ${c.oppNick}</div>
+          </div>
+        </div>
+        <div class="vip-tip-right">
+          <div class="vip-tip-badge">${pct}%</div>
+          <div class="vip-tip-label">${t("vipTips.confidence")}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  // ===== TOTAL GOALS PICKS =====
+  const totals = matchPairs
+    .map((p) => {
+      const est = estimateGameTotal(p.homeName, p.awayName);
+      if (!est) return null;
+      return { ...est, homeLogo: p.homeLogo, awayLogo: p.awayLogo, startTime: p.startTime };
+    })
+    .filter(Boolean);
+
+  totals.sort((a, b) => b.confidence - a.confidence);
+  const topTotals = totals.slice(0, 3);
+
+  const totalsRows = topTotals.map((g) => {
+    const recoText =
+      g.reco === "over"
+        ? `${t("vipTips.over")} ${g.line}`
+        : g.reco === "under"
+        ? `${t("vipTips.under")} ${g.line}`
+        : t("vipTips.noReco");
+
+    return `
+      <div class="vip-tip-row">
+        <div class="vip-tip-left">
+          <div class="vip-tip-text">
+            <div class="vip-tip-title"><b>${g.homeNick}</b> ${t("vipTips.vs")} <b>${g.awayNick}</b></div>
+            <div class="vip-tip-meta">${t("vipTips.predictedTotal")}: ${g.total}</div>
+            <div class="vip-tip-meta">${t("vipTips.reco")}: <b>${recoText}</b></div>
+          </div>
+        </div>
+        <div class="vip-tip-right">
+          <div class="vip-tip-badge">${g.confidence}%</div>
+          <div class="vip-tip-label">${t("vipTips.confidence")}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  wrap.innerHTML = `
+    <div class="vip-tip-card">
+      <h3 class="vip-tip-card-title">${t("vipTips.sectionScorers")}</h3>
+      ${scorerRows || `<p class="nhl-muted">${t("common.noData")}</p>`}
+    </div>
+
+    <div class="vip-tip-card">
+      <h3 class="vip-tip-card-title">${t("vipTips.sectionTotals")}</h3>
+      ${totalsRows || `<p class="nhl-muted">${t("common.noData")}</p>`}
+    </div>
   `;
 }
 
