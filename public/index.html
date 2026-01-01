@@ -653,20 +653,27 @@
       const overlay = document.getElementById('mobileMenuOverlay');
       
       if (!btn || !nav || !overlay) {
-        console.error('Hamburger menu elements not found');
+        console.error('Hamburger menu elements not found', { btn, nav, overlay });
         return;
       }
       
-      btn.classList.toggle('active');
-      nav.classList.toggle('active');
-      overlay.classList.toggle('active');
+      const isActive = nav.classList.contains('active');
       
-      // Zablokovať scroll body keď je menu otvorené
-      if (nav.classList.contains('active')) {
-        document.body.style.overflow = 'hidden';
-      } else {
+      if (isActive) {
+        // Zatvárame
+        btn.classList.remove('active');
+        nav.classList.remove('active');
+        overlay.classList.remove('active');
         document.body.style.overflow = '';
+      } else {
+        // Otvárame
+        btn.classList.add('active');
+        nav.classList.add('active');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
       }
+      
+      console.log('Menu toggled', { isActive: !isActive, navClasses: nav.className });
     }
 
     function closeMobileMenu() {
@@ -682,6 +689,24 @@
       document.body.style.overflow = '';
     }
 
+    // Event listenery - OKAMŽITE, nie až po DOMContentLoaded
+    document.getElementById('hamburgerBtn')?.addEventListener('click', function(e) {
+      e.stopPropagation();
+      toggleMobileMenu();
+    });
+    
+    document.getElementById('mobileMenuOverlay')?.addEventListener('click', function(e) {
+      e.stopPropagation();
+      closeMobileMenu();
+    });
+
+    // Zatvorenie menu pri ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeMobileMenu();
+      }
+    });
+
     // 🖥️ Desktop menu
     document.querySelectorAll("nav button").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -693,18 +718,8 @@
     // 🔹 Po načítaní stránky zobraz iba „Výsledky"
     document.addEventListener("DOMContentLoaded", () => {
       sections.forEach(sec => sec.style.display = "none");
-      document.getElementById("matches-section").style.display = "block";
-      
-      // Hamburger menu event listenery
-      document.getElementById('hamburgerBtn')?.addEventListener('click', toggleMobileMenu);
-      document.getElementById('mobileMenuOverlay')?.addEventListener('click', closeMobileMenu);
-      
-      // Zatvorenie menu pri ESC
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          closeMobileMenu();
-        }
-      });
+      const matchesSection = document.getElementById("matches-section");
+      if (matchesSection) matchesSection.style.display = "block";
     });
   </script>
 
