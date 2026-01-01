@@ -6321,23 +6321,23 @@ header{
     z-index: 1000;
   }
   
-  /* Hamburger tlačidlo */
-  .hamburger-btn {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 30px;
-    height: 30px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    z-index: 1001;
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    transition: all 0.3s ease;
-  }
+ /* Hamburger tlačidlo */
+ .hamburger-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 10001; /* Zvýšené z 1001 na 10001 */
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  transition: all 0.3s ease;
+}
   
   .hamburger-btn span {
     width: 100%;
@@ -6380,7 +6380,7 @@ header{
     padding: 80px 0 20px 0;
     overflow-y: auto;
     transition: right 0.3s ease;
-    z-index: 1000;
+    z-index: 10000; /* Zvýšené z 1000 na 10000 aby bolo nad všetkým */
   }
   
   .mobile-nav.active {

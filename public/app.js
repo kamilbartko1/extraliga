@@ -3127,64 +3127,6 @@ document.querySelectorAll("nav button").forEach(btn => {
   });
 });
 
-// === Mobile select menu ===
-document.getElementById("mobileSelect")?.addEventListener("change", async (e) => {
-  const val = e.target.value;
-
-  // 🔹 Skry všetko
-  document.querySelectorAll(".section, .content-section").forEach(sec => {
-    sec.style.display = "none";
-  });
-
-  let targetId = "";
-  switch (val) {
-    case "matches": targetId = "matches-section"; break;
-    case "teams": targetId = "teams-section"; break;
-    case "players": targetId = "players-section"; break;
-    case "mantingal": targetId = "mantingal-container"; break;
-    case "premium": targetId = "premium-section"; break; // 🔥 ZMENA
-    case "shooting": targetId = "shooting-section"; break;
-    case "strategies": targetId = "strategies-section"; break;
-  }
-
-  const section = document.getElementById(targetId);
-  if (section) section.style.display = "block";
-
-  switch (targetId) {
-    case "matches-section":
-      await fetchMatches();
-      break;
-
-    case "teams-section":
-      await displayTeamRatings();
-      break;
-
-    case "players-section":
-      await displayPlayerRatings();
-      break;
-
-    case "mantingal-container":
-      await displayMantingal();
-      await displayMantingalHistory();
-      break;
-
-    case "premium-section":
-      await checkPremiumStatus(); // 🔥 KĽÚČOVÉ
-      break;
-
-    case "stats-section":
-      await displayShootingLeaders();
-      break;
-
-    case "strategies-section":
-      await displayStrategies();
-      break;
-
-    default:
-      break;
-  }
-});
-
 // === Štart stránky ===
 window.addEventListener("DOMContentLoaded", async () => {
   console.log("🚀 Spúšťam NHLPRO...");
