@@ -2628,48 +2628,145 @@ async function renderVipTips() {
     codeToOpp.set(p.awayCode, p.homeCode);
   });
 
-  // ===== SCORER PICKS (Top 3) =====
+  // ===== SCORER PICKS (Top 3) – 3 rôzne zápasy =====
+  // Pull player stats to enrich scoring model (shots, TOI, PP goals)
+  let statsData = {};
+  try {
+    const s = await fetch("/api/statistics", { cache: "no-store" });
+    statsData = s.ok ? await s.json() : {};
+  } catch {
+    statsData = {};
+  }
+
+  const statPools = [
+    statsData?.topGoals,
+    statsData?.topShots,
+    statsData?.topPowerPlayGoals,
+    statsData?.topTOI,
+    statsData?.topPoints,
+  ].filter(Array.isArray);
+
+  const statsByName = new Map();
+  const nameKey = (n) => norm(String(n || "").replace(/\./g, ""));
+  for (const arr of statPools) {
+    for (const p of arr) {
+      const k = nameKey(p?.name);
+      if (!k) continue;
+      const prev = statsByName.get(k) || {};
+      statsByName.set(k, {
+        name: p?.name || prev.name,
+        team: p?.team || prev.team, // team code
+        gamesPlayed: Number(p?.gamesPlayed ?? prev.gamesPlayed ?? 0),
+        goals: Number(p?.goals ?? prev.goals ?? 0),
+        shots: Number(p?.shots ?? prev.shots ?? 0),
+        powerPlayGoals: Number(p?.powerPlayGoals ?? prev.powerPlayGoals ?? 0),
+        toi: Number(p?.toi ?? prev.toi ?? 0), // avg TOI minutes (from /api/statistics)
+      });
+    }
+  }
+
   const ratingEntries = Object.entries(playerRatings || {}).filter(([, r]) => Number.isFinite(Number(r)));
-  const candidates = [];
+  const allCandidates = [];
   for (const [player, ratingRaw] of ratingEntries) {
     const rating = Number(ratingRaw);
-    const parts = String(player).trim().split(" ");
-    const lastName = parts[parts.length - 1]?.replace(/\./g, "").toLowerCase();
-    const teamFull = lastName && playerTeams ? (playerTeams[lastName] || "") : "";
-    const teamCode = teamFull ? findTeamCodeByFullName(teamFull) : "";
+    const k = nameKey(player);
+    const st = statsByName.get(k);
+
+    // Determine team code
+    let teamCode = "";
+    if (st?.team) teamCode = String(st.team).toUpperCase();
+    if (!teamCode) {
+      const parts = String(player).trim().split(" ");
+      const lastName = parts[parts.length - 1]?.replace(/\./g, "").toLowerCase();
+      const teamFull = lastName && playerTeams ? (playerTeams[lastName] || "") : "";
+      teamCode = teamFull ? findTeamCodeByFullName(teamFull) : "";
+    }
+
     if (!teamCode) continue;
-    if (!todayCodes.has(teamCode)) continue; // len reálne dnešné tímy
-    const oppCode = codeToOpp.get(teamCode);
-    if (!oppCode) continue;
-    candidates.push({ player, rating, teamCode, oppCode });
+    if (!todayCodes.has(teamCode)) continue; // len dnešné reálne tímy
+
+    const gp = Number(st?.gamesPlayed || 0);
+    const shotsPerGame = gp > 0 ? Number((Number(st?.shots || 0) / gp).toFixed(2)) : 0;
+    const goalsPerGame = gp > 0 ? Number((Number(st?.goals || 0) / gp).toFixed(2)) : 0;
+    const ppGoalsPerGame = gp > 0 ? Number((Number(st?.powerPlayGoals || 0) / gp).toFixed(2)) : 0;
+    const toiMin = Number(st?.toi || 0);
+
+    allCandidates.push({
+      player,
+      rating,
+      teamCode,
+      gp,
+      shotsPerGame,
+      goalsPerGame,
+      ppGoalsPerGame,
+      toiMin,
+    });
   }
 
-  candidates.sort((a, b) => b.rating - a.rating);
+  const minmax = (arr, get) => {
+    let mn = Infinity;
+    let mx = -Infinity;
+    for (const x of arr) {
+      const v = Number(get(x));
+      if (!Number.isFinite(v)) continue;
+      mn = Math.min(mn, v);
+      mx = Math.max(mx, v);
+    }
+    if (!Number.isFinite(mn)) mn = 0;
+    if (!Number.isFinite(mx)) mx = 0;
+    return { mn, mx };
+  };
+  const norm01 = (v, mn, mx) => {
+    const denom = mx - mn;
+    if (!Number.isFinite(v)) return 0;
+    if (Math.abs(denom) < 1e-9) return 0.5;
+    return Math.max(0, Math.min(1, (v - mn) / denom));
+  };
 
-  const topCandidates = [];
-  const seenPlayers = new Set();
-  for (const c of candidates) {
-    if (seenPlayers.has(c.player)) continue;
-    seenPlayers.add(c.player);
-    topCandidates.push(c);
-    if (topCandidates.length >= 3) break;
+  const rRange = minmax(allCandidates, (x) => x.rating);
+  const sRange = minmax(allCandidates, (x) => x.shotsPerGame);
+  const gRange = minmax(allCandidates, (x) => x.goalsPerGame);
+  const ppRange = minmax(allCandidates, (x) => x.ppGoalsPerGame);
+  const toiRange = minmax(allCandidates, (x) => x.toiMin);
+
+  // Score model: rating + shots + TOI + PP goals + goals
+  for (const c of allCandidates) {
+    const r = norm01(c.rating, rRange.mn, rRange.mx);
+    const sh = norm01(c.shotsPerGame, sRange.mn, sRange.mx);
+    const g = norm01(c.goalsPerGame, gRange.mn, gRange.mx);
+    const ppg = norm01(c.ppGoalsPerGame, ppRange.mn, ppRange.mx);
+    const toi = norm01(c.toiMin, toiRange.mn, toiRange.mx);
+
+    c.score = 0.45 * r + 0.20 * sh + 0.15 * toi + 0.10 * ppg + 0.10 * g;
+    c.confidence = Math.round(60 + 35 * c.score); // 60–95
   }
 
-  const rMin = topCandidates.length ? Math.min(...topCandidates.map((x) => x.rating)) : 0;
-  const rMax = topCandidates.length ? Math.max(...topCandidates.map((x) => x.rating)) : 1;
-  const scorerRows = topCandidates.map((c, idx) => {
-    const pct = Math.round(55 + 35 * ((c.rating - rMin) / Math.max(1e-9, (rMax - rMin))));
+  // pick best candidate per game, then take top 3 games
+  const bestPerGame = [];
+  for (const game of matchPairs) {
+    const pool = allCandidates.filter((c) => c.teamCode === game.homeCode || c.teamCode === game.awayCode);
+    if (!pool.length) continue;
+    pool.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+    bestPerGame.push({ game, pick: pool[0] });
+  }
+  bestPerGame.sort((a, b) => (b.pick?.score ?? 0) - (a.pick?.score ?? 0));
+  const topGamePicks = bestPerGame.slice(0, 3);
+
+  const scorerRows = topGamePicks.map(({ game, pick }, idx) => {
+    const metaTop = `${game.homeCode} ${t("vipTips.vs")} ${game.awayCode}${game.startTime ? ` • ${game.startTime}` : ""}`;
+    const metaStats = `TOI ${pick.toiMin || "-"} | S/G ${pick.shotsPerGame || "-"} | PPG/G ${pick.ppGoalsPerGame || "-"}`;
     return `
       <div class="vip-tip-row">
         <div class="vip-tip-left">
           <div class="vip-tip-rank">${idx + 1}</div>
           <div class="vip-tip-text">
-            <div class="vip-tip-title"><b>${c.player}</b></div>
-            <div class="vip-tip-meta">${c.teamCode} ${t("vipTips.vs")} ${c.oppCode}</div>
+            <div class="vip-tip-title"><b>${pick.player}</b></div>
+            <div class="vip-tip-meta">${metaTop}</div>
+            <div class="vip-tip-meta">${metaStats}</div>
           </div>
         </div>
         <div class="vip-tip-right">
-          <div class="vip-tip-badge">${pct}%</div>
+          <div class="vip-tip-badge">${pick.confidence}%</div>
           <div class="vip-tip-label">${t("vipTips.confidence")}</div>
         </div>
       </div>
