@@ -640,17 +640,22 @@
         case "matches-section":
           fetchMatches();
           break;
-          case "mantingale-section":
+        case "mantingale-section":
           loadMantingal();
           break;
       }
     }
-    
+
     // 📱 Hamburger menu funkcionalita
     function toggleMobileMenu() {
       const btn = document.getElementById('hamburgerBtn');
       const nav = document.getElementById('mobileNav');
       const overlay = document.getElementById('mobileMenuOverlay');
+      
+      if (!btn || !nav || !overlay) {
+        console.error('Hamburger menu elements not found');
+        return;
+      }
       
       btn.classList.toggle('active');
       nav.classList.toggle('active');
@@ -669,64 +674,13 @@
       const nav = document.getElementById('mobileNav');
       const overlay = document.getElementById('mobileMenuOverlay');
       
-      btn.classList.remove('active');
-      nav.classList.remove('active');
-      overlay.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-
-    // Event listenery
-    document.getElementById('hamburgerBtn')?.addEventListener('click', toggleMobileMenu);
-    document.getElementById('mobileMenuOverlay')?.addEventListener('click', closeMobileMenu);
-
-    // Zatvorenie menu pri ESC
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeMobileMenu();
-      }
-    });
-
-    // 📱 Hamburger menu funkcionalita
-    function toggleMobileMenu() {
-      const btn = document.getElementById('hamburgerBtn');
-      const nav = document.getElementById('mobileNav');
-      const overlay = document.getElementById('mobileMenuOverlay');
-      
-      btn.classList.toggle('active');
-      nav.classList.toggle('active');
-      overlay.classList.toggle('active');
-      
-      // Zablokovať scroll body keď je menu otvorené
-      if (nav.classList.contains('active')) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = '';
-      }
-    }
-
-    function closeMobileMenu() {
-      const btn = document.getElementById('hamburgerBtn');
-      const nav = document.getElementById('mobileNav');
-      const overlay = document.getElementById('mobileMenuOverlay');
+      if (!btn || !nav || !overlay) return;
       
       btn.classList.remove('active');
       nav.classList.remove('active');
       overlay.classList.remove('active');
       document.body.style.overflow = '';
     }
-
-    // Event listenery
-    document.getElementById('hamburgerBtn')?.addEventListener('click', toggleMobileMenu);
-    document.getElementById('mobileMenuOverlay')?.addEventListener('click', closeMobileMenu);
-
-    // Zatvorenie menu pri ESC
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeMobileMenu();
-      }
-    });
-
-    // ... existing code ...
 
     // 🖥️ Desktop menu
     document.querySelectorAll("nav button").forEach(btn => {
@@ -736,10 +690,21 @@
       });
     });
 
-    // 🔹 Po načítaní stránky zobraz iba „Výsledky“
+    // 🔹 Po načítaní stránky zobraz iba „Výsledky"
     document.addEventListener("DOMContentLoaded", () => {
       sections.forEach(sec => sec.style.display = "none");
       document.getElementById("matches-section").style.display = "block";
+      
+      // Hamburger menu event listenery
+      document.getElementById('hamburgerBtn')?.addEventListener('click', toggleMobileMenu);
+      document.getElementById('mobileMenuOverlay')?.addEventListener('click', closeMobileMenu);
+      
+      // Zatvorenie menu pri ESC
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeMobileMenu();
+        }
+      });
     });
   </script>
 
