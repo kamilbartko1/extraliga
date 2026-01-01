@@ -2496,27 +2496,34 @@ function renderPremiumAnalytics(standings) {
 // ===============================
 // 👑 VIP TIPY – strelci + góly (dnešné zápasy)
 // ===============================
-function teamNick(name) {
-  const parts = String(name || "").trim().replace(/\s+/g, " ").split(" ");
-  return parts.length ? parts[parts.length - 1] : "";
+function norm(s) {
+  return String(s || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
 }
 
-function findStandingByNick(nick) {
-  const n = String(nick || "").toLowerCase();
-  if (!n) return null;
-  return (LAST_STANDINGS || []).find((t) => {
-    const nm = String(t?.teamName?.default || "").toLowerCase();
-    const ab = String(t?.teamAbbrev?.default || "").toLowerCase();
-    return nm.includes(n) || ab === n;
-  }) || null;
+function findStandingByCode(code) {
+  const c = String(code || "").trim().toUpperCase();
+  if (!c) return null;
+  return (LAST_STANDINGS || []).find((t) => String(t?.teamAbbrev?.default || "").toUpperCase() === c) || null;
 }
 
-function estimateGameTotal(homeNickName, awayNickName) {
-  const homeNick = teamNick(homeNickName) || String(homeNickName || "");
-  const awayNick = teamNick(awayNickName) || String(awayNickName || "");
+function findTeamCodeByFullName(fullName) {
+  const n = norm(fullName);
+  if (!n) return "";
+  const hit = (LAST_STANDINGS || []).find((t) => {
+    const nm = norm(t?.teamName?.default);
+    return nm === n || nm.includes(n) || n.includes(nm);
+  });
+  return String(hit?.teamAbbrev?.default || "").toUpperCase();
+}
 
-  const h = findStandingByNick(homeNick);
-  const a = findStandingByNick(awayNick);
+function estimateGameTotalByCodes(homeCode, awayCode) {
+  const h = findStandingByCode(homeCode);
+  const a = findStandingByCode(awayCode);
   if (!h || !a) return null;
 
   const hGF = Number(h.l10GoalsFor ?? 0);
@@ -2548,8 +2555,8 @@ function estimateGameTotal(homeNickName, awayNickName) {
   const confidence = Math.round(50 + 25 * Math.min(1, Math.abs(delta) / 1.2));
 
   return {
-    homeNick,
-    awayNick,
+    homeCode: String(homeCode || "").toUpperCase(),
+    awayCode: String(awayCode || "").toUpperCase(),
     total: Number(total.toFixed(1)),
     line,
     reco,
@@ -2586,27 +2593,39 @@ async function renderVipTips() {
     return;
   }
 
-  // Map team -> opponent for today's games
-  const matchPairs = matchesToday.map((m) => {
-    const homeName = m.homeName || "";
-    const awayName = m.awayName || "";
-    const home = teamNick(homeName) || homeName;
-    const away = teamNick(awayName) || awayName;
-    return {
-      homeName,
-      awayName,
-      homeNick: home,
-      awayNick: away,
-      startTime: m.startTime || "",
-      homeLogo: m.homeLogo || "",
-      awayLogo: m.awayLogo || "",
-    };
-  });
+  // Reálne dnešné zápasy – používame priamo kódy z /api/home (homeCode/awayCode)
+  const matchPairs = matchesToday
+    .map((m) => {
+      const homeName = m.homeName || "";
+      const awayName = m.awayName || "";
+      const homeCode = String(m.homeCode || "").toUpperCase() || findTeamCodeByFullName(homeName);
+      const awayCode = String(m.awayCode || "").toUpperCase() || findTeamCodeByFullName(awayName);
+      if (!homeCode || !awayCode) return null;
+      return {
+        id: m.id,
+        homeName,
+        awayName,
+        homeCode,
+        awayCode,
+        startTime: m.startTime || "",
+        homeLogo: m.homeLogo || "",
+        awayLogo: m.awayLogo || "",
+      };
+    })
+    .filter(Boolean);
 
-  const teamToOpp = new Map();
+  if (!matchPairs.length) {
+    wrap.innerHTML = `<p class="nhl-muted">${t("vipTips.noGames")}</p>`;
+    return;
+  }
+
+  const codeToOpp = new Map();
+  const todayCodes = new Set();
   matchPairs.forEach((p) => {
-    teamToOpp.set(String(p.homeNick), String(p.awayNick));
-    teamToOpp.set(String(p.awayNick), String(p.homeNick));
+    todayCodes.add(p.homeCode);
+    todayCodes.add(p.awayCode);
+    codeToOpp.set(p.homeCode, p.awayCode);
+    codeToOpp.set(p.awayCode, p.homeCode);
   });
 
   // ===== SCORER PICKS (Top 3) =====
@@ -2617,10 +2636,12 @@ async function renderVipTips() {
     const parts = String(player).trim().split(" ");
     const lastName = parts[parts.length - 1]?.replace(/\./g, "").toLowerCase();
     const teamFull = lastName && playerTeams ? (playerTeams[lastName] || "") : "";
-    const nick = teamNick(teamFull);
-    if (!nick) continue;
-    if (!teamToOpp.has(nick)) continue;
-    candidates.push({ player, rating, teamNick: nick, oppNick: teamToOpp.get(nick) });
+    const teamCode = teamFull ? findTeamCodeByFullName(teamFull) : "";
+    if (!teamCode) continue;
+    if (!todayCodes.has(teamCode)) continue; // len reálne dnešné tímy
+    const oppCode = codeToOpp.get(teamCode);
+    if (!oppCode) continue;
+    candidates.push({ player, rating, teamCode, oppCode });
   }
 
   candidates.sort((a, b) => b.rating - a.rating);
@@ -2644,7 +2665,7 @@ async function renderVipTips() {
           <div class="vip-tip-rank">${idx + 1}</div>
           <div class="vip-tip-text">
             <div class="vip-tip-title"><b>${c.player}</b></div>
-            <div class="vip-tip-meta">${c.teamNick} ${t("vipTips.vs")} ${c.oppNick}</div>
+            <div class="vip-tip-meta">${c.teamCode} ${t("vipTips.vs")} ${c.oppCode}</div>
           </div>
         </div>
         <div class="vip-tip-right">
@@ -2658,9 +2679,9 @@ async function renderVipTips() {
   // ===== TOTAL GOALS PICKS =====
   const totals = matchPairs
     .map((p) => {
-      const est = estimateGameTotal(p.homeName, p.awayName);
+      const est = estimateGameTotalByCodes(p.homeCode, p.awayCode);
       if (!est) return null;
-      return { ...est, homeLogo: p.homeLogo, awayLogo: p.awayLogo, startTime: p.startTime };
+      return { ...est, homeName: p.homeName, awayName: p.awayName, homeLogo: p.homeLogo, awayLogo: p.awayLogo, startTime: p.startTime };
     })
     .filter(Boolean);
 
@@ -2679,7 +2700,7 @@ async function renderVipTips() {
       <div class="vip-tip-row">
         <div class="vip-tip-left">
           <div class="vip-tip-text">
-            <div class="vip-tip-title"><b>${g.homeNick}</b> ${t("vipTips.vs")} <b>${g.awayNick}</b></div>
+            <div class="vip-tip-title"><b>${g.homeCode}</b> ${t("vipTips.vs")} <b>${g.awayCode}</b></div>
             <div class="vip-tip-meta">${t("vipTips.predictedTotal")}: ${g.total}</div>
             <div class="vip-tip-meta">${t("vipTips.reco")}: <b>${recoText}</b></div>
           </div>
