@@ -1822,9 +1822,11 @@ async function loadMantingal() {
 
   Object.entries(data.players).forEach(([name, p]) => {
     const tr = document.createElement("tr");
+    const teamAbbrev = getPlayerTeamAbbrev(name);
+    const playerDisplay = teamAbbrev ? `${name} <span style="color:#999; font-size:0.9em;">(${teamAbbrev})</span>` : name;
 
     tr.innerHTML = `
-      <td>${name}</td>
+      <td>${playerDisplay}</td>
       <td>${p.stake}</td>
       <td>${p.streak}</td>
       <td class="balance">${p.balance.toFixed(2)}</td>
@@ -2016,9 +2018,12 @@ async function displayMantingal() {
     `;
 
     players.forEach((p) => {
+      const teamAbbrev = getPlayerTeamAbbrev(p.name);
+      const playerDisplay = teamAbbrev ? `${p.name} <span style="color:#999; font-size:0.9em;">(${teamAbbrev})</span>` : p.name;
+      
       html += `
         <tr>
-          <td>${p.name}</td>
+          <td>${playerDisplay}</td>
           <td>${p.stake.toFixed(2)}</td>
           <td style="color:${p.profit >= 0 ? "limegreen" : "red"}">${p.profit.toFixed(2)}</td>
           <td>${p.streak}</td>
@@ -2462,6 +2467,35 @@ function formatPlayerName(fullName) {
   return `${lastName} ${firstName.charAt(0)}.`;
 }
 
+// Funkcia na získanie abbreviatúry tímu hráča
+function getPlayerTeamAbbrev(playerName) {
+  if (!playerName || !playerTeams) return "";
+  
+  // Extrahuj priezvisko (posledné slovo)
+  const parts = String(playerName).trim().split(/\s+/);
+  if (parts.length === 0) return "";
+  
+  const lastName = parts[parts.length - 1].toLowerCase();
+  const teamFullName = playerTeams[lastName];
+  
+  if (!teamFullName) return "";
+  
+  // Konvertuj názov tímu na abbreviatúru
+  const TEAM_NAME_TO_ABBREV = {
+    "Maple Leafs":"TOR","Penguins":"PIT","Red Wings":"DET","Stars":"DAL",
+    "Capitals":"WSH","Rangers":"NYR","Bruins":"BOS","Canadiens":"MTL",
+    "Senators":"OTT","Sabres":"BUF","Islanders":"NYI","Devils":"NJD",
+    "Hurricanes":"CAR","Panthers":"FLA","Wild":"MIN","Predators":"NSH",
+    "Blackhawks":"CHI","Flyers":"PHI","Avalanche":"COL","Oilers":"EDM",
+    "Flames":"CGY","Golden Knights":"VGK","Kings":"LAK","Kraken":"SEA",
+    "Sharks":"SJS","Ducks":"ANA","Lightning":"TBL","Jets":"WPG",
+    "Coyotes":"ARI","Blues":"STL","Blue Jackets":"CBJ",
+    "Mammoth":"UTA","Canucks":"VAN"
+  };
+  
+  return TEAM_NAME_TO_ABBREV[teamFullName] || "";
+}
+
 // ===============================
 // PREMIUM – Načítanie hráčov (s odds)
 // ===============================
@@ -2497,10 +2531,13 @@ async function loadPremiumPlayers() {
     }
 
     for (const [name, p] of entries) {
+      const teamAbbrev = getPlayerTeamAbbrev(name);
+      const formattedName = formatPlayerName(name);
+      const playerDisplay = teamAbbrev ? `${formattedName} <span style="color:#999; font-size:0.9em;">(${teamAbbrev})</span>` : formattedName;
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
-  <td>${formatPlayerName(name)}</td>
+  <td>${playerDisplay}</td>
   <td>${p.stake}</td>
   <td>${p.streak}</td>
   <td class="balance">${Number(p.balance).toFixed(2)} €</td>
