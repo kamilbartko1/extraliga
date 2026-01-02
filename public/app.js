@@ -806,14 +806,9 @@ function renderAbsInfoBox() {
   return `
     <h2>${t("abs.title")}</h2>
     <p class="abs-intro">${t("abs.intro")}</p>
-
-    <div class="abs-more" id="abs-more" style="display:none;">
-      <p>${t("abs.more1")}</p>
-      <p>${t("abs.more2")}</p>
-      <p class="abs-warning">${t("abs.warn")}</p>
-    </div>
-
-    <button class="abs-toggle" id="abs-toggle">${t("common.showMore")}</button>
+    <p class="abs-more-text">${t("abs.more1")}</p>
+    <p class="abs-more-text">${t("abs.more2")}</p>
+    <p class="abs-warning">${t("abs.warn")}</p>
   `;
 }
 
@@ -3364,19 +3359,7 @@ async function displayShootingLeaders() {
 // ===============================
 // 🧠 ABS – TOGGLE TEXT
 // ===============================
-document.addEventListener("click", (e) => {
-  if (e.target.id !== "abs-toggle") return;
-
-  const more = document.getElementById("abs-more");
-  const btn = document.getElementById("abs-toggle");
-
-  if (!more) return;
-
-  const isOpen = more.style.display === "block";
-
-  more.style.display = isOpen ? "none" : "block";
-  btn.textContent = isOpen ? t("common.showMore") : t("common.hide");
-});
+// ABS toggle removed - all content is now displayed at once
 
 // === Prepínanie sekcií a načítanie dát dynamicky ===
 document.querySelectorAll("nav button").forEach(btn => {

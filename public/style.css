@@ -5269,7 +5269,7 @@ body {
   width: 100%;
   max-width: 1200px;
   margin: 32px auto;
-  padding: 40px 48px;
+  padding: 28px 36px;
   background: linear-gradient(
     135deg,
     rgba(0, 40, 70, 0.95) 0%,
@@ -5323,10 +5323,10 @@ body {
    =============================== */
 
 .abs-info-box h2 {
-  margin: 0 0 24px;
+  margin: 0 0 20px;
   text-align: center;
   font-family: "Roboto Condensed", sans-serif;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 600;
   letter-spacing: 0.6px;
   color: #ffd700;
@@ -5343,7 +5343,7 @@ body {
 
 .abs-intro {
   max-width: 900px;
-  margin: 0 auto 20px;
+  margin: 0 auto 16px;
   text-align: center;
   font-family: "Roboto Condensed", sans-serif;
   font-size: 1rem;
@@ -5354,21 +5354,17 @@ body {
   z-index: 1;
 }
 
-.abs-more {
-  display: none;
+.abs-more-text {
   max-width: 900px;
-  margin: 18px auto 0;
+  margin: 0 auto 14px;
+  text-align: center;
   font-family: "Roboto Condensed", sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.75);
-  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.7;
   position: relative;
   z-index: 1;
-}
-
-.abs-more p {
-  margin-bottom: 12px;
 }
 
 /* ===============================
@@ -5377,44 +5373,19 @@ body {
 
 .abs-warning {
   margin-top: 16px;
-  padding: 12px 14px;
-
+  padding: 12px 16px;
   border-left: 3px solid #ffcc00;
   background: rgba(255, 204, 0, 0.06);
-
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: #ffd27d;
-}
-
-/* ===============================
-   TOGGLE
-   =============================== */
-
-.abs-toggle {
-  display: block;
-  margin: 18px auto 0;
-  background: none;
-  border: none;
-  font-family: "Roboto Condensed", sans-serif;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #00eaff;
-  cursor: pointer;
-  letter-spacing: 0.3px;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 6px;
   position: relative;
   z-index: 1;
-  text-shadow: 0 0 8px rgba(0, 234, 255, 0.4);
 }
 
-.abs-toggle:hover {
-  background: rgba(0, 234, 255, 0.1);
-  color: #00ffff;
-  text-shadow: 0 0 12px rgba(0, 234, 255, 0.6);
-  transform: translateY(-1px);
-}
 
 /* ===============================
    MOBILE
