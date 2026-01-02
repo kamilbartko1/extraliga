@@ -820,6 +820,42 @@ nav button:hover {
   text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
 }
 
+/* Jemné zvýraznenie pre NHLPRO PREMIUM v menu */
+nav button.nav-premium {
+  background: rgba(255, 212, 0, 0.12);
+  border-color: rgba(255, 212, 0, 0.4);
+  color: #ffd700;
+  font-weight: 200;
+  text-shadow: 0 0 8px rgba(255, 212, 0, 0.5);
+  position: relative;
+}
+
+nav button.nav-premium::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, rgba(255, 212, 0, 0.2), rgba(255, 200, 0, 0.1));
+  border-radius: 10px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+nav button.nav-premium:hover {
+  background: rgba(255, 212, 0, 0.2);
+  border-color: rgba(255, 212, 0, 0.6);
+  color: #fff9c4;
+  box-shadow: 0 0 15px rgba(255, 212, 0, 0.4);
+  text-shadow: 0 0 10px rgba(255, 212, 0, 0.7);
+}
+
+nav button.nav-premium:hover::before {
+  opacity: 1;
+}
+
 /* 📱 Mobilné zobrazenie – len rolovacie menu */
 @media (max-width: 768px) {
   nav {
@@ -933,6 +969,28 @@ nav button:hover::before {
 nav button:hover::after {
   transform: scaleX(1);
   transform-origin: left;
+}
+
+/* Jemné zvýraznenie pre NHLPRO PREMIUM v mobile menu */
+.mobile-menu-list button.nav-premium {
+  color: #ffd700;
+  font-weight: 500;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.mobile-menu-list button.nav-premium::before {
+  content: "👑";
+  position: absolute;
+  left: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.mobile-menu-list button.nav-premium:hover,
+.mobile-menu-list button.nav-premium:focus {
+  background: rgba(255, 212, 0, 0.15);
+  color: #fff9c4;
+  padding-left: 1.75rem;
 }
 
 /* -------------------------------
