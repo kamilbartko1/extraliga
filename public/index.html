@@ -630,9 +630,17 @@
   <div class="footer-content">
     <span>© 2025 NHLPRO.sk</span>
 
-    <button id="open-disclaimer" class="footer-link">
-      <span data-i18n="footer.disclaimer">⚖️ Právny disclaimer</span>
-    </button>
+    <div class="footer-links">
+      <button id="open-disclaimer" class="footer-link">
+        <span data-i18n="footer.disclaimer">⚖️ Právny disclaimer</span>
+      </button>
+      <button id="open-privacy" class="footer-link">
+        <span data-i18n="footer.privacy">🔒 Ochrana osobných údajov</span>
+      </button>
+      <button id="open-terms" class="footer-link">
+        <span data-i18n="footer.terms">📋 Podmienky používania</span>
+      </button>
+    </div>
   </div>
 </footer>
 
@@ -641,6 +649,22 @@
   <div class="disclaimer-box">
     <button id="close-disclaimer" class="disclaimer-close">✕</button>
     <div id="disclaimerContent"></div>
+  </div>
+</div>
+
+<!-- PRIVACY POLICY MODAL -->
+<div id="privacy-modal" class="disclaimer-modal hidden">
+  <div class="disclaimer-box">
+    <button id="close-privacy" class="disclaimer-close">✕</button>
+    <div id="privacyContent"></div>
+  </div>
+</div>
+
+<!-- TERMS OF SERVICE MODAL -->
+<div id="terms-modal" class="disclaimer-modal hidden">
+  <div class="disclaimer-box">
+    <button id="close-terms" class="disclaimer-close">✕</button>
+    <div id="termsContent"></div>
   </div>
 </div>
 

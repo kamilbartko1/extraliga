@@ -52,6 +52,8 @@ const I18N = {
     "common.delete": "Vymazať",
 
     "footer.disclaimer": "⚖️ Právny disclaimer",
+    "footer.privacy": "🔒 Ochrana osobných údajov",
+    "footer.terms": "📋 Podmienky používania",
 
     "home.loading": "⏳ Načítavam domovskú stránku...",
     "home.todaysGames": "🏒 Dnešné zápasy NHL",
@@ -532,6 +534,274 @@ function renderPlayerRatingModalContent() {
   `;
 }
 
+function renderPrivacy() {
+  if (CURRENT_LANG === "en") {
+    return `
+      <h2>🔒 Privacy Policy - NHLPRO.sk</h2>
+      <p><strong>Last updated:</strong> ${new Date().toLocaleDateString('en-GB')}</p>
+
+      <h3>1️⃣ Data Controller</h3>
+      <p>The operator of NHLPRO.sk is responsible for the processing of personal data in accordance with GDPR (General Data Protection Regulation).</p>
+
+      <h3>2️⃣ Personal Data We Collect</h3>
+      <p>We collect the following personal data:</p>
+      <ul>
+        <li><strong>Registration data:</strong> Email address, password (encrypted)</li>
+        <li><strong>Usage data:</strong> IP address, browser type, device information, pages visited, time spent on site</li>
+        <li><strong>Analytics data:</strong> Data collected through Google Analytics (anonymized)</li>
+        <li><strong>Premium service data:</strong> Selected players, betting strategies, preferences</li>
+      </ul>
+
+      <h3>3️⃣ Purpose of Data Processing</h3>
+      <p>We process personal data for the following purposes:</p>
+      <ul>
+        <li>Providing and improving our services</li>
+        <li>User account management</li>
+        <li>Website analytics and statistics</li>
+        <li>Communication with users</li>
+        <li>Compliance with legal obligations</li>
+      </ul>
+
+      <h3>4️⃣ Legal Basis for Processing</h3>
+      <p>We process personal data based on:</p>
+      <ul>
+        <li><strong>Consent:</strong> When you register or use our services</li>
+        <li><strong>Legitimate interest:</strong> For website analytics and improvement</li>
+        <li><strong>Contract performance:</strong> For premium services</li>
+      </ul>
+
+      <h3>5️⃣ Data Retention</h3>
+      <p>We retain personal data only for as long as necessary for the purposes stated above, or as required by law. Account data is retained until account deletion.</p>
+
+      <h3>6️⃣ Your Rights</h3>
+      <p>Under GDPR, you have the right to:</p>
+      <ul>
+        <li>Access your personal data</li>
+        <li>Rectify inaccurate data</li>
+        <li>Request deletion of your data</li>
+        <li>Object to processing</li>
+        <li>Data portability</li>
+        <li>Withdraw consent at any time</li>
+      </ul>
+
+      <h3>7️⃣ Data Security</h3>
+      <p>We implement appropriate technical and organizational measures to protect your personal data against unauthorized access, loss, or destruction.</p>
+
+      <h3>8️⃣ Cookies and Analytics</h3>
+      <p>We use Google Analytics to analyze website usage. This service uses cookies and may collect anonymized data about your visit. You can opt-out through your browser settings.</p>
+
+      <h3>9️⃣ Contact</h3>
+      <p>For questions about data protection, please contact us through the website contact form or email.</p>
+
+      <h3>🔟 Changes to Privacy Policy</h3>
+      <p>We reserve the right to update this Privacy Policy. Changes will be published on this page.</p>
+    `;
+  }
+
+  return `
+    <h2>🔒 Ochrana osobných údajov - NHLPRO.sk</h2>
+    <p><strong>Posledná aktualizácia:</strong> ${new Date().toLocaleDateString('sk-SK')}</p>
+
+    <h3>1️⃣ Správca osobných údajov</h3>
+    <p>Prevádzkovateľ webovej stránky NHLPRO.sk je zodpovedný za spracúvanie osobných údajov v súlade s nariadením GDPR (Všeobecné nariadenie o ochrane údajov).</p>
+
+    <h3>2️⃣ Osobné údaje, ktoré zhromažďujeme</h3>
+    <p>Zhromažďujeme nasledujúce osobné údaje:</p>
+    <ul>
+      <li><strong>Registračné údaje:</strong> Emailová adresa, heslo (zašifrované)</li>
+      <li><strong>Údaje o používaní:</strong> IP adresa, typ prehliadača, informácie o zariadení, navštívené stránky, čas strávený na stránke</li>
+      <li><strong>Analytické údaje:</strong> Údaje zhromažďované prostredníctvom Google Analytics (anonymizované)</li>
+      <li><strong>Údaje o prémiových službách:</strong> Vybraní hráči, stávkové stratégie, preferencie</li>
+    </ul>
+
+    <h3>3️⃣ Účel spracúvania údajov</h3>
+    <p>Spracúvame osobné údaje na nasledujúce účely:</p>
+    <ul>
+      <li>Poskytovanie a zlepšovanie našich služieb</li>
+      <li>Správa používateľských účtov</li>
+      <li>Analytika a štatistiky webovej stránky</li>
+      <li>Komunikácia s používateľmi</li>
+      <li>Splnenie zákonných povinností</li>
+    </ul>
+
+    <h3>4️⃣ Právny základ spracúvania</h3>
+    <p>Spracúvame osobné údaje na základe:</p>
+    <ul>
+      <li><strong>Súhlasu:</strong> Pri registrácii alebo používaní našich služieb</li>
+      <li><strong>Oprávneného záujmu:</strong> Pre analytiku a zlepšovanie webovej stránky</li>
+      <li><strong>Vykonávania zmluvy:</strong> Pre prémiové služby</li>
+    </ul>
+
+    <h3>5️⃣ Uchovávanie údajov</h3>
+    <p>Osobné údaje uchovávame len po dobu nevyhnutnú na účely uvedené vyššie, alebo podľa požiadaviek zákona. Údaje účtu sa uchovávajú do vymazania účtu.</p>
+
+    <h3>6️⃣ Vaše práva</h3>
+    <p>V súlade s GDPR máte právo na:</p>
+    <ul>
+      <li>Prístup k vašim osobným údajom</li>
+      <li>Opravu nepresných údajov</li>
+      <li>Vymazanie vašich údajov</li>
+      <li>Námietku voči spracúvaniu</li>
+      <li>Prenosnosť údajov</li>
+      <li>Odvolanie súhlasu kedykoľvek</li>
+    </ul>
+
+    <h3>7️⃣ Bezpečnosť údajov</h3>
+    <p>Implementujeme vhodné technické a organizačné opatrenia na ochranu vašich osobných údajov pred neoprávneným prístupom, stratou alebo zničením.</p>
+
+    <h3>8️⃣ Cookies a analytika</h3>
+    <p>Používame Google Analytics na analýzu používania webovej stránky. Táto služba používa cookies a môže zhromažďovať anonymizované údaje o vašej návšteve. Môžete sa odhlásiť prostredníctvom nastavení vášho prehliadača.</p>
+
+    <h3>9️⃣ Kontakt</h3>
+    <p>Pre otázky týkajúce sa ochrany údajov nás kontaktujte prostredníctvom kontaktného formulára na webovej stránke alebo emailu.</p>
+
+    <h3>🔟 Zmeny v zásadách ochrany údajov</h3>
+    <p>Vyhradzujeme si právo aktualizovať tieto zásady ochrany údajov. Zmeny budú zverejnené na tejto stránke.</p>
+  `;
+}
+
+function renderTerms() {
+  if (CURRENT_LANG === "en") {
+    return `
+      <h2>📋 Terms of Service - NHLPRO.sk</h2>
+      <p><strong>Last updated:</strong> ${new Date().toLocaleDateString('en-GB')}</p>
+
+      <h3>1️⃣ Acceptance of Terms</h3>
+      <p>By accessing and using NHLPRO.sk, you accept and agree to be bound by these Terms of Service. If you do not agree, please do not use our services.</p>
+
+      <h3>2️⃣ Description of Service</h3>
+      <p>NHLPRO.sk provides informational, analytical, and educational content related to NHL hockey, including:</p>
+      <ul>
+        <li>Game statistics and results</li>
+        <li>Player and team ratings</li>
+        <li>Analytical models and betting strategies</li>
+        <li>Premium services for registered users</li>
+      </ul>
+
+      <h3>3️⃣ User Accounts</h3>
+      <p>To access certain features, you must create an account. You are responsible for:</p>
+      <ul>
+        <li>Maintaining the confidentiality of your account credentials</li>
+        <li>All activities that occur under your account</li>
+        <li>Notifying us immediately of any unauthorized use</li>
+      </ul>
+
+      <h3>4️⃣ Acceptable Use</h3>
+      <p>You agree not to:</p>
+      <ul>
+        <li>Use the service for illegal purposes</li>
+        <li>Attempt to gain unauthorized access to the system</li>
+        <li>Interfere with or disrupt the service</li>
+        <li>Copy, modify, or distribute content without permission</li>
+        <li>Use automated systems to access the service</li>
+      </ul>
+
+      <h3>5️⃣ Premium Services</h3>
+      <p>Premium services are provided on a subscription basis. Terms include:</p>
+      <ul>
+        <li>Access to advanced features and analytics</li>
+        <li>No guarantee of profit or betting success</li>
+        <li>Refund policy as specified at time of purchase</li>
+      </ul>
+
+      <h3>6️⃣ Intellectual Property</h3>
+      <p>All content on NHLPRO.sk, including text, graphics, logos, and software, is the property of NHLPRO.sk and protected by copyright laws.</p>
+
+      <h3>7️⃣ Limitation of Liability</h3>
+      <p>NHLPRO.sk is provided "as is" without warranties. We are not liable for:</p>
+      <ul>
+        <li>Any losses resulting from use of our information</li>
+        <li>Service interruptions or errors</li>
+        <li>Decisions made based on our content</li>
+      </ul>
+
+      <h3>8️⃣ Age Restriction</h3>
+      <p>Our services are intended for users aged 18 and older. By using our service, you confirm that you meet this age requirement.</p>
+
+      <h3>9️⃣ Modifications to Service</h3>
+      <p>We reserve the right to modify, suspend, or discontinue any part of the service at any time without prior notice.</p>
+
+      <h3>🔟 Termination</h3>
+      <p>We may terminate or suspend your account and access to the service immediately, without prior notice, for any breach of these Terms.</p>
+
+      <h3>1️⃣1️⃣ Governing Law</h3>
+      <p>These Terms are governed by the laws of the Slovak Republic. Any disputes shall be resolved in Slovak courts.</p>
+
+      <h3>1️⃣2️⃣ Contact</h3>
+      <p>For questions about these Terms, please contact us through the website contact form.</p>
+    `;
+  }
+
+  return `
+    <h2>📋 Podmienky používania - NHLPRO.sk</h2>
+    <p><strong>Posledná aktualizácia:</strong> ${new Date().toLocaleDateString('sk-SK')}</p>
+
+    <h3>1️⃣ Prijatie podmienok</h3>
+    <p>Prístupom a používaním NHLPRO.sk prijímate a súhlasíte s tým, že budete viazaní týmito Podmienkami používania. Ak nesúhlasíte, nepoužívajte naše služby.</p>
+
+    <h3>2️⃣ Popis služby</h3>
+    <p>NHLPRO.sk poskytuje informačný, analytický a vzdelávací obsah týkajúci sa NHL hokeja, vrátane:</p>
+    <ul>
+      <li>Štatistík a výsledkov zápasov</li>
+      <li>Hodnotení hráčov a tímov</li>
+      <li>Analytických modelov a stávkových stratégií</li>
+      <li>Prémiových služieb pre registrovaných používateľov</li>
+    </ul>
+
+    <h3>3️⃣ Používateľské účty</h3>
+    <p>Pre prístup k určitým funkciám musíte vytvoriť účet. Zodpovedáte za:</p>
+    <ul>
+      <li>Zachovanie dôvernosti vašich prihlasovacích údajov</li>
+      <li>Všetky aktivity, ktoré sa vyskytnú pod vaším účtom</li>
+      <li>Okamžité oznámenie o akomkoľvek neoprávnenom použití</li>
+    </ul>
+
+    <h3>4️⃣ Prípustné použitie</h3>
+    <p>Súhlasíte, že nebudete:</p>
+    <ul>
+      <li>Používať službu na nezákonné účely</li>
+      <li>Pokúšať sa získať neoprávnený prístup k systému</li>
+      <li>Narušovať alebo narúšať službu</li>
+      <li>Kopírovať, upravovať alebo distribuovať obsah bez povolenia</li>
+      <li>Používať automatizované systémy na prístup k službe</li>
+    </ul>
+
+    <h3>5️⃣ Prémiové služby</h3>
+    <p>Prémiové služby sú poskytované na základe predplatného. Podmienky zahŕňajú:</p>
+    <ul>
+      <li>Prístup k pokročilým funkciám a analýzam</li>
+      <li>Žiadnu záruku zisku alebo úspechu v stávkovaní</li>
+      <li>Politiku vrátenia peňazí podľa špecifikácie v čase nákupu</li>
+    </ul>
+
+    <h3>6️⃣ Duševné vlastníctvo</h3>
+    <p>Všetok obsah na NHLPRO.sk, vrátane textu, grafiky, loga a softvéru, je vlastníctvom NHLPRO.sk a je chránený autorským právom.</p>
+
+    <h3>7️⃣ Obmedzenie zodpovednosti</h3>
+    <p>NHLPRO.sk je poskytovaný "tak, ako je" bez záruk. Nezodpovedáme za:</p>
+    <ul>
+      <li>Žiadne straty vyplývajúce z použitia našich informácií</li>
+      <li>Prerušenia služby alebo chyby</li>
+      <li>Rozhodnutia založené na našom obsahu</li>
+    </ul>
+
+    <h3>8️⃣ Vekové obmedzenie</h3>
+    <p>Naše služby sú určené pre používateľov vo veku 18 a viac rokov. Používaním našej služby potvrdzujete, že spĺňate túto vekovú požiadavku.</p>
+
+    <h3>9️⃣ Úpravy služby</h3>
+    <p>Vyhradzujeme si právo kedykoľvek upraviť, pozastaviť alebo ukončiť akúkoľvek časť služby bez predchádzajúceho upozornenia.</p>
+
+    <h3>🔟 Ukončenie</h3>
+    <p>Môžeme okamžite ukončiť alebo pozastaviť váš účet a prístup k službe bez predchádzajúceho upozornenia za akékoľvek porušenie týchto Podmienok.</p>
+
+    <h3>1️⃣1️⃣ Právny poriadok</h3>
+    <p>Tieto Podmienky sa riadia právnymi predpismi Slovenskej republiky. Akékoľvek spory sa riešia v slovenských súdoch.</p>
+
+    <h3>1️⃣2️⃣ Kontakt</h3>
+    <p>Pre otázky týkajúce sa týchto Podmienok nás kontaktujte prostredníctvom kontaktného formulára na webovej stránke.</p>
+  `;
+}
+
 function renderAbsInfoBox() {
   return `
     <h2>${t("abs.title")}</h2>
@@ -626,6 +896,12 @@ function applyI18n() {
 
   const disc = document.getElementById("disclaimerContent");
   if (disc) disc.innerHTML = renderDisclaimer();
+
+  const privacy = document.getElementById("privacyContent");
+  if (privacy) privacy.innerHTML = renderPrivacy();
+
+  const terms = document.getElementById("termsContent");
+  if (terms) terms.innerHTML = renderTerms();
 
   // Update mobile select <option> labels too
   document.querySelectorAll("#mobileSelect option[data-i18n]").forEach((opt) => {
@@ -1446,6 +1722,7 @@ function closeTeamRatingModal(e) {
 }
 
 // DISCLAIMER MODAL
+// DISCLAIMER MODAL
 document.getElementById("open-disclaimer")
   ?.addEventListener("click", () => {
     document
@@ -1457,6 +1734,36 @@ document.getElementById("close-disclaimer")
   ?.addEventListener("click", () => {
     document
       .getElementById("disclaimer-modal")
+      .classList.add("hidden");
+  });
+
+// PRIVACY POLICY MODAL
+document.getElementById("open-privacy")
+  ?.addEventListener("click", () => {
+    document
+      .getElementById("privacy-modal")
+      .classList.remove("hidden");
+  });
+
+document.getElementById("close-privacy")
+  ?.addEventListener("click", () => {
+    document
+      .getElementById("privacy-modal")
+      .classList.add("hidden");
+  });
+
+// TERMS OF SERVICE MODAL
+document.getElementById("open-terms")
+  ?.addEventListener("click", () => {
+    document
+      .getElementById("terms-modal")
+      .classList.remove("hidden");
+  });
+
+document.getElementById("close-terms")
+  ?.addEventListener("click", () => {
+    document
+      .getElementById("terms-modal")
       .classList.add("hidden");
   });
 

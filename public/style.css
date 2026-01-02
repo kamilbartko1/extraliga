@@ -5436,6 +5436,15 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .footer-link {
@@ -5444,10 +5453,27 @@ body {
   color: #00eaff;
   cursor: pointer;
   font-size: 0.85rem;
+  white-space: nowrap;
 }
 
 .footer-link:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-links {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .footer-link {
+    font-size: 0.8rem;
+  }
 }
 
 /* ===== DISCLAIMER MODAL ===== */
