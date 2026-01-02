@@ -1810,6 +1810,11 @@ function closeRatingModal(e) {
 
 // === Mantingal sekcia ===
 async function loadMantingal() {
+  // Zabezpeč, že playerTeams je načítaný
+  if (!playerTeams || Object.keys(playerTeams).length === 0) {
+    await loadPlayerTeams();
+  }
+  
   const res = await fetch("/api/mantingal?task=all");
   const data = await res.json();
   if (!data.ok) return;
@@ -1822,7 +1827,7 @@ async function loadMantingal() {
 
   Object.entries(data.players).forEach(([name, p]) => {
     const tr = document.createElement("tr");
-    const teamAbbrev = getPlayerTeamAbbrev(name);
+    const teamAbbrev = getPlayerTeamAbbrev(name, false);
     const playerDisplay = teamAbbrev ? `${name} <span style="color:#999; font-size:0.9em;">(${teamAbbrev})</span>` : name;
 
     tr.innerHTML = `
@@ -2468,15 +2473,64 @@ function formatPlayerName(fullName) {
 }
 
 // Funkcia na získanie abbreviatúry tímu hráča
-function getPlayerTeamAbbrev(playerName) {
-  if (!playerName || !playerTeams) return "";
+function getPlayerTeamAbbrev(playerName, usePremiumCache = false) {
+  if (!playerName) return "";
   
-  // Extrahuj priezvisko (posledné slovo)
-  const parts = String(playerName).trim().split(/\s+/);
-  if (parts.length === 0) return "";
+  // Pre premium sekciu použij cache
+  if (usePremiumCache && PREMIUM_PLAYERS_CACHE && PREMIUM_PLAYERS_CACHE.length > 0) {
+    const player = PREMIUM_PLAYERS_CACHE.find(p => 
+      p.name === playerName || 
+      p.name.toLowerCase() === playerName.toLowerCase()
+    );
+    
+    if (player && player.team) {
+      const TEAM_NAME_TO_ABBREV = {
+        "Maple Leafs":"TOR","Penguins":"PIT","Red Wings":"DET","Stars":"DAL",
+        "Capitals":"WSH","Rangers":"NYR","Bruins":"BOS","Canadiens":"MTL",
+        "Senators":"OTT","Sabres":"BUF","Islanders":"NYI","Devils":"NJD",
+        "Hurricanes":"CAR","Panthers":"FLA","Wild":"MIN","Predators":"NSH",
+        "Blackhawks":"CHI","Flyers":"PHI","Avalanche":"COL","Oilers":"EDM",
+        "Flames":"CGY","Golden Knights":"VGK","Kings":"LAK","Kraken":"SEA",
+        "Sharks":"SJS","Ducks":"ANA","Lightning":"TBL","Jets":"WPG",
+        "Coyotes":"ARI","Blues":"STL","Blue Jackets":"CBJ",
+        "Mammoth":"UTA","Canucks":"VAN"
+      };
+      return TEAM_NAME_TO_ABBREV[player.team] || "";
+    }
+  }
   
-  const lastName = parts[parts.length - 1].toLowerCase();
-  const teamFullName = playerTeams[lastName];
+  // Pre ABS sekciu použij playerTeams, ale skús aj premium cache ako fallback
+  let teamFullName = "";
+  
+  if (playerTeams && Object.keys(playerTeams).length > 0) {
+    // Extrahuj priezvisko (posledné slovo)
+    const parts = String(playerName).trim().split(/\s+/);
+    if (parts.length > 0) {
+      const lastName = parts[parts.length - 1].toLowerCase();
+      teamFullName = playerTeams[lastName] || "";
+      
+      // Skús aj s prvým písmenom mena (ak je formát "LastName F.")
+      if (!teamFullName && parts.length >= 2) {
+        const lastPart = parts[parts.length - 2].toLowerCase();
+        teamFullName = playerTeams[lastPart] || "";
+      }
+    }
+  }
+  
+  // Fallback: skús nájsť v premium cache
+  if (!teamFullName && PREMIUM_PLAYERS_CACHE && PREMIUM_PLAYERS_CACHE.length > 0) {
+    const player = PREMIUM_PLAYERS_CACHE.find(p => {
+      const pName = p.name.toLowerCase();
+      const searchName = playerName.toLowerCase();
+      return pName === searchName || 
+             pName.includes(searchName) || 
+             searchName.includes(pName) ||
+             p.name.split(' ').pop().toLowerCase() === playerName.split(' ').pop().toLowerCase();
+    });
+    if (player && player.team) {
+      teamFullName = player.team;
+    }
+  }
   
   if (!teamFullName) return "";
   
@@ -2507,6 +2561,11 @@ async function loadPremiumPlayers() {
 
   if (!tbody || !totalEl || !token) return;
 
+  // Zabezpeč, že PREMIUM_PLAYERS_CACHE je načítaný
+  if (!PREMIUM_PLAYERS_CACHE || PREMIUM_PLAYERS_CACHE.length === 0) {
+    await loadPremiumTeams();
+  }
+
   tbody.innerHTML = "";
   totalEl.textContent = "0.00";
   if (msg) msg.textContent = "";
@@ -2531,7 +2590,7 @@ async function loadPremiumPlayers() {
     }
 
     for (const [name, p] of entries) {
-      const teamAbbrev = getPlayerTeamAbbrev(name);
+      const teamAbbrev = getPlayerTeamAbbrev(name, true); // Použi premium cache
       const formattedName = formatPlayerName(name);
       const playerDisplay = teamAbbrev ? `${formattedName} <span style="color:#999; font-size:0.9em;">(${teamAbbrev})</span>` : formattedName;
 
