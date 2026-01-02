@@ -2513,7 +2513,7 @@ function getTeamAbbrev(teamName) {
     "Senators":"OTT","Sabres":"BUF","Islanders":"NYI","Devils":"NJD",
     "Hurricanes":"CAR","Panthers":"FLA","Wild":"MIN","Predators":"NSH",
     "Blackhawks":"CHI","Flyers":"PHI","Avalanche":"COL","Oilers":"EDM",
-    "Flames":"CGY","Golden Knights":"VGK","Kings":"LAK","Kraken":"SEA",
+    "Flames":"CGY","Golden Knights":"VGK","Knights":"VGK","Kings":"LAK","Kraken":"SEA",
     "Sharks":"SJS","Ducks":"ANA","Lightning":"TBL","Jets":"WPG",
     "Coyotes":"ARI","Blues":"STL","Blue Jackets":"CBJ",
     "Mammoth":"UTA","Canucks":"VAN",
@@ -2543,6 +2543,8 @@ function getTeamAbbrev(teamName) {
     }
   }
   
+  // Debug: ak sa nenašiel
+  console.warn(`⚠️ Tím "${teamName}" sa nenašiel v mapovaní`);
   return "";
 }
 
