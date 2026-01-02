@@ -4429,20 +4429,84 @@ body {
 
   /* VIP tips sekcia */
   .vip-tips {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+    padding: 12px 10px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
 
   .vip-tips-head {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   .vip-tips-head h2 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin-bottom: 4px;
+    line-height: 1.2;
   }
 
   .vip-tips-sub {
+    font-size: 0.8rem;
+    line-height: 1.3;
+  }
+
+  .vip-tips-grid {
+    gap: 10px;
+  }
+
+  .vip-tip-card {
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .vip-tip-card-title {
     font-size: 0.85rem;
+    margin-bottom: 8px;
+  }
+
+  .vip-tip-row {
+    padding: 8px;
+    margin-bottom: 6px;
+    gap: 8px;
+  }
+
+  .vip-tip-left {
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .vip-tip-rank {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
+  .vip-tip-title {
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+
+  .vip-tip-meta {
+    font-size: 0.7rem;
+    line-height: 1.3;
+    margin-top: 2px;
+  }
+
+  .vip-tip-right {
+    flex-shrink: 0;
+  }
+
+  .vip-tip-badge {
+    padding: 3px 6px;
+    font-size: 11px;
+  }
+
+  .vip-tip-label {
+    font-size: 10px;
+    margin-top: 2px;
   }
 
   /* Premium analytics */
@@ -6452,6 +6516,9 @@ header{
   background: rgba(0,0,0,0.20);
   border: 1px solid rgba(255,255,255,0.08);
   margin-bottom: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  overflow: hidden;
 }
 
 .vip-tip-left{
@@ -6459,6 +6526,8 @@ header{
   align-items: center;
   gap: 10px;
   min-width: 0;
+  flex: 1;
+  overflow: hidden;
 }
 
 .vip-tip-rank{
@@ -6476,6 +6545,8 @@ header{
 
 .vip-tip-text{
   min-width: 0;
+  flex: 1;
+  overflow: hidden;
 }
 
 .vip-tip-title{
@@ -6484,6 +6555,7 @@ header{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .vip-tip-meta{
@@ -6492,6 +6564,7 @@ header{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .vip-tip-right{
