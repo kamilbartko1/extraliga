@@ -6708,7 +6708,13 @@ header{
   margin: 0;
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.85);
-  line-height: 1.6;
+  line-height: 1.7;
+}
+
+.abs-cta-text p strong {
+  color: #00eaff;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(0, 234, 255, 0.4);
 }
 
 .abs-cta-btn{
