@@ -686,13 +686,23 @@
       const overlay = document.getElementById("mobileMenuOverlay");
       const toggle = document.getElementById("mobileMenuToggle");
       
+      console.log("openMobileMenu called", { panel, overlay, toggle });
+      
       if (panel && overlay && toggle) {
+        console.log("Adding active classes");
         panel.classList.add("active");
         overlay.classList.add("active");
         toggle.setAttribute("aria-expanded", "true");
         panel.setAttribute("aria-hidden", "false");
         overlay.setAttribute("aria-hidden", "false");
         document.body.style.overflow = "hidden"; // zabráni scrollovaniu pozadia
+        
+        // Debug - skontroluj, či sa triedy pridali
+        console.log("Panel classes:", panel.className);
+        console.log("Overlay classes:", overlay.className);
+        console.log("Panel computed style:", window.getComputedStyle(panel).transform);
+      } else {
+        console.error("Missing elements:", { panel, overlay, toggle });
       }
     }
 
@@ -712,9 +722,42 @@
     }
 
     // Event listeners pre hamburger menu
-    document.getElementById("mobileMenuToggle")?.addEventListener("click", openMobileMenu);
-    document.getElementById("mobileMenuClose")?.addEventListener("click", closeMobileMenu);
-    document.getElementById("mobileMenuOverlay")?.addEventListener("click", closeMobileMenu);
+    function initMobileMenu() {
+      const toggle = document.getElementById("mobileMenuToggle");
+      const close = document.getElementById("mobileMenuClose");
+      const overlay = document.getElementById("mobileMenuOverlay");
+      
+      if (toggle) {
+        toggle.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openMobileMenu();
+        });
+      }
+      
+      if (close) {
+        close.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          closeMobileMenu();
+        });
+      }
+      
+      if (overlay) {
+        overlay.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          closeMobileMenu();
+        });
+      }
+    }
+    
+    // Inicializácia menu po načítaní DOM
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMobileMenu);
+    } else {
+      initMobileMenu();
+    }
 
     // Zatvorenie menu pri stlačení Escape
     document.addEventListener("keydown", (e) => {
