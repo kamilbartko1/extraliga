@@ -5460,18 +5460,45 @@ body {
     table-layout: auto;
   }
 
+  /* V mobile: skryť desktop Balance stĺpec */
+  .mantingale-table .th-balance-desktop {
+    display: none;
+  }
+
+  /* V mobile: zobraziť Balance hneď po hráčovi */
+  .mantingale-table .th-balance-mobile {
+    display: table-cell;
+  }
+
   .mantingale-table th:first-child,
-  .mantingale-table td:first-child {
+  .mantingale-table td:first-child,
+  .mantingale-table .player-cell {
     white-space: nowrap;
     text-align: left;
     padding-left: 12px;
     padding-right: 12px;
   }
 
+  .mantingale-table .balance-mobile-first {
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
   .mantingale-table th,
   .mantingale-table td {
     font-size: 0.85rem;
     padding: 8px 6px;
+  }
+}
+
+/* Desktop: skryť mobile Balance stĺpec, zobraziť desktop Balance */
+@media (min-width: 769px) {
+  .mantingale-table .th-balance-mobile {
+    display: none;
+  }
+
+  .mantingale-table .th-balance-desktop {
+    display: table-cell;
   }
 }
 

@@ -1833,6 +1833,9 @@ async function loadMantingal() {
   const tbody = document.getElementById("mantingale-table-body");
   tbody.innerHTML = "";
 
+  // Detekcia mobile zariadenia
+  const isMobile = window.innerWidth <= 768;
+  
   Object.entries(data.players).forEach(([name, p]) => {
     const tr = document.createElement("tr");
     // Skús nájsť tím - najprv v playerTeams, potom v premium cache
@@ -1860,13 +1863,25 @@ async function loadMantingal() {
     
     const playerDisplay = teamAbbrev ? `${name} <span style="color:#999; font-size:0.9em;">(${teamAbbrev})</span>` : name;
 
-    tr.innerHTML = `
-      <td>${playerDisplay}</td>
-      <td>${p.stake}</td>
-      <td>${p.streak}</td>
-      <td class="balance">${p.balance.toFixed(2)}</td>
-      <td><button class="mtg-detail-btn" data-player="${name}">Detail</button></td>
-    `;
+    // V mobile: Hráč | Balance | Stávka | Streak | Detail
+    // V desktop: Hráč | Stávka | Streak | Balance | Detail
+    if (isMobile) {
+      tr.innerHTML = `
+        <td class="player-cell">${playerDisplay}</td>
+        <td class="balance balance-mobile-first">${p.balance.toFixed(2)}</td>
+        <td>${p.stake}</td>
+        <td>${p.streak}</td>
+        <td><button class="mtg-detail-btn" data-player="${name}">Detail</button></td>
+      `;
+    } else {
+      tr.innerHTML = `
+        <td class="player-cell">${playerDisplay}</td>
+        <td>${p.stake}</td>
+        <td>${p.streak}</td>
+        <td class="balance">${p.balance.toFixed(2)}</td>
+        <td><button class="mtg-detail-btn" data-player="${name}">Detail</button></td>
+      `;
+    }
 
     tbody.appendChild(tr);
   });
