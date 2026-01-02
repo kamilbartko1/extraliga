@@ -3887,11 +3887,14 @@ body {
   to   { background: rgba(0,0,0,0.80); }
 }
 #mantingale-section {
-  padding: 20px;
+  padding: 40px 24px;
   margin-top: 40px;
-  background: #0f172a;
-  border-radius: 10px;
+  background: transparent;
+  border-radius: 0;
   color: white;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .mantingale-table,
@@ -5264,8 +5267,9 @@ body {
 .abs-info-box {
   position: relative;
   width: 100%;
-  margin: 24px 0 36px;
-  padding: 32px 36px;
+  max-width: 1200px;
+  margin: 32px auto;
+  padding: 40px 48px;
   background: linear-gradient(
     135deg,
     rgba(0, 40, 70, 0.95) 0%,
@@ -5279,15 +5283,6 @@ body {
     0 2px 8px rgba(0, 234, 255, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
-  overflow: hidden;
-
-  border: 1px solid rgba(255, 204, 0, 0.35);
-
-  box-shadow:
-    0 20px 45px rgba(0, 0, 0, 0.65),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.6);
-
   overflow: hidden;
 }
 
@@ -5328,10 +5323,10 @@ body {
    =============================== */
 
 .abs-info-box h2 {
-  margin: 0 0 18px;
+  margin: 0 0 24px;
   text-align: center;
   font-family: "Roboto Condensed", sans-serif;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 600;
   letter-spacing: 0.6px;
   color: #ffd700;
@@ -5347,14 +5342,14 @@ body {
    =============================== */
 
 .abs-intro {
-  max-width: 880px;
-  margin: 0 auto 14px;
+  max-width: 900px;
+  margin: 0 auto 20px;
   text-align: center;
   font-family: "Roboto Condensed", sans-serif;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 300;
   color: rgba(255, 255, 255, 0.85);
-  line-height: 1.6;
+  line-height: 1.7;
   position: relative;
   z-index: 1;
 }
@@ -6678,17 +6673,17 @@ header{
    ABS CTA - Modern 3D Design
    =============================== */
 .abs-cta{
-  margin: 20px auto 24px;
-  max-width: 980px;
-  padding: 0 10px;
+  margin: 32px auto;
+  max-width: 1200px;
+  padding: 0 24px;
 }
 
 .abs-cta-inner{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 24px 28px;
+  gap: 32px;
+  padding: 32px 40px;
   border-radius: 20px;
   border: 1px solid rgba(0, 234, 255, 0.3);
   background: linear-gradient(
@@ -6741,19 +6736,20 @@ header{
 }
 
 .abs-cta-text h3{
-  margin: 0 0 8px;
-  font-size: 1.1rem;
+  margin: 0 0 12px;
+  font-size: 1.25rem;
   font-weight: 600;
   color: #00eaff;
   text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
   letter-spacing: 0.3px;
+  line-height: 1.4;
 }
 
 .abs-cta-text p{
   margin: 0;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
-  line-height: 1.5;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
 }
 
 .abs-cta-btn{
@@ -6766,8 +6762,8 @@ header{
   );
   color: #ffd700;
   font-weight: 700;
-  font-size: 0.95rem;
-  padding: 12px 20px;
+  font-size: 1rem;
+  padding: 14px 28px;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
