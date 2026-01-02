@@ -3916,6 +3916,27 @@ body {
   text-align: center;
 }
 
+/* Wrapper pre horizontálne posúvanie tabuľky na mobile */
+.mantingale-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.mantingale-table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.mantingale-table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(0, 234, 255, 0.4);
+  border-radius: 4px;
+}
+
+.mantingale-table-wrapper::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
 .mantingale-history {
   margin-top: 30px;
 }
@@ -5423,6 +5444,34 @@ body {
 
   .abs-more {
     font-size: 0.85rem;
+  }
+
+  /* ABS tabuľka - mená hráčov v jednom riadku, horizontálne posúvanie */
+  .mantingale-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -8px;
+    padding: 0 8px;
+  }
+
+  .mantingale-table {
+    min-width: 600px;
+    table-layout: auto;
+  }
+
+  .mantingale-table th:first-child,
+  .mantingale-table td:first-child {
+    white-space: nowrap;
+    text-align: left;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .mantingale-table th,
+  .mantingale-table td {
+    font-size: 0.85rem;
+    padding: 8px 6px;
   }
 }
 
