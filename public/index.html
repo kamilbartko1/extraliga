@@ -66,18 +66,58 @@
     <button onclick="showSection('premium-section')" data-i18n="nav.premium">NHLPRO PREMIUM</button>
   </nav>
 
-  <!-- 📱 MOBILNÉ MENU -->
-  <div class="mobile-menu">
-    <select id="mobileSelect">
-      <option value="home" data-i18n="nav.home">Domov</option>
-      <option value="matches" data-i18n="nav.results">Výsledky</option>
-      <option value="teams" data-i18n="nav.teamRating">Rating tímov</option>
-      <option value="players" data-i18n="nav.playerRating">Rating hráčov</option>
-      <option value="stats" data-i18n="nav.stats">Štatistiky hráčov</option>
-      <option value="mantingal" data-i18n="nav.abs">AdvancedBettingStrategy</option>
-      <option value="premium" data-i18n="nav.premium">NHLPRO PREMIUM</option>
-    </select>
-  </div>
+  <!-- 📱 MOBILNÉ MENU - HAMBURGER -->
+  <button 
+    class="mobile-menu-toggle" 
+    id="mobileMenuToggle"
+    aria-label="Otvoriť menu"
+    aria-expanded="false"
+    aria-controls="mobileMenuPanel"
+  >
+    <span class="hamburger-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </button>
+
+  <!-- 📱 SLIDE-IN MENU PANEL -->
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay" aria-hidden="true"></div>
+  <nav class="mobile-menu-panel" id="mobileMenuPanel" aria-label="Hlavná navigácia" aria-hidden="true">
+    <div class="mobile-menu-header">
+      <h3>Menu</h3>
+      <button 
+        class="mobile-menu-close" 
+        id="mobileMenuClose"
+        aria-label="Zatvoriť menu"
+      >
+        ✕
+      </button>
+    </div>
+    <ul class="mobile-menu-list">
+      <li>
+        <button onclick="closeMobileMenu(); showSection('home-section')" data-i18n="nav.home">Domov</button>
+      </li>
+      <li>
+        <button onclick="closeMobileMenu(); showSection('matches-section')" data-i18n="nav.results">Výsledky</button>
+      </li>
+      <li>
+        <button onclick="closeMobileMenu(); showSection('teams-section')" data-i18n="nav.teamRating">Rating tímov</button>
+      </li>
+      <li>
+        <button onclick="closeMobileMenu(); showSection('players-section')" data-i18n="nav.playerRating">Rating hráčov</button>
+      </li>
+      <li>
+        <button onclick="closeMobileMenu(); showSection('stats-section')" data-i18n="nav.stats">Štatistiky hráčov</button>
+      </li>
+      <li>
+        <button onclick="closeMobileMenu(); showSection('mantingale-section')" data-i18n="nav.abs">AdvancedBettingStrategy</button>
+      </li>
+      <li>
+        <button onclick="closeMobileMenu(); showSection('premium-section')" data-i18n="nav.premium">NHLPRO PREMIUM</button>
+      </li>
+    </ul>
+  </nav>
 
     <!-- Domovska stranka -->
     <div class="container">
@@ -640,20 +680,50 @@
       }
     }
 
-    // 📱 Mobilné menu
-    document.getElementById("mobileSelect")?.addEventListener("change", (e) => {
-      const map = {
-        home: "home-section",
-        matches: "matches-section",
-        teams: "teams-section",
-        players: "players-section",
-        premium: "premium-section",
-        stats: "stats-section",
-        strategies: "strategies-section",
-        mantingal: "mantingale-section"
-      };
-      const target = map[e.target.value];
-      if (target) showSection(target);
+    // 📱 Mobilné hamburger menu
+    function openMobileMenu() {
+      const panel = document.getElementById("mobileMenuPanel");
+      const overlay = document.getElementById("mobileMenuOverlay");
+      const toggle = document.getElementById("mobileMenuToggle");
+      
+      if (panel && overlay && toggle) {
+        panel.classList.add("active");
+        overlay.classList.add("active");
+        toggle.setAttribute("aria-expanded", "true");
+        panel.setAttribute("aria-hidden", "false");
+        overlay.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden"; // zabráni scrollovaniu pozadia
+      }
+    }
+
+    function closeMobileMenu() {
+      const panel = document.getElementById("mobileMenuPanel");
+      const overlay = document.getElementById("mobileMenuOverlay");
+      const toggle = document.getElementById("mobileMenuToggle");
+      
+      if (panel && overlay && toggle) {
+        panel.classList.remove("active");
+        overlay.classList.remove("active");
+        toggle.setAttribute("aria-expanded", "false");
+        panel.setAttribute("aria-hidden", "true");
+        overlay.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = ""; // obnov scrollovanie
+      }
+    }
+
+    // Event listeners pre hamburger menu
+    document.getElementById("mobileMenuToggle")?.addEventListener("click", openMobileMenu);
+    document.getElementById("mobileMenuClose")?.addEventListener("click", closeMobileMenu);
+    document.getElementById("mobileMenuOverlay")?.addEventListener("click", closeMobileMenu);
+
+    // Zatvorenie menu pri stlačení Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        const panel = document.getElementById("mobileMenuPanel");
+        if (panel && panel.classList.contains("active")) {
+          closeMobileMenu();
+        }
+      }
     });
 
     // 🖥️ Desktop menu
