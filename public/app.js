@@ -1836,7 +1836,14 @@ async function loadMantingal() {
   // Detekcia mobile zariadenia
   const isMobile = window.innerWidth <= 768;
   
-  Object.entries(data.players).forEach(([name, p]) => {
+  // Zoradiť hráčov podľa balance (od najvyššieho po najnižší)
+  const sortedPlayers = Object.entries(data.players).sort((a, b) => {
+    const balanceA = Number(a[1].balance || 0);
+    const balanceB = Number(b[1].balance || 0);
+    return balanceB - balanceA; // descending order
+  });
+  
+  sortedPlayers.forEach(([name, p]) => {
     const tr = document.createElement("tr");
     // Skús nájsť tím - najprv v playerTeams, potom v premium cache
     let teamAbbrev = getPlayerTeamAbbrev(name, false);
@@ -2667,7 +2674,14 @@ async function loadPremiumPlayers() {
       return;
     }
 
-    for (const [name, p] of entries) {
+    // Zoradiť hráčov podľa balance (od najvyššieho po najnižší)
+    const sortedEntries = entries.sort((a, b) => {
+      const balanceA = Number(a[1].balance || 0);
+      const balanceB = Number(b[1].balance || 0);
+      return balanceB - balanceA; // descending order
+    });
+
+    for (const [name, p] of sortedEntries) {
       const teamAbbrev = getPlayerTeamAbbrev(name, true); // Použi premium cache
       const formattedName = formatPlayerName(name);
       const playerDisplay = teamAbbrev ? `${formattedName} <span style="color:#999; font-size:0.9em;">(${teamAbbrev})</span>` : formattedName;
