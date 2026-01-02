@@ -1859,6 +1859,58 @@ document.addEventListener("click", (e) => {
   }
 });
 
+// Funkcia na konverziu gameId na formát "HOME-AWAY"
+function formatGameId(gameId) {
+  if (!gameId) return "-";
+  
+  // Nájdi zápas v allMatches podľa ID
+  const match = allMatches.find(m => {
+    const matchId = m.id || m.sport_event?.id;
+    return String(matchId) === String(gameId);
+  });
+  
+  if (!match) {
+    // Ak sa zápas nenašiel, skús ešte raz s rôznymi formátmi
+    console.warn(`Zápas s ID ${gameId} sa nenašiel v allMatches`);
+    return gameId;
+  }
+  
+  // Získaj názvy tímov - podporujeme rôzne formáty
+  let homeTeam = "";
+  let awayTeam = "";
+  
+  if (match.sport_event?.competitors && match.sport_event.competitors.length >= 2) {
+    homeTeam = match.sport_event.competitors[0]?.name || "";
+    awayTeam = match.sport_event.competitors[1]?.name || "";
+  } else if (match.home_team && match.away_team) {
+    homeTeam = match.home_team;
+    awayTeam = match.away_team;
+  }
+  
+  if (!homeTeam || !awayTeam) {
+    console.warn(`Nepodarilo sa získať tímy pre zápas ${gameId}`);
+    return gameId;
+  }
+  
+  // Konvertuj na abbreviatúry
+  const TEAM_NAME_TO_ABBREV = {
+    "Maple Leafs":"TOR","Penguins":"PIT","Red Wings":"DET","Stars":"DAL",
+    "Capitals":"WSH","Rangers":"NYR","Bruins":"BOS","Canadiens":"MTL",
+    "Senators":"OTT","Sabres":"BUF","Islanders":"NYI","Devils":"NJD",
+    "Hurricanes":"CAR","Panthers":"FLA","Wild":"MIN","Predators":"NSH",
+    "Blackhawks":"CHI","Flyers":"PHI","Avalanche":"COL","Oilers":"EDM",
+    "Flames":"CGY","Golden Knights":"VGK","Kings":"LAK","Kraken":"SEA",
+    "Sharks":"SJS","Ducks":"ANA","Lightning":"TBL","Jets":"WPG",
+    "Coyotes":"ARI","Blues":"STL","Blue Jackets":"CBJ",
+    "Mammoth":"UTA","Canucks":"VAN"
+  };
+  
+  const homeAbbr = TEAM_NAME_TO_ABBREV[homeTeam] || homeTeam.slice(0, 3).toUpperCase();
+  const awayAbbr = TEAM_NAME_TO_ABBREV[awayTeam] || awayTeam.slice(0, 3).toUpperCase();
+  
+  return `${homeAbbr}-${awayAbbr}`;
+}
+
 async function showMantingalDetail(player) {
   const res = await fetch(
     `/api/mantingal?player=${encodeURIComponent(player)}`
@@ -1878,10 +1930,11 @@ async function showMantingalDetail(player) {
   data.history
   .filter(h => h.result !== "skip")
   .forEach((h) => {
+    const gameDisplay = formatGameId(h.gameId);
     tbody.innerHTML += `
       <tr>
         <td>${h.date}</td>
-        <td>${h.gameId || "-"}</td>
+        <td>${gameDisplay}</td>
         <td>${h.goals === null ? "-" : h.goals}</td>
         <td>${h.result}</td>
         <td>${h.profitChange}</td>
@@ -2517,10 +2570,11 @@ async function showVipMantingalDetail(player) {
   data.history
     .filter(h => h.result !== "skip")
     .forEach((h) => {
+      const gameDisplay = formatGameId(h.gameId);
       tbody.innerHTML += `
         <tr>
           <td>${h.date}</td>
-          <td>${h.gameId || "-"}</td>
+          <td>${gameDisplay}</td>
           <td>${h.goals === null ? "-" : h.goals}</td>
           <td>${h.result}</td>
           <td>${h.profitChange}</td>
