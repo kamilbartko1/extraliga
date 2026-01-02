@@ -3892,9 +3892,12 @@ body {
   background: transparent;
   border-radius: 0;
   color: white;
-  max-width: 1400px;
+  max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .mantingale-table,
@@ -5268,8 +5271,8 @@ body {
   position: relative;
   width: 100%;
   max-width: 1200px;
-  margin: 32px auto;
-  padding: 28px 36px;
+  margin: 0 auto 24px;
+  padding: 32px 40px;
   background: linear-gradient(
     135deg,
     rgba(0, 40, 70, 0.95) 0%,
@@ -5341,28 +5344,15 @@ body {
    TEXTY
    =============================== */
 
-.abs-intro {
-  max-width: 900px;
-  margin: 0 auto 16px;
-  text-align: center;
+.abs-content-text {
+  max-width: 100%;
+  margin: 0 auto 20px;
+  text-align: left;
   font-family: "Roboto Condensed", sans-serif;
   font-size: 1rem;
   font-weight: 300;
   color: rgba(255, 255, 255, 0.85);
-  line-height: 1.7;
-  position: relative;
-  z-index: 1;
-}
-
-.abs-more-text {
-  max-width: 900px;
-  margin: 0 auto 14px;
-  text-align: center;
-  font-family: "Roboto Condensed", sans-serif;
-  font-size: 0.95rem;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.8);
-  line-height: 1.7;
+  line-height: 1.8;
   position: relative;
   z-index: 1;
 }
@@ -5372,18 +5362,16 @@ body {
    =============================== */
 
 .abs-warning {
-  margin-top: 16px;
-  padding: 12px 16px;
+  margin-top: 20px;
+  padding: 14px 18px;
   border-left: 3px solid #ffcc00;
-  background: rgba(255, 204, 0, 0.06);
-  font-size: 0.9rem;
+  background: rgba(255, 204, 0, 0.08);
+  font-size: 0.95rem;
   color: #ffd27d;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-  border-radius: 6px;
+  border-radius: 8px;
   position: relative;
   z-index: 1;
+  line-height: 1.6;
 }
 
 
@@ -6644,7 +6632,7 @@ header{
    ABS CTA - Modern 3D Design
    =============================== */
 .abs-cta{
-  margin: 32px auto;
+  margin: 0 auto 24px;
   max-width: 1200px;
   padding: 0 24px;
 }

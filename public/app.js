@@ -805,10 +805,10 @@ function renderTerms() {
 function renderAbsInfoBox() {
   return `
     <h2>${t("abs.title")}</h2>
-    <p class="abs-intro">${t("abs.intro")}</p>
-    <p class="abs-more-text">${t("abs.more1")}</p>
-    <p class="abs-more-text">${t("abs.more2")}</p>
-    <p class="abs-warning">${t("abs.warn")}</p>
+    <div class="abs-content-text">
+      ${t("abs.intro")} ${t("abs.more1")} ${t("abs.more2")}
+    </div>
+    <div class="abs-warning">${t("abs.warn")}</div>
   `;
 }
 
