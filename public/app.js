@@ -188,7 +188,7 @@ const I18N = {
     "abs.warn": "⚠️ ABS nie je záruka výhry. Ide o štatistickú stratégiu určenú pre disciplinovaných používateľov so zodpovedným prístupom k bankrollu.",
 
     "absCta.title": "Chceš si vybrať vlastných hráčov do ABS?",
-    "absCta.subtitle": "Zaregistruj sa a aktivuj členstvo len za <strong>4,99 € mesačne</strong> a získaj prístup k <strong>AI tipom na každý deň</strong>, detailným štatistikám formy tímov za posledných 10 zápasov a možnosti pridávať vlastných hráčov s Martingale sériou.",
+    "absCta.subtitle": "Zaregistruj sa a aktivuj členstvo len za <strong>4,99 € mesačne</strong> a získaj prístup k <strong>AI tipom na každý deň</strong>, detailným štatistikám formy tímov za posledných 10 zápasov a možnosti pridávať vlastných hráčov s ABS sériou.",
     "absCta.button": "Registrovať sa (VIP)",
 
     "disclaimer.title": "⚖️ PRÁVNY DISCLAIMER – NHLPRO.sk",
@@ -196,10 +196,10 @@ const I18N = {
     "common.noData": "⚠️ Žiadne dáta.",
     "common.failedToLoad": "Nepodarilo sa načítať dáta.",
 
-    "mantingale.title": "Mantingal stratégia",
+    "mantingale.title": "ABS stratégia",
     "mantingale.loadingData": "Načítavam dáta...",
-    "mantingale.loadFailed": "❌ Nepodarilo sa načítať dáta Mantingal.",
-    "mantingale.historyTitle": "História stávok Mantingalu",
+    "mantingale.loadFailed": "❌ Nepodarilo sa načítať dáta ABS.",
+    "mantingale.historyTitle": "História stávok ABS",
     "mantingale.historyLoadFailed": "❌ Nepodarilo sa načítať históriu stávok.",
     "mantingale.historyEmpty": "Zatiaľ žiadne dáta.",
 
@@ -382,7 +382,7 @@ const I18N = {
     "abs.warn": "⚠️ ABS is not a guarantee of profit. It is intended for disciplined users with responsible bankroll management.",
 
     "absCta.title": "Want to pick your own players for ABS?",
-    "absCta.subtitle": "Register and activate membership for just <strong>€4.99 per month</strong> and get access to <strong>daily AI tips</strong>, detailed team form statistics for the last 10 games, and the ability to add your own players with Martingale series.",
+    "absCta.subtitle": "Register and activate membership for just <strong>€4.99 per month</strong> and get access to <strong>daily AI tips</strong>, detailed team form statistics for the last 10 games, and the ability to add your own players with ABS series.",
     "absCta.button": "Create account (VIP)",
 
     "disclaimer.title": "⚖️ LEGAL DISCLAIMER – NHLPRO.sk",
@@ -390,10 +390,10 @@ const I18N = {
     "common.noData": "⚠️ No data.",
     "common.failedToLoad": "Failed to load data.",
 
-    "mantingale.title": "Mantingale strategy",
+    "mantingale.title": "ABS strategy",
     "mantingale.loadingData": "Loading data...",
-    "mantingale.loadFailed": "❌ Failed to load Mantingale data.",
-    "mantingale.historyTitle": "Mantingale bet history",
+    "mantingale.loadFailed": "❌ Failed to load ABS data.",
+    "mantingale.historyTitle": "ABS bet history",
     "mantingale.historyLoadFailed": "❌ Failed to load bet history.",
     "mantingale.historyEmpty": "No data yet.",
 
@@ -1816,7 +1816,7 @@ function closeRatingModal(e) {
   }
 }
 
-// === Mantingal sekcia ===
+// === ABS sekcia ===
 async function loadMantingal() {
   // Zabezpeč, že playerTeams je načítaný
   if (!playerTeams || Object.keys(playerTeams).length === 0) {
@@ -1999,7 +1999,7 @@ tbody.querySelectorAll("td.balance").forEach(td => {
   });
 }
 
-// === Mantingal sekcia (nová verzia) ===
+// === ABS sekcia (nová verzia) ===
 async function displayMantingal() {
   const container = document.getElementById("mantingal-container");
   if (!container) return;
@@ -2016,7 +2016,7 @@ async function displayMantingal() {
     }
 
     const { players, dateChecked, totalGames, scorers } = data;
-    // 🔹 Spočítaj sumár Mantingal dňa
+    // 🔹 Spočítaj sumár ABS dňa
     const totalBets = players.length; // každý hráč = 1 stávka
     const totalProfit = players.reduce((sum, p) => sum + p.profit, 0);
     const roi = ((totalProfit / (totalBets * 1)) * 100).toFixed(1); // ak je base stake 1€
@@ -2089,7 +2089,7 @@ async function displayMantingal() {
   }
 }
 
-// === História stávok Mantingalu (vložená pod Mantingal tabuľku) ===
+// === História stávok ABS (vložená pod ABS tabuľku) ===
 async function displayMantingalHistory() {
   const mainContainer = document.getElementById("mantingal-container");
   if (!mainContainer) return;
