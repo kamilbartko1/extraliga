@@ -2508,7 +2508,7 @@ function getTeamAbbrev(teamName) {
   
   const TEAM_NAME_TO_ABBREV = {
     // Krátke názvy (posledné slovo)
-    "Maple Leafs":"TOR","Penguins":"PIT","Red Wings":"DET","Stars":"DAL",
+    "Maple Leafs":"TOR","Penguins":"PIT","Red Wings":"DET","Wings":"DET","Stars":"DAL",
     "Capitals":"WSH","Rangers":"NYR","Bruins":"BOS","Canadiens":"MTL",
     "Senators":"OTT","Sabres":"BUF","Islanders":"NYI","Devils":"NJD",
     "Hurricanes":"CAR","Panthers":"FLA","Wild":"MIN","Predators":"NSH",
