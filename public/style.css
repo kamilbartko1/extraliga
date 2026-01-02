@@ -5264,18 +5264,22 @@ body {
 .abs-info-box {
   position: relative;
   width: 100%;
-
   margin: 24px 0 36px;
-  padding: 28px 34px;
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(20, 30, 44, 0.96) 0%,
-      rgba(12, 20, 32, 0.98) 100%
-    );
-
-  border-radius: 18px;
+  padding: 32px 36px;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 40, 70, 0.95) 0%,
+    rgba(0, 20, 40, 0.98) 50%,
+    rgba(0, 30, 60, 0.95) 100%
+  );
+  border-radius: 20px;
+  border: 1px solid rgba(0, 234, 255, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 234, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
 
   border: 1px solid rgba(255, 204, 0, 0.35);
 
@@ -5287,21 +5291,36 @@ body {
   overflow: hidden;
 }
 
-/* zlatý detail hore */
+/* 3D detail hore - animovany */
 .abs-info-box::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 24px;
-  right: 24px;
+  left: -100%;
+  width: 100%;
   height: 2px;
-
   background: linear-gradient(
     90deg,
     transparent,
-    #ffcc00,
+    rgba(0, 234, 255, 0.8),
+    rgba(255, 212, 0, 0.8),
+    rgba(0, 234, 255, 0.8),
     transparent
   );
+  transition: left 0.5s ease;
+}
+
+.abs-info-box:hover::before {
+  left: 100%;
+}
+
+.abs-info-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 4px 12px rgba(0, 234, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  border-color: rgba(0, 234, 255, 0.5);
 }
 
 /* ===============================
@@ -5311,16 +5330,16 @@ body {
 .abs-info-box h2 {
   margin: 0 0 18px;
   text-align: center;
-
   font-family: "Roboto Condensed", sans-serif;
-  font-size: 1.25rem;
-  font-weight: 500;
+  font-size: 1.3rem;
+  font-weight: 600;
   letter-spacing: 0.6px;
-
-  color: #ffcc00;
-
-  text-shadow:
-    0 1px 0 rgba(0, 0, 0, 0.6);
+  color: #ffd700;
+  text-shadow: 
+    0 0 10px rgba(255, 212, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.6);
+  position: relative;
+  z-index: 1;
 }
 
 /* ===============================
@@ -5330,29 +5349,27 @@ body {
 .abs-intro {
   max-width: 880px;
   margin: 0 auto 14px;
-
   text-align: center;
-
   font-family: "Roboto Condensed", sans-serif;
   font-size: 0.95rem;
   font-weight: 300;
-
-  color: #dcecff;
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.6;
+  position: relative;
+  z-index: 1;
 }
 
 .abs-more {
   display: none;
-
   max-width: 900px;
   margin: 18px auto 0;
-
   font-family: "Roboto Condensed", sans-serif;
   font-size: 0.9rem;
   font-weight: 300;
-
-  color: #c5d6e6;
+  color: rgba(255, 255, 255, 0.75);
   line-height: 1.65;
+  position: relative;
+  z-index: 1;
 }
 
 .abs-more p {
@@ -5381,22 +5398,27 @@ body {
 .abs-toggle {
   display: block;
   margin: 18px auto 0;
-
   background: none;
   border: none;
-
   font-family: "Roboto Condensed", sans-serif;
-  font-size: 0.9rem;
-  font-weight: 400;
-
+  font-size: 0.95rem;
+  font-weight: 500;
   color: #00eaff;
   cursor: pointer;
-
   letter-spacing: 0.3px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 0 8px rgba(0, 234, 255, 0.4);
 }
 
 .abs-toggle:hover {
-  text-decoration: underline;
+  background: rgba(0, 234, 255, 0.1);
+  color: #00ffff;
+  text-shadow: 0 0 12px rgba(0, 234, 255, 0.6);
+  transform: translateY(-1px);
 }
 
 /* ===============================
@@ -5404,17 +5426,45 @@ body {
    =============================== */
 
 @media (max-width: 768px) {
+  .abs-cta {
+    margin: 16px auto 20px;
+    padding: 0 8px;
+  }
+
+  .abs-cta-inner {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    padding: 20px 18px;
+    gap: 16px;
+  }
+
+  .abs-cta-text h3 {
+    font-size: 1rem;
+  }
+
+  .abs-cta-text p {
+    font-size: 0.85rem;
+  }
+
+  .abs-cta-btn {
+    width: 100%;
+    padding: 12px 16px;
+  }
+
   .abs-info-box {
-    padding: 22px 18px;
+    padding: 24px 18px;
     border-radius: 16px;
+    margin: 20px 0 28px;
   }
 
   .abs-info-box h2 {
     font-size: 1.1rem;
+    margin-bottom: 14px;
   }
 
   .abs-intro {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .abs-more {
@@ -6624,8 +6674,11 @@ header{
 /* ===============================
    ABS CTA (register)
    =============================== */
+/* ===============================
+   ABS CTA - Modern 3D Design
+   =============================== */
 .abs-cta{
-  margin: 10px auto 14px;
+  margin: 20px auto 24px;
   max-width: 980px;
   padding: 0 10px;
 }
@@ -6634,43 +6687,115 @@ header{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(0,255,255,0.20);
-  background: linear-gradient(135deg, rgba(0,255,255,0.08), rgba(255,212,0,0.05));
-  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+  gap: 20px;
+  padding: 24px 28px;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 234, 255, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 40, 70, 0.95) 0%,
+    rgba(0, 20, 40, 0.98) 50%,
+    rgba(0, 30, 60, 0.95) 100%
+  );
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 234, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.abs-cta-inner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 234, 255, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.abs-cta-inner:hover::before {
+  left: 100%;
+}
+
+.abs-cta-inner:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 4px 12px rgba(0, 234, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  border-color: rgba(0, 234, 255, 0.5);
+}
+
+.abs-cta-text {
+  flex: 1;
+  z-index: 1;
 }
 
 .abs-cta-text h3{
-  margin: 0 0 6px;
-  font-size: 15px;
-  color: #eaf9ff;
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #00eaff;
+  text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
+  letter-spacing: 0.3px;
 }
 
 .abs-cta-text p{
   margin: 0;
-  font-size: 13px;
-  color: rgba(255,255,255,0.70);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
 }
 
 .abs-cta-btn{
   flex: 0 0 auto;
-  border: 1px solid rgba(255,212,0,0.55);
-  background: rgba(255,212,0,0.14);
-  color: #ffe58a;
-  font-weight: 800;
-  padding: 10px 12px;
+  border: 2px solid rgba(255, 212, 0, 0.6);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 212, 0, 0.2) 0%,
+    rgba(255, 200, 0, 0.15) 100%
+  );
+  color: #ffd700;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 12px 20px;
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 
+    0 4px 12px rgba(255, 212, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 1;
 }
 
 .abs-cta-btn:hover{
-  background: rgba(255,212,0,0.20);
-  border-color: rgba(255,212,0,0.75);
-  transform: translateY(-1px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 212, 0, 0.3) 0%,
+    rgba(255, 200, 0, 0.25) 100%
+  );
+  border-color: rgba(255, 212, 0, 0.9);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 6px 20px rgba(255, 212, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  color: #fff9c4;
+}
+
+.abs-cta-btn:active{
+  transform: translateY(0) scale(0.98);
 }
 
 @media (max-width: 768px){
