@@ -5547,6 +5547,25 @@ body {
     font-size: 0.85rem;
     padding: 8px 6px;
   }
+
+  /* História hráča - horizontálne posúvanie */
+  .mantingale-history {
+    min-width: 600px;
+    table-layout: auto;
+  }
+
+  .mantingale-history th,
+  .mantingale-history td {
+    white-space: nowrap;
+    font-size: 0.85rem;
+    padding: 8px 6px;
+  }
+
+  .mantingale-history th:first-child,
+  .mantingale-history td:first-child {
+    text-align: left;
+    padding-left: 12px;
+  }
 }
 
 /* Desktop: skryť mobile Balance stĺpec, zobraziť desktop Balance */
