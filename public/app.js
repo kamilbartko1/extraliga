@@ -1696,7 +1696,12 @@ async function loadPlayerTeams() {
 
     playerTeams = players.reduce((acc, p) => {
       const last = String(p.lastName || "").trim().toLowerCase();
-      if (last) acc[last] = p.team || "";
+      if (last && p.team) {
+        // Extrahuj len posledné slovo z názvu tímu (napr. "Anaheim Ducks" -> "Ducks")
+        const teamParts = String(p.team).trim().split(/\s+/);
+        const teamShort = teamParts.length > 0 ? teamParts[teamParts.length - 1] : p.team;
+        acc[last] = teamShort;
+      }
       return acc;
     }, {});
 
@@ -1840,7 +1845,16 @@ async function loadMantingal() {
     
     // Debug log pre prvých 3 hráčov
     if (Object.keys(data.players).indexOf(name) < 3) {
-      console.log(`🔍 Hráč: "${name}" -> Tím: "${teamAbbrev || 'NENAŠIEL'}"`);
+      const lastName = name.trim().split(/\s+/).pop().toLowerCase().replace(/[.,]/g, '');
+      console.log(`🔍 Hráč: "${name}" -> Priezvisko: "${lastName}" -> Tím: "${teamAbbrev || 'NENAŠIEL'}"`);
+      console.log(`   playerTeams["${lastName}"] = "${playerTeams[lastName] || 'NENÁJDENÉ'}"`);
+      
+      // Skús nájsť podobné kľúče
+      const similarKeys = Object.keys(playerTeams).filter(k => 
+        k.includes(lastName) || lastName.includes(k)
+      ).slice(0, 5);
+      console.log(`   Podobné kľúče v playerTeams:`, similarKeys);
+      
       console.log(`   playerTeams keys: ${Object.keys(playerTeams).length}, premium cache: ${PREMIUM_PLAYERS_CACHE?.length || 0}`);
     }
     
@@ -2488,11 +2502,12 @@ function formatPlayerName(fullName) {
   return `${lastName} ${firstName.charAt(0)}.`;
 }
 
-// Funkcia na získanie abbreviatúry tímu hráča
-function getPlayerTeamAbbrev(playerName, usePremiumCache = false) {
-  if (!playerName) return "";
+// Funkcia na konverziu názvu tímu na abbreviatúru
+function getTeamAbbrev(teamName) {
+  if (!teamName) return "";
   
   const TEAM_NAME_TO_ABBREV = {
+    // Krátke názvy (posledné slovo)
     "Maple Leafs":"TOR","Penguins":"PIT","Red Wings":"DET","Stars":"DAL",
     "Capitals":"WSH","Rangers":"NYR","Bruins":"BOS","Canadiens":"MTL",
     "Senators":"OTT","Sabres":"BUF","Islanders":"NYI","Devils":"NJD",
@@ -2501,8 +2516,39 @@ function getPlayerTeamAbbrev(playerName, usePremiumCache = false) {
     "Flames":"CGY","Golden Knights":"VGK","Kings":"LAK","Kraken":"SEA",
     "Sharks":"SJS","Ducks":"ANA","Lightning":"TBL","Jets":"WPG",
     "Coyotes":"ARI","Blues":"STL","Blue Jackets":"CBJ",
-    "Mammoth":"UTA","Canucks":"VAN"
+    "Mammoth":"UTA","Canucks":"VAN",
+    // Celé názvy (pre istotu)
+    "Toronto Maple Leafs":"TOR","Pittsburgh Penguins":"PIT","Detroit Red Wings":"DET","Dallas Stars":"DAL",
+    "Washington Capitals":"WSH","New York Rangers":"NYR","Boston Bruins":"BOS","Montreal Canadiens":"MTL",
+    "Ottawa Senators":"OTT","Buffalo Sabres":"BUF","New York Islanders":"NYI","New Jersey Devils":"NJD",
+    "Carolina Hurricanes":"CAR","Florida Panthers":"FLA","Minnesota Wild":"MIN","Nashville Predators":"NSH",
+    "Chicago Blackhawks":"CHI","Philadelphia Flyers":"PHI","Colorado Avalanche":"COL","Edmonton Oilers":"EDM",
+    "Calgary Flames":"CGY","Vegas Golden Knights":"VGK","Los Angeles Kings":"LAK","Seattle Kraken":"SEA",
+    "San Jose Sharks":"SJS","Anaheim Ducks":"ANA","Tampa Bay Lightning":"TBL","Winnipeg Jets":"WPG",
+    "Arizona Coyotes":"ARI","St. Louis Blues":"STL","Columbus Blue Jackets":"CBJ",
+    "Utah Mammoth":"UTA","Vancouver Canucks":"VAN"
   };
+  
+  // Skús presné zhodu
+  if (TEAM_NAME_TO_ABBREV[teamName]) {
+    return TEAM_NAME_TO_ABBREV[teamName];
+  }
+  
+  // Skús extrahovať posledné slovo
+  const parts = String(teamName).trim().split(/\s+/);
+  if (parts.length > 0) {
+    const lastWord = parts[parts.length - 1];
+    if (TEAM_NAME_TO_ABBREV[lastWord]) {
+      return TEAM_NAME_TO_ABBREV[lastWord];
+    }
+  }
+  
+  return "";
+}
+
+// Funkcia na získanie abbreviatúry tímu hráča
+function getPlayerTeamAbbrev(playerName, usePremiumCache = false) {
+  if (!playerName) return "";
   
   // Pre premium sekciu použij cache
   if (usePremiumCache && PREMIUM_PLAYERS_CACHE && PREMIUM_PLAYERS_CACHE.length > 0) {
@@ -2522,7 +2568,7 @@ function getPlayerTeamAbbrev(playerName, usePremiumCache = false) {
     }
     
     if (player && player.team) {
-      return TEAM_NAME_TO_ABBREV[player.team] || "";
+      return getTeamAbbrev(player.team);
     }
   }
   
@@ -2544,7 +2590,7 @@ function getPlayerTeamAbbrev(playerName, usePremiumCache = false) {
       }
       
       if (teamFullName) {
-        return TEAM_NAME_TO_ABBREV[teamFullName] || "";
+        return getTeamAbbrev(teamFullName);
       }
     }
   }
@@ -2558,7 +2604,7 @@ function getPlayerTeamAbbrev(playerName, usePremiumCache = false) {
     });
     
     if (player && player.team) {
-      return TEAM_NAME_TO_ABBREV[player.team] || "";
+      return getTeamAbbrev(player.team);
     }
   }
   
