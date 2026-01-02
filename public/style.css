@@ -85,7 +85,7 @@ header h1 {
   display: none; /* skryté na desktop */
   position: fixed;
   top: 1rem;
-  right: 1rem;
+  left: 1rem; /* Zmenené z right na left */
   z-index: 1002;
   background: rgba(0, 183, 255, 0.15);
   border: 2px solid rgba(0, 234, 255, 0.4);
@@ -6622,8 +6622,8 @@ header{
     gap: 8px;
     position: absolute;
     top: 10px;
-    left: 10px;
-    right: auto;
+    left: auto;
+    right: 10px; /* Zmenené z left na right */
     z-index: 3; /* above centered title */
   }
   .header-right .ai-watermark{
