@@ -93,6 +93,7 @@ const I18N = {
     "mantingale.stake": "Stávka /EUR/",
     "mantingale.streak": "Streak",
     "mantingale.balance": "Balance (€)",
+    "mantingale.roi": "ROI (%)",
     "mantingale.detail": "Detail",
     "mantingale.date": "Dátum",
     "mantingale.game": "Zápas",
@@ -287,6 +288,7 @@ const I18N = {
     "mantingale.stake": "Stake (EUR)",
     "mantingale.streak": "Streak",
     "mantingale.balance": "Balance (€)",
+    "mantingale.roi": "ROI (%)",
     "mantingale.detail": "Detail",
     "mantingale.date": "Date",
     "mantingale.game": "Game",
@@ -1878,14 +1880,15 @@ async function loadMantingal() {
     
     const playerDisplay = teamAbbrev ? `${name} <span style="color:#999; font-size:0.9em;">(${teamAbbrev})</span>` : name;
 
-    // V mobile: Hráč | Balance | Stávka | Streak | Detail
-    // V desktop: Hráč | Stávka | Streak | Balance | Detail
+    // V mobile: Hráč | Balance | Stávka | Streak | ROI | Detail
+    // V desktop: Hráč | Stávka | Streak | Balance | ROI | Detail
     if (isMobile) {
       tr.innerHTML = `
         <td class="player-cell">${playerDisplay}</td>
         <td class="balance balance-mobile-first">${p.balance.toFixed(2)}</td>
         <td>${p.stake}</td>
         <td>${p.streak}</td>
+        <td class="roi roi-mobile" data-player="${name}">-</td>
         <td><button class="mtg-detail-btn" data-player="${name}">Detail</button></td>
       `;
     } else {
@@ -1894,11 +1897,49 @@ async function loadMantingal() {
         <td>${p.stake}</td>
         <td>${p.streak}</td>
         <td class="balance">${p.balance.toFixed(2)}</td>
+        <td class="roi roi-desktop" data-player="${name}">-</td>
         <td><button class="mtg-detail-btn" data-player="${name}">Detail</button></td>
       `;
     }
 
     tbody.appendChild(tr);
+  });
+
+  // Asynchrónne načítanie ROI pre všetkých hráčov
+  sortedPlayers.forEach(async ([name, p]) => {
+    try {
+      const histRes = await fetch(`/api/mantingal?player=${encodeURIComponent(name)}`);
+      const histData = await histRes.json();
+      if (!histData.ok || !histData.history) return;
+
+      // Vypočítaj celkovú investovanú sumu (súčet všetkých stávok)
+      let totalStaked = 0;
+      histData.history.forEach(h => {
+        if (h.result !== "skip" && h.stake) {
+          totalStaked += Number(h.stake);
+        }
+      });
+
+      // Vypočítaj ROI: (Balance / Total Staked) * 100
+      const balance = Number(p.balance || 0);
+      let roi = 0;
+      if (totalStaked > 0) {
+        roi = (balance / totalStaked) * 100;
+      }
+
+      // Aktualizuj ROI v tabuľke
+      const roiCells = document.querySelectorAll(`.roi[data-player="${name.replace(/"/g, '\\"')}"]`);
+      roiCells.forEach(cell => {
+        cell.textContent = roi.toFixed(1);
+        if (roi > 0) {
+          cell.classList.add("roi-positive");
+        } else if (roi < 0) {
+          cell.classList.add("roi-negative");
+        }
+      });
+    } catch (err) {
+      console.error(`Error calculating ROI for ${name}:`, err);
+    }
   });
 
   // 🎨 Zafarbenie balance (plus / mínus)

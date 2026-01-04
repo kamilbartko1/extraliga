@@ -5621,8 +5621,18 @@ body {
     display: none;
   }
 
+  /* V mobile: skryť desktop ROI stĺpec */
+  .mantingale-table .th-roi-desktop {
+    display: none;
+  }
+
   /* V mobile: zobraziť Balance hneď po hráčovi */
   .mantingale-table .th-balance-mobile {
+    display: table-cell;
+  }
+
+  /* V mobile: zobraziť ROI stĺpec */
+  .mantingale-table .th-roi-mobile {
     display: table-cell;
   }
 
@@ -5675,6 +5685,28 @@ body {
   .mantingale-table .th-balance-desktop {
     display: table-cell;
   }
+
+  .mantingale-table .th-roi-mobile {
+    display: none;
+  }
+
+  .mantingale-table .th-roi-desktop {
+    display: table-cell;
+  }
+}
+
+/* ROI stĺpec styling */
+.mantingale-table .roi {
+  font-weight: 600;
+  text-align: center;
+}
+
+.mantingale-table .roi-positive {
+  color: #3cff92;
+}
+
+.mantingale-table .roi-negative {
+  color: #ff5757;
 }
 
 /* ===== FOOTER ===== */
