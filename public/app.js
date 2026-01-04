@@ -806,7 +806,15 @@ function renderAbsInfoBox() {
   return `
     <h2>${t("abs.title")}</h2>
     <div class="abs-content-text">
-      ${t("abs.intro")} ${t("abs.more1")} ${t("abs.more2")}
+      <div class="abs-content-box">
+        <p>${t("abs.intro")}</p>
+      </div>
+      <div class="abs-content-box">
+        <p>${t("abs.more1")}</p>
+      </div>
+      <div class="abs-content-box">
+        <p>${t("abs.more2")}</p>
+      </div>
     </div>
     <div class="abs-warning">${t("abs.warn")}</div>
   `;
