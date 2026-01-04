@@ -1913,12 +1913,32 @@ async function loadMantingal() {
       if (!histData.ok || !histData.history) return;
 
       // Vypočítaj celkovú investovanú sumu (súčet všetkých stávok)
+      // Pri "miss" (prehre): stake = -profitChange (pretože profitChange je záporný)
+      // Pri "hit" (výhre): nemáme priamo stake, ale vieme že profitChange = stake * (odds - 1)
+      // Pre jednoduchosť použijeme len miss stávky pre výpočet totalStaked
+      // a aproximáciu: totalStaked ≈ súčet abs(profitChange) z miss + počet hit stávok * priemerná stake
       let totalStaked = 0;
+      let missCount = 0;
+      let hitCount = 0;
+      
       histData.history.forEach(h => {
-        if (h.result !== "skip" && h.stake) {
-          totalStaked += Number(h.stake);
+        if (h.result === "miss" && h.profitChange) {
+          // Pri prehre: stake = -profitChange (profitChange je záporný)
+          totalStaked += Math.abs(Number(h.profitChange));
+          missCount++;
+        } else if (h.result === "hit" || h.result === "win") {
+          hitCount++;
         }
       });
+
+      // Ak máme aj hit stávky, aproximujeme ich stake ako priemer miss stávok
+      // Alebo použijeme base stake 1€ (ak nemáme žiadne miss)
+      if (missCount === 0 && hitCount > 0) {
+        totalStaked = hitCount * 1; // base stake
+      } else if (missCount > 0 && hitCount > 0) {
+        const avgMissStake = totalStaked / missCount;
+        totalStaked += hitCount * avgMissStake;
+      }
 
       // Vypočítaj ROI: (Balance / Total Staked) * 100
       const balance = Number(p.balance || 0);
@@ -1930,7 +1950,7 @@ async function loadMantingal() {
       // Aktualizuj ROI v tabuľke
       const roiCells = document.querySelectorAll(`.roi[data-player="${name.replace(/"/g, '\\"')}"]`);
       roiCells.forEach(cell => {
-        cell.textContent = roi.toFixed(1);
+        cell.textContent = roi.toFixed(1) + "%";
         if (roi > 0) {
           cell.classList.add("roi-positive");
         } else if (roi < 0) {
