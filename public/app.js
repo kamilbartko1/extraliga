@@ -3634,10 +3634,73 @@ async function renderVipTips() {
 // ===============================
 // 👑 VIP TIP ANALYSIS MODAL
 // ===============================
-function showVipTipAnalysis(idx, playerName, rating, goalsPerGame, shotsPerGame, ppGoalsPerGame, toiMin, confidence, teamCode, oppCode, totalGoals, totalShots, totalAssists, totalPoints, gamesPlayed) {
+async function showVipTipAnalysis(playerName, teamCode, oppCode) {
   const modal = document.getElementById("vip-tip-analysis-modal");
   const overlay = document.getElementById("vip-tip-analysis-overlay");
   if (!modal || !overlay) return;
+
+  // Show loading
+  modal.innerHTML = `<div class="vip-analysis-modal-content"><p style="text-align:center;color:#00eaff;">${t("common.loading")}</p></div>`;
+  modal.classList.remove("hidden");
+  overlay.classList.remove("hidden");
+
+  // Fetch fresh statistics
+  let statsData = {};
+  try {
+    const s = await fetch("/api/statistics", { cache: "no-store" });
+    statsData = s.ok ? await s.json() : {};
+  } catch (err) {
+    console.warn("Failed to fetch stats:", err);
+  }
+
+  // Build stats map with all players (not just top lists)
+  const allPlayerArrays = [
+    ...(statsData?.topGoals || []),
+    ...(statsData?.topShots || []),
+    ...(statsData?.topPowerPlayGoals || []),
+    ...(statsData?.topTOI || []),
+    ...(statsData?.topPoints || []),
+    ...(statsData?.topAssists || []),
+  ];
+
+  const nameKey = (n) => norm(String(n || "").replace(/\./g, ""));
+  const statsByName = new Map();
+  for (const p of allPlayerArrays) {
+    const k = nameKey(p?.name);
+    if (!k) continue;
+    const prev = statsByName.get(k) || {};
+    statsByName.set(k, {
+      name: p?.name || prev.name,
+      team: p?.team || prev.team,
+      gamesPlayed: Number(p?.gamesPlayed ?? prev.gamesPlayed ?? 0),
+      goals: Number(p?.goals ?? prev.goals ?? 0),
+      assists: Number(p?.assists ?? prev.assists ?? 0),
+      points: Number(p?.points ?? prev.points ?? 0),
+      shots: Number(p?.shots ?? prev.shots ?? 0),
+      powerPlayGoals: Number(p?.powerPlayGoals ?? prev.powerPlayGoals ?? 0),
+      toi: Number(p?.toi ?? prev.toi ?? 0),
+    });
+  }
+
+  // Find player stats
+  const k = nameKey(playerName);
+  const st = statsByName.get(k);
+  
+  const totalGoals = st?.goals || 0;
+  const totalShots = st?.shots || 0;
+  const totalAssists = st?.assists || 0;
+  const totalPoints = st?.points || (totalGoals + totalAssists);
+  const gamesPlayed = st?.gamesPlayed || 0;
+  const goalsPerGame = gamesPlayed > 0 ? (totalGoals / gamesPlayed) : 0;
+  const shotsPerGame = gamesPlayed > 0 ? (totalShots / gamesPlayed) : 0;
+  const ppGoalsPerGame = gamesPlayed > 0 ? ((st?.powerPlayGoals || 0) / gamesPlayed) : 0;
+  const toiMin = st?.toi || 0;
+  
+  // Get player rating (approximate - using a default)
+  const rating = 2000; // Default, could be improved later
+  
+  // Calculate confidence based on stats
+  const confidence = Math.min(95, Math.round(60 + (goalsPerGame * 10) + (shotsPerGame * 2)));
 
   const oppStanding = findStandingByCode(oppCode);
   const oppDefenseRank = oppStanding ? (LAST_STANDINGS || []).filter(s => (s.l10GoalsAgainst || 0) > (oppStanding.l10GoalsAgainst || 0)).length + 1 : null;
@@ -3713,9 +3776,6 @@ function showVipTipAnalysis(idx, playerName, rating, goalsPerGame, shotsPerGame,
       </div>
     </div>
   `;
-
-  modal.classList.remove("hidden");
-  overlay.classList.remove("hidden");
 }
 
 function closeVipTipAnalysis() {
