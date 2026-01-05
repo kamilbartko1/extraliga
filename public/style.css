@@ -7268,12 +7268,12 @@ header{
 @keyframes modalUp3D {
   from {
     opacity: 0;
-    transform: translateY(40px) scale(0.9) rotateX(-5deg);
-    filter: blur(10px);
+    transform: translateX(-50%) translateY(-20px) scale(0.95);
+    filter: blur(8px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1) rotateX(0deg);
+    transform: translateX(-50%) translateY(0) scale(1);
     filter: blur(0);
   }
 }
