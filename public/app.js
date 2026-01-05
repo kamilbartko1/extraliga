@@ -4554,4 +4554,75 @@ document.getElementById("premium-add-player-btn")
     console.log("🔁 Aktualizujem dáta po načítaní...");
     fetchMatches();
   }, 3000);
+
+  // ===============================
+  // 🎬 SCROLL REVEAL ANIMÁCIE
+  // ===============================
+  initScrollAnimations();
 });
+
+// Funkcia pre inicializáciu scroll reveal animácií
+function initScrollAnimations() {
+  // Selektory pre elementy, ktoré sa majú animovať
+  const animatedSelectors = [
+    '.section',
+    '.matches-box',
+    '.standings-box',
+    '.home-panel',
+    '.premium-section-card',
+    '.analytics-box',
+    '.stat-box',
+    '.abs-info-box',
+    '.abs-profit-box',
+    'table',
+    '.section-title',
+    'h2'
+  ];
+
+  // Pridaj triedu pre animáciu na všetky elementy
+  animatedSelectors.forEach(selector => {
+    document.querySelectorAll(selector).forEach((el, index) => {
+      // Preskoč ak už má triedu
+      if (el.classList.contains('animate-on-scroll')) return;
+      
+      el.classList.add('animate-on-scroll');
+      // Staggered efekt - každý 3. element má väčšie oneskorenie
+      if (index % 3 === 1) el.classList.add('stagger-1');
+      if (index % 3 === 2) el.classList.add('stagger-2');
+    });
+  });
+
+  // Intersection Observer pre scroll reveal
+  const observerOptions = {
+    root: null, // viewport
+    rootMargin: '0px 0px -100px 0px', // spustí animáciu 100px pred vstupom do viewportu
+    threshold: 0.1 // spustí keď je 10% viditeľné
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animated');
+        // Odstráň observer po animácii (performance)
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  // Sleduj všetky elementy s triedou animate-on-scroll
+  document.querySelectorAll('.animate-on-scroll').forEach(el => {
+    observer.observe(el);
+  });
+
+  // Pre elementy, ktoré sú už viditeľné pri načítaní (napr. domovská stránka)
+  // Spusti animáciu okamžite
+  setTimeout(() => {
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+      if (isVisible && !el.classList.contains('animated')) {
+        el.classList.add('animated');
+      }
+    });
+  }, 100);
+}
