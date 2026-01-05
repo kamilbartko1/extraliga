@@ -198,8 +198,11 @@ const I18N = {
     "vipTips.analysis": "Analýza",
     "vipTips.analysisTitle": "Detailná analýza hráča",
     "vipTips.analysisWhy": "Prečo by mal dať gól",
-    "vipTips.analysisGoalsL10": "Góly v posledných 10 zápasoch",
-    "vipTips.analysisShots": "Celkom striel",
+    "vipTips.analysisGoals": "Góly (sezóna)",
+    "vipTips.analysisAssists": "Asistencie (sezóna)",
+    "vipTips.analysisPoints": "Body (sezóna)",
+    "vipTips.analysisShots": "Strely (sezóna)",
+    "vipTips.analysisGames": "Zápasy",
     "vipTips.analysisClose": "Zavrieť",
 
     "modal.team.title": "🧠 Ako funguje NHLPRO Rating tímov?",
@@ -416,8 +419,11 @@ const I18N = {
     "vipTips.analysis": "Analysis",
     "vipTips.analysisTitle": "Player detailed analysis",
     "vipTips.analysisWhy": "Why he should score",
-    "vipTips.analysisGoalsL10": "Goals in last 10 games",
-    "vipTips.analysisShots": "Total shots",
+    "vipTips.analysisGoals": "Goals (season)",
+    "vipTips.analysisAssists": "Assists (season)",
+    "vipTips.analysisPoints": "Points (season)",
+    "vipTips.analysisShots": "Shots (season)",
+    "vipTips.analysisGames": "Games",
     "vipTips.analysisClose": "Close",
 
     "modal.team.title": "🧠 How does NHLPRO team rating work?",
@@ -3541,8 +3547,11 @@ async function renderVipTips() {
     const playerKey = `vip-tip-${idx}`;
     const k = nameKey(pick.player);
     const st = statsByName.get(k);
+    const totalGoals = st?.goals || 0;
     const totalShots = st?.shots || 0;
-    const goalsL10 = Math.round((pick.goalsPerGame || 0) * 10); // aproximácia
+    const totalAssists = st?.assists || 0;
+    const totalPoints = (totalGoals || 0) + (totalAssists || 0);
+    const gamesPlayed = st?.gamesPlayed || pick.gp || 0;
     const oppCode = pick.teamCode === game.homeCode ? game.awayCode : game.homeCode;
     
     // Escape single quotes in player name for onclick
@@ -3561,7 +3570,7 @@ async function renderVipTips() {
         <div class="vip-tip-right">
           <div class="vip-tip-badge">${pick.confidence}%</div>
           <div class="vip-tip-label">${t("vipTips.confidence")}</div>
-          <button class="vip-tip-analysis-btn" onclick="showVipTipAnalysis(${idx}, '${playerNameEscaped}', ${pick.rating}, ${pick.goalsPerGame || 0}, ${pick.shotsPerGame || 0}, ${pick.ppGoalsPerGame || 0}, ${pick.toiMin || 0}, ${pick.confidence}, '${pick.teamCode}', '${oppCode}', ${goalsL10}, ${totalShots})">
+          <button class="vip-tip-analysis-btn" onclick="showVipTipAnalysis(${idx}, '${playerNameEscaped}', ${pick.rating}, ${pick.goalsPerGame || 0}, ${pick.shotsPerGame || 0}, ${pick.ppGoalsPerGame || 0}, ${pick.toiMin || 0}, ${pick.confidence}, '${pick.teamCode}', '${oppCode}', ${totalGoals}, ${totalShots}, ${totalAssists}, ${totalPoints}, ${gamesPlayed})">
             ${t("vipTips.analysis")}
           </button>
         </div>
@@ -3622,7 +3631,7 @@ async function renderVipTips() {
 // ===============================
 // 👑 VIP TIP ANALYSIS MODAL
 // ===============================
-function showVipTipAnalysis(idx, playerName, rating, goalsPerGame, shotsPerGame, ppGoalsPerGame, toiMin, confidence, teamCode, oppCode, goalsL10, totalShots) {
+function showVipTipAnalysis(idx, playerName, rating, goalsPerGame, shotsPerGame, ppGoalsPerGame, toiMin, confidence, teamCode, oppCode, totalGoals, totalShots, totalAssists, totalPoints, gamesPlayed) {
   const modal = document.getElementById("vip-tip-analysis-modal");
   const overlay = document.getElementById("vip-tip-analysis-overlay");
   if (!modal || !overlay) return;
@@ -3645,8 +3654,8 @@ function showVipTipAnalysis(idx, playerName, rating, goalsPerGame, shotsPerGame,
   }
 
   const analysisText = CURRENT_LANG === "en"
-    ? `${playerName} shows strong scoring potential based on multiple factors. With ${goalsL10} goals in the last 10 games and ${totalShots} total shots this season, he demonstrates consistent offensive production. His ${goalsPerGame.toFixed(2)} goals per game and ${shotsPerGame.toFixed(2)} shots per game indicate he's an active shooter. ${ppGoalsPerGame > 0 ? `His power play contribution (${ppGoalsPerGame.toFixed(2)} PPG/game) adds another dimension to his scoring. ` : ""}${toiMin > 18 ? `With ${toiMin} minutes of average ice time, he gets significant opportunities. ` : ""}${oppDefenseRank && oppDefenseRank <= 10 ? `Facing a weaker defensive team (${oppDefenseRank}. in goals allowed in L10) increases his chances. ` : ""}The AI confidence of ${confidence}% reflects these strong indicators.`
-    : `${playerName} vykazuje silný strelecký potenciál na základe viacerých faktorov. S ${goalsL10} gólmi v posledných 10 zápasoch a ${totalShots} celkovými strelami v tejto sezóne demonštruje konzistentnú ofenzívnu produkciu. Jeho ${goalsPerGame.toFixed(2)} gólov na zápas a ${shotsPerGame.toFixed(2)} striel na zápas naznačujú, že je aktívnym strelcom. ${ppGoalsPerGame > 0 ? `Jeho príspevok v presilových hrách (${ppGoalsPerGame.toFixed(2)} PPG/zápas) pridáva ďalšiu dimenziu jeho streleckým schopnostiam. ` : ""}${toiMin > 18 ? `S ${toiMin} minútami priemerného času na ľade dostáva významné príležitosti. ` : ""}${oppDefenseRank && oppDefenseRank <= 10 ? `Proti slabšej obrane (${oppDefenseRank}. miesto v inkasovaných góloch v L10) sa zvyšujú jeho šance. ` : ""}AI confidence ${confidence}% odráža tieto silné indikátory.`;
+    ? `${playerName} shows strong scoring potential based on multiple factors. With ${totalGoals} goals, ${totalAssists} assists, and ${totalPoints} points in ${gamesPlayed} games this season, he demonstrates consistent offensive production. His ${goalsPerGame.toFixed(2)} goals per game and ${shotsPerGame.toFixed(2)} shots per game indicate he's an active shooter. ${totalShots > 0 ? `With ${totalShots} total shots this season, he consistently creates scoring opportunities. ` : ""}${ppGoalsPerGame > 0 ? `His power play contribution (${ppGoalsPerGame.toFixed(2)} PPG/game) adds another dimension to his scoring. ` : ""}${toiMin > 18 ? `With ${toiMin} minutes of average ice time, he gets significant opportunities. ` : ""}${oppDefenseRank && oppDefenseRank <= 10 ? `Facing a weaker defensive team (${oppDefenseRank}. in goals allowed in L10) increases his chances. ` : ""}The AI confidence of ${confidence}% reflects these strong indicators.`
+    : `${playerName} vykazuje silný strelecký potenciál na základe viacerých faktorov. S ${totalGoals} gólmi, ${totalAssists} asistenciami a ${totalPoints} bodmi v ${gamesPlayed} zápasoch tejto sezóny demonštruje konzistentnú ofenzívnu produkciu. Jeho ${goalsPerGame.toFixed(2)} gólov na zápas a ${shotsPerGame.toFixed(2)} striel na zápas naznačujú, že je aktívnym strelcom. ${totalShots > 0 ? `S ${totalShots} celkovými strelami tejto sezóny konzistentne vytvára strelecké príležitosti. ` : ""}${ppGoalsPerGame > 0 ? `Jeho príspevok v presilových hrách (${ppGoalsPerGame.toFixed(2)} PPG/zápas) pridáva ďalšiu dimenziu jeho streleckým schopnostiam. ` : ""}${toiMin > 18 ? `S ${toiMin} minútami priemerného času na ľade dostáva významné príležitosti. ` : ""}${oppDefenseRank && oppDefenseRank <= 10 ? `Proti slabšej obrane (${oppDefenseRank}. miesto v inkasovaných góloch v L10) sa zvyšujú jeho šance. ` : ""}AI confidence ${confidence}% odráža tieto silné indikátory.`;
 
   modal.innerHTML = `
     <div class="vip-analysis-modal-content">
@@ -3662,12 +3671,24 @@ function showVipTipAnalysis(idx, playerName, rating, goalsPerGame, shotsPerGame,
         
         <div class="vip-analysis-stats">
           <div class="vip-analysis-stat-item">
-            <div class="vip-analysis-stat-label">${t("vipTips.analysisGoalsL10")}</div>
-            <div class="vip-analysis-stat-value">${goalsL10}</div>
+            <div class="vip-analysis-stat-label">${t("vipTips.analysisGoals")}</div>
+            <div class="vip-analysis-stat-value">${totalGoals}</div>
+          </div>
+          <div class="vip-analysis-stat-item">
+            <div class="vip-analysis-stat-label">${t("vipTips.analysisAssists")}</div>
+            <div class="vip-analysis-stat-value">${totalAssists}</div>
+          </div>
+          <div class="vip-analysis-stat-item">
+            <div class="vip-analysis-stat-label">${t("vipTips.analysisPoints")}</div>
+            <div class="vip-analysis-stat-value">${totalPoints}</div>
           </div>
           <div class="vip-analysis-stat-item">
             <div class="vip-analysis-stat-label">${t("vipTips.analysisShots")}</div>
             <div class="vip-analysis-stat-value">${totalShots}</div>
+          </div>
+          <div class="vip-analysis-stat-item">
+            <div class="vip-analysis-stat-label">${t("vipTips.analysisGames")}</div>
+            <div class="vip-analysis-stat-value">${gamesPlayed}</div>
           </div>
           <div class="vip-analysis-stat-item">
             <div class="vip-analysis-stat-label">${t("vipTips.confidence")}</div>

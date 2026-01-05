@@ -7314,6 +7314,12 @@ header{
   gap: 15px;
 }
 
+@media (max-width: 768px) {
+  .vip-analysis-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 .vip-analysis-stat-item {
   text-align: center;
   padding: 15px;
