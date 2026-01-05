@@ -4575,8 +4575,8 @@ function initScrollAnimations() {
   if (!scrollObserver) {
     const observerOptions = {
       root: null, // viewport
-      rootMargin: '0px 0px -100px 0px', // spustí animáciu 100px pred vstupom do viewportu
-      threshold: 0.1 // spustí keď je 10% viditeľné
+      rootMargin: '0px 0px -50px 0px', // spustí animáciu 50px pred vstupom do viewportu (bližšie)
+      threshold: 0.05 // spustí keď je 5% viditeľné (skôr)
     };
 
     scrollObserver = new IntersectionObserver((entries) => {
