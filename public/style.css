@@ -7160,6 +7160,104 @@ body {
   font-size: 13px;
 }
 
+/* Analytics Table Styling */
+.analytics-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13px;
+}
+
+.analytics-table thead {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.analytics-table th {
+  padding: 8px 4px;
+  text-align: center;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 11px;
+  letter-spacing: 0.3px;
+}
+
+.analytics-table th:nth-child(1) {
+  width: 10%;
+  text-align: center;
+}
+
+.analytics-table th:nth-child(2) {
+  width: 40%;
+  text-align: left;
+  padding-left: 8px;
+}
+
+.analytics-table th:nth-child(3) {
+  width: 25%;
+  text-align: center;
+}
+
+.analytics-table th:nth-child(4) {
+  width: 25%;
+  text-align: center;
+}
+
+.analytics-table td {
+  padding: 6px 4px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.analytics-table td:nth-child(1) {
+  text-align: center;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.analytics-table td.team-cell {
+  text-align: left;
+  padding-left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.analytics-table td.team-cell img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.analytics-table td.team-cell span {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.analytics-table td.value {
+  text-align: center;
+  font-weight: 600;
+  color: #00eaff;
+  font-size: 13px;
+}
+
+.analytics-table td.sub {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+}
+
+.analytics-table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.analytics-table tbody tr:last-child {
+  border-bottom: none;
+}
+
 /* Mobile */
 @media (max-width: 900px) {
   .analytics-grid {
