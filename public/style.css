@@ -7447,12 +7447,6 @@ header{
 /* VIP Analysis Modal - Container */
 /* VIP Analysis Modal - používa rovnaký systém ako rating modal (.modal-overlay a .modal-content) */
 
-  .vip-tip-analysis-btn {
-    font-size: 0.7rem;
-    padding: 5px 10px;
-  }
-}
-
 @media (max-width: 768px){
   .vip-tips-grid{
     grid-template-columns: 1fr;
