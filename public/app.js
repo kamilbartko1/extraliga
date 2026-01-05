@@ -56,6 +56,23 @@ const I18N = {
     "footer.terms": "📋 Podmienky používania",
 
     "home.loading": "⏳ Načítavam domovskú stránku...",
+    "home.heroTitle": "NHL Stávkovanie s AI",
+    "home.heroSubtitle": "Používaj umelú inteligenciu na zvýšenie úspešnosti tvojich stávok",
+    "home.ctaStart": "Začať teraz",
+    "home.ctaLearn": "Zistiť viac",
+    "home.statSuccessRate": "Úspešnosť",
+    "home.statTotalTips": "Celkom tipov",
+    "home.statHits": "Zásahov",
+    "home.featuresTitle": "Prečo si vybrať nás?",
+    "home.featureAI": "AI Analýza",
+    "home.featureAIDesc": "Pokročilá AI analýza pomáha predpovedať výsledky s vyššou presnosťou",
+    "home.featureStats": "Kompletné štatistiky",
+    "home.featureStatsDesc": "Dostup k detailným štatistikám hráčov a tímov v reálnom čase",
+    "home.featureStrategy": "ABS Stratégia",
+    "home.featureStrategyDesc": "Advanced Betting Strategy pre maximálny zisk",
+    "home.featureRealTime": "Aktuálne dáta",
+    "home.featureRealTimeDesc": "Vždy najnovšie výsledky, tabuľky a štatistiky",
+    "home.featureCTA": "Vyskúšať Premium",
     "home.todaysGames": "🏒 Dnešné zápasy NHL",
     "home.gamesCount": "{count} zápasov",
     "home.noGamesToday": "Dnes nie sú žiadne zápasy.",
@@ -251,6 +268,23 @@ const I18N = {
     "footer.disclaimer": "⚖️ Legal disclaimer",
 
     "home.loading": "⏳ Loading home…",
+    "home.heroTitle": "NHL Betting with AI",
+    "home.heroSubtitle": "Use artificial intelligence to increase your betting success rate",
+    "home.ctaStart": "Get Started",
+    "home.ctaLearn": "Learn More",
+    "home.statSuccessRate": "Success Rate",
+    "home.statTotalTips": "Total Tips",
+    "home.statHits": "Hits",
+    "home.featuresTitle": "Why Choose Us?",
+    "home.featureAI": "AI Analysis",
+    "home.featureAIDesc": "Advanced AI analysis helps predict outcomes with higher accuracy",
+    "home.featureStats": "Complete Statistics",
+    "home.featureStatsDesc": "Access detailed player and team statistics in real-time",
+    "home.featureStrategy": "ABS Strategy",
+    "home.featureStrategyDesc": "Advanced Betting Strategy for maximum profit",
+    "home.featureRealTime": "Real-time Data",
+    "home.featureRealTimeDesc": "Always the latest results, standings and statistics",
+    "home.featureCTA": "Try Premium",
     "home.todaysGames": "🏒 Today's NHL games",
     "home.gamesCount": "{count} games",
     "home.noGamesToday": "No games today.",
@@ -1090,8 +1124,42 @@ async function displayHome() {
 
     // 🔥 2️⃣ VŠETKO OKREM AI TIPU SA RENDERUJE HNEĎ
     const gamesCountText = t("home.gamesCount", { count: homeData.matchesToday.length });
+    const aiSuccessRate = aiData.successRate || 0;
+    const aiTotalTips = aiData.total || 0;
+    const aiHitsCount = aiData.hits || 0;
+    
     let html = `
 <section class="nhl-home">
+
+  <!-- ================= HERO BANNER ================= -->
+  <div class="hero-banner">
+    <div class="hero-content">
+      <h1 class="hero-title">${t("home.heroTitle")}</h1>
+      <p class="hero-subtitle">${t("home.heroSubtitle")}</p>
+      <div class="hero-cta">
+        <button class="hero-btn-primary" onclick="showSection('premium-section')">
+          ${t("home.ctaStart")}
+        </button>
+        <button class="hero-btn-secondary" onclick="showSection('mantingale-section')">
+          ${t("home.ctaLearn")}
+        </button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat-item">
+        <div class="hero-stat-value">${aiSuccessRate.toFixed(1)}%</div>
+        <div class="hero-stat-label">${t("home.statSuccessRate")}</div>
+      </div>
+      <div class="hero-stat-item">
+        <div class="hero-stat-value">${aiTotalTips}</div>
+        <div class="hero-stat-label">${t("home.statTotalTips")}</div>
+      </div>
+      <div class="hero-stat-item">
+        <div class="hero-stat-value">${aiHitsCount}</div>
+        <div class="hero-stat-label">${t("home.statHits")}</div>
+      </div>
+    </div>
+  </div>
 
   <!-- ================= HERO GRID ================= -->
   <div class="nhl-hero-grid">
