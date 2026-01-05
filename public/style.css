@@ -3854,7 +3854,8 @@ body {
   background: rgba(0,0,0,0.80);
   backdrop-filter: blur(5px);
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 10vh;
   z-index: 9999;
   animation: fadeIn 0.3s ease;
 }
