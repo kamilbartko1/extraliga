@@ -4534,6 +4534,15 @@ body {
   text-align: center;
 }
 
+.vip-tips-date {
+  text-align: center;
+  margin-top: 12px;
+  color: #00eaff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
 /* ===============================
    VIP TIPS (updated)
    =============================== */
