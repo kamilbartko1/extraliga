@@ -7424,29 +7424,6 @@ header{
 }
 
 /* VIP Analysis Modal - Overlay */
-#vip-tip-analysis-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-#vip-tip-analysis-overlay.hidden {
-  display: none;
-}
-
-/* VIP Analysis Modal - Container */
 /* VIP Analysis Modal - používa rovnaký systém ako rating modal (.modal-overlay a .modal-content) */
 
 @media (max-width: 768px){
