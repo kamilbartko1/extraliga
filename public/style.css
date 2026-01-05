@@ -648,7 +648,7 @@ header {
   nav {
     display: none !important; /* skry horizontálne menu */
   }
-
+}
 /* 💻 Desktop zobrazenie – zobraz horizontálne menu, skry rolovacie */
 @media (min-width: 769px) {
   nav {
