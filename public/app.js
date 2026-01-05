@@ -3652,14 +3652,54 @@ async function renderVipTips() {
 // ===============================
 // 👑 VIP TIP ANALYSIS MODAL
 // ===============================
-async function showVipTipAnalysis(playerName, teamCode, oppCode) {
+async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   const modal = document.getElementById("vip-tip-analysis-modal");
   const overlay = document.getElementById("vip-tip-analysis-overlay");
   if (!modal || !overlay) return;
   
+  // Získaj pozíciu tlačidla, na ktoré sa kliklo
+  let buttonTop = 2; // default 2cm od vrchu
+  let buttonLeft = '50%';
+  
+  if (event && event.target) {
+    const buttonRect = event.target.getBoundingClientRect();
+    const scrollY = window.scrollY || window.pageYOffset;
+    buttonTop = buttonRect.top + scrollY; // Pozícia tlačidla relatívne k dokumentu
+    buttonLeft = buttonRect.left + (buttonRect.width / 2); // Stred tlačidla
+    
+    // V mobile: ak je tlačidlo príliš nízko, posuň modal vyššie
+    if (window.innerWidth <= 768) {
+      const maxTop = window.innerHeight * 0.1; // Max 10% od vrchu v mobile
+      if (buttonRect.top < maxTop) {
+        buttonTop = maxTop + scrollY;
+      } else {
+        buttonTop = buttonRect.top + scrollY + 10; // 10px pod tlačidlom
+      }
+    } else {
+      // Desktop: 2cm pod tlačidlom alebo min 2cm od vrchu
+      const minTop = 2 * 37.8; // 2cm v pixeloch (1cm ≈ 37.8px)
+      buttonTop = Math.max(minTop, buttonRect.top + scrollY + 10);
+    }
+  }
+  
   // Show loading - rovnaký systém ako rating modal
   modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
+  
+  // Nastav pozíciu modalu
   overlay.style.display = "flex";
+  overlay.style.alignItems = "flex-start";
+  overlay.style.paddingTop = "0";
+  overlay.style.justifyContent = "center";
+  
+  // Nastav pozíciu modalu relatívne k tlačidlu
+  const modalContent = overlay.querySelector('.modal-content');
+  if (modalContent) {
+    modalContent.style.position = "relative";
+    modalContent.style.top = `${buttonTop}px`;
+    modalContent.style.left = "auto";
+    modalContent.style.transform = "translateX(-50%)";
+    modalContent.style.marginTop = "0";
+  }
 
   // Fetch fresh statistics
   let statsData = {};
