@@ -1364,6 +1364,11 @@ async function displayHome() {
 
 home.innerHTML = html;
 
+    // 🎬 Aplikuj animácie na nové elementy
+    setTimeout(() => {
+      animateNewElements(home);
+    }, 50);
+
     // 🔥 3️⃣ AI STRELEC SA DOLOŽÍ EXTRA (NEBLOKUJE STRÁNKU)
     setTimeout(async () => {
       try {
@@ -4561,8 +4566,30 @@ document.getElementById("premium-add-player-btn")
   initScrollAnimations();
 });
 
+// Globálny Intersection Observer pre scroll reveal
+let scrollObserver = null;
+
 // Funkcia pre inicializáciu scroll reveal animácií
 function initScrollAnimations() {
+  // Vytvor observer len raz
+  if (!scrollObserver) {
+    const observerOptions = {
+      root: null, // viewport
+      rootMargin: '0px 0px -100px 0px', // spustí animáciu 100px pred vstupom do viewportu
+      threshold: 0.1 // spustí keď je 10% viditeľné
+    };
+
+    scrollObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animated');
+          // Odstráň observer po animácii (performance)
+          scrollObserver.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+  }
+
   // Selektory pre elementy, ktoré sa majú animovať
   const animatedSelectors = [
     '.section',
@@ -4589,29 +4616,10 @@ function initScrollAnimations() {
       // Staggered efekt - každý 3. element má väčšie oneskorenie
       if (index % 3 === 1) el.classList.add('stagger-1');
       if (index % 3 === 2) el.classList.add('stagger-2');
+      
+      // Pridaj do observera
+      scrollObserver.observe(el);
     });
-  });
-
-  // Intersection Observer pre scroll reveal
-  const observerOptions = {
-    root: null, // viewport
-    rootMargin: '0px 0px -100px 0px', // spustí animáciu 100px pred vstupom do viewportu
-    threshold: 0.1 // spustí keď je 10% viditeľné
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('animated');
-        // Odstráň observer po animácii (performance)
-        observer.unobserve(entry.target);
-      }
-    });
-  }, observerOptions);
-
-  // Sleduj všetky elementy s triedou animate-on-scroll
-  document.querySelectorAll('.animate-on-scroll').forEach(el => {
-    observer.observe(el);
   });
 
   // Pre elementy, ktoré sú už viditeľné pri načítaní (napr. domovská stránka)
@@ -4625,4 +4633,39 @@ function initScrollAnimations() {
       }
     });
   }, 100);
+}
+
+// Funkcia pre aplikovanie animácií na nové dynamicky vytvorené elementy
+function animateNewElements(container) {
+  if (!scrollObserver) return;
+  
+  const selectors = [
+    '.home-panel',
+    '.matches-box',
+    '.standings-box',
+    '.premium-section-card',
+    '.analytics-box',
+    '.stat-box',
+    '.vip-tip-card',
+    '.vip-tip-row'
+  ];
+  
+  selectors.forEach(selector => {
+    const elements = container.querySelectorAll(selector);
+    elements.forEach((el, index) => {
+      if (el.classList.contains('animate-on-scroll')) return;
+      
+      el.classList.add('animate-on-scroll');
+      if (index % 3 === 1) el.classList.add('stagger-1');
+      if (index % 3 === 2) el.classList.add('stagger-2');
+      
+      scrollObserver.observe(el);
+      
+      // Ak je už viditeľný, animuj okamžite
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        setTimeout(() => el.classList.add('animated'), 50);
+      }
+    });
+  });
 }
