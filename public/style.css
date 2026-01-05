@@ -3846,21 +3846,19 @@ body {
 
 .modal-overlay {
   display: none;
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
+  position: fixed;
+  inset: 0;
   background: rgba(0,0,0,0.80);
   backdrop-filter: blur(5px);
-  z-index: 99999 !important;
-  animation: fadeIn 0.3s ease;
-  overflow-y: auto;
-  overflow-x: hidden;
+  z-index: 99999;
 }
 
 /* Moderný box */
 .modal-content {
+  position: fixed; /* 🔥 KĽÚČOVÉ */
+  left: 50%;
+  transform: translateX(-50%);
+  max-height: 80vh;
   background: linear-gradient(165deg, #0c1b29, #061018);
   border-radius: 20px;
   padding: 30px 30px 35px 30px;
@@ -3869,7 +3867,6 @@ body {
   color: #d9f3ff;
   box-shadow: 0 0 25px rgba(0, 234, 255, 0.25);
   animation: modalUp 0.35s ease;
-  max-height: 80vh;
   overflow-y: auto;
   line-height: 1.55;
   border: 1px solid rgba(0,255,255,0.15);
