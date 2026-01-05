@@ -3657,48 +3657,68 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   const overlay = document.getElementById("vip-tip-analysis-overlay");
   if (!modal || !overlay) return;
   
-  // Získaj pozíciu tlačidla, na ktoré sa kliklo
-  let buttonTop = 2; // default 2cm od vrchu
-  let buttonLeft = '50%';
+  // Show loading
+  modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
+  overlay.style.display = "flex";
   
+  // Získaj pozíciu tlačidla, na ktoré sa kliklo
   if (event && event.target) {
     const buttonRect = event.target.getBoundingClientRect();
     const scrollY = window.scrollY || window.pageYOffset;
-    buttonTop = buttonRect.top + scrollY; // Pozícia tlačidla relatívne k dokumentu
-    buttonLeft = buttonRect.left + (buttonRect.width / 2); // Stred tlačidla
+    const scrollX = window.scrollX || window.pageXOffset;
     
-    // V mobile: ak je tlačidlo príliš nízko, posuň modal vyššie
+    // Vypočítaj pozíciu modalu - priamo pod tlačidlom
+    let modalTop = buttonRect.bottom + scrollY + 10; // 10px pod tlačidlom
+    let modalLeft = buttonRect.left + scrollX + (buttonRect.width / 2); // Stred tlačidla
+    
+    // V mobile: ak by modal bol mimo obrazovky, uprav pozíciu
     if (window.innerWidth <= 768) {
-      const maxTop = window.innerHeight * 0.1; // Max 10% od vrchu v mobile
-      if (buttonRect.top < maxTop) {
-        buttonTop = maxTop + scrollY;
-      } else {
-        buttonTop = buttonRect.top + scrollY + 10; // 10px pod tlačidlom
+      // Centruj modal horizontálne v mobile
+      modalLeft = window.innerWidth / 2;
+      
+      // Ak je tlačidlo príliš nízko, posuň modal vyššie (ale stále viditeľný)
+      const maxTop = scrollY + window.innerHeight - 100; // 100px rezerva odspodu
+      if (modalTop > maxTop) {
+        modalTop = buttonRect.top + scrollY - 20; // 20px nad tlačidlom
+      }
+      
+      // Minimálne 20px od vrchu
+      const minTop = scrollY + 20;
+      if (modalTop < minTop) {
+        modalTop = minTop;
       }
     } else {
-      // Desktop: 2cm pod tlačidlom alebo min 2cm od vrchu
-      const minTop = 2 * 37.8; // 2cm v pixeloch (1cm ≈ 37.8px)
-      buttonTop = Math.max(minTop, buttonRect.top + scrollY + 10);
+      // Desktop: ak by modal bol mimo obrazovky vpravo, uprav
+      const maxLeft = window.innerWidth - 300; // 300px šírka modalu
+      if (modalLeft > maxLeft) {
+        modalLeft = maxLeft;
+      }
+      
+      // Ak by modal bol mimo obrazovky vľavo
+      if (modalLeft < 150) {
+        modalLeft = 150;
+      }
+      
+      // Ak je tlačidlo príliš nízko, posuň modal vyššie
+      const maxTop = scrollY + window.innerHeight - 200; // 200px rezerva
+      if (modalTop > maxTop) {
+        modalTop = buttonRect.top + scrollY - 20; // 20px nad tlačidlom
+      }
     }
-  }
-  
-  // Show loading - rovnaký systém ako rating modal
-  modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
-  
-  // Nastav pozíciu modalu
-  overlay.style.display = "flex";
-  overlay.style.alignItems = "flex-start";
-  overlay.style.paddingTop = "0";
-  overlay.style.justifyContent = "center";
-  
-  // Nastav pozíciu modalu relatívne k tlačidlu
-  const modalContent = overlay.querySelector('.modal-content');
-  if (modalContent && event && event.target) {
-    modalContent.style.position = "absolute";
-    modalContent.style.top = `${buttonTop}px`;
-    modalContent.style.left = "50%";
-    modalContent.style.transform = "translateX(-50%)";
-    modalContent.style.marginTop = "0";
+    
+    // Nastav pozíciu modalu
+    const modalContent = overlay.querySelector('.modal-content');
+    if (modalContent) {
+      modalContent.style.position = "absolute";
+      modalContent.style.top = `${modalTop}px`;
+      modalContent.style.left = `${modalLeft}px`;
+      modalContent.style.transform = "translateX(-50%)";
+      modalContent.style.marginTop = "0";
+    }
+  } else {
+    // Fallback: ak nie je event, použij stred obrazovky
+    overlay.style.alignItems = "center";
+    overlay.style.justifyContent = "center";
   }
 
   // Fetch fresh statistics
