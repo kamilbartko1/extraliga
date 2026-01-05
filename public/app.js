@@ -3693,10 +3693,10 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   
   // Nastav pozíciu modalu relatívne k tlačidlu
   const modalContent = overlay.querySelector('.modal-content');
-  if (modalContent) {
-    modalContent.style.position = "relative";
+  if (modalContent && event && event.target) {
+    modalContent.style.position = "absolute";
     modalContent.style.top = `${buttonTop}px`;
-    modalContent.style.left = "auto";
+    modalContent.style.left = "50%";
     modalContent.style.transform = "translateX(-50%)";
     modalContent.style.marginTop = "0";
   }
