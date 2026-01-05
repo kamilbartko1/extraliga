@@ -3611,7 +3611,7 @@ async function renderVipTips() {
   totals.sort((a, b) => b.confidence - a.confidence);
   const topTotals = totals.slice(0, 3);
 
-  const totalsRows = topTotals.map((g) => {
+  const totalsRows = topTotals.map((g, idx) => {
     const recoText =
       g.reco === "over"
         ? `${t("vipTips.over")} ${g.line}`
@@ -3631,6 +3631,9 @@ async function renderVipTips() {
         <div class="vip-tip-right">
           <div class="vip-tip-badge">${g.confidence}%</div>
           <div class="vip-tip-label">${t("vipTips.confidence")}</div>
+          <button class="vip-tip-analysis-btn" onclick="showVipTotalAnalysis('${g.homeCode}', '${g.awayCode}', ${g.total}, '${g.reco}', ${g.line}, ${g.confidence}, event)">
+            ${t("vipTips.analysis")}
+          </button>
         </div>
       </div>
     `;
