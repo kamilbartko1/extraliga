@@ -406,39 +406,46 @@
         </button>
       </div>
 
-      <!-- ===== TOOLBAR (TEAM + PLAYER) ===== -->
-      <div class="premium-toolbar">
-
-        <div class="premium-field">
-          <label for="premium-team-select" data-i18n="premium.pickTeam">Vyber klub</label>
-          <select id="premium-team-select">
-            <option value="" data-i18n="premium.selectTeamPlaceholder">-- vyber klub --</option>
-          </select>
+      <!-- ===============================
+           📋 INFORMÁCIE O VIP PREMIUM
+           =============================== -->
+      <section class="premium-info-banner">
+        <div class="premium-info-content">
+          <h2 data-i18n="premium.infoTitle">Čo získavaš ako VIP klient?</h2>
+          <div class="premium-features-grid">
+            <div class="premium-feature-item">
+              <span class="feature-icon">🔥</span>
+              <div class="feature-text">
+                <strong data-i18n="premium.featureVipTips">VIP AI Tipy</strong>
+                <p data-i18n="premium.featureVipTipsDesc">Autonómne tipy na strelcov a góly založené na ratingoch a štatistikách z posledných 10 zápasov</p>
+              </div>
+            </div>
+            <div class="premium-feature-item">
+              <span class="feature-icon">📊</span>
+              <div class="feature-text">
+                <strong data-i18n="premium.featureAbs">ABS Stratégia</strong>
+                <p data-i18n="premium.featureAbsDesc">Pridávaj vlastných hráčov do Advanced Betting Strategy a sleduj ich sériu a profit</p>
+              </div>
+            </div>
+            <div class="premium-feature-item">
+              <span class="feature-icon">📈</span>
+              <div class="feature-text">
+                <strong data-i18n="premium.featureAnalytics">Detailná Analytika</strong>
+                <p data-i18n="premium.featureAnalyticsDesc">Štatistiky z posledných 10 zápasov: forma, ofenzíva, obrana a trendy tímov</p>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <div class="premium-field">
-          <label for="premium-player-select" data-i18n="premium.pickPlayer">Vyber hráča</label>
-          <select id="premium-player-select" disabled>
-            <option value="" data-i18n="premium.selectTeamFirst">-- najprv vyber klub --</option>
-          </select>
-        </div>
-
-        <div class="premium-field premium-field-action">
-          <button id="premium-add-player-btn" data-i18n="premium.addPlayer">
-            Pridať hráča
-          </button>
-        </div>
-
-      </div>
+      </section>
 
       <!-- ===============================
            🔥 VIP TIPY NA DNES
            =============================== -->
-      <section id="vip-tips" class="vip-tips">
-        <div class="vip-tips-head">
+      <section id="vip-tips" class="premium-section-card">
+        <div class="section-card-header">
           <h2 data-i18n="vipTips.title">🔥 VIP tipy na dnes</h2>
-          <p class="vip-tips-sub" data-i18n="vipTips.subtitle">
-            Autonómne tipy na strelcov a góly podľa ratingov a L10 štatistík.
+          <p class="section-card-subtitle" data-i18n="vipTips.subtitle">
+            Autonómne tipy na strelcov a góly podľa ratingov a štatistík z posledných 10 zápasov.
           </p>
         </div>
         <div id="vip-tips-body" class="vip-tips-grid">
@@ -450,30 +457,68 @@
       <div id="vip-tip-analysis-overlay" class="modal-overlay hidden" onclick="closeVipTipAnalysis()"></div>
       <div id="vip-tip-analysis-modal" class="vip-analysis-modal hidden"></div>
 
-      <!-- ===== SUMMARY ===== -->
-      <div class="premium-summary">
-        <span data-i18n="premium.totalProfit">Celkový profit</span>
-        <strong>
-          <span id="premium-total-profit">0.00</span> €
-        </strong>
-      </div>
+      <!-- ===============================
+           🎯 MOJA ABS STRATÉGIA
+           =============================== -->
+      <section class="premium-section-card">
+        <div class="section-card-header">
+          <h2 data-i18n="premium.absStrategyTitle">🎯 Moja ABS Stratégia</h2>
+          <p class="section-card-subtitle" data-i18n="premium.absStrategyDesc">
+            Pridaj hráčov do svojej Advanced Betting Strategy a sleduj ich výkonnosť a profit.
+          </p>
+        </div>
 
-      <!-- ===== TABLE ===== -->
-      <div class="premium-table-wrapper">
-        <table class="mantingale-table premium-table">
-          <thead>
-            <tr>
-              <th data-i18n="table.player">Hráč</th>
-              <th data-i18n="premium.tableStake">Stávka</th>
-              <th data-i18n="premium.tableStreak">Streak</th>
-              <th data-i18n="premium.tableBalance">Balance</th>
-              <th data-i18n="premium.tableOdds">Kurzy</th>
-              <th data-i18n="premium.tableActions">Akcie</th>
-            </tr>
-          </thead>
-          <tbody id="premium-players-body"></tbody>
-        </table>
-      </div>
+        <!-- ===== TOOLBAR (TEAM + PLAYER) ===== -->
+        <div class="premium-toolbar">
+          <div class="premium-field">
+            <label for="premium-team-select" data-i18n="premium.pickTeam">Vyber klub</label>
+            <select id="premium-team-select">
+              <option value="" data-i18n="premium.selectTeamPlaceholder">-- vyber klub --</option>
+            </select>
+          </div>
+
+          <div class="premium-field">
+            <label for="premium-player-select" data-i18n="premium.pickPlayer">Vyber hráča</label>
+            <select id="premium-player-select" disabled>
+              <option value="" data-i18n="premium.selectTeamFirst">-- najprv vyber klub --</option>
+            </select>
+          </div>
+
+          <div class="premium-field premium-field-action">
+            <button id="premium-add-player-btn" data-i18n="premium.addPlayer">
+              Pridať hráča
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== SUMMARY ===== -->
+        <div class="premium-summary">
+          <span data-i18n="premium.totalProfit">Celkový profit</span>
+          <strong>
+            <span id="premium-total-profit">0.00</span> €
+          </strong>
+        </div>
+
+        <!-- ===== TABLE ===== -->
+        <div class="premium-table-wrapper">
+          <table class="mantingale-table premium-table">
+            <thead>
+              <tr>
+                <th data-i18n="table.player">Hráč</th>
+                <th data-i18n="premium.tableStake">Stávka</th>
+                <th data-i18n="premium.tableStreak">Streak</th>
+                <th data-i18n="premium.tableBalance">Balance</th>
+                <th data-i18n="premium.tableOdds">Kurzy</th>
+                <th data-i18n="premium.tableActions">Akcie</th>
+              </tr>
+            </thead>
+            <tbody id="premium-players-body"></tbody>
+          </table>
+        </div>
+
+        <!-- ===== MESSAGE ===== -->
+        <div id="premium-msg" class="premium-msg"></div>
+      </section>
 
       <!-- ===============================
      👑 VIP MANTINGAL DETAIL
@@ -501,17 +546,14 @@
       <button id="vip-mtg-back-btn" data-i18n="common.back">← Späť</button>
     </div>
 
-      <!-- ===== MESSAGE ===== -->
-      <div id="premium-msg" class="premium-msg"></div>
-
       <!-- ===============================
      📊 PREMIUM ANALYTICS
      =============================== -->
-<section id="premium-analytics" class="premium-analytics">
+<section id="premium-analytics" class="premium-section-card premium-analytics">
 
-  <div class="analytics-header">
+  <div class="section-card-header">
     <h2 data-i18n="premium.analyticsTitle">📊 Detailné štatistiky (posledných 10 zápasov)</h2>
-    <p data-i18n="premium.analyticsSubtitle">Pokročilá forma, ofenzíva a defenzíva tímov NHL</p>
+    <p class="section-card-subtitle" data-i18n="premium.analyticsSubtitle">Pokročilá forma, ofenzíva a defenzíva tímov NHL</p>
   </div>
 
   <div class="analytics-grid">

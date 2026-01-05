@@ -4426,6 +4426,129 @@ body {
 }
 
 /* ===============================
+   PREMIUM INFO BANNER
+   =============================== */
+
+.premium-info-banner {
+  background: linear-gradient(135deg, rgba(0, 234, 255, 0.08), rgba(0, 119, 255, 0.08));
+  border: 1px solid rgba(0, 234, 255, 0.2);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 20px rgba(0, 234, 255, 0.1);
+}
+
+.premium-info-content h2 {
+  color: #00eaff;
+  font-size: 1.4rem;
+  margin-bottom: 24px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.premium-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.premium-feature-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: rgba(6, 14, 22, 0.6);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.premium-feature-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 234, 255, 0.15);
+  border-color: rgba(0, 234, 255, 0.3);
+}
+
+.feature-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.feature-text {
+  flex: 1;
+}
+
+.feature-text strong {
+  display: block;
+  color: #00eaff;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.feature-text p {
+  color: #9bbbd6;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ===============================
+   PREMIUM SECTION CARD
+   =============================== */
+
+.premium-section-card {
+  background: rgba(6, 14, 22, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.section-card-header {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-card-header h2 {
+  color: #00eaff;
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.section-card-subtitle {
+  color: #9bbbd6;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+}
+
+/* ===============================
+   VIP TIPS (updated)
+   =============================== */
+
+.vip-tips {
+  margin-bottom: 0;
+}
+
+.vip-tips-head {
+  margin-bottom: 0;
+}
+
+.vip-tips-head h2 {
+  margin-bottom: 0;
+}
+
+.vip-tips-sub {
+  text-align: center;
+}
+
+/* ===============================
    MOBILE
    =============================== */
 
@@ -4538,17 +4661,69 @@ body {
     white-space: nowrap;
   }
 
+  /* Premium info banner */
+  .premium-info-banner {
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+
+  .premium-info-content h2 {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+  }
+
+  .premium-features-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .premium-feature-item {
+    padding: 16px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .feature-icon {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+  }
+
+  .feature-text strong {
+    font-size: 1rem;
+  }
+
+  .feature-text p {
+    font-size: 0.85rem;
+  }
+
+  /* Premium section card */
+  .premium-section-card {
+    padding: 20px 16px;
+    margin-bottom: 24px;
+  }
+
+  .section-card-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+  }
+
+  .section-card-header h2 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+
+  .section-card-subtitle {
+    font-size: 0.85rem;
+  }
+
   /* VIP tips sekcia */
   .vip-tips {
-    margin-bottom: 16px;
-    padding: 12px 10px;
-    width: 100%;
-    box-sizing: border-box;
-    overflow-x: hidden;
+    margin-bottom: 0;
+    padding: 0;
   }
 
   .vip-tips-head {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
   }
 
   .vip-tips-head h2 {
