@@ -1,6 +1,6 @@
-# MODAL KÓD PRE GPT-5.2 - VIP Analysis Modal
+# KOMPLETNÝ KÓD PRE UMIESŤANIE MODALU - AKTUÁLNY STAV
 
-## HTML
+## 1️⃣ HTML - Štruktúra modalu
 
 ```html
 <!-- VIP Tip Analysis Modal -->
@@ -9,27 +9,25 @@
 </div>
 ```
 
-## CSS
+## 2️⃣ CSS - Štýly pre modal a umiestnenie
 
 ```css
 /* Modal Overlay */
 .modal-overlay {
   display: none;
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
+  position: fixed;
+  inset: 0;
   background: rgba(0,0,0,0.80);
   backdrop-filter: blur(5px);
-  z-index: 99999 !important;
-  animation: fadeIn 0.3s ease;
-  overflow-y: auto;
-  overflow-x: hidden;
+  z-index: 99999;
 }
 
 /* Modal Content Box */
 .modal-content {
+  position: fixed; /* 🔥 KĽÚČOVÉ */
+  left: 50%;
+  transform: translateX(-50%);
+  max-height: 80vh;
   background: linear-gradient(165deg, #0c1b29, #061018);
   border-radius: 20px;
   padding: 30px 30px 35px 30px;
@@ -37,31 +35,31 @@
   max-width: 580px;
   color: #d9f3ff;
   box-shadow: 0 0 25px rgba(0, 234, 255, 0.25);
-  animation: modalUp 0.35s ease;
-  max-height: 80vh;
+  animation: modalFadeIn 0.25s ease;
   overflow-y: auto;
   line-height: 1.55;
   border: 1px solid rgba(0,255,255,0.15);
 }
 
-/* Animations */
+/* Animácie */
+/* ✅ ŽIADEN translateX / translateY - používame scale a opacity */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    scale: 0.96;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
   to {
     opacity: 1;
-  }
-}
-
-@keyframes modalUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -87,80 +85,129 @@
 }
 ```
 
-## JavaScript - Funkcia pre otvorenie modalu s dynamickou pozíciou
+## 3️⃣ JavaScript - Funkcie pre umiestnenie modalu
+
+### Funkcia 1: showVipTipAnalysis (pre analýzu hráčov)
 
 ```javascript
-// Funkcia na otvorenie modalu pri tlačidle
-function openModalAtButton(modalId, overlayId, event) {
-  const modal = document.getElementById(modalId);
-  const overlay = document.getElementById(overlayId);
-  if (!modal || !overlay) return;
+async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
+  const modal = document.getElementById("vip-tip-analysis-modal");
+  const overlay = document.getElementById("vip-tip-analysis-overlay");
+  if (!modal || !overlay || !event) return;
   
-  // Zobraz overlay
-  overlay.style.display = "flex";
-  
-  // Získaj pozíciu tlačidla, na ktoré sa kliklo
-  if (event && event.target) {
-    const buttonRect = event.target.getBoundingClientRect();
-    const scrollY = window.scrollY || window.pageYOffset;
-    const scrollX = window.scrollX || window.pageXOffset;
-    
-    // Vypočítaj pozíciu modalu - priamo pod tlačidlom
-    let modalTop = buttonRect.bottom + scrollY + 10; // 10px pod tlačidlom
-    let modalLeft = buttonRect.left + scrollX + (buttonRect.width / 2); // Stred tlačidla
-    
-    // V mobile: ak by modal bol mimo obrazovky, uprav pozíciu
-    if (window.innerWidth <= 768) {
-      // Centruj modal horizontálne v mobile
-      modalLeft = window.innerWidth / 2;
-      
-      // Ak je tlačidlo príliš nízko, posuň modal vyššie (ale stále viditeľný)
-      const maxTop = scrollY + window.innerHeight - 100; // 100px rezerva odspodu
-      if (modalTop > maxTop) {
-        modalTop = buttonRect.top + scrollY - 20; // 20px nad tlačidlom
-      }
-      
-      // Minimálne 20px od vrchu
-      const minTop = scrollY + 20;
-      if (modalTop < minTop) {
-        modalTop = minTop;
-      }
-    } else {
-      // Desktop: ak by modal bol mimo obrazovky vpravo, uprav
-      const maxLeft = window.innerWidth - 300; // 300px šírka modalu
-      if (modalLeft > maxLeft) {
-        modalLeft = maxLeft;
-      }
-      
-      // Ak by modal bol mimo obrazovky vľavo
-      if (modalLeft < 150) {
-        modalLeft = 150;
-      }
-      
-      // Ak je tlačidlo príliš nízko, posuň modal vyššie
-      const maxTop = scrollY + window.innerHeight - 200; // 200px rezerva
-      if (modalTop > maxTop) {
-        modalTop = buttonRect.top + scrollY - 20; // 20px nad tlačidlom
-      }
-    }
-    
-    // Nastav pozíciu modalu
-    const modalContent = overlay.querySelector('.modal-content');
-    if (modalContent) {
-      modalContent.style.position = "absolute";
-      modalContent.style.top = `${modalTop}px`;
-      modalContent.style.left = `${modalLeft}px`;
-      modalContent.style.transform = "translateX(-50%)";
-      modalContent.style.marginTop = "0";
-    }
-  } else {
-    // Fallback: ak nie je event, použij stred obrazovky
-    overlay.style.alignItems = "center";
-    overlay.style.justifyContent = "center";
-  }
-}
+  // Show loading
+  modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
+  overlay.style.display = "block";
 
-// Funkcia na zatvorenie modalu
+  const modalContent = overlay.querySelector(".modal-content");
+  const btnRect = event.currentTarget.getBoundingClientRect();
+
+  // Funkcia na nastavenie pozície modalu
+  const setModalPosition = () => {
+    const MODAL_MARGIN = 12;
+    const MODAL_WIDTH = modalContent.offsetWidth || 560;
+    const MODAL_HEIGHT = modalContent.offsetHeight || 400;
+
+    let top = btnRect.bottom + MODAL_MARGIN;
+    let left = btnRect.left + btnRect.width / 2;
+
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+
+    /* 🔽 Ak je málo miesta dole → otvor NAD tlačidlom */
+    if (top + MODAL_HEIGHT > viewportHeight) {
+      top = btnRect.top - MODAL_HEIGHT - MODAL_MARGIN;
+    }
+
+    /* 🔒 Clamp do viewportu */
+    top = Math.max(20, Math.min(top, viewportHeight - MODAL_HEIGHT - 20));
+    left = Math.max(
+      MODAL_WIDTH / 2 + 10,
+      Math.min(left, viewportWidth - MODAL_WIDTH / 2 - 10)
+    );
+
+    modalContent.style.top = `${top}px`;
+    modalContent.style.left = `${left}px`;
+    modalContent.style.transform = "translateX(-50%)";
+  };
+
+  // Nastav pozíciu po zobrazení modalu (použij requestAnimationFrame pre správne rozmery)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(setModalPosition);
+  });
+
+  // ... zvyšok kódu pre načítanie dát a zobrazenie obsahu ...
+  
+  // Po nastavení obsahu modalu ešte raz uprav pozíciu (výška sa mohla zmeniť)
+  // Toto sa volá na konci funkcie po nastavení modal.innerHTML
+  requestAnimationFrame(() => {
+    requestAnimationFrame(setModalPosition);
+  });
+}
+```
+
+### Funkcia 2: showVipTotalAnalysis (pre analýzu under/over)
+
+```javascript
+async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, line, confidence, event) {
+  const modal = document.getElementById("vip-tip-analysis-modal");
+  const overlay = document.getElementById("vip-tip-analysis-overlay");
+  if (!modal || !overlay || !event) return;
+  
+  // Show loading
+  modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
+  overlay.style.display = "block";
+
+  const modalContent = overlay.querySelector(".modal-content");
+  const btnRect = event.currentTarget.getBoundingClientRect();
+
+  // Funkcia na nastavenie pozície modalu
+  const setModalPosition = () => {
+    const MODAL_MARGIN = 12;
+    const MODAL_WIDTH = modalContent.offsetWidth || 560;
+    const MODAL_HEIGHT = modalContent.offsetHeight || 400;
+
+    let top = btnRect.bottom + MODAL_MARGIN;
+    let left = btnRect.left + btnRect.width / 2;
+
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+
+    /* 🔽 Ak je málo miesta dole → otvor NAD tlačidlom */
+    if (top + MODAL_HEIGHT > viewportHeight) {
+      top = btnRect.top - MODAL_HEIGHT - MODAL_MARGIN;
+    }
+
+    /* 🔒 Clamp do viewportu */
+    top = Math.max(20, Math.min(top, viewportHeight - MODAL_HEIGHT - 20));
+    left = Math.max(
+      MODAL_WIDTH / 2 + 10,
+      Math.min(left, viewportWidth - MODAL_WIDTH / 2 - 10)
+    );
+
+    modalContent.style.top = `${top}px`;
+    modalContent.style.left = `${left}px`;
+    modalContent.style.transform = "translateX(-50%)";
+  };
+
+  // Nastav pozíciu po zobrazení modalu (použij requestAnimationFrame pre správne rozmery)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(setModalPosition);
+  });
+
+  // ... zvyšok kódu pre načítanie dát a zobrazenie obsahu ...
+  
+  // Po nastavení obsahu modalu ešte raz uprav pozíciu (výška sa mohla zmeniť)
+  // Toto sa volá na konci funkcie po nastavení modal.innerHTML
+  requestAnimationFrame(() => {
+    requestAnimationFrame(setModalPosition);
+  });
+}
+```
+
+### Funkcia 3: closeVipTipAnalysis (zatvorenie modalu)
+
+```javascript
 function closeVipTipAnalysis(e) {
   // Zatvor len ak klik bol na overlay, nie na content
   if (!e || e.target.id === "vip-tip-analysis-overlay") {
@@ -170,19 +217,26 @@ function closeVipTipAnalysis(e) {
 }
 ```
 
-## Príklad použitia v HTML
+## 4️⃣ HTML - Použitie v tlačidlách
 
 ```html
-<!-- Tlačidlo, ktoré otvorí modal -->
-<button class="vip-tip-analysis-btn" onclick="openModalAtButton('vip-tip-analysis-modal', 'vip-tip-analysis-overlay', event)">
+<!-- Pre analýzu hráča -->
+<button class="vip-tip-analysis-btn" onclick="showVipTipAnalysis('${playerNameEscaped}', '${pick.teamCode}', '${oppCode}', event)">
+  Analýza
+</button>
+
+<!-- Pre analýzu under/over -->
+<button class="vip-tip-analysis-btn" onclick="showVipTotalAnalysis('${g.homeCode}', '${g.awayCode}', ${g.total}, '${g.reco}', ${g.line}, ${g.confidence}, event)">
   Analýza
 </button>
 ```
 
-## Poznámky
+## 📝 Dôležité poznámky:
 
-- Modal sa otvára presne pri tlačidle, na ktoré sa klikne
-- V mobile je modal vycentrovaný horizontálne
-- Ak by modal bol mimo obrazovky, automaticky sa posunie tak, aby bol viditeľný
-- Modal sa zatvára kliknutím na overlay (pozadie), nie na obsah modalu
-
+1. **`position: fixed`** na `.modal-content` je kľúčové - umožňuje presné umiestnenie vzhľadom na viewport
+2. **`event.currentTarget`** namiesto `event.target` - zaisťuje, že získame správne tlačidlo aj keď klikneme na vnútorný element
+3. **Dvojitý `requestAnimationFrame`** - zaisťuje, že modal má správne rozmery pred výpočtom pozície
+4. **`inset: 0`** na overlay - moderný spôsob ako nastaviť `top: 0; left: 0; width: 100%; height: 100%`
+5. **Clamp do viewportu** - zaisťuje, že modal je vždy viditeľný, aj keď je tlačidlo na okraji obrazovky
+6. **Automatické posunutie nad tlačidlo** - ak nie je miesto dole, modal sa otvorí nad tlačidlom
+7. **Dvojité volanie `setModalPosition`** - raz po zobrazení modalu, druhýkrát po načítaní obsahu (výška sa môže zmeniť)
