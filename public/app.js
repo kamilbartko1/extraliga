@@ -4591,8 +4591,8 @@ function initScrollAnimations() {
   }
 
   // Selektory pre elementy, ktoré sa majú animovať
-  const animatedSelectors = [
-    '.section',
+  // BOXY MAJÚ PRIORITU - animujú sa postupne
+  const boxSelectors = [
     '.matches-box',
     '.standings-box',
     '.home-panel',
@@ -4601,23 +4601,52 @@ function initScrollAnimations() {
     '.stat-box',
     '.abs-info-box',
     '.abs-profit-box',
-    'table',
-    '.section-title',
-    'h2'
+    '.vip-tip-card',
+    '.vip-tip-row',
+    '.matches-list',
+    '.standings-wrapper',
+    '.home-container',
+    '.hero-banner',
+    '.hero-content',
+    'table tbody tr',
+    '.nhl-home section'
   ];
 
-  // Pridaj triedu pre animáciu na všetky elementy
-  animatedSelectors.forEach(selector => {
-    document.querySelectorAll(selector).forEach((el, index) => {
+  // Nadpisy a sekcie (menej priorita)
+  const headerSelectors = [
+    '.section-title',
+    'h2',
+    'h3',
+    '.box-title'
+  ];
+
+  // Animuj boxy s postupným staggered efektom
+  let boxIndex = 0;
+  boxSelectors.forEach(selector => {
+    document.querySelectorAll(selector).forEach((el) => {
       // Preskoč ak už má triedu
       if (el.classList.contains('animate-on-scroll')) return;
       
       el.classList.add('animate-on-scroll');
-      // Staggered efekt - každý 3. element má väčšie oneskorenie
-      if (index % 3 === 1) el.classList.add('stagger-1');
-      if (index % 3 === 2) el.classList.add('stagger-2');
+      
+      // Postupný staggered efekt pre každý box
+      const staggerClass = `stagger-${(boxIndex % 6) + 1}`;
+      el.classList.add(staggerClass);
+      boxIndex++;
       
       // Pridaj do observera
+      scrollObserver.observe(el);
+    });
+  });
+
+  // Animuj nadpisy (menej oneskorenie)
+  headerSelectors.forEach(selector => {
+    document.querySelectorAll(selector).forEach((el) => {
+      if (el.classList.contains('animate-on-scroll')) return;
+      
+      el.classList.add('animate-on-scroll');
+      el.classList.add('stagger-1'); // Kratšie oneskorenie pre nadpisy
+      
       scrollObserver.observe(el);
     });
   });
@@ -4639,7 +4668,7 @@ function initScrollAnimations() {
 function animateNewElements(container) {
   if (!scrollObserver) return;
   
-  const selectors = [
+  const boxSelectors = [
     '.home-panel',
     '.matches-box',
     '.standings-box',
@@ -4647,24 +4676,32 @@ function animateNewElements(container) {
     '.analytics-box',
     '.stat-box',
     '.vip-tip-card',
-    '.vip-tip-row'
+    '.vip-tip-row',
+    '.matches-list',
+    '.standings-wrapper',
+    'table tbody tr',
+    '.nhl-home section'
   ];
   
-  selectors.forEach(selector => {
+  let boxIndex = 0;
+  boxSelectors.forEach(selector => {
     const elements = container.querySelectorAll(selector);
-    elements.forEach((el, index) => {
+    elements.forEach((el) => {
       if (el.classList.contains('animate-on-scroll')) return;
       
       el.classList.add('animate-on-scroll');
-      if (index % 3 === 1) el.classList.add('stagger-1');
-      if (index % 3 === 2) el.classList.add('stagger-2');
+      
+      // Postupný staggered efekt pre každý box
+      const staggerClass = `stagger-${(boxIndex % 6) + 1}`;
+      el.classList.add(staggerClass);
+      boxIndex++;
       
       scrollObserver.observe(el);
       
       // Ak je už viditeľný, animuj okamžite
       const rect = el.getBoundingClientRect();
       if (rect.top < window.innerHeight && rect.bottom > 0) {
-        setTimeout(() => el.classList.add('animated'), 50);
+        setTimeout(() => el.classList.add('animated'), 100);
       }
     });
   });
