@@ -3658,65 +3658,61 @@ async function renderVipTips() {
 
 // Shared function for viewport-based modal positioning
 function positionModalInViewport(modalContent, buttonRect) {
-  const MODAL_MARGIN = 12;
-  const EDGE_PADDING = 20;
-  
-  // Get modal dimensions (use defaults if not yet rendered)
+  const EDGE = 20;
+
+  // Fallback – vždy bezpečný - center in viewport if buttonRect is invalid
+  if (
+    !buttonRect ||
+    typeof buttonRect.top !== "number" ||
+    typeof buttonRect.left !== "number"
+  ) {
+    modalContent.style.top = "50%";
+    modalContent.style.left = "50%";
+    modalContent.style.transform = "translate(-50%, -50%)";
+    return;
+  }
+
   const MODAL_WIDTH = modalContent.offsetWidth || 560;
   const MODAL_HEIGHT = modalContent.offsetHeight || 400;
-  
-  // Get viewport dimensions
-  const viewportHeight = window.innerHeight;
-  const viewportWidth = window.innerWidth;
-  
-  // Calculate initial position (below button, centered horizontally)
-  let top = buttonRect.bottom + MODAL_MARGIN;
-  let left = buttonRect.left + (buttonRect.width / 2);
-  
-  // If not enough space below, position above button
-  if (top + MODAL_HEIGHT + EDGE_PADDING > viewportHeight) {
-    top = buttonRect.top - MODAL_HEIGHT - MODAL_MARGIN;
+  const vh = window.innerHeight;
+  const vw = window.innerWidth;
+
+  let top = buttonRect.bottom + 12;
+  let left = buttonRect.left + buttonRect.width / 2;
+
+  if (top + MODAL_HEIGHT + EDGE > vh) {
+    top = buttonRect.top - MODAL_HEIGHT - 12;
   }
-  
-  // Clamp vertical position to viewport (with padding)
-  const minTop = EDGE_PADDING;
-  const maxTop = viewportHeight - MODAL_HEIGHT - EDGE_PADDING;
-  top = Math.max(minTop, Math.min(top, maxTop));
-  
-  // Clamp horizontal position to viewport (centered, with padding)
-  const minLeft = MODAL_WIDTH / 2 + EDGE_PADDING;
-  const maxLeft = viewportWidth - MODAL_WIDTH / 2 - EDGE_PADDING;
-  left = Math.max(minLeft, Math.min(left, maxLeft));
-  
-  // Apply position (transform: translateX(-50%) is set in CSS for centering)
+
+  top = Math.max(EDGE, Math.min(top, vh - MODAL_HEIGHT - EDGE));
+  left = Math.max(
+    MODAL_WIDTH / 2 + EDGE,
+    Math.min(left, vw - MODAL_WIDTH / 2 - EDGE)
+  );
+
   modalContent.style.top = `${top}px`;
   modalContent.style.left = `${left}px`;
-  // Keep translateX(-50%) for horizontal centering - DO NOT override
-  if (!modalContent.style.transform || !modalContent.style.transform.includes('translateX')) {
-    modalContent.style.transform = "translateX(-50%)";
-  }
+  modalContent.style.transform = "translateX(-50%)";
 }
 
 async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   const modal = document.getElementById("vip-tip-analysis-modal");
   const overlay = document.getElementById("vip-tip-analysis-overlay");
-  if (!modal || !overlay || !event) return;
-  
-  // Show loading
-  modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
-  overlay.style.setProperty("display", "block", "important");
+  if (!modal || !overlay) return;
 
   const modalContent = overlay.querySelector(".modal-content");
-  const btnRect = event.currentTarget.getBoundingClientRect();
+
+  // ⬇️ ULOŽ RECT OKAMŽITE - ešte pred await
+  const btnRect = event?.currentTarget?.getBoundingClientRect() || null;
+
+  overlay.style.setProperty("display", "block", "important");
+  modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
 
   // Position modal in viewport (wait for dimensions to be available)
-  const setModalPosition = () => {
-    positionModalInViewport(modalContent, btnRect);
-  };
-
-  // Use double RAF to ensure modal is rendered and dimensions are available
   requestAnimationFrame(() => {
-    requestAnimationFrame(setModalPosition);
+    requestAnimationFrame(() => {
+      positionModalInViewport(modalContent, btnRect);
+    });
   });
 
   // Fetch fresh statistics
@@ -3906,23 +3902,21 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
 async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, line, confidence, event) {
   const modal = document.getElementById("vip-tip-analysis-modal");
   const overlay = document.getElementById("vip-tip-analysis-overlay");
-  if (!modal || !overlay || !event) return;
-  
-  // Show loading
-  modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
-  overlay.style.setProperty("display", "block", "important");
+  if (!modal || !overlay) return;
 
   const modalContent = overlay.querySelector(".modal-content");
-  const btnRect = event.currentTarget.getBoundingClientRect();
+
+  // ⬇️ ULOŽ RECT OKAMŽITE - ešte pred await
+  const btnRect = event?.currentTarget?.getBoundingClientRect() || null;
+
+  overlay.style.setProperty("display", "block", "important");
+  modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
 
   // Position modal in viewport (wait for dimensions to be available)
-  const setModalPosition = () => {
-    positionModalInViewport(modalContent, btnRect);
-  };
-
-  // Use double RAF to ensure modal is rendered and dimensions are available
   requestAnimationFrame(() => {
-    requestAnimationFrame(setModalPosition);
+    requestAnimationFrame(() => {
+      positionModalInViewport(modalContent, btnRect);
+    });
   });
 
   // Získaj štatistiky tímov
