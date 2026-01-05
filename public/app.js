@@ -3591,7 +3591,7 @@ async function renderVipTips() {
         <div class="vip-tip-right">
           <div class="vip-tip-badge">${pick.confidence}%</div>
           <div class="vip-tip-label">${t("vipTips.confidence")}</div>
-          <button class="vip-tip-analysis-btn" onclick="showVipTipAnalysis('${playerNameEscaped}', '${pick.teamCode}', '${oppCode}')">
+          <button class="vip-tip-analysis-btn" onclick="showVipTipAnalysis('${playerNameEscaped}', '${pick.teamCode}', '${oppCode}', event)">
             ${t("vipTips.analysis")}
           </button>
         </div>
