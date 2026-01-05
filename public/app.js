@@ -3847,6 +3847,12 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
     ? `${playerName} shows strong scoring potential based on multiple factors. With ${totalGoals} goals, ${totalAssists} assists, and ${totalPoints} points in ${gamesPlayed} games this season, he demonstrates consistent offensive production. His ${goalsPerGame.toFixed(2)} goals per game and ${shotsPerGame.toFixed(2)} shots per game indicate he's an active shooter. ${totalShots > 0 ? `With ${totalShots} total shots this season, he consistently creates scoring opportunities. ` : ""}${ppGoalsPerGame > 0 ? `His power play contribution (${ppGoalsPerGame.toFixed(2)} PPG/game) adds another dimension to his scoring. ` : ""}${toiMin > 18 ? `With ${toiMin} minutes of average ice time, he gets significant opportunities. ` : ""}${oppDefenseRank && oppDefenseRank <= 10 ? `Facing a weaker defensive team (${oppDefenseRank}. in goals allowed in L10) increases his chances. ` : ""}The AI confidence of ${confidence}% reflects these strong indicators.`
     : `${playerName} vykazuje silný strelecký potenciál na základe viacerých faktorov. S ${totalGoals} gólmi, ${totalAssists} asistenciami a ${totalPoints} bodmi v ${gamesPlayed} zápasoch tejto sezóny demonštruje konzistentnú ofenzívnu produkciu. Jeho ${goalsPerGame.toFixed(2)} gólov na zápas a ${shotsPerGame.toFixed(2)} striel na zápas naznačujú, že je aktívnym strelcom. ${totalShots > 0 ? `S ${totalShots} celkovými strelami tejto sezóny konzistentne vytvára strelecké príležitosti. ` : ""}${ppGoalsPerGame > 0 ? `Jeho príspevok v presilových hrách (${ppGoalsPerGame.toFixed(2)} PPG/zápas) pridáva ďalšiu dimenziu jeho streleckým schopnostiam. ` : ""}${toiMin > 18 ? `S ${toiMin} minútami priemerného času na ľade dostáva významné príležitosti. ` : ""}${oppDefenseRank && oppDefenseRank <= 10 ? `Proti slabšej obrane (${oppDefenseRank}. miesto v inkasovaných góloch v L10) sa zvyšujú jeho šance. ` : ""}AI confidence ${confidence}% odráža tieto silné indikátory.`;
 
+  // Reset pozície modalu pred zobrazením obsahu (ak existuje)
+  const modalContent = overlay.querySelector('.modal-content');
+  if (modalContent) {
+    // Pozícia sa nastaví dynamicky podľa tlačidla
+  }
+  
   // Update modal content - používa rovnaký systém ako rating modal
   modal.innerHTML = `
     <h2>${t("vipTips.analysisTitle")}</h2>
