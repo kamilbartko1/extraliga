@@ -85,7 +85,7 @@ header h1 {
   display: none !important; /* skryté na desktop */
   position: absolute !important;
   top: 50% !important;
-  left: 1rem !important;
+  left: 12px !important;
   transform: translateY(-50%) !important;
   z-index: 1002 !important;
   background: linear-gradient(135deg, 
@@ -722,7 +722,11 @@ header {
   padding: 10px 40px;
   background: linear-gradient(90deg, rgba(0, 40, 70, 0.8), rgba(0, 10, 25, 0.9));
   border-bottom: 1px solid rgba(0, 183, 255, 0.3);
-  position: relative;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  z-index: 1000 !important;
   height: 100px;
 }
 
@@ -774,7 +778,11 @@ header {
    HEADER / HLAVIČKA (už hotová)
 ----------------------------------*/
 header {
-  position: relative;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  z-index: 1000 !important;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -782,7 +790,6 @@ header {
   border-bottom: 1px solid rgba(0, 183, 255, 0.3);
   padding: 1rem 2rem;
   overflow: hidden;
-  z-index: 10; /* aby bolo nad pozadím, ale pod menu */
 }
 
 .header-left {
@@ -915,7 +922,7 @@ nav button.nav-premium:hover::before {
     display: flex !important;
     position: absolute !important;
     top: 50% !important;
-    left: 1rem !important;
+    left: 12px !important;
     transform: translateY(-50%) !important;
     z-index: 1002 !important;
   }
