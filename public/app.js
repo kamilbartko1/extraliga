@@ -3739,12 +3739,6 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
     positionModalInViewport(modalContent, btnRect);
   });
 
-  // -------------------------------
-  // ⬇️ YOUR EXISTING FETCH + LOGIC
-  // -------------------------------
-  // (nechávam NEDOTKNUTÉ – pokračuj presne ako máš)
-}
-
   // Fetch fresh statistics
   let statsData = {};
   try {
