@@ -4314,8 +4314,21 @@ body {
   min-width: 180px;
 }
 
+.premium-field-action {
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding-top: 0;
+}
+
+.premium-field-action button {
+  margin-top: 0;
+  align-self: flex-end;
+  height: fit-content;
+}
+
 .premium-field label {
   font-size: 0.7rem;
+  margin-bottom: 6px;
   letter-spacing: 0.12em;
   color: #7fa9c9;
   margin-bottom: 6px;
@@ -4324,6 +4337,13 @@ body {
 
 .premium-field-action {
   justify-content: flex-end;
+  align-items: flex-end;
+  padding-top: 0;
+}
+
+.premium-field-action button {
+  margin-top: 0;
+  align-self: flex-end;
 }
 
 /* ===============================
