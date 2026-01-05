@@ -7423,9 +7423,9 @@ header{
 
 .vip-analysis-modal {
   position: fixed;
-  top: 8%;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   z-index: 10000;
   width: 90%;
   max-width: 750px;
@@ -7470,12 +7470,12 @@ header{
 @keyframes modalUp3D {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(-20px) scale(0.95);
+    transform: translate(-50%, -50%) translateY(-20px) scale(0.95);
     filter: blur(8px);
   }
   to {
     opacity: 1;
-    transform: translateX(-50%) translateY(0) scale(1);
+    transform: translate(-50%, -50%) translateY(0) scale(1);
     filter: blur(0);
   }
 }
