@@ -3662,7 +3662,7 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   
   // Show loading
   modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
-  overlay.style.display = "block";
+  overlay.style.setProperty("display", "block", "important"); // Force display block
 
   const modalContent = overlay.querySelector(".modal-content");
   const btnRect = event.currentTarget.getBoundingClientRect();
@@ -3890,7 +3890,7 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
   
   // Show loading
   modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
-  overlay.style.display = "block";
+  overlay.style.setProperty("display", "block", "important"); // Force display block
 
   const modalContent = overlay.querySelector(".modal-content");
   const btnRect = event.currentTarget.getBoundingClientRect();
