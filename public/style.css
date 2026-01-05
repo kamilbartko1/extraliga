@@ -7263,6 +7263,38 @@ body {
   .analytics-grid {
     grid-template-columns: 1fr;
   }
+
+  /* Mobile Analytics Table */
+  .analytics-table {
+    font-size: 11px;
+  }
+
+  .analytics-table th {
+    padding: 6px 2px;
+    font-size: 10px;
+  }
+
+  .analytics-table td {
+    padding: 5px 2px;
+  }
+
+  .analytics-table td.team-cell {
+    padding-left: 4px;
+    gap: 4px;
+  }
+
+  .analytics-table td.team-cell img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .analytics-table td.value {
+    font-size: 11px;
+  }
+
+  .analytics-table td.sub {
+    font-size: 10px;
+  }
 }
 
 .premium-actions-row {
