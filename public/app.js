@@ -3657,10 +3657,18 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode) {
   const overlay = document.getElementById("vip-tip-analysis-overlay");
   if (!modal || !overlay) return;
 
+  // Zabráni scrollovaniu pozadia
+  document.body.style.overflow = "hidden";
+  
   // Show loading
   modal.innerHTML = `<div class="vip-analysis-modal-content"><p style="text-align:center;color:#00eaff;">${t("common.loading")}</p></div>`;
   modal.classList.remove("hidden");
   overlay.classList.remove("hidden");
+  
+  // Zabezpečí, že modal je v strede viewportu
+  modal.style.top = "50%";
+  modal.style.left = "50%";
+  modal.style.transform = "translate(-50%, -50%)";
 
   // Fetch fresh statistics
   let statsData = {};

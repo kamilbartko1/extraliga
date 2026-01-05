@@ -7429,10 +7429,12 @@ header{
   z-index: 10000;
   width: 90%;
   max-width: 750px;
-  max-height: 85vh;
+  max-height: 90vh;
   overflow-y: auto;
   pointer-events: auto;
   animation: modalUp3D 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Zabezpečí, že modal je vždy v strede viewportu */
+  margin: auto;
 }
 
 .vip-analysis-modal.hidden {
