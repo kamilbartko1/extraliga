@@ -4317,13 +4317,19 @@ body {
 .premium-field-action {
   justify-content: flex-end;
   align-items: flex-end;
-  padding-top: 24px;
+  padding-top: 0;
 }
 
 .premium-field-action button {
   margin-top: 0;
   align-self: flex-end;
-  height: fit-content;
+  height: 40px;
+  width: 100%;
+  min-width: 180px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .premium-field label {
