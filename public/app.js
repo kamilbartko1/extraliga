@@ -3978,13 +3978,26 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
   
   // Opravený text - používa skutočný vzťah, nie len reco
   const actualRelation = isActuallyOver ? (CURRENT_LANG === "en" ? "exceeds" : "nad") : isActuallyUnder ? (CURRENT_LANG === "en" ? "is below" : "pod") : (CURRENT_LANG === "en" ? "matches" : "sa rovná");
-  const relationNote = (isActuallyOver && reco === "under") || (isActuallyUnder && reco === "over") 
-    ? (CURRENT_LANG === "en" ? " However, our recommendation is based on additional factors beyond simple statistical averages." : " Avšak naše odporúčanie je založené na dodatočných faktoroch okrem jednoduchých štatistických priemerov.")
-    : "";
+  
+  // Ak je rozpor medzi expectedTotal a reco, musíme to vysvetliť
+  const hasConflict = (isActuallyOver && reco === "under") || (isActuallyUnder && reco === "over");
+  
+  let relationNote = "";
+  if (hasConflict) {
+    if (isActuallyOver && reco === "under") {
+      relationNote = CURRENT_LANG === "en" 
+        ? ` Despite the expected total (${expectedTotal.toFixed(2)}) being above the line (${line}), we recommend UNDER based on factors such as recent defensive improvements, key player absences, or historical head-to-head trends that suggest lower scoring.`
+        : ` Napriek tomu, že očakávaný počet (${expectedTotal.toFixed(2)}) je nad líniou (${line}), odporúčame UNDER na základe faktorov ako nedávne zlepšenie obrany, absencia kľúčových hráčov alebo historické trendy vzájomných zápasov, ktoré naznačujú nižší počet gólov.`;
+    } else if (isActuallyUnder && reco === "over") {
+      relationNote = CURRENT_LANG === "en"
+        ? ` Despite the expected total (${expectedTotal.toFixed(2)}) being below the line (${line}), we recommend OVER based on factors such as offensive momentum, weak goaltending matchups, or recent high-scoring trends.`
+        : ` Napriek tomu, že očakávaný počet (${expectedTotal.toFixed(2)}) je pod líniou (${line}), odporúčame OVER na základe faktorov ako ofenzívna dynamika, slabé brankárske duely alebo nedávne trendy vysokého počtu gólov.`;
+    }
+  }
   
   const analysisText = CURRENT_LANG === "en"
-    ? `Based on the last 10 games statistics, ${homeCode} averages ${homeAvgGoals.toFixed(2)} goals scored and ${homeAvgAllowed.toFixed(2)} goals allowed per game. ${awayCode} averages ${awayAvgGoals.toFixed(2)} goals scored and ${awayAvgAllowed.toFixed(2)} goals allowed per game. The expected total goals for this match is ${expectedTotal.toFixed(2)}, which ${actualRelation} the line of ${line} goals.${relationNote} The AI confidence of ${confidence}% reflects these statistical indicators and our recommendation for ${reco === "over" ? "OVER" : "UNDER"} ${line}.`
-    : `Na základe štatistík z posledných 10 zápasov, ${homeCode} má priemer ${homeAvgGoals.toFixed(2)} gólov strelených a ${homeAvgAllowed.toFixed(2)} gólov inkasovaných na zápas. ${awayCode} má priemer ${awayAvgGoals.toFixed(2)} gólov strelených a ${awayAvgAllowed.toFixed(2)} gólov inkasovaných na zápas. Očakávaný počet gólov pre tento zápas je ${expectedTotal.toFixed(2)}, čo je ${actualRelation} líniou ${line} gólov.${relationNote} AI confidence ${confidence}% odráža tieto štatistické indikátory a naše odporúčanie pre ${reco === "over" ? "OVER" : "UNDER"} ${line}.`;
+    ? `Based on the last 10 games statistics, ${homeCode} averages ${homeAvgGoals.toFixed(2)} goals scored and ${homeAvgAllowed.toFixed(2)} goals allowed per game. ${awayCode} averages ${awayAvgGoals.toFixed(2)} goals scored and ${awayAvgAllowed.toFixed(2)} goals allowed per game. The expected total goals for this match is ${expectedTotal.toFixed(2)}, which ${actualRelation} the line of ${line} goals.${relationNote} The AI confidence of ${confidence}% reflects our analysis and recommendation for ${reco === "over" ? "OVER" : "UNDER"} ${line}.`
+    : `Na základe štatistík z posledných 10 zápasov, ${homeCode} má priemer ${homeAvgGoals.toFixed(2)} gólov strelených a ${homeAvgAllowed.toFixed(2)} gólov inkasovaných na zápas. ${awayCode} má priemer ${awayAvgGoals.toFixed(2)} gólov strelených a ${awayAvgAllowed.toFixed(2)} gólov inkasovaných na zápas. Očakávaný počet gólov pre tento zápas je ${expectedTotal.toFixed(2)}, čo je ${actualRelation} líniou ${line} gólov.${relationNote} AI confidence ${confidence}% odráža našu analýzu a odporúčanie pre ${reco === "over" ? "OVER" : "UNDER"} ${line}.`;
 
   // Update modal content
   modal.innerHTML = `
