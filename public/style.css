@@ -7613,9 +7613,6 @@ header{
   inset: 0;
   background: rgba(0,0,0,0.65);
   z-index: 99998;
-
-  /* VŽDY STRED VIEWPORTU */
-  display: flex;
   align-items: center;
   justify-content: center;
 }
