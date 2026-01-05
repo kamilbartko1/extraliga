@@ -759,10 +759,6 @@ header {
   nav {
     display: none !important; /* skry horizontálne menu */
   }
-  .mobile-menu-toggle {
-    display: block !important; /* zobraz hamburger tlačidlo */
-  }
-}
 
 /* 💻 Desktop zobrazenie – zobraz horizontálne menu, skry rolovacie */
 @media (min-width: 769px) {
@@ -917,14 +913,6 @@ nav button.nav-premium:hover::before {
 @media (max-width: 768px) {
   nav {
     display: none !important;
-  }
-  .mobile-menu-toggle {
-    display: flex !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 12px !important;
-    transform: translateY(-50%) !important;
-    z-index: 1002 !important;
   }
 
   header::before {
