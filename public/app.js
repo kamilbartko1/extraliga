@@ -3856,6 +3856,8 @@ function closeVipTipAnalysis() {
   const overlay = document.getElementById("vip-tip-analysis-overlay");
   if (modal) modal.classList.add("hidden");
   if (overlay) overlay.classList.add("hidden");
+  // Obnov scrollovanie pozadia
+  document.body.style.overflow = "";
 }
 
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
