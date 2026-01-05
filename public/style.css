@@ -7421,32 +7421,53 @@ header{
   box-shadow: 0 4px 12px rgba(0, 234, 255, 0.2);
 }
 
-.vip-analysis-modal {
+/* VIP Analysis Modal - Overlay */
+#vip-tip-analysis-overlay {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10000;
-  width: 90%;
-  max-width: 750px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+#vip-tip-analysis-overlay.hidden {
+  display: none;
+}
+
+/* VIP Analysis Modal - Container */
+.vip-analysis-modal {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
   max-height: 90vh;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 10000;
+  animation: modalFadeIn 0.3s ease-out;
   pointer-events: auto;
-  animation: modalUp3D 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  /* Zabezpečí, že modal je vždy v strede viewportu */
-  margin: auto;
 }
 
 .vip-analysis-modal.hidden {
   display: none;
 }
 
+/* VIP Analysis Modal - Content Box */
 .vip-analysis-modal-content {
   background: linear-gradient(145deg, rgba(12, 27, 41, 0.98), rgba(6, 16, 24, 0.98));
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-radius: 24px;
-  padding: 40px;
+  padding: 0;
   color: #e8f4ff;
   box-shadow: 
     0 20px 60px rgba(0, 0, 0, 0.5),
@@ -7456,7 +7477,38 @@ header{
   line-height: 1.6;
   position: relative;
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  transform-style: preserve-3d;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+/* Scrollable body inside modal */
+.vip-analysis-body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 40px;
+  flex: 1;
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 234, 255, 0.4) transparent;
+}
+
+.vip-analysis-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.vip-analysis-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.vip-analysis-body::-webkit-scrollbar-thumb {
+  background: rgba(0, 234, 255, 0.4);
+  border-radius: 4px;
+}
+
+.vip-analysis-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 234, 255, 0.6);
 }
 
 .vip-analysis-modal-content::before {
@@ -7469,16 +7521,14 @@ header{
   background: linear-gradient(90deg, transparent, rgba(0, 234, 255, 0.4), transparent);
 }
 
-@keyframes modalUp3D {
+@keyframes modalFadeIn {
   from {
     opacity: 0;
-    transform: translate(-50%, -50%) translateY(-20px) scale(0.95);
-    filter: blur(8px);
+    transform: scale(0.95) translateY(-10px);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, -50%) translateY(0) scale(1);
-    filter: blur(0);
+    transform: scale(1) translateY(0);
   }
 }
 
@@ -7486,10 +7536,12 @@ header{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
-  padding-bottom: 20px;
+  padding: 24px 40px;
   border-bottom: 1px solid rgba(0, 234, 255, 0.15);
   position: relative;
+  flex-shrink: 0;
+  background: rgba(6, 16, 24, 0.5);
+  border-radius: 24px 24px 0 0;
 }
 
 .vip-analysis-header::after {
@@ -7538,9 +7590,7 @@ header{
   box-shadow: 0 4px 12px rgba(0, 234, 255, 0.2);
 }
 
-.vip-analysis-body {
-  display: flex;
-  flex-direction: column;
+/* vip-analysis-body je už definované vyššie s overflow-y: auto */
   gap: 32px;
 }
 

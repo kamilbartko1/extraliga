@@ -3658,17 +3658,26 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode) {
   if (!modal || !overlay) return;
 
   // Zabráni scrollovaniu pozadia
+  const scrollY = window.scrollY;
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${scrollY}px`;
+  document.body.style.width = "100%";
   document.body.style.overflow = "hidden";
   
   // Show loading
-  modal.innerHTML = `<div class="vip-analysis-modal-content"><p style="text-align:center;color:#00eaff;">${t("common.loading")}</p></div>`;
+  modal.innerHTML = `
+    <div class="vip-analysis-modal-content">
+      <div class="vip-analysis-header">
+        <h3>${t("vipTips.analysisTitle")}</h3>
+        <button class="vip-analysis-close" onclick="closeVipTipAnalysis()">✕</button>
+      </div>
+      <div class="vip-analysis-body">
+        <p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>
+      </div>
+    </div>
+  `;
   modal.classList.remove("hidden");
   overlay.classList.remove("hidden");
-  
-  // Zabezpečí, že modal je v strede viewportu
-  modal.style.top = "50%";
-  modal.style.left = "50%";
-  modal.style.transform = "translate(-50%, -50%)";
 
   // Fetch fresh statistics
   let statsData = {};
@@ -3856,8 +3865,16 @@ function closeVipTipAnalysis() {
   const overlay = document.getElementById("vip-tip-analysis-overlay");
   if (modal) modal.classList.add("hidden");
   if (overlay) overlay.classList.add("hidden");
+  
   // Obnov scrollovanie pozadia
+  const scrollY = document.body.style.top;
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.width = "";
   document.body.style.overflow = "";
+  if (scrollY) {
+    window.scrollTo(0, parseInt(scrollY || "0") * -1);
+  }
 }
 
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
