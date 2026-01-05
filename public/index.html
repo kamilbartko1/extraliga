@@ -29,6 +29,21 @@
 
   <!-- 🔹 HLAVIČKA -->
   <header>
+    <!-- 📱 MOBILNÉ MENU - HAMBURGER (VNÚTRI HEADERA) -->
+    <button 
+      class="mobile-menu-toggle" 
+      id="mobileMenuToggle"
+      aria-label="Otvoriť menu"
+      aria-expanded="false"
+      aria-controls="mobileMenuPanel"
+    >
+      <span class="hamburger-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+
     <div class="header-left">
       <img src="/nhl_logo.png" alt="NHL logo">
       <span>NHL 2025 – 2026</span>
@@ -77,21 +92,6 @@
     <button onclick="showSection('mantingale-section')" data-i18n="nav.abs">AdvancedBettingStrategy</button>
     <button class="nav-premium" onclick="showSection('premium-section')" data-i18n="nav.premium">NHLPRO PREMIUM</button>
   </nav>
-
-  <!-- 📱 MOBILNÉ MENU - HAMBURGER -->
-  <button 
-    class="mobile-menu-toggle" 
-    id="mobileMenuToggle"
-    aria-label="Otvoriť menu"
-    aria-expanded="false"
-    aria-controls="mobileMenuPanel"
-  >
-    <span class="hamburger-icon">
-      <span></span>
-      <span></span>
-      <span></span>
-    </span>
-  </button>
 
   <!-- 📱 SLIDE-IN MENU PANEL -->
   <div class="mobile-menu-overlay" id="mobileMenuOverlay" aria-hidden="true"></div>
