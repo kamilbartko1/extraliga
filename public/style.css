@@ -3846,18 +3846,19 @@ body {
 
 .modal-overlay {
   display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
   background: rgba(0,0,0,0.80);
   backdrop-filter: blur(5px);
   justify-content: center;
   align-items: flex-start;
   padding-top: 2cm;
-  z-index: 9999;
+  z-index: 99999 !important;
   animation: fadeIn 0.3s ease;
+  overflow-y: auto;
 }
 
 /* Moderný box */
