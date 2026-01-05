@@ -4439,20 +4439,18 @@ body {
   margin-bottom: 32px;
 }
 
-.premium-info-banner h2,
-.premium-info-content h2 {
-  color: #ffd400;
-  text-shadow: 0 2px 3px rgba(0,0,0,0.5), 0 0 15px rgba(255, 208, 0, 0.4);
-}
+.premium-info-banner {
   box-shadow: 0 4px 20px rgba(0, 234, 255, 0.1);
 }
 
+.premium-info-banner h2,
 .premium-info-content h2 {
-  color: #00eaff;
+  color: #ffd400;
   font-size: 1.4rem;
   margin-bottom: 24px;
   text-align: center;
   font-weight: 600;
+  text-shadow: 0 2px 3px rgba(0,0,0,0.5), 0 0 15px rgba(255, 208, 0, 0.4);
 }
 
 .premium-features-grid {
