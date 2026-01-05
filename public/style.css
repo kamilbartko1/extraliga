@@ -6076,6 +6076,8 @@ body {
   /* V mobile: zobraziť Balance hneď po hráčovi */
   .mantingale-table .th-balance-mobile {
     display: table-cell;
+    padding-left: 20px !important; /* Posun balance header doprava */
+    text-align: right; /* Zarovnanie doprava */
   }
 
   /* V mobile: zobraziť ROI stĺpec */
