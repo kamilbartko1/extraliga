@@ -3892,9 +3892,11 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
     <button class="close-modal-btn" onclick="closeVipTipAnalysis()">${t("common.close")}</button>
   `;
   
-  // Uprav pozíciu po načítaní obsahu (výška modalu sa mohla zmeniť)
+  // Reposition after content loads (height may have changed)
   requestAnimationFrame(() => {
-    requestAnimationFrame(setModalPosition);
+    requestAnimationFrame(() => {
+      positionModalInViewport(modalContent, btnRect);
+    });
   });
 }
 
