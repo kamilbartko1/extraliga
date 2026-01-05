@@ -1288,6 +1288,38 @@ async function displayHome() {
 
 </div>
 
+  <!-- ================= FEATURES SECTION ================= -->
+  <div class="features-section">
+    <h2 class="features-title">${t("home.featuresTitle")}</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3 class="feature-heading">${t("home.featureAI")}</h3>
+        <p class="feature-text">${t("home.featureAIDesc")}</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3 class="feature-heading">${t("home.featureStats")}</h3>
+        <p class="feature-text">${t("home.featureStatsDesc")}</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3 class="feature-heading">${t("home.featureStrategy")}</h3>
+        <p class="feature-text">${t("home.featureStrategyDesc")}</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3 class="feature-heading">${t("home.featureRealTime")}</h3>
+        <p class="feature-text">${t("home.featureRealTimeDesc")}</p>
+      </div>
+    </div>
+    <div class="features-cta">
+      <button class="feature-cta-btn" onclick="showSection('premium-section')">
+        ${t("home.featureCTA")}
+      </button>
+    </div>
+  </div>
+
 </section>
 `;
 
