@@ -7513,7 +7513,9 @@ header{
 .modal-content {
   position: fixed !important; /* Viewport-relative positioning */
   /* left and top are set by JavaScript */
-  transform: translateX(-50%) !important; /* Horizontal centering - DO NOT override in animations */
+   /* ✅ bezpečný default – ak JS zlyhá, modal je vždy v strede viewportu */
+  top: 50%;
+  left: 50%;
   max-height: 80vh !important;
   background: linear-gradient(165deg, #0c1b29, #061018) !important;
   border-radius: 20px !important;

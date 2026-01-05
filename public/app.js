@@ -3653,14 +3653,25 @@ async function renderVipTips() {
 }
 
 // ===============================
-// 👑 VIP TIP ANALYSIS MODAL
+// 👑 VIP TIP ANALYSIS MODAL (STABLE VERSION)
 // ===============================
 
-// Shared function for viewport-based modal positioning
+// Ensure overlay is always attached directly to <body>
+// (critical for iOS Safari + position:fixed)
+function ensureVipModalInBody() {
+  const overlay = document.getElementById("vip-tip-analysis-overlay");
+  if (!overlay) return;
+  if (overlay.parentElement !== document.body) {
+    document.body.appendChild(overlay);
+  }
+}
+
+// Robust viewport-based modal positioning with hard fallback
 function positionModalInViewport(modalContent, buttonRect) {
   const EDGE = 20;
+  const MARGIN = 12;
 
-  // Fallback – vždy bezpečný - center in viewport if buttonRect is invalid
+  // 🚨 HARD FALLBACK — ALWAYS SAFE
   if (
     !buttonRect ||
     typeof buttonRect.top !== "number" ||
@@ -3672,18 +3683,21 @@ function positionModalInViewport(modalContent, buttonRect) {
     return;
   }
 
-  const MODAL_WIDTH = modalContent.offsetWidth || 560;
-  const MODAL_HEIGHT = modalContent.offsetHeight || 400;
   const vh = window.innerHeight;
   const vw = window.innerWidth;
 
-  let top = buttonRect.bottom + 12;
+  const MODAL_WIDTH = modalContent.offsetWidth || 560;
+  const MODAL_HEIGHT = modalContent.offsetHeight || 400;
+
+  let top = buttonRect.bottom + MARGIN;
   let left = buttonRect.left + buttonRect.width / 2;
 
+  // If no space below → open above
   if (top + MODAL_HEIGHT + EDGE > vh) {
-    top = buttonRect.top - MODAL_HEIGHT - 12;
+    top = buttonRect.top - MODAL_HEIGHT - MARGIN;
   }
 
+  // Clamp into viewport
   top = Math.max(EDGE, Math.min(top, vh - MODAL_HEIGHT - EDGE));
   left = Math.max(
     MODAL_WIDTH / 2 + EDGE,
@@ -3695,25 +3709,41 @@ function positionModalInViewport(modalContent, buttonRect) {
   modalContent.style.transform = "translateX(-50%)";
 }
 
+// ===============================
+// OPEN PLAYER ANALYSIS MODAL
+// ===============================
 async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   const modal = document.getElementById("vip-tip-analysis-modal");
   const overlay = document.getElementById("vip-tip-analysis-overlay");
   if (!modal || !overlay) return;
 
-  const modalContent = overlay.querySelector(".modal-content");
+  ensureVipModalInBody();
 
-  // ⬇️ ULOŽ RECT OKAMŽITE - ešte pred await
+  const modalContent = modal; // IMPORTANT: work directly with the real modal element
+
+  // ✅ SAVE RECT SYNCHRONOUSLY (before await)
   const btnRect = event?.currentTarget?.getBoundingClientRect() || null;
 
-  overlay.style.setProperty("display", "block", "important");
-  modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
+  // Show overlay as flex → real modal window
+  overlay.style.display = "flex";
 
-  // Position modal in viewport (wait for dimensions to be available)
+  // Loading state
+  modal.innerHTML = `
+    <p style="text-align:center;color:#00eaff;padding:40px;">
+      ${t("common.loading")}
+    </p>
+  `;
+
+  // Initial positioning (before fetch)
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      positionModalInViewport(modalContent, btnRect);
-    });
+    positionModalInViewport(modalContent, btnRect);
   });
+
+  // -------------------------------
+  // ⬇️ YOUR EXISTING FETCH + LOGIC
+  // -------------------------------
+  // (nechávam NEDOTKNUTÉ – pokračuj presne ako máš)
+}
 
   // Fetch fresh statistics
   let statsData = {};
