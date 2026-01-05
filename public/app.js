@@ -3904,6 +3904,164 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   `;
 }
 
+// ===============================
+// 👑 VIP TOTAL GOALS ANALYSIS MODAL
+// ===============================
+async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, line, confidence, event) {
+  const modal = document.getElementById("vip-tip-analysis-modal");
+  const overlay = document.getElementById("vip-tip-analysis-overlay");
+  if (!modal || !overlay) return;
+  
+  // Show loading
+  modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
+  overlay.style.display = "flex";
+  
+  // Získaj pozíciu tlačidla, na ktoré sa kliklo
+  if (event && event.target) {
+    const buttonRect = event.target.getBoundingClientRect();
+    const scrollY = window.scrollY || window.pageYOffset;
+    const scrollX = window.scrollX || window.pageXOffset;
+    
+    // Vypočítaj pozíciu modalu - priamo pod tlačidlom
+    let modalTop = buttonRect.bottom + scrollY + 10; // 10px pod tlačidlom
+    let modalLeft = buttonRect.left + scrollX + (buttonRect.width / 2); // Stred tlačidla
+    
+    // V mobile: ak by modal bol mimo obrazovky, uprav pozíciu
+    if (window.innerWidth <= 768) {
+      // Centruj modal horizontálne v mobile
+      modalLeft = window.innerWidth / 2;
+      
+      // Ak je tlačidlo príliš nízko, posuň modal vyššie (ale stále viditeľný)
+      const maxTop = scrollY + window.innerHeight - 100; // 100px rezerva odspodu
+      if (modalTop > maxTop) {
+        modalTop = buttonRect.top + scrollY - 20; // 20px nad tlačidlom
+      }
+      
+      // Minimálne 20px od vrchu
+      const minTop = scrollY + 20;
+      if (modalTop < minTop) {
+        modalTop = minTop;
+      }
+    } else {
+      // Desktop: ak by modal bol mimo obrazovky vpravo, uprav
+      const maxLeft = window.innerWidth - 300; // 300px šírka modalu
+      if (modalLeft > maxLeft) {
+        modalLeft = maxLeft;
+      }
+      
+      // Ak by modal bol mimo obrazovky vľavo
+      if (modalLeft < 150) {
+        modalLeft = 150;
+      }
+      
+      // Ak je tlačidlo príliš nízko, posuň modal vyššie
+      const maxTop = scrollY + window.innerHeight - 200; // 200px rezerva
+      if (modalTop > maxTop) {
+        modalTop = buttonRect.top + scrollY - 20; // 20px nad tlačidlom
+      }
+    }
+    
+    // Nastav pozíciu modalu
+    const modalContent = overlay.querySelector('.modal-content');
+    if (modalContent) {
+      modalContent.style.position = "absolute";
+      modalContent.style.top = `${modalTop}px`;
+      modalContent.style.left = `${modalLeft}px`;
+      modalContent.style.transform = "translateX(-50%)";
+      modalContent.style.marginTop = "0";
+    }
+  } else {
+    // Fallback: ak nie je event, použij stred obrazovky
+    overlay.style.alignItems = "center";
+    overlay.style.justifyContent = "center";
+  }
+
+  // Získaj štatistiky tímov
+  const homeStanding = findStandingByCode(homeCode);
+  const awayStanding = findStandingByCode(awayCode);
+  
+  // Vypočítaj priemery
+  const homeGoalsFor = homeStanding?.l10GoalsFor || 0;
+  const homeGoalsAgainst = homeStanding?.l10GoalsAgainst || 0;
+  const awayGoalsFor = awayStanding?.l10GoalsFor || 0;
+  const awayGoalsAgainst = awayStanding?.l10GoalsAgainst || 0;
+  
+  const homeAvgGoals = homeGoalsFor / 10;
+  const homeAvgAllowed = homeGoalsAgainst / 10;
+  const awayAvgGoals = awayGoalsFor / 10;
+  const awayAvgAllowed = awayGoalsAgainst / 10;
+  
+  // Vypočítaj očakávaný počet gólov
+  const expectedTotal = (homeAvgGoals + awayAvgGoals + homeAvgAllowed + awayAvgAllowed) / 2;
+  
+  // Generuj dôvody
+  const reasons = [];
+  if (reco === "over") {
+    if (homeAvgGoals > 3) reasons.push(`${homeCode} má silnú ofenzívu (${homeAvgGoals.toFixed(2)} gólov/zápas v L10)`);
+    if (awayAvgGoals > 3) reasons.push(`${awayCode} má silnú ofenzívu (${awayAvgGoals.toFixed(2)} gólov/zápas v L10)`);
+    if (homeAvgAllowed > 2.5) reasons.push(`${homeCode} má slabú obranu (${homeAvgAllowed.toFixed(2)} inkasovaných/zápas v L10)`);
+    if (awayAvgAllowed > 2.5) reasons.push(`${awayCode} má slabú obranu (${awayAvgAllowed.toFixed(2)} inkasovaných/zápas v L10)`);
+    if (expectedTotal > line) reasons.push(`Očakávaný počet gólov (${expectedTotal.toFixed(2)}) je vyšší ako línia (${line})`);
+  } else if (reco === "under") {
+    if (homeAvgGoals < 2.5) reasons.push(`${homeCode} má slabú ofenzívu (${homeAvgGoals.toFixed(2)} gólov/zápas v L10)`);
+    if (awayAvgGoals < 2.5) reasons.push(`${awayCode} má slabú ofenzívu (${awayAvgGoals.toFixed(2)} gólov/zápas v L10)`);
+    if (homeAvgAllowed < 2) reasons.push(`${homeCode} má silnú obranu (${homeAvgAllowed.toFixed(2)} inkasovaných/zápas v L10)`);
+    if (awayAvgAllowed < 2) reasons.push(`${awayCode} má silnú obranu (${awayAvgAllowed.toFixed(2)} inkasovaných/zápas v L10)`);
+    if (expectedTotal < line) reasons.push(`Očakávaný počet gólov (${expectedTotal.toFixed(2)}) je nižší ako línia (${line})`);
+  }
+  
+  const analysisText = CURRENT_LANG === "en"
+    ? `Based on the last 10 games statistics, ${homeCode} averages ${homeAvgGoals.toFixed(2)} goals scored and ${homeAvgAllowed.toFixed(2)} goals allowed per game. ${awayCode} averages ${awayAvgGoals.toFixed(2)} goals scored and ${awayAvgAllowed.toFixed(2)} goals allowed per game. The expected total goals for this match is ${expectedTotal.toFixed(2)}, which ${reco === "over" ? "exceeds" : "is below"} the line of ${line} goals. The AI confidence of ${confidence}% reflects these statistical indicators.`
+    : `Na základe štatistík z posledných 10 zápasov, ${homeCode} má priemer ${homeAvgGoals.toFixed(2)} gólov strelených a ${homeAvgAllowed.toFixed(2)} gólov inkasovaných na zápas. ${awayCode} má priemer ${awayAvgGoals.toFixed(2)} gólov strelených a ${awayAvgAllowed.toFixed(2)} gólov inkasovaných na zápas. Očakávaný počet gólov pre tento zápas je ${expectedTotal.toFixed(2)}, čo je ${reco === "over" ? "nad" : "pod"} líniou ${line} gólov. AI confidence ${confidence}% odráža tieto štatistické indikátory.`;
+
+  // Update modal content
+  modal.innerHTML = `
+    <h2>${CURRENT_LANG === "en" ? "Game Total Goals Analysis" : "Analýza celkového počtu gólov"}</h2>
+    
+    <div style="text-align: center; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <h3 style="font-size: 1.4rem; color: #ffffff; margin: 0 0 8px 0;">${homeCode} ${t("vipTips.vs")} ${awayCode}</h3>
+      <p style="color: rgba(232, 244, 255, 0.7); margin: 0;">${CURRENT_LANG === "en" ? "Predicted total" : "Odhadovaný počet"}: ${predictedTotal.toFixed(2)} | ${CURRENT_LANG === "en" ? "Recommendation" : "Odporúčanie"}: <b>${reco === "over" ? t("vipTips.over") : t("vipTips.under")} ${line}</b></p>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${homeCode} ${CURRENT_LANG === "en" ? "Goals For" : "Góly strelené"}</div>
+        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${homeAvgGoals.toFixed(2)}</div>
+      </div>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${homeCode} ${CURRENT_LANG === "en" ? "Goals Against" : "Góly inkasované"}</div>
+        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${homeAvgAllowed.toFixed(2)}</div>
+      </div>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${awayCode} ${CURRENT_LANG === "en" ? "Goals For" : "Góly strelené"}</div>
+        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${awayAvgGoals.toFixed(2)}</div>
+      </div>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${awayCode} ${CURRENT_LANG === "en" ? "Goals Against" : "Góly inkasované"}</div>
+        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${awayAvgAllowed.toFixed(2)}</div>
+      </div>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${CURRENT_LANG === "en" ? "Expected Total" : "Očakávaný počet"}</div>
+        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${expectedTotal.toFixed(2)}</div>
+      </div>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${t("vipTips.confidence")}</div>
+        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${confidence}%</div>
+      </div>
+    </div>
+
+    <h3>${CURRENT_LANG === "en" ? "Why this recommendation?" : "Prečo toto odporúčanie?"}</h3>
+    <ul>
+      ${reasons.length > 0 ? reasons.map(r => `<li>${r}</li>`).join("") : `<li>${CURRENT_LANG === "en" ? "Based on statistical analysis of team performance" : "Na základe štatistickej analýzy výkonnosti tímov"}</li>`}
+    </ul>
+
+    <h3>${CURRENT_LANG === "en" ? "Detailed Analysis" : "Detailná analýza"}</h3>
+    <p>${analysisText}</p>
+    
+    <button class="close-modal-btn" onclick="closeVipTipAnalysis()">${t("common.close")}</button>
+  `;
+}
+
 function closeVipTipAnalysis(e) {
   // Rovnaký systém ako closeRatingModal - zatvor len ak klik bol na overlay, nie na content
   if (!e || e.target.id === "vip-tip-analysis-overlay") {
