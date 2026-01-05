@@ -3667,30 +3667,39 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   const modalContent = overlay.querySelector(".modal-content");
   const btnRect = event.currentTarget.getBoundingClientRect();
 
-  const MODAL_MARGIN = 12;
-  const MODAL_WIDTH = modalContent.offsetWidth || 560;
+  // Funkcia na nastavenie pozície modalu
+  const setModalPosition = () => {
+    const MODAL_MARGIN = 12;
+    const MODAL_WIDTH = modalContent.offsetWidth || 560;
+    const MODAL_HEIGHT = modalContent.offsetHeight || 400;
 
-  let top = btnRect.bottom + MODAL_MARGIN;
-  let left = btnRect.left + btnRect.width / 2;
+    let top = btnRect.bottom + MODAL_MARGIN;
+    let left = btnRect.left + btnRect.width / 2;
 
-  const viewportHeight = window.innerHeight;
-  const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
 
-  /* 🔽 Ak je málo miesta dole → otvor NAD tlačidlom */
-  if (top + modalContent.offsetHeight > viewportHeight) {
-    top = btnRect.top - modalContent.offsetHeight - MODAL_MARGIN;
-  }
+    /* 🔽 Ak je málo miesta dole → otvor NAD tlačidlom */
+    if (top + MODAL_HEIGHT > viewportHeight) {
+      top = btnRect.top - MODAL_HEIGHT - MODAL_MARGIN;
+    }
 
-  /* 🔒 Clamp do viewportu */
-  top = Math.max(20, Math.min(top, viewportHeight - modalContent.offsetHeight - 20));
-  left = Math.max(
-    MODAL_WIDTH / 2 + 10,
-    Math.min(left, viewportWidth - MODAL_WIDTH / 2 - 10)
-  );
+    /* 🔒 Clamp do viewportu */
+    top = Math.max(20, Math.min(top, viewportHeight - MODAL_HEIGHT - 20));
+    left = Math.max(
+      MODAL_WIDTH / 2 + 10,
+      Math.min(left, viewportWidth - MODAL_WIDTH / 2 - 10)
+    );
 
-  modalContent.style.top = `${top}px`;
-  modalContent.style.left = `${left}px`;
-  modalContent.style.transform = "translateX(-50%)";
+    modalContent.style.top = `${top}px`;
+    modalContent.style.left = `${left}px`;
+    modalContent.style.transform = "translateX(-50%)";
+  };
+
+  // Nastav pozíciu po zobrazení modalu (použij requestAnimationFrame pre správne rozmery)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(setModalPosition);
+  });
 
   // Fetch fresh statistics
   let statsData = {};
@@ -3818,13 +3827,7 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
     ? `${playerName} shows strong scoring potential based on multiple factors. With ${totalGoals} goals, ${totalAssists} assists, and ${totalPoints} points in ${gamesPlayed} games this season, he demonstrates consistent offensive production. His ${goalsPerGame.toFixed(2)} goals per game and ${shotsPerGame.toFixed(2)} shots per game indicate he's an active shooter. ${totalShots > 0 ? `With ${totalShots} total shots this season, he consistently creates scoring opportunities. ` : ""}${ppGoalsPerGame > 0 ? `His power play contribution (${ppGoalsPerGame.toFixed(2)} PPG/game) adds another dimension to his scoring. ` : ""}${toiMin > 18 ? `With ${toiMin} minutes of average ice time, he gets significant opportunities. ` : ""}${oppDefenseRank && oppDefenseRank <= 10 ? `Facing a weaker defensive team (${oppDefenseRank}. in goals allowed in L10) increases his chances. ` : ""}The AI confidence of ${confidence}% reflects these strong indicators.`
     : `${playerName} vykazuje silný strelecký potenciál na základe viacerých faktorov. S ${totalGoals} gólmi, ${totalAssists} asistenciami a ${totalPoints} bodmi v ${gamesPlayed} zápasoch tejto sezóny demonštruje konzistentnú ofenzívnu produkciu. Jeho ${goalsPerGame.toFixed(2)} gólov na zápas a ${shotsPerGame.toFixed(2)} striel na zápas naznačujú, že je aktívnym strelcom. ${totalShots > 0 ? `S ${totalShots} celkovými strelami tejto sezóny konzistentne vytvára strelecké príležitosti. ` : ""}${ppGoalsPerGame > 0 ? `Jeho príspevok v presilových hrách (${ppGoalsPerGame.toFixed(2)} PPG/zápas) pridáva ďalšiu dimenziu jeho streleckým schopnostiam. ` : ""}${toiMin > 18 ? `S ${toiMin} minútami priemerného času na ľade dostáva významné príležitosti. ` : ""}${oppDefenseRank && oppDefenseRank <= 10 ? `Proti slabšej obrane (${oppDefenseRank}. miesto v inkasovaných góloch v L10) sa zvyšujú jeho šance. ` : ""}AI confidence ${confidence}% odráža tieto silné indikátory.`;
 
-  // Reset pozície modalu pred zobrazením obsahu (ak existuje)
-  const modalContent = overlay.querySelector('.modal-content');
-  if (modalContent) {
-    // Pozícia sa nastaví dynamicky podľa tlačidla
-  }
-  
-  // Update modal content - používa rovnaký systém ako rating modal
+  // Update modal content
   modal.innerHTML = `
     <h2>${t("vipTips.analysisTitle")}</h2>
     
@@ -3887,30 +3890,39 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
   const modalContent = overlay.querySelector(".modal-content");
   const btnRect = event.currentTarget.getBoundingClientRect();
 
-  const MODAL_MARGIN = 12;
-  const MODAL_WIDTH = modalContent.offsetWidth || 560;
+  // Funkcia na nastavenie pozície modalu
+  const setModalPosition = () => {
+    const MODAL_MARGIN = 12;
+    const MODAL_WIDTH = modalContent.offsetWidth || 560;
+    const MODAL_HEIGHT = modalContent.offsetHeight || 400;
 
-  let top = btnRect.bottom + MODAL_MARGIN;
-  let left = btnRect.left + btnRect.width / 2;
+    let top = btnRect.bottom + MODAL_MARGIN;
+    let left = btnRect.left + btnRect.width / 2;
 
-  const viewportHeight = window.innerHeight;
-  const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
 
-  /* 🔽 Ak je málo miesta dole → otvor NAD tlačidlom */
-  if (top + modalContent.offsetHeight > viewportHeight) {
-    top = btnRect.top - modalContent.offsetHeight - MODAL_MARGIN;
-  }
+    /* 🔽 Ak je málo miesta dole → otvor NAD tlačidlom */
+    if (top + MODAL_HEIGHT > viewportHeight) {
+      top = btnRect.top - MODAL_HEIGHT - MODAL_MARGIN;
+    }
 
-  /* 🔒 Clamp do viewportu */
-  top = Math.max(20, Math.min(top, viewportHeight - modalContent.offsetHeight - 20));
-  left = Math.max(
-    MODAL_WIDTH / 2 + 10,
-    Math.min(left, viewportWidth - MODAL_WIDTH / 2 - 10)
-  );
+    /* 🔒 Clamp do viewportu */
+    top = Math.max(20, Math.min(top, viewportHeight - MODAL_HEIGHT - 20));
+    left = Math.max(
+      MODAL_WIDTH / 2 + 10,
+      Math.min(left, viewportWidth - MODAL_WIDTH / 2 - 10)
+    );
 
-  modalContent.style.top = `${top}px`;
-  modalContent.style.left = `${left}px`;
-  modalContent.style.transform = "translateX(-50%)";
+    modalContent.style.top = `${top}px`;
+    modalContent.style.left = `${left}px`;
+    modalContent.style.transform = "translateX(-50%)";
+  };
+
+  // Nastav pozíciu po zobrazení modalu (použij requestAnimationFrame pre správne rozmery)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(setModalPosition);
+  });
 
   // Získaj štatistiky tímov
   const homeStanding = findStandingByCode(homeCode);
