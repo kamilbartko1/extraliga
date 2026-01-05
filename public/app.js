@@ -56,13 +56,13 @@ const I18N = {
     "footer.terms": "📋 Podmienky používania",
 
     "home.loading": "⏳ Načítavam domovskú stránku...",
-    "home.heroTitle": "NHL Stávkovanie s AI",
-    "home.heroSubtitle": "Používaj umelú inteligenciu na zvýšenie úspešnosti tvojich stávok",
+    "home.heroTitle": "Použi pokročilú stratégiu tipovania",
+    "home.heroSubtitle": "Advanced Betting Strategy pre maximálny zisk z NHL stávok",
     "home.ctaStart": "Začať teraz",
     "home.ctaLearn": "Zistiť viac",
-    "home.statSuccessRate": "Úspešnosť",
-    "home.statTotalTips": "Celkom tipov",
-    "home.statHits": "Zásahov",
+    "home.statTotalProfit": "Celkový zisk",
+    "home.statTotalPlayers": "Aktívnych hráčov",
+    "home.statStrategy": "ABS Stratégia",
     "home.featuresTitle": "Prečo si vybrať nás?",
     "home.featureAI": "AI Analýza",
     "home.featureAIDesc": "Pokročilá AI analýza pomáha predpovedať výsledky s vyššou presnosťou",
@@ -268,13 +268,13 @@ const I18N = {
     "footer.disclaimer": "⚖️ Legal disclaimer",
 
     "home.loading": "⏳ Loading home…",
-    "home.heroTitle": "NHL Betting with AI",
-    "home.heroSubtitle": "Use artificial intelligence to increase your betting success rate",
+    "home.heroTitle": "Use Advanced Betting Strategy",
+    "home.heroSubtitle": "Advanced Betting Strategy for maximum profit from NHL bets",
     "home.ctaStart": "Get Started",
     "home.ctaLearn": "Learn More",
-    "home.statSuccessRate": "Success Rate",
-    "home.statTotalTips": "Total Tips",
-    "home.statHits": "Hits",
+    "home.statTotalProfit": "Total Profit",
+    "home.statTotalPlayers": "Active Players",
+    "home.statStrategy": "ABS Strategy",
     "home.featuresTitle": "Why Choose Us?",
     "home.featureAI": "AI Analysis",
     "home.featureAIDesc": "Advanced AI analysis helps predict outcomes with higher accuracy",
@@ -1100,11 +1100,12 @@ async function displayHome() {
   `;
 
   try {
-    // 🔥 1️⃣ RÝCHLE API – len zápasy, štatistiky a AI história
-    const [homeResp, statsResp, aiGetResp] = await Promise.all([
+    // 🔥 1️⃣ RÝCHLE API – len zápasy, štatistiky, AI história a ABS zisk
+    const [homeResp, statsResp, aiGetResp, absResp] = await Promise.all([
       fetch("/api/home", { cache: "no-store" }),
       fetch("/api/statistics", { cache: "no-store" }),
-      fetch("/api/ai?task=get", { cache: "no-store" })
+      fetch("/api/ai?task=get", { cache: "no-store" }),
+      fetch("/api/mantingal?task=all", { cache: "no-store" })
     ]);
 
     const homeData = await homeResp.json();
@@ -1117,6 +1118,11 @@ async function displayHome() {
 
     const history = (aiData.history || []).filter(h => h.result !== "pending");
 
+    // ABS zisk
+    const absData = absResp.ok ? await absResp.json() : { totalProfit: 0, players: {} };
+    const absTotalProfit = absData.totalProfit || 0;
+    const absPlayerCount = Object.keys(absData.players || {}).length;
+
     // 🔝 Štatistiky hráčov
     const topGoal = statsData?.topGoals?.[0] || {};
     const topPoints = statsData?.topPoints?.[0] || {};
@@ -1124,9 +1130,6 @@ async function displayHome() {
 
     // 🔥 2️⃣ VŠETKO OKREM AI TIPU SA RENDERUJE HNEĎ
     const gamesCountText = t("home.gamesCount", { count: homeData.matchesToday.length });
-    const aiSuccessRate = aiData.successRate || 0;
-    const aiTotalTips = aiData.total || 0;
-    const aiHitsCount = aiData.hits || 0;
     
     let html = `
 <section class="nhl-home">
@@ -1147,16 +1150,16 @@ async function displayHome() {
     </div>
     <div class="hero-stats">
       <div class="hero-stat-item">
-        <div class="hero-stat-value">${aiSuccessRate.toFixed(1)}%</div>
-        <div class="hero-stat-label">${t("home.statSuccessRate")}</div>
+        <div class="hero-stat-value">${absTotalProfit.toFixed(2)} €</div>
+        <div class="hero-stat-label">${t("home.statTotalProfit")}</div>
       </div>
       <div class="hero-stat-item">
-        <div class="hero-stat-value">${aiTotalTips}</div>
-        <div class="hero-stat-label">${t("home.statTotalTips")}</div>
+        <div class="hero-stat-value">${absPlayerCount}</div>
+        <div class="hero-stat-label">${t("home.statTotalPlayers")}</div>
       </div>
       <div class="hero-stat-item">
-        <div class="hero-stat-value">${aiHitsCount}</div>
-        <div class="hero-stat-label">${t("home.statHits")}</div>
+        <div class="hero-stat-value">ABS</div>
+        <div class="hero-stat-label">${t("home.statStrategy")}</div>
       </div>
     </div>
   </div>
