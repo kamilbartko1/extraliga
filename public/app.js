@@ -3686,17 +3686,16 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode) {
   }
 
   // Find player stats - try multiple name variations (similar to api/ai.js findPlayerRating)
-  const nameLower = String(playerName || "").toLowerCase().trim();
-  const nameClean = nameLower.replace(/\./g, "");
-  const nameParts = nameClean.split(" ").filter(Boolean);
+  // IMPORTANT: Use norm() to match how keys are created in statsByName Map
+  const playerNameNorm = norm(playerName).replace(/\./g, "");
+  const nameParts = playerNameNorm.split(" ").filter(Boolean);
   const firstPart = nameParts[0] || "";
   const lastPart = nameParts[nameParts.length - 1] || "";
   
-  // Generate name variants to try
+  // Generate name variants to try (all normalized with norm())
   const variants = [
-    nameClean, // "k kaprizov" or "kirill kaprizov"
+    playerNameNorm, // "kirill kaprizov" or "k kaprizov"
     firstPart.length > 0 && lastPart ? `${firstPart.charAt(0)} ${lastPart}` : null, // "k kaprizov"
-    firstPart.length > 0 && lastPart ? `${firstPart.charAt(0)}. ${lastPart}` : null, // "k. kaprizov"
     firstPart.length > 0 && lastPart ? `${firstPart.charAt(0)}${lastPart}` : null, // "kkaprizov"
     lastPart, // "kaprizov"
   ].filter(Boolean);
@@ -3710,12 +3709,12 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode) {
     }
   }
   
-  // If still not found, try to find by last name only (case-insensitive match)
+  // If still not found, try to find by last name only
   if (!st && lastPart) {
     for (const [key, value] of statsByName.entries()) {
       if (!value.name) continue;
-      const valueNameClean = norm(value.name).replace(/\./g, "");
-      const valueParts = valueNameClean.split(" ").filter(Boolean);
+      const valueNameNorm = norm(value.name).replace(/\./g, "");
+      const valueParts = valueNameNorm.split(" ").filter(Boolean);
       if (valueParts.length > 0) {
         const valueLastName = valueParts[valueParts.length - 1];
         if (valueLastName === lastPart) {
@@ -3729,7 +3728,7 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode) {
   
   // Debug logging
   if (!st) {
-    console.warn("VIP Analysis - Player not found:", playerName, "Variants tried:", variants);
+    console.warn("VIP Analysis - Player not found:", playerName, "Normalized:", playerNameNorm, "Variants tried:", variants);
     console.warn("Sample available keys (first 10):", Array.from(statsByName.keys()).slice(0, 10));
     console.warn("Sample stats names (first 10):", Array.from(statsByName.values()).slice(0, 10).map(v => v.name));
   }
