@@ -3656,28 +3656,10 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode) {
   const modal = document.getElementById("vip-tip-analysis-modal");
   const overlay = document.getElementById("vip-tip-analysis-overlay");
   if (!modal || !overlay) return;
-
-  // Zabráni scrollovaniu pozadia
-  const scrollY = window.scrollY;
-  document.body.style.position = "fixed";
-  document.body.style.top = `-${scrollY}px`;
-  document.body.style.width = "100%";
-  document.body.style.overflow = "hidden";
   
-  // Show loading
-  modal.innerHTML = `
-    <div class="vip-analysis-modal-content">
-      <div class="vip-analysis-header">
-        <h3>${t("vipTips.analysisTitle")}</h3>
-        <button class="vip-analysis-close" onclick="closeVipTipAnalysis()">✕</button>
-      </div>
-      <div class="vip-analysis-body">
-        <p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>
-      </div>
-    </div>
-  `;
-  modal.classList.remove("hidden");
-  overlay.classList.remove("hidden");
+  // Show loading - rovnaký systém ako rating modal
+  modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
+  overlay.style.display = "flex";
 
   // Fetch fresh statistics
   let statsData = {};
@@ -3860,20 +3842,11 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode) {
   `;
 }
 
-function closeVipTipAnalysis() {
-  const modal = document.getElementById("vip-tip-analysis-modal");
-  const overlay = document.getElementById("vip-tip-analysis-overlay");
-  if (modal) modal.classList.add("hidden");
-  if (overlay) overlay.classList.add("hidden");
-  
-  // Obnov scrollovanie pozadia
-  const scrollY = document.body.style.top;
-  document.body.style.position = "";
-  document.body.style.top = "";
-  document.body.style.width = "";
-  document.body.style.overflow = "";
-  if (scrollY) {
-    window.scrollTo(0, parseInt(scrollY || "0") * -1);
+function closeVipTipAnalysis(e) {
+  // Rovnaký systém ako closeRatingModal - zatvor len ak klik bol na overlay, nie na content
+  if (!e || e.target.id === "vip-tip-analysis-overlay") {
+    const overlay = document.getElementById("vip-tip-analysis-overlay");
+    if (overlay) overlay.style.display = "none";
   }
 }
 
