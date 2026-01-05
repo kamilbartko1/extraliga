@@ -83,24 +83,35 @@ header h1 {
 /* Hamburger tlačidlo */
 .mobile-menu-toggle {
   display: none; /* skryté na desktop */
-  position: fixed;
-  top: 1rem;
-  left: 1rem; /* Zmenené z right na left */
-  z-index: 1002;
-  background: rgba(0, 183, 255, 0.15);
-  border: 2px solid rgba(0, 234, 255, 0.4);
-  border-radius: 8px;
-  padding: 0.75rem;
+  position: fixed !important;
+  top: 1rem !important;
+  left: 1rem !important;
+  z-index: 1002 !important;
+  background: linear-gradient(135deg, rgba(0, 183, 255, 0.25), rgba(0, 234, 255, 0.15));
+  border: 2px solid rgba(0, 234, 255, 0.5);
+  border-radius: 10px;
+  padding: 0.65rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+  box-shadow: 
+    0 4px 12px rgba(0, 234, 255, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mobile-menu-toggle:hover {
-  background: rgba(0, 183, 255, 0.25);
-  border-color: rgba(0, 234, 255, 0.6);
-  box-shadow: 0 0 15px rgba(0, 234, 255, 0.5);
-  transform: scale(1.05);
+  background: linear-gradient(135deg, rgba(0, 183, 255, 0.35), rgba(0, 234, 255, 0.25));
+  border-color: rgba(0, 234, 255, 0.8);
+  box-shadow: 
+    0 6px 16px rgba(0, 234, 255, 0.6),
+    0 3px 8px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: scale(1.08) translateY(-1px);
 }
 
 .mobile-menu-toggle:focus {
@@ -108,34 +119,66 @@ header h1 {
   outline-offset: 2px;
 }
 
-/* Hamburger ikona (tri čiary) */
+/* Hamburger ikona (tri čiary - moderný 3D štýl) */
 .hamburger-icon {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 24px;
-  height: 18px;
+  width: 22px;
+  height: 16px;
+  position: relative;
 }
 
 .hamburger-icon span {
   display: block;
-  height: 3px;
+  background: linear-gradient(180deg, #00eaff, #00b7ff);
+  border-radius: 3px;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 
+    0 2px 4px rgba(0, 234, 255, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.hamburger-icon span:nth-child(1) {
+  height: 3.5px;
   width: 100%;
-  background: #00eaff;
-  border-radius: 2px;
-  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.hamburger-icon span:nth-child(2) {
+  height: 3.5px;
+  width: 85%;
+  margin-left: auto;
+  transform-origin: center;
+}
+
+.hamburger-icon span:nth-child(3) {
+  height: 3.5px;
+  width: 70%;
+  margin-left: auto;
+  transform-origin: center;
 }
 
 .mobile-menu-toggle[aria-expanded="true"] .hamburger-icon span:nth-child(1) {
-  transform: rotate(45deg) translate(8px, 8px);
+  transform: rotate(45deg) translate(6px, 6px);
+  width: 100%;
+  box-shadow: 
+    0 2px 6px rgba(0, 234, 255, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .mobile-menu-toggle[aria-expanded="true"] .hamburger-icon span:nth-child(2) {
   opacity: 0;
+  transform: scale(0);
 }
 
 .mobile-menu-toggle[aria-expanded="true"] .hamburger-icon span:nth-child(3) {
-  transform: rotate(-45deg) translate(7px, -7px);
+  transform: rotate(-45deg) translate(5px, -5px);
+  width: 100%;
+  box-shadow: 
+    0 2px 6px rgba(0, 234, 255, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 /* Overlay (tmavé pozadie) */
