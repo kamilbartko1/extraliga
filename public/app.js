@@ -3380,6 +3380,16 @@ async function renderVipTips() {
   const wrap = document.getElementById("vip-tips-body");
   if (!wrap) return;
 
+  // Aktualizuj dátum v headeri
+  const dateElement = document.getElementById("vip-tips-date");
+  if (dateElement) {
+    const today = new Date();
+    const dateStr = CURRENT_LANG === "en" 
+      ? today.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
+      : today.toLocaleDateString("sk-SK", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    dateElement.textContent = dateStr;
+  }
+
   wrap.innerHTML = `<p class="nhl-muted">${t("vipTips.loading")}</p>`;
 
   // Ensure we have matches/ratings/standings in memory
