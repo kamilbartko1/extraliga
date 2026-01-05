@@ -202,7 +202,7 @@ const I18N = {
     "abs.title": "🧠 ABS – Advanced Betting Strategy",
     "abs.intro": "ABS je analytická stávková stratégia založená na systematickom bankroll manažmente a progresívnom vyhodnocovaní výkonov konkrétnych hráčov NHL.",
     "abs.more1": "Každý hráč má vlastnú stávkovú sériu, ktorá sa vyhodnocuje nezávisle. Po výhre sa séria resetuje, po prehre sa výška stávky upravuje podľa presne definovaných pravidiel stratégie.",
-    "abs.more2": "V tabuľke nižšie vidíš aktuálnu stávku, streak, profit a detailnú históriu každého hráča. V NHLPRO PREMIUM môžeš pridávať vlastných hráčov podľa svojho výberu.",
+    "abs.more2": "V tabuľke nižšie vidíš aktuálnu stávku hráčov, ktorých autonómne vybral systém vypočtov AI, a ich stake, streak, profit a detailnú históriu každého hráča. V NHLPRO PREMIUM môžeš pridávať vlastných hráčov podľa svojho výberu.",
     "abs.warn": "⚠️ ABS nie je záruka výhry. Ide o štatistickú stratégiu určenú pre disciplinovaných používateľov so zodpovedným prístupom k bankrollu.",
 
     "absCta.title": "Chceš si vybrať vlastných hráčov do ABS?",
@@ -414,7 +414,7 @@ const I18N = {
     "abs.title": "🧠 ABS – Advanced Betting Strategy",
     "abs.intro": "ABS is an analytics-driven betting strategy focused on bankroll management and progressive evaluation of specific NHL players.",
     "abs.more1": "Each player has an independent betting series. After a win, the series resets; after a loss, the stake adjusts based on predefined rules.",
-    "abs.more2": "In the table below you can see the current stake, streak, profit and detailed history per player. In NHLPRO PREMIUM you can add your own players.",
+    "abs.more2": "In the table below you can see the current stake of players that were autonomously selected by the AI calculation system, their stake, streak, profit and detailed history per player. In NHLPRO PREMIUM you can add your own players.",
     "abs.warn": "⚠️ ABS is not a guarantee of profit. It is intended for disciplined users with responsible bankroll management.",
 
     "absCta.title": "Want to pick your own players for ABS?",
