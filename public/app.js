@@ -3873,6 +3873,11 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
     
     <button class="close-modal-btn" onclick="closeVipTipAnalysis()">${t("common.close")}</button>
   `;
+  
+  // Uprav pozíciu po načítaní obsahu (výška modalu sa mohla zmeniť)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(setModalPosition);
+  });
 }
 
 // ===============================
@@ -4008,6 +4013,11 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
     
     <button class="close-modal-btn" onclick="closeVipTipAnalysis()">${t("common.close")}</button>
   `;
+  
+  // Uprav pozíciu po načítaní obsahu (výška modalu sa mohla zmeniť)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(setModalPosition);
+  });
 }
 
 function closeVipTipAnalysis(e) {
