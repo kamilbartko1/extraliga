@@ -7511,9 +7511,9 @@ header{
 
 /* Modal Content Box */
 .modal-content {
-  position: fixed !important; /* 🔥 KĽÚČOVÉ */
-  left: 50% !important;
-  transform: translateX(-50%) !important;
+  position: fixed !important; /* Viewport-relative positioning */
+  /* left and top are set by JavaScript */
+  transform: translateX(-50%) !important; /* Horizontal centering - DO NOT override in animations */
   max-height: 80vh !important;
   background: linear-gradient(165deg, #0c1b29, #061018) !important;
   border-radius: 20px !important;

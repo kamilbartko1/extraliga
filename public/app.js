@@ -3655,6 +3655,48 @@ async function renderVipTips() {
 // ===============================
 // 👑 VIP TIP ANALYSIS MODAL
 // ===============================
+
+// Shared function for viewport-based modal positioning
+function positionModalInViewport(modalContent, buttonRect) {
+  const MODAL_MARGIN = 12;
+  const EDGE_PADDING = 20;
+  
+  // Get modal dimensions (use defaults if not yet rendered)
+  const MODAL_WIDTH = modalContent.offsetWidth || 560;
+  const MODAL_HEIGHT = modalContent.offsetHeight || 400;
+  
+  // Get viewport dimensions
+  const viewportHeight = window.innerHeight;
+  const viewportWidth = window.innerWidth;
+  
+  // Calculate initial position (below button, centered horizontally)
+  let top = buttonRect.bottom + MODAL_MARGIN;
+  let left = buttonRect.left + (buttonRect.width / 2);
+  
+  // If not enough space below, position above button
+  if (top + MODAL_HEIGHT + EDGE_PADDING > viewportHeight) {
+    top = buttonRect.top - MODAL_HEIGHT - MODAL_MARGIN;
+  }
+  
+  // Clamp vertical position to viewport (with padding)
+  const minTop = EDGE_PADDING;
+  const maxTop = viewportHeight - MODAL_HEIGHT - EDGE_PADDING;
+  top = Math.max(minTop, Math.min(top, maxTop));
+  
+  // Clamp horizontal position to viewport (centered, with padding)
+  const minLeft = MODAL_WIDTH / 2 + EDGE_PADDING;
+  const maxLeft = viewportWidth - MODAL_WIDTH / 2 - EDGE_PADDING;
+  left = Math.max(minLeft, Math.min(left, maxLeft));
+  
+  // Apply position (transform: translateX(-50%) is set in CSS for centering)
+  modalContent.style.top = `${top}px`;
+  modalContent.style.left = `${left}px`;
+  // Keep translateX(-50%) for horizontal centering - DO NOT override
+  if (!modalContent.style.transform || !modalContent.style.transform.includes('translateX')) {
+    modalContent.style.transform = "translateX(-50%)";
+  }
+}
+
 async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   const modal = document.getElementById("vip-tip-analysis-modal");
   const overlay = document.getElementById("vip-tip-analysis-overlay");
@@ -3662,41 +3704,17 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   
   // Show loading
   modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
-  overlay.style.setProperty("display", "block", "important"); // Force display block
+  overlay.style.setProperty("display", "block", "important");
 
   const modalContent = overlay.querySelector(".modal-content");
   const btnRect = event.currentTarget.getBoundingClientRect();
 
-  // Funkcia na nastavenie pozície modalu
+  // Position modal in viewport (wait for dimensions to be available)
   const setModalPosition = () => {
-    const MODAL_MARGIN = 12;
-    const MODAL_WIDTH = modalContent.offsetWidth || 560;
-    const MODAL_HEIGHT = modalContent.offsetHeight || 400;
-
-    let top = btnRect.bottom + MODAL_MARGIN;
-    let left = btnRect.left + btnRect.width / 2;
-
-    const viewportHeight = window.innerHeight;
-    const viewportWidth = window.innerWidth;
-
-    /* 🔽 Ak je málo miesta dole → otvor NAD tlačidlom */
-    if (top + MODAL_HEIGHT > viewportHeight) {
-      top = btnRect.top - MODAL_HEIGHT - MODAL_MARGIN;
-    }
-
-    /* 🔒 Clamp do viewportu */
-    top = Math.max(20, Math.min(top, viewportHeight - MODAL_HEIGHT - 20));
-    left = Math.max(
-      MODAL_WIDTH / 2 + 10,
-      Math.min(left, viewportWidth - MODAL_WIDTH / 2 - 10)
-    );
-
-    modalContent.style.top = `${top}px`;
-    modalContent.style.left = `${left}px`;
-    modalContent.style.transform = "translateX(-50%)";
+    positionModalInViewport(modalContent, btnRect);
   };
 
-  // Nastav pozíciu po zobrazení modalu (použij requestAnimationFrame pre správne rozmery)
+  // Use double RAF to ensure modal is rendered and dimensions are available
   requestAnimationFrame(() => {
     requestAnimationFrame(setModalPosition);
   });
@@ -3890,41 +3908,17 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
   
   // Show loading
   modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
-  overlay.style.setProperty("display", "block", "important"); // Force display block
+  overlay.style.setProperty("display", "block", "important");
 
   const modalContent = overlay.querySelector(".modal-content");
   const btnRect = event.currentTarget.getBoundingClientRect();
 
-  // Funkcia na nastavenie pozície modalu
+  // Position modal in viewport (wait for dimensions to be available)
   const setModalPosition = () => {
-    const MODAL_MARGIN = 12;
-    const MODAL_WIDTH = modalContent.offsetWidth || 560;
-    const MODAL_HEIGHT = modalContent.offsetHeight || 400;
-
-    let top = btnRect.bottom + MODAL_MARGIN;
-    let left = btnRect.left + btnRect.width / 2;
-
-    const viewportHeight = window.innerHeight;
-    const viewportWidth = window.innerWidth;
-
-    /* 🔽 Ak je málo miesta dole → otvor NAD tlačidlom */
-    if (top + MODAL_HEIGHT > viewportHeight) {
-      top = btnRect.top - MODAL_HEIGHT - MODAL_MARGIN;
-    }
-
-    /* 🔒 Clamp do viewportu */
-    top = Math.max(20, Math.min(top, viewportHeight - MODAL_HEIGHT - 20));
-    left = Math.max(
-      MODAL_WIDTH / 2 + 10,
-      Math.min(left, viewportWidth - MODAL_WIDTH / 2 - 10)
-    );
-
-    modalContent.style.top = `${top}px`;
-    modalContent.style.left = `${left}px`;
-    modalContent.style.transform = "translateX(-50%)";
+    positionModalInViewport(modalContent, btnRect);
   };
 
-  // Nastav pozíciu po zobrazení modalu (použij requestAnimationFrame pre správne rozmery)
+  // Use double RAF to ensure modal is rendered and dimensions are available
   requestAnimationFrame(() => {
     requestAnimationFrame(setModalPosition);
   });
