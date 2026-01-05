@@ -3541,6 +3541,9 @@ async function renderVipTips() {
   bestPerGame.sort((a, b) => (b.pick?.score ?? 0) - (a.pick?.score ?? 0));
   const topGamePicks = bestPerGame.slice(0, 3);
 
+  // Store statsByName globally so it's accessible in showVipTipAnalysis
+  window.VIP_STATS_BY_NAME = statsByName;
+  
   const scorerRows = topGamePicks.map(({ game, pick }, idx) => {
     const metaTop = `${game.homeCode} ${t("vipTips.vs")} ${game.awayCode}${game.startTime ? ` • ${game.startTime}` : ""}`;
     const metaStats = `TOI ${pick.toiMin || "-"} | S/G ${pick.shotsPerGame || "-"} | PPG/G ${pick.ppGoalsPerGame || "-"}`;
@@ -3558,7 +3561,7 @@ async function renderVipTips() {
     const playerNameEscaped = pick.player.replace(/'/g, "\\'");
     
     return `
-      <div class="vip-tip-row" data-player-key="${playerKey}">
+      <div class="vip-tip-row" data-player-key="${playerKey}" data-player-name="${pick.player}">
         <div class="vip-tip-left">
           <div class="vip-tip-rank">${idx + 1}</div>
           <div class="vip-tip-text">
@@ -3570,7 +3573,7 @@ async function renderVipTips() {
         <div class="vip-tip-right">
           <div class="vip-tip-badge">${pick.confidence}%</div>
           <div class="vip-tip-label">${t("vipTips.confidence")}</div>
-          <button class="vip-tip-analysis-btn" onclick="showVipTipAnalysis(${idx}, '${playerNameEscaped}', ${pick.rating}, ${pick.goalsPerGame || 0}, ${pick.shotsPerGame || 0}, ${pick.ppGoalsPerGame || 0}, ${pick.toiMin || 0}, ${pick.confidence}, '${pick.teamCode}', '${oppCode}', ${totalGoals}, ${totalShots}, ${totalAssists}, ${totalPoints}, ${gamesPlayed})">
+          <button class="vip-tip-analysis-btn" onclick="showVipTipAnalysis('${playerNameEscaped}', '${pick.teamCode}', '${oppCode}')">
             ${t("vipTips.analysis")}
           </button>
         </div>
