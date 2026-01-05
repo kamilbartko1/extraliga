@@ -183,7 +183,7 @@ const I18N = {
     "premium.boxTrend": "📈 Zmena formy (trend)",
 
     "vipTips.title": "🔥 VIP tipy na dnes",
-    "vipTips.subtitle": "Autonómne tipy na strelcov a góly podľa ratingov a L10 štatistík.",
+    "vipTips.subtitle": "Autonómne tipy na strelcov a góly podľa ratingov a štatistík z posledných 10 zápasov.",
     "vipTips.loading": "Načítavam VIP tipy…",
     "vipTips.noGames": "Dnes nie sú žiadne zápasy na tipovanie.",
     "vipTips.sectionScorers": "Tipy na strelcov (Top 3)",
@@ -404,7 +404,7 @@ const I18N = {
     "premium.boxTrend": "📈 Form change (trend)",
 
     "vipTips.title": "🔥 VIP tips for today",
-    "vipTips.subtitle": "Autonomous scorer and goals tips based on ratings and L10 stats.",
+    "vipTips.subtitle": "Autonomous scorer and goals tips based on ratings and stats from the last 10 games.",
     "vipTips.loading": "Loading VIP tips…",
     "vipTips.noGames": "No games to tip today.",
     "vipTips.sectionScorers": "Scorer picks (Top 3)",
