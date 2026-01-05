@@ -4317,7 +4317,7 @@ body {
 .premium-field-action {
   justify-content: flex-end;
   align-items: flex-end;
-  padding-top: 0;
+  padding-top: 24px;
 }
 
 .premium-field-action button {
