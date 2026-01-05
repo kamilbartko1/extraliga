@@ -3665,26 +3665,56 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode) {
 
   const nameKey = (n) => norm(String(n || "").replace(/\./g, ""));
   const statsByName = new Map();
+  
+  // Build map with all players - using the same approach as in renderVipTips
   for (const p of allPlayerArrays) {
-    const k = nameKey(p?.name);
+    if (!p?.name) continue;
+    const k = nameKey(p.name);
     if (!k) continue;
     const prev = statsByName.get(k) || {};
     statsByName.set(k, {
-      name: p?.name || prev.name,
-      team: p?.team || prev.team,
-      gamesPlayed: Number(p?.gamesPlayed ?? prev.gamesPlayed ?? 0),
-      goals: Number(p?.goals ?? prev.goals ?? 0),
-      assists: Number(p?.assists ?? prev.assists ?? 0),
-      points: Number(p?.points ?? prev.points ?? 0),
-      shots: Number(p?.shots ?? prev.shots ?? 0),
-      powerPlayGoals: Number(p?.powerPlayGoals ?? prev.powerPlayGoals ?? 0),
-      toi: Number(p?.toi ?? prev.toi ?? 0),
+      name: p.name || prev.name,
+      team: p.team || prev.team,
+      gamesPlayed: Number(p.gamesPlayed ?? prev.gamesPlayed ?? 0),
+      goals: Number(p.goals ?? prev.goals ?? 0),
+      assists: Number(p.assists ?? prev.assists ?? 0),
+      points: Number(p.points ?? prev.points ?? 0),
+      shots: Number(p.shots ?? prev.shots ?? 0),
+      powerPlayGoals: Number(p.powerPlayGoals ?? prev.powerPlayGoals ?? 0),
+      toi: Number(p.toi ?? prev.toi ?? 0),
     });
   }
 
-  // Find player stats
+  // Find player stats - try multiple name variations
   const k = nameKey(playerName);
-  const st = statsByName.get(k);
+  let st = statsByName.get(k);
+  
+  // If not found, try to find by last name only or other variations
+  if (!st) {
+    const nameParts = String(playerName || "").trim().split(" ");
+    if (nameParts.length > 1) {
+      const lastName = nameParts[nameParts.length - 1].replace(/\./g, "").toLowerCase();
+      // Try to find by last name in any stats entry
+      for (const [key, value] of statsByName.entries()) {
+        if (!value.name) continue;
+        const valueParts = String(value.name).trim().split(" ");
+        if (valueParts.length > 0) {
+          const valueLastName = valueParts[valueParts.length - 1].replace(/\./g, "").toLowerCase();
+          if (valueLastName === lastName) {
+            st = value;
+            console.log("VIP Analysis - Found by last name:", playerName, "->", value.name);
+            break;
+          }
+        }
+      }
+    }
+  }
+  
+  // Debug logging
+  if (!st) {
+    console.warn("VIP Analysis - Player not found:", playerName, "Key:", k);
+    console.warn("Available keys (first 10):", Array.from(statsByName.keys()).slice(0, 10));
+  }
   
   const totalGoals = st?.goals || 0;
   const totalShots = st?.shots || 0;
