@@ -3947,14 +3947,17 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
   // Vypočítaj očakávaný počet gólov
   const expectedTotal = (homeAvgGoals + awayAvgGoals + homeAvgAllowed + awayAvgAllowed) / 2;
   
-  // Skutočný vzťah medzi expectedTotal a line (pre správnu analýzu)
+  // 🔥 KĽÚČOVÉ: Odporúčanie MUSÍ byť založené na matematike, nie na nesprávnom reco z backendu
+  // Ak expectedTotal > line → MUSÍ byť OVER
+  // Ak expectedTotal < line → MUSÍ byť UNDER
+  const correctReco = expectedTotal > line ? "over" : expectedTotal < line ? "under" : reco;
   const isActuallyOver = expectedTotal > line;
   const isActuallyUnder = expectedTotal < line;
   const difference = Math.abs(expectedTotal - line);
   
-  // Generuj dôvody na základe skutočného vzťahu, nie len reco
+  // Generuj dôvody na základe SPRÁVNEHO odporúčania (založeného na matematike)
   const reasons = [];
-  if (reco === "over") {
+  if (correctReco === "over") {
     if (homeAvgGoals > 3) reasons.push(`${homeCode} má silnú ofenzívu (${homeAvgGoals.toFixed(2)} gólov/zápas v L10)`);
     if (awayAvgGoals > 3) reasons.push(`${awayCode} má silnú ofenzívu (${awayAvgGoals.toFixed(2)} gólov/zápas v L10)`);
     if (homeAvgAllowed > 2.5) reasons.push(`${homeCode} má slabú obranu (${homeAvgAllowed.toFixed(2)} inkasovaných/zápas v L10)`);
@@ -3969,35 +3972,15 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
     if (awayAvgGoals < 2.5) reasons.push(`${awayCode} má slabú ofenzívu (${awayAvgGoals.toFixed(2)} gólov/zápas v L10)`);
     if (homeAvgAllowed < 2) reasons.push(`${homeCode} má silnú obranu (${homeAvgAllowed.toFixed(2)} inkasovaných/zápas v L10)`);
     if (awayAvgAllowed < 2) reasons.push(`${awayCode} má silnú obranu (${awayAvgAllowed.toFixed(2)} inkasovaných/zápas v L10)`);
-    if (isActuallyUnder) {
-      reasons.push(`Očakávaný počet gólov (${expectedTotal.toFixed(2)}) je nižší ako línia (${line}) o ${difference.toFixed(2)} gólov`);
-    } else if (isActuallyOver) {
-      reasons.push(`⚠️ Poznámka: Očakávaný počet (${expectedTotal.toFixed(2)}) je vyšší ako línia (${line}), ale odporúčame UNDER kvôli iným faktorom`);
-    }
+    reasons.push(`Očakávaný počet gólov (${expectedTotal.toFixed(2)}) je nižší ako línia (${line}) o ${difference.toFixed(2)} gólov`);
   }
   
-  // Opravený text - používa skutočný vzťah, nie len reco
+  // Text - používa SPRÁVNE odporúčanie založené na matematike
   const actualRelation = isActuallyOver ? (CURRENT_LANG === "en" ? "exceeds" : "nad") : isActuallyUnder ? (CURRENT_LANG === "en" ? "is below" : "pod") : (CURRENT_LANG === "en" ? "matches" : "sa rovná");
   
-  // Ak je rozpor medzi expectedTotal a reco, musíme to vysvetliť
-  const hasConflict = (isActuallyOver && reco === "under") || (isActuallyUnder && reco === "over");
-  
-  let relationNote = "";
-  if (hasConflict) {
-    if (isActuallyOver && reco === "under") {
-      relationNote = CURRENT_LANG === "en" 
-        ? ` Despite the expected total (${expectedTotal.toFixed(2)}) being above the line (${line}), we recommend UNDER based on factors such as recent defensive improvements, key player absences, or historical head-to-head trends that suggest lower scoring.`
-        : ` Napriek tomu, že očakávaný počet (${expectedTotal.toFixed(2)}) je nad líniou (${line}), odporúčame UNDER na základe faktorov ako nedávne zlepšenie obrany, absencia kľúčových hráčov alebo historické trendy vzájomných zápasov, ktoré naznačujú nižší počet gólov.`;
-    } else if (isActuallyUnder && reco === "over") {
-      relationNote = CURRENT_LANG === "en"
-        ? ` Despite the expected total (${expectedTotal.toFixed(2)}) being below the line (${line}), we recommend OVER based on factors such as offensive momentum, weak goaltending matchups, or recent high-scoring trends.`
-        : ` Napriek tomu, že očakávaný počet (${expectedTotal.toFixed(2)}) je pod líniou (${line}), odporúčame OVER na základe faktorov ako ofenzívna dynamika, slabé brankárske duely alebo nedávne trendy vysokého počtu gólov.`;
-    }
-  }
-  
   const analysisText = CURRENT_LANG === "en"
-    ? `Based on the last 10 games statistics, ${homeCode} averages ${homeAvgGoals.toFixed(2)} goals scored and ${homeAvgAllowed.toFixed(2)} goals allowed per game. ${awayCode} averages ${awayAvgGoals.toFixed(2)} goals scored and ${awayAvgAllowed.toFixed(2)} goals allowed per game. The expected total goals for this match is ${expectedTotal.toFixed(2)}, which ${actualRelation} the line of ${line} goals.${relationNote} The AI confidence of ${confidence}% reflects our analysis and recommendation for ${reco === "over" ? "OVER" : "UNDER"} ${line}.`
-    : `Na základe štatistík z posledných 10 zápasov, ${homeCode} má priemer ${homeAvgGoals.toFixed(2)} gólov strelených a ${homeAvgAllowed.toFixed(2)} gólov inkasovaných na zápas. ${awayCode} má priemer ${awayAvgGoals.toFixed(2)} gólov strelených a ${awayAvgAllowed.toFixed(2)} gólov inkasovaných na zápas. Očakávaný počet gólov pre tento zápas je ${expectedTotal.toFixed(2)}, čo je ${actualRelation} líniou ${line} gólov.${relationNote} AI confidence ${confidence}% odráža našu analýzu a odporúčanie pre ${reco === "over" ? "OVER" : "UNDER"} ${line}.`;
+    ? `Based on the last 10 games statistics, ${homeCode} averages ${homeAvgGoals.toFixed(2)} goals scored and ${homeAvgAllowed.toFixed(2)} goals allowed per game. ${awayCode} averages ${awayAvgGoals.toFixed(2)} goals scored and ${awayAvgAllowed.toFixed(2)} goals allowed per game. The expected total goals for this match is ${expectedTotal.toFixed(2)}, which ${actualRelation} the line of ${line} goals. Therefore, we recommend ${correctReco === "over" ? "OVER" : "UNDER"} ${line}. The AI confidence of ${confidence}% reflects our analysis.`
+    : `Na základe štatistík z posledných 10 zápasov, ${homeCode} má priemer ${homeAvgGoals.toFixed(2)} gólov strelených a ${homeAvgAllowed.toFixed(2)} gólov inkasovaných na zápas. ${awayCode} má priemer ${awayAvgGoals.toFixed(2)} gólov strelených a ${awayAvgAllowed.toFixed(2)} gólov inkasovaných na zápas. Očakávaný počet gólov pre tento zápas je ${expectedTotal.toFixed(2)}, čo je ${actualRelation} líniou ${line} gólov. Preto odporúčame ${correctReco === "over" ? "OVER" : "UNDER"} ${line}. AI confidence ${confidence}% odráža našu analýzu.`;
 
   // Update modal content
   modal.innerHTML = `
@@ -4005,7 +3988,7 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
     
     <div style="text-align: center; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
       <h3 style="font-size: 1.4rem; color: #ffffff; margin: 0 0 8px 0;">${homeCode} ${t("vipTips.vs")} ${awayCode}</h3>
-      <p style="color: rgba(232, 244, 255, 0.7); margin: 0;">${CURRENT_LANG === "en" ? "Predicted total" : "Odhadovaný počet"}: ${predictedTotal.toFixed(2)} | ${CURRENT_LANG === "en" ? "Recommendation" : "Odporúčanie"}: <b>${reco === "over" ? t("vipTips.over") : t("vipTips.under")} ${line}</b></p>
+      <p style="color: rgba(232, 244, 255, 0.7); margin: 0;">${CURRENT_LANG === "en" ? "Expected total" : "Očakávaný počet"}: ${expectedTotal.toFixed(2)} | ${CURRENT_LANG === "en" ? "Recommendation" : "Odporúčanie"}: <b>${correctReco === "over" ? t("vipTips.over") : t("vipTips.under")} ${line}</b></p>
     </div>
     
     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;">
