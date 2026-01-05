@@ -3787,58 +3787,51 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode) {
     ? `${playerName} shows strong scoring potential based on multiple factors. With ${totalGoals} goals, ${totalAssists} assists, and ${totalPoints} points in ${gamesPlayed} games this season, he demonstrates consistent offensive production. His ${goalsPerGame.toFixed(2)} goals per game and ${shotsPerGame.toFixed(2)} shots per game indicate he's an active shooter. ${totalShots > 0 ? `With ${totalShots} total shots this season, he consistently creates scoring opportunities. ` : ""}${ppGoalsPerGame > 0 ? `His power play contribution (${ppGoalsPerGame.toFixed(2)} PPG/game) adds another dimension to his scoring. ` : ""}${toiMin > 18 ? `With ${toiMin} minutes of average ice time, he gets significant opportunities. ` : ""}${oppDefenseRank && oppDefenseRank <= 10 ? `Facing a weaker defensive team (${oppDefenseRank}. in goals allowed in L10) increases his chances. ` : ""}The AI confidence of ${confidence}% reflects these strong indicators.`
     : `${playerName} vykazuje silný strelecký potenciál na základe viacerých faktorov. S ${totalGoals} gólmi, ${totalAssists} asistenciami a ${totalPoints} bodmi v ${gamesPlayed} zápasoch tejto sezóny demonštruje konzistentnú ofenzívnu produkciu. Jeho ${goalsPerGame.toFixed(2)} gólov na zápas a ${shotsPerGame.toFixed(2)} striel na zápas naznačujú, že je aktívnym strelcom. ${totalShots > 0 ? `S ${totalShots} celkovými strelami tejto sezóny konzistentne vytvára strelecké príležitosti. ` : ""}${ppGoalsPerGame > 0 ? `Jeho príspevok v presilových hrách (${ppGoalsPerGame.toFixed(2)} PPG/zápas) pridáva ďalšiu dimenziu jeho streleckým schopnostiam. ` : ""}${toiMin > 18 ? `S ${toiMin} minútami priemerného času na ľade dostáva významné príležitosti. ` : ""}${oppDefenseRank && oppDefenseRank <= 10 ? `Proti slabšej obrane (${oppDefenseRank}. miesto v inkasovaných góloch v L10) sa zvyšujú jeho šance. ` : ""}AI confidence ${confidence}% odráža tieto silné indikátory.`;
 
+  // Update modal content - používa rovnaký systém ako rating modal
   modal.innerHTML = `
-    <div class="vip-analysis-modal-content">
-      <div class="vip-analysis-header">
-        <h3>${t("vipTips.analysisTitle")}</h3>
-        <button class="vip-analysis-close" onclick="closeVipTipAnalysis()">✕</button>
+    <h2>${t("vipTips.analysisTitle")}</h2>
+    
+    <div style="text-align: center; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <h3 style="font-size: 1.4rem; color: #ffffff; margin: 0 0 8px 0;">${playerName}</h3>
+      <p style="color: rgba(232, 244, 255, 0.7); margin: 0;">${teamCode} ${t("vipTips.vs")} ${oppCode}</p>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${t("vipTips.analysisGoals")}</div>
+        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${totalGoals}</div>
       </div>
-      <div class="vip-analysis-body">
-        <div class="vip-analysis-player">
-          <h4>${playerName}</h4>
-          <div class="vip-analysis-match">${teamCode} ${t("vipTips.vs")} ${oppCode}</div>
-        </div>
-        
-        <div class="vip-analysis-stats">
-          <div class="vip-analysis-stat-item">
-            <div class="vip-analysis-stat-label">${t("vipTips.analysisGoals")}</div>
-            <div class="vip-analysis-stat-value">${totalGoals}</div>
-          </div>
-          <div class="vip-analysis-stat-item">
-            <div class="vip-analysis-stat-label">${t("vipTips.analysisAssists")}</div>
-            <div class="vip-analysis-stat-value">${totalAssists}</div>
-          </div>
-          <div class="vip-analysis-stat-item">
-            <div class="vip-analysis-stat-label">${t("vipTips.analysisPoints")}</div>
-            <div class="vip-analysis-stat-value">${totalPoints}</div>
-          </div>
-          <div class="vip-analysis-stat-item">
-            <div class="vip-analysis-stat-label">${t("vipTips.analysisShots")}</div>
-            <div class="vip-analysis-stat-value">${totalShots}</div>
-          </div>
-          <div class="vip-analysis-stat-item">
-            <div class="vip-analysis-stat-label">${t("vipTips.analysisGames")}</div>
-            <div class="vip-analysis-stat-value">${gamesPlayed}</div>
-          </div>
-          <div class="vip-analysis-stat-item">
-            <div class="vip-analysis-stat-label">${t("vipTips.confidence")}</div>
-            <div class="vip-analysis-stat-value">${confidence}%</div>
-          </div>
-        </div>
-
-        <div class="vip-analysis-section">
-          <h5>${t("vipTips.analysisWhy")}</h5>
-          <ul class="vip-analysis-reasons">
-            ${reasons.map(r => `<li>${r}</li>`).join("")}
-          </ul>
-        </div>
-
-        <div class="vip-analysis-section">
-          <h5>${CURRENT_LANG === "en" ? "Detailed Analysis" : "Detailná analýza"}</h5>
-          <p class="vip-analysis-text">${analysisText}</p>
-        </div>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${t("vipTips.analysisAssists")}</div>
+        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${totalAssists}</div>
+      </div>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${t("vipTips.analysisPoints")}</div>
+        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${totalPoints}</div>
+      </div>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${t("vipTips.analysisShots")}</div>
+        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${totalShots}</div>
+      </div>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${t("vipTips.analysisGames")}</div>
+        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${gamesPlayed}</div>
+      </div>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${t("vipTips.confidence")}</div>
+        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${confidence}%</div>
       </div>
     </div>
+
+    <h3>${t("vipTips.analysisWhy")}</h3>
+    <ul>
+      ${reasons.map(r => `<li>${r}</li>`).join("")}
+    </ul>
+
+    <h3>${CURRENT_LANG === "en" ? "Detailed Analysis" : "Detailná analýza"}</h3>
+    <p>${analysisText}</p>
+    
+    <button class="close-modal-btn" onclick="closeVipTipAnalysis()">${t("common.close")}</button>
   `;
 }
 
