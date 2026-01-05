@@ -3878,71 +3878,39 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
 async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, line, confidence, event) {
   const modal = document.getElementById("vip-tip-analysis-modal");
   const overlay = document.getElementById("vip-tip-analysis-overlay");
-  if (!modal || !overlay) return;
+  if (!modal || !overlay || !event) return;
   
   // Show loading
   modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
-  overlay.style.display = "flex";
-  
-  // Získaj pozíciu tlačidla, na ktoré sa kliklo
-  if (event && event.target) {
-    const buttonRect = event.target.getBoundingClientRect();
-    const scrollY = window.scrollY || window.pageYOffset;
-    const scrollX = window.scrollX || window.pageXOffset;
-    
-    // Vypočítaj pozíciu modalu - priamo pod tlačidlom
-    let modalTop = buttonRect.bottom + scrollY + 10; // 10px pod tlačidlom
-    let modalLeft = buttonRect.left + scrollX + (buttonRect.width / 2); // Stred tlačidla
-    
-    // V mobile: ak by modal bol mimo obrazovky, uprav pozíciu
-    if (window.innerWidth <= 768) {
-      // Centruj modal horizontálne v mobile
-      modalLeft = window.innerWidth / 2;
-      
-      // Ak je tlačidlo príliš nízko, posuň modal vyššie (ale stále viditeľný)
-      const maxTop = scrollY + window.innerHeight - 100; // 100px rezerva odspodu
-      if (modalTop > maxTop) {
-        modalTop = buttonRect.top + scrollY - 20; // 20px nad tlačidlom
-      }
-      
-      // Minimálne 20px od vrchu
-      const minTop = scrollY + 20;
-      if (modalTop < minTop) {
-        modalTop = minTop;
-      }
-    } else {
-      // Desktop: ak by modal bol mimo obrazovky vpravo, uprav
-      const maxLeft = window.innerWidth - 300; // 300px šírka modalu
-      if (modalLeft > maxLeft) {
-        modalLeft = maxLeft;
-      }
-      
-      // Ak by modal bol mimo obrazovky vľavo
-      if (modalLeft < 150) {
-        modalLeft = 150;
-      }
-      
-      // Ak je tlačidlo príliš nízko, posuň modal vyššie
-      const maxTop = scrollY + window.innerHeight - 200; // 200px rezerva
-      if (modalTop > maxTop) {
-        modalTop = buttonRect.top + scrollY - 20; // 20px nad tlačidlom
-      }
-    }
-    
-    // Nastav pozíciu modalu
-    const modalContent = overlay.querySelector('.modal-content');
-    if (modalContent) {
-      modalContent.style.position = "absolute";
-      modalContent.style.top = `${modalTop}px`;
-      modalContent.style.left = `${modalLeft}px`;
-      modalContent.style.transform = "translateX(-50%)";
-      modalContent.style.marginTop = "0";
-    }
-  } else {
-    // Fallback: ak nie je event, použij stred obrazovky
-    overlay.style.alignItems = "center";
-    overlay.style.justifyContent = "center";
+  overlay.style.display = "block";
+
+  const modalContent = overlay.querySelector(".modal-content");
+  const btnRect = event.currentTarget.getBoundingClientRect();
+
+  const MODAL_MARGIN = 12;
+  const MODAL_WIDTH = modalContent.offsetWidth || 560;
+
+  let top = btnRect.bottom + MODAL_MARGIN;
+  let left = btnRect.left + btnRect.width / 2;
+
+  const viewportHeight = window.innerHeight;
+  const viewportWidth = window.innerWidth;
+
+  /* 🔽 Ak je málo miesta dole → otvor NAD tlačidlom */
+  if (top + modalContent.offsetHeight > viewportHeight) {
+    top = btnRect.top - modalContent.offsetHeight - MODAL_MARGIN;
   }
+
+  /* 🔒 Clamp do viewportu */
+  top = Math.max(20, Math.min(top, viewportHeight - modalContent.offsetHeight - 20));
+  left = Math.max(
+    MODAL_WIDTH / 2 + 10,
+    Math.min(left, viewportWidth - MODAL_WIDTH / 2 - 10)
+  );
+
+  modalContent.style.top = `${top}px`;
+  modalContent.style.left = `${left}px`;
+  modalContent.style.transform = "translateX(-50%)";
 
   // Získaj štatistiky tímov
   const homeStanding = findStandingByCode(homeCode);
