@@ -7197,6 +7197,226 @@ header{
   color: rgba(255,255,255,0.55);
 }
 
+.vip-tip-analysis-btn {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, rgba(0, 234, 255, 0.15), rgba(0, 119, 255, 0.15));
+  border: 1px solid rgba(0, 234, 255, 0.4);
+  border-radius: 8px;
+  color: #00eaff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.vip-tip-analysis-btn:hover {
+  background: linear-gradient(135deg, rgba(0, 234, 255, 0.25), rgba(0, 119, 255, 0.25));
+  border-color: rgba(0, 234, 255, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 234, 255, 0.2);
+}
+
+.vip-analysis-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  width: 90%;
+  max-width: 650px;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: modalUp 0.35s ease;
+}
+
+.vip-analysis-modal.hidden {
+  display: none;
+}
+
+.vip-analysis-modal-content {
+  background: linear-gradient(165deg, #0c1b29, #061018);
+  border-radius: 20px;
+  padding: 30px;
+  color: #d9f3ff;
+  box-shadow: 0 0 30px rgba(0, 234, 255, 0.3);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  line-height: 1.6;
+}
+
+.vip-analysis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(0, 234, 255, 0.2);
+}
+
+.vip-analysis-header h3 {
+  font-size: 1.5rem;
+  color: #00eaff;
+  margin: 0;
+}
+
+.vip-analysis-close {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.vip-analysis-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+
+.vip-analysis-body {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.vip-analysis-player {
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 234, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 234, 255, 0.15);
+}
+
+.vip-analysis-player h4 {
+  font-size: 1.3rem;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+}
+
+.vip-analysis-match {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.vip-analysis-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.vip-analysis-stat-item {
+  text-align: center;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vip-analysis-stat-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.vip-analysis-stat-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #00eaff;
+  text-shadow: 0 0 10px rgba(0, 234, 255, 0.4);
+}
+
+.vip-analysis-section {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.vip-analysis-section h5 {
+  font-size: 1.1rem;
+  color: #ffdd55;
+  margin: 0 0 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vip-analysis-reasons {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.vip-analysis-reasons li {
+  padding: 10px 0 10px 25px;
+  position: relative;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.vip-analysis-reasons li:last-child {
+  border-bottom: none;
+}
+
+.vip-analysis-reasons li:before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #00eaff;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.vip-analysis-text {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0;
+  text-align: justify;
+}
+
+@media (max-width: 768px) {
+  .vip-analysis-modal {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .vip-analysis-modal-content {
+    padding: 20px;
+  }
+
+  .vip-analysis-header h3 {
+    font-size: 1.2rem;
+  }
+
+  .vip-analysis-stats {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .vip-analysis-stat-value {
+    font-size: 1.5rem;
+  }
+
+  .vip-tip-analysis-btn {
+    font-size: 0.7rem;
+    padding: 5px 10px;
+  }
+}
+
 @media (max-width: 768px){
   .vip-tips-grid{
     grid-template-columns: 1fr;

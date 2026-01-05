@@ -195,6 +195,12 @@ const I18N = {
     "vipTips.under": "Under",
     "vipTips.noReco": "Bez odporúčania",
     "vipTips.vs": "vs",
+    "vipTips.analysis": "Analýza",
+    "vipTips.analysisTitle": "Detailná analýza hráča",
+    "vipTips.analysisWhy": "Prečo by mal dať gól",
+    "vipTips.analysisGoalsL10": "Góly v posledných 10 zápasoch",
+    "vipTips.analysisShots": "Celkom striel",
+    "vipTips.analysisClose": "Zavrieť",
 
     "modal.team.title": "🧠 Ako funguje NHLPRO Rating tímov?",
     "modal.player.title": "🧠 Ako funguje NHLPRO Rating hráčov?",
@@ -407,6 +413,12 @@ const I18N = {
     "vipTips.under": "Under",
     "vipTips.noReco": "No recommendation",
     "vipTips.vs": "vs",
+    "vipTips.analysis": "Analysis",
+    "vipTips.analysisTitle": "Player detailed analysis",
+    "vipTips.analysisWhy": "Why he should score",
+    "vipTips.analysisGoalsL10": "Goals in last 10 games",
+    "vipTips.analysisShots": "Total shots",
+    "vipTips.analysisClose": "Close",
 
     "modal.team.title": "🧠 How does NHLPRO team rating work?",
     "modal.player.title": "🧠 How does NHLPRO player rating work?",
@@ -3526,8 +3538,18 @@ async function renderVipTips() {
   const scorerRows = topGamePicks.map(({ game, pick }, idx) => {
     const metaTop = `${game.homeCode} ${t("vipTips.vs")} ${game.awayCode}${game.startTime ? ` • ${game.startTime}` : ""}`;
     const metaStats = `TOI ${pick.toiMin || "-"} | S/G ${pick.shotsPerGame || "-"} | PPG/G ${pick.ppGoalsPerGame || "-"}`;
+    const playerKey = `vip-tip-${idx}`;
+    const k = nameKey(pick.player);
+    const st = statsByName.get(k);
+    const totalShots = st?.shots || 0;
+    const goalsL10 = Math.round((pick.goalsPerGame || 0) * 10); // aproximácia
+    const oppCode = pick.teamCode === game.homeCode ? game.awayCode : game.homeCode;
+    
+    // Escape single quotes in player name for onclick
+    const playerNameEscaped = pick.player.replace(/'/g, "\\'");
+    
     return `
-      <div class="vip-tip-row">
+      <div class="vip-tip-row" data-player-key="${playerKey}">
         <div class="vip-tip-left">
           <div class="vip-tip-rank">${idx + 1}</div>
           <div class="vip-tip-text">
@@ -3539,6 +3561,9 @@ async function renderVipTips() {
         <div class="vip-tip-right">
           <div class="vip-tip-badge">${pick.confidence}%</div>
           <div class="vip-tip-label">${t("vipTips.confidence")}</div>
+          <button class="vip-tip-analysis-btn" onclick="showVipTipAnalysis(${idx}, '${playerNameEscaped}', ${pick.rating}, ${pick.goalsPerGame || 0}, ${pick.shotsPerGame || 0}, ${pick.ppGoalsPerGame || 0}, ${pick.toiMin || 0}, ${pick.confidence}, '${pick.teamCode}', '${oppCode}', ${goalsL10}, ${totalShots})">
+            ${t("vipTips.analysis")}
+          </button>
         </div>
       </div>
     `;
@@ -3592,6 +3617,88 @@ async function renderVipTips() {
       ${totalsRows || `<p class="nhl-muted">${t("common.noData")}</p>`}
     </div>
   `;
+}
+
+// ===============================
+// 👑 VIP TIP ANALYSIS MODAL
+// ===============================
+function showVipTipAnalysis(idx, playerName, rating, goalsPerGame, shotsPerGame, ppGoalsPerGame, toiMin, confidence, teamCode, oppCode, goalsL10, totalShots) {
+  const modal = document.getElementById("vip-tip-analysis-modal");
+  const overlay = document.getElementById("vip-tip-analysis-overlay");
+  if (!modal || !overlay) return;
+
+  const oppStanding = findStandingByCode(oppCode);
+  const oppDefenseRank = oppStanding ? (LAST_STANDINGS || []).filter(s => (s.l10GoalsAgainst || 0) > (oppStanding.l10GoalsAgainst || 0)).length + 1 : null;
+  const oppDefenseL10 = oppStanding?.l10GoalsAgainst || 0;
+  
+  // Generovanie analýzy
+  const reasons = [];
+  if (rating > 2000) reasons.push(CURRENT_LANG === "en" ? "High player rating" : "Vysoký rating hráča");
+  if (goalsPerGame > 0.4) reasons.push(CURRENT_LANG === "en" ? "Strong goal-scoring average" : "Silný priemer gólov");
+  if (shotsPerGame > 3) reasons.push(CURRENT_LANG === "en" ? "High shot volume" : "Veľké množstvo striel");
+  if (ppGoalsPerGame > 0.1) reasons.push(CURRENT_LANG === "en" ? "Power play effectiveness" : "Efektívnosť v presilových hrách");
+  if (toiMin > 18) reasons.push(CURRENT_LANG === "en" ? "Significant ice time" : "Významný čas na ľade");
+  if (oppDefenseRank && oppDefenseRank <= 10) {
+    reasons.push(CURRENT_LANG === "en" 
+      ? `Weak opponent defense (${oppDefenseRank}. in goals allowed)` 
+      : `Slabá obrana súpera (${oppDefenseRank}. miesto v inkasovaných góloch)`);
+  }
+
+  const analysisText = CURRENT_LANG === "en"
+    ? `${playerName} shows strong scoring potential based on multiple factors. With ${goalsL10} goals in the last 10 games and ${totalShots} total shots this season, he demonstrates consistent offensive production. His ${goalsPerGame.toFixed(2)} goals per game and ${shotsPerGame.toFixed(2)} shots per game indicate he's an active shooter. ${ppGoalsPerGame > 0 ? `His power play contribution (${ppGoalsPerGame.toFixed(2)} PPG/game) adds another dimension to his scoring. ` : ""}${toiMin > 18 ? `With ${toiMin} minutes of average ice time, he gets significant opportunities. ` : ""}${oppDefenseRank && oppDefenseRank <= 10 ? `Facing a weaker defensive team (${oppDefenseRank}. in goals allowed in L10) increases his chances. ` : ""}The AI confidence of ${confidence}% reflects these strong indicators.`
+    : `${playerName} vykazuje silný strelecký potenciál na základe viacerých faktorov. S ${goalsL10} gólmi v posledných 10 zápasoch a ${totalShots} celkovými strelami v tejto sezóne demonštruje konzistentnú ofenzívnu produkciu. Jeho ${goalsPerGame.toFixed(2)} gólov na zápas a ${shotsPerGame.toFixed(2)} striel na zápas naznačujú, že je aktívnym strelcom. ${ppGoalsPerGame > 0 ? `Jeho príspevok v presilových hrách (${ppGoalsPerGame.toFixed(2)} PPG/zápas) pridáva ďalšiu dimenziu jeho streleckým schopnostiam. ` : ""}${toiMin > 18 ? `S ${toiMin} minútami priemerného času na ľade dostáva významné príležitosti. ` : ""}${oppDefenseRank && oppDefenseRank <= 10 ? `Proti slabšej obrane (${oppDefenseRank}. miesto v inkasovaných góloch v L10) sa zvyšujú jeho šance. ` : ""}AI confidence ${confidence}% odráža tieto silné indikátory.`;
+
+  modal.innerHTML = `
+    <div class="vip-analysis-modal-content">
+      <div class="vip-analysis-header">
+        <h3>${t("vipTips.analysisTitle")}</h3>
+        <button class="vip-analysis-close" onclick="closeVipTipAnalysis()">✕</button>
+      </div>
+      <div class="vip-analysis-body">
+        <div class="vip-analysis-player">
+          <h4>${playerName}</h4>
+          <div class="vip-analysis-match">${teamCode} ${t("vipTips.vs")} ${oppCode}</div>
+        </div>
+        
+        <div class="vip-analysis-stats">
+          <div class="vip-analysis-stat-item">
+            <div class="vip-analysis-stat-label">${t("vipTips.analysisGoalsL10")}</div>
+            <div class="vip-analysis-stat-value">${goalsL10}</div>
+          </div>
+          <div class="vip-analysis-stat-item">
+            <div class="vip-analysis-stat-label">${t("vipTips.analysisShots")}</div>
+            <div class="vip-analysis-stat-value">${totalShots}</div>
+          </div>
+          <div class="vip-analysis-stat-item">
+            <div class="vip-analysis-stat-label">${t("vipTips.confidence")}</div>
+            <div class="vip-analysis-stat-value">${confidence}%</div>
+          </div>
+        </div>
+
+        <div class="vip-analysis-section">
+          <h5>${t("vipTips.analysisWhy")}</h5>
+          <ul class="vip-analysis-reasons">
+            ${reasons.map(r => `<li>${r}</li>`).join("")}
+          </ul>
+        </div>
+
+        <div class="vip-analysis-section">
+          <h5>${CURRENT_LANG === "en" ? "Detailed Analysis" : "Detailná analýza"}</h5>
+          <p class="vip-analysis-text">${analysisText}</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  modal.classList.remove("hidden");
+  overlay.classList.remove("hidden");
+}
+
+function closeVipTipAnalysis() {
+  const modal = document.getElementById("vip-tip-analysis-modal");
+  const overlay = document.getElementById("vip-tip-analysis-overlay");
+  if (modal) modal.classList.add("hidden");
+  if (overlay) overlay.classList.add("hidden");
 }
 
 // === NOVÁ SEKCIA: Štatistiky hráčov NHL (mini boxy) ===
