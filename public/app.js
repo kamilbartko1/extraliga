@@ -3633,6 +3633,8 @@ async function renderVipTips() {
         : g.reco === "under"
         ? `${t("vipTips.under")} ${g.line}`
         : t("vipTips.noReco");
+    
+    const recoClass = g.reco === "over" ? "vip-reco-over" : g.reco === "under" ? "vip-reco-under" : "";
 
     return `
       <div class="vip-tip-row">
@@ -3640,7 +3642,7 @@ async function renderVipTips() {
           <div class="vip-tip-text">
             <div class="vip-tip-title"><b>${g.homeCode}</b> ${t("vipTips.vs")} <b>${g.awayCode}</b></div>
             <div class="vip-tip-meta">${t("vipTips.predictedTotal")}: ${g.total}</div>
-            <div class="vip-tip-meta">${t("vipTips.reco")}: <b>${recoText}</b></div>
+            <div class="vip-tip-meta">${t("vipTips.reco")}: <b class="${recoClass}">${recoText}</b></div>
           </div>
         </div>
         <div class="vip-tip-right">
