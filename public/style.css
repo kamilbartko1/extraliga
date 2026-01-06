@@ -4204,9 +4204,19 @@ body {
   margin-bottom: 26px;
 }
 
+.premium-topbar {
+  display: flex;
+  justify-content: center; /* Centrovanie obsahu */
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
 .premium-welcome {
   color: #bfeaff;
   font-size: 0.95rem;
+  text-align: center; /* Centrovanie textu */
+  width: 100%; /* Plná šírka pre centrovanie */
 }
 
 .premium-logout-btn {
