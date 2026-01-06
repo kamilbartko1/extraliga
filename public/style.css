@@ -7815,15 +7815,12 @@ body {
   left: 12px !important;
   transform: translateY(-50%) !important;
   z-index: 1001 !important;
-  background: linear-gradient(135deg, #00b7ff 0%, #00a0e0 100%) !important; /* Farba ako buttony */
-  border: 1px solid rgba(0, 234, 255, 0.4) !important;
-  border-top-color: rgba(255, 255, 255, 0.2) !important;
-  border-left-color: rgba(255, 255, 255, 0.15) !important;
-  border-bottom-color: rgba(0, 100, 150, 0.6) !important;
-  border-right-color: rgba(0, 100, 150, 0.6) !important;
-  border-radius: 10px !important; /* Menej zaoblené rohy */
+  background: rgba(0, 183, 255, 0.15) !important; /* Priesvitná jemná modrá */
+  border: 1px solid rgba(0, 183, 255, 0.3) !important;
+  border-radius: 10px !important;
   padding: 0.7rem !important;
   cursor: pointer !important;
+  backdrop-filter: blur(4px) !important; /* Jemné rozmazanie pre moderný efekt */
   transition: all 0.25s ease !important;
   box-shadow: 0 4px 12px rgba(0, 183, 255, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.3) !important; /* 3D efekt */
   width: 48px !important;
@@ -7833,9 +7830,8 @@ body {
 }
 
 .mobile-menu-toggle:hover {
-  background: linear-gradient(135deg, #00e0ff 0%, #00b7ff 100%) !important; /* Svetlejšia pri hover */
-  border-color: rgba(0, 234, 255, 0.6) !important;
-  box-shadow: 0 6px 16px rgba(0, 183, 255, 0.5), inset 0 1px 3px rgba(255, 255, 255, 0.3), inset 0 -2px 5px rgba(0, 0, 0, 0.4) !important;
+  background: rgba(0, 183, 255, 0.25) !important; /* Jemne svetlejšia pri hover */
+  border-color: rgba(0, 183, 255, 0.5) !important;
   transform: translateY(-50%) scale(1.05) !important; /* Jemné zväčšenie */
 }
 
@@ -7863,24 +7859,24 @@ body {
   position: relative !important;
 }
 
-/* Vrchná čiara - VÄČŠIA (5px) */
+/* Vrchná čiara - TENŠIA (3px) */
 .hamburger-icon span:nth-child(1) {
-  height: 5px !important;
+  height: 3px !important;
   width: 100% !important;
   transform-origin: center !important;
 }
 
-/* Stredná čiara - MENŠIA (3px, 70% šírka) */
+/* Stredná čiara - TENŠIA (2px, 70% šírka) */
 .hamburger-icon span:nth-child(2) {
-  height: 3px !important;
+  height: 2px !important;
   width: 70% !important;
   margin-left: auto !important;
   transform-origin: center !important;
 }
 
-/* Spodná čiara - VÄČŠIA (5px) */
+/* Spodná čiara - TENŠIA (3px) */
 .hamburger-icon span:nth-child(3) {
-  height: 5px !important;
+  height: 3px !important;
   width: 100% !important;
   transform-origin: center !important;
 }
@@ -7889,7 +7885,7 @@ body {
 .mobile-menu-toggle[aria-expanded="true"] .hamburger-icon span:nth-child(1) {
   transform: rotate(45deg) translate(7px, 7px) !important;
   width: 100% !important;
-  height: 5px !important;
+  height: 3px !important; /* TENŠIA */
   box-shadow: none !important; /* Bez tieňov */
 }
 
@@ -7901,7 +7897,7 @@ body {
 .mobile-menu-toggle[aria-expanded="true"] .hamburger-icon span:nth-child(3) {
   transform: rotate(-45deg) translate(6px, -6px) !important;
   width: 100% !important;
-  height: 5px !important;
+  height: 3px !important; /* TENŠIA */
   box-shadow: none !important; /* Bez tieňov */
 }
 
