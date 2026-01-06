@@ -7840,15 +7840,16 @@ body {
   outline-offset: 2px !important;
 }
 
-/* Hamburger ikona - tri čiary (NEROVNOMERNÉ) */
+/* Hamburger ikona - tri rovnaké čiary s väčším priestorom */
 .hamburger-icon {
   display: flex !important;
   flex-direction: column !important;
-  justify-content: space-around !important; /* Stredná čiara presne v strede */
+  justify-content: space-between !important; /* Rovnomerný priestor medzi čiarkami */
   align-items: flex-start !important;
   width: 24px !important;
-  height: 18px !important;
+  height: 22px !important; /* Väčšia výška pre viac priestoru */
   position: relative !important;
+  gap: 6px !important; /* Dodatočný priestor medzi čiarkami */
 }
 
 .hamburger-icon span {
@@ -7860,22 +7861,9 @@ body {
   position: relative !important;
 }
 
-/* Vrchná čiara - TENŠIA (2px) */
-.hamburger-icon span:nth-child(1) {
-  height: 2px !important;
-  width: 100% !important;
-  transform-origin: center !important;
-}
-
-/* Stredná čiara - TENŠIA (1.5px, 70% šírka) */
-.hamburger-icon span:nth-child(2) {
-  height: 1.5px !important;
-  width: 70% !important;
-  margin-left: auto !important;
-  transform-origin: center !important;
-}
-
-/* Spodná čiara - TENŠIA (2px) */
+/* Všetky tri čiarky - ROVNAKÉ */
+.hamburger-icon span:nth-child(1),
+.hamburger-icon span:nth-child(2),
 .hamburger-icon span:nth-child(3) {
   height: 2px !important;
   width: 100% !important;
