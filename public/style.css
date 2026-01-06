@@ -4049,6 +4049,7 @@ body {
   padding: 60px 16px;
   position: relative; /* 🔒 PRE Z-INDEX */
   z-index: 1; /* 🔒 NAD HEADER::BEFORE */
+  min-height: 100vh; /* 🔒 ZABEZPEČ PLNÚ VÝŠKU */
 }
 
 /* ===============================
