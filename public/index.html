@@ -48,6 +48,43 @@
       <img src="/nhl_logo.png" alt="NHL logo">
       <span>NHL 2025 – 2026</span>
     </div>
+      <!-- 📱 SLIDE-IN MENU PANEL -->
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay" aria-hidden="true"></div>
+  <nav class="mobile-menu-panel" id="mobileMenuPanel" aria-label="Hlavná navigácia" aria-hidden="true">
+    <div class="mobile-menu-header">
+      <h3>Menu</h3>
+      <button 
+        class="mobile-menu-close" 
+        id="mobileMenuClose"
+        aria-label="Zatvoriť menu"
+      >
+        ✕
+      </button>
+    </div>
+    <ul class="mobile-menu-list">
+      <li>
+        <button onclick="closeMobileMenu(); showSection('home-section')" data-i18n="nav.home">Domov</button>
+      </li>
+      <li>
+        <button onclick="closeMobileMenu(); showSection('matches-section')" data-i18n="nav.results">Výsledky</button>
+      </li>
+      <li>
+        <button onclick="closeMobileMenu(); showSection('teams-section')" data-i18n="nav.teamRating">Rating tímov</button>
+      </li>
+      <li>
+        <button onclick="closeMobileMenu(); showSection('players-section')" data-i18n="nav.playerRating">Rating hráčov</button>
+      </li>
+      <li>
+        <button onclick="closeMobileMenu(); showSection('stats-section')" data-i18n="nav.stats">Štatistiky hráčov</button>
+      </li>
+      <li>
+        <button onclick="closeMobileMenu(); showSection('mantingale-section')" data-i18n="nav.abs">AdvancedBettingStrategy</button>
+      </li>
+      <li>
+        <button class="nav-premium" onclick="closeMobileMenu(); showSection('premium-section')" data-i18n="nav.premium">NHLPRO PREMIUM</button>
+      </li>
+    </ul>
+  </nav>
     <div class="header-center" data-i18n="header.tagline">Tipuj NHL ako profík!</div>
     <div class="header-right">
       <div class="ai-watermark" data-i18n-html="header.powered">Powered by <span>AI-Logic</span></div>
@@ -91,44 +128,6 @@
     <button onclick="showSection('stats-section')" data-i18n="nav.stats">Štatistiky hráčov</button>
     <button onclick="showSection('mantingale-section')" data-i18n="nav.abs">AdvancedBettingStrategy</button>
     <button class="nav-premium" onclick="showSection('premium-section')" data-i18n="nav.premium">NHLPRO PREMIUM</button>
-  </nav>
-
-  <!-- 📱 SLIDE-IN MENU PANEL -->
-  <div class="mobile-menu-overlay" id="mobileMenuOverlay" aria-hidden="true"></div>
-  <nav class="mobile-menu-panel" id="mobileMenuPanel" aria-label="Hlavná navigácia" aria-hidden="true">
-    <div class="mobile-menu-header">
-      <h3>Menu</h3>
-      <button 
-        class="mobile-menu-close" 
-        id="mobileMenuClose"
-        aria-label="Zatvoriť menu"
-      >
-        ✕
-      </button>
-    </div>
-    <ul class="mobile-menu-list">
-      <li>
-        <button onclick="closeMobileMenu(); showSection('home-section')" data-i18n="nav.home">Domov</button>
-      </li>
-      <li>
-        <button onclick="closeMobileMenu(); showSection('matches-section')" data-i18n="nav.results">Výsledky</button>
-      </li>
-      <li>
-        <button onclick="closeMobileMenu(); showSection('teams-section')" data-i18n="nav.teamRating">Rating tímov</button>
-      </li>
-      <li>
-        <button onclick="closeMobileMenu(); showSection('players-section')" data-i18n="nav.playerRating">Rating hráčov</button>
-      </li>
-      <li>
-        <button onclick="closeMobileMenu(); showSection('stats-section')" data-i18n="nav.stats">Štatistiky hráčov</button>
-      </li>
-      <li>
-        <button onclick="closeMobileMenu(); showSection('mantingale-section')" data-i18n="nav.abs">AdvancedBettingStrategy</button>
-      </li>
-      <li>
-        <button class="nav-premium" onclick="closeMobileMenu(); showSection('premium-section')" data-i18n="nav.premium">NHLPRO PREMIUM</button>
-      </li>
-    </ul>
   </nav>
 
     <!-- Domovska stranka -->
