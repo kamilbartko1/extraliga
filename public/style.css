@@ -7812,20 +7812,13 @@ body {
   left: 12px !important;
   transform: translateY(-50%) !important;
   z-index: 1001 !important;
-  background: linear-gradient(135deg, 
-    rgba(0, 183, 255, 0.4) 0%,
-    rgba(0, 234, 255, 0.3) 50%,
-    rgba(0, 150, 220, 0.35) 100%) !important;
-  border: 2px solid rgba(0, 234, 255, 0.7) !important;
-  border-top-color: rgba(255, 255, 255, 0.4) !important;
-  border-left-color: rgba(255, 255, 255, 0.3) !important;
-  border-bottom-color: rgba(0, 100, 180, 0.9) !important;
-  border-right-color: rgba(0, 100, 180, 0.9) !important;
-  border-radius: 12px !important;
+  background: #ff6b35 !important; /* Oranžová farba - pestrá a moderná */
+  border: none !important;
+  border-radius: 20px !important; /* Viac zaoblené rohy */
   padding: 0.7rem !important;
   cursor: pointer !important;
-  transition: all 0.3s ease !important;
-  box-shadow: 0 10px 25px rgba(0, 234, 255, 0.6), 0 5px 12px rgba(0, 0, 0, 0.5), inset 0 3px 6px rgba(255, 255, 255, 0.25), inset 0 -3px 6px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 234, 255, 0.3) !important;
+  transition: all 0.25s ease !important;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3) !important; /* Jednoduchý tieň */
   width: 48px !important;
   height: 48px !important;
   align-items: center !important;
@@ -7833,17 +7826,13 @@ body {
 }
 
 .mobile-menu-toggle:hover {
-  background: linear-gradient(135deg, 
-    rgba(0, 183, 255, 0.5) 0%,
-    rgba(0, 234, 255, 0.4) 50%,
-    rgba(0, 150, 220, 0.45) 100%) !important;
-  border-color: rgba(0, 234, 255, 1) !important;
-  box-shadow: 0 12px 30px rgba(0, 234, 255, 0.8), 0 6px 15px rgba(0, 0, 0, 0.6), inset 0 3px 8px rgba(255, 255, 255, 0.35), inset 0 -3px 8px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(0, 234, 255, 0.4) !important;
-  transform: translateY(-50%) scale(1.12) translateY(-2px) !important;
+  background: #ff8555 !important; /* Svetlejšia oranžová pri hover */
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4) !important;
+  transform: translateY(-50%) scale(1.05) !important; /* Jemné zväčšenie */
 }
 
 .mobile-menu-toggle:focus {
-  outline: 2px solid #00eaff !important;
+  outline: 2px solid #ff6b35 !important;
   outline-offset: 2px !important;
 }
 
@@ -7859,14 +7848,10 @@ body {
 
 .hamburger-icon span {
   display: block !important;
-  background: linear-gradient(180deg, 
-    rgba(255, 255, 255, 1) 0%,
-    #00eaff 25%,
-    #00b7ff 75%,
-    rgba(0, 150, 220, 1) 100%) !important;
-  border-radius: 4px !important;
-  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
-  box-shadow: 0 4px 8px rgba(0, 234, 255, 0.6), 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.4), inset 0 -2px 4px rgba(0, 0, 0, 0.3) !important;
+  background: #ffffff !important; /* Jednoduchá biela farba */
+  border-radius: 2px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: none !important; /* Bez tieňov */
   position: relative !important;
 }
 
@@ -7897,7 +7882,7 @@ body {
   transform: rotate(45deg) translate(7px, 7px) !important;
   width: 100% !important;
   height: 5px !important;
-  box-shadow: 0 4px 10px rgba(0, 234, 255, 0.7), inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+  box-shadow: none !important; /* Bez tieňov */
 }
 
 .mobile-menu-toggle[aria-expanded="true"] .hamburger-icon span:nth-child(2) {
@@ -7909,7 +7894,7 @@ body {
   transform: rotate(-45deg) translate(6px, -6px) !important;
   width: 100% !important;
   height: 5px !important;
-  box-shadow: 0 4px 10px rgba(0, 234, 255, 0.7), inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+  box-shadow: none !important; /* Bez tieňov */
 }
 
 /* Mobile zobrazenie */
