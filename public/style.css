@@ -7816,7 +7816,7 @@ body {
   transform: translateY(-50%) !important;
   z-index: 1001 !important;
   background: rgba(0, 183, 255, 0.15) !important; /* Priesvitný s jemnou modrou */
-  border: 1px solid rgba(0, 183, 255, 0.3) !important;
+  border: 2px solid rgba(0, 183, 255, 0.5) !important; /* Hrubsie a viditelnejsie oramovanie */
   border-radius: 10px !important;
   padding: 0.7rem !important;
   cursor: pointer !important;
@@ -7830,7 +7830,7 @@ body {
 
 .mobile-menu-toggle:hover {
   background: rgba(0, 183, 255, 0.25) !important; /* Jemne svetlejšia pri hover */
-  border-color: rgba(0, 183, 255, 0.5) !important;
+  border-color: rgba(0, 183, 255, 0.7) !important; /* Viditelnejsie oramovanie pri hover */
   box-shadow: 0 3px 10px rgba(0, 183, 255, 0.3) !important;
   transform: translateY(-50%) scale(1.05) !important; /* Jemné zväčšenie */
 }
