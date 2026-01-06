@@ -4373,6 +4373,14 @@ document.getElementById("mobileSelect")?.addEventListener("change", async (e) =>
 window.addEventListener("DOMContentLoaded", async () => {
   console.log("🚀 Spúšťam NHLPRO...");
 
+  // 🔒 ZABEZPEČ, ŽE HAMBURGER BUTTON JE V HEADERI (NIE MIMO)
+  const header = document.querySelector("header");
+  const hamburgerButton = document.getElementById("mobileMenuToggle");
+  if (header && hamburgerButton && hamburgerButton.parentElement !== header) {
+    console.warn("⚠️ Hamburger button je mimo headeru! Presúvam ho do headeru...");
+    header.insertBefore(hamburgerButton, header.firstChild);
+  }
+
   // i18n init (static + long blocks)
   applyI18n();
   syncLangButtonsUI();
