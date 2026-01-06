@@ -7844,7 +7844,8 @@ body {
 .hamburger-icon {
   display: flex !important;
   flex-direction: column !important;
-  justify-content: space-between !important;
+  justify-content: space-around !important; /* Stredná čiara presne v strede */
+  align-items: flex-start !important;
   width: 24px !important;
   height: 18px !important;
   position: relative !important;
