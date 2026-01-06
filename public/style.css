@@ -7115,8 +7115,9 @@ body {
 
 .analytics-table th:nth-child(2) {
   width: 45%;
-  text-align: left;
-  padding-left: 8px;
+  text-align: center; /* Zarovnanie hlavičky na stred */
+  padding-left: 0; /* Bez paddingu vľavo */
+  padding-right: 0;
 }
 
 .analytics-table th:nth-child(3) {
@@ -7142,10 +7143,12 @@ body {
 }
 
 .analytics-table td.team-cell {
-  text-align: left;
-  padding-left: 8px;
+  text-align: center; /* Zarovnanie obsahu na stred */
+  padding-left: 0; /* Bez paddingu vľavo */
+  padding-right: 0;
   display: flex;
   align-items: center;
+  justify-content: center; /* Centrovanie flex obsahu */
   gap: 6px;
 }
 
@@ -7206,9 +7209,18 @@ body {
   }
 
   .analytics-table td.team-cell {
-    padding-left: 4px;
+    padding-left: 0; /* Bez paddingu vľavo */
+    padding-right: 0;
     gap: 4px;
     min-width: 80px; /* Zabezpečí dostatočnú šírku pre team abbrev */
+    justify-content: center; /* Centrovanie na mobile */
+  }
+
+  /* Zarovnanie hlavičky "Tím" na mobile */
+  .analytics-table th:nth-child(2) {
+    text-align: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
   .analytics-table td.team-cell span {
