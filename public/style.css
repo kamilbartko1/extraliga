@@ -4206,17 +4206,20 @@ body {
 
 .premium-topbar {
   display: flex;
-  justify-content: center; /* Centrovanie obsahu */
+  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
+  margin-bottom: 26px;
+  position: relative; /* Pre absolútne pozicionovanie */
 }
 
 .premium-welcome {
   color: #bfeaff;
   font-size: 0.95rem;
   text-align: center; /* Centrovanie textu */
-  width: 100%; /* Plná šírka pre centrovanie */
+  position: absolute; /* Absolútne pozicionovanie */
+  left: 50%; /* Presun na stred */
+  transform: translateX(-50%); /* Centrovanie */
+  width: auto; /* Automatická šírka */
 }
 
 .premium-logout-btn {
