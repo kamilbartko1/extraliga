@@ -605,7 +605,6 @@ button:hover {
 
   /* header s pozadím loga */
 header {
-  position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   width: 100% !important;
@@ -663,7 +662,6 @@ header {
    HEADER / HLAVIČKA (už hotová)
 ----------------------------------*/
 header {
-  position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   width: 100% !important;
