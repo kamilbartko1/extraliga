@@ -775,6 +775,11 @@
         overlay.setAttribute("aria-hidden", "false");
         document.body.style.overflow = "hidden"; // zabráni scrollovaniu pozadia
         
+        // 🔒 EXPLICITNE NASTAV TRANSFORM (pre istotu, že CSS funguje)
+        requestAnimationFrame(() => {
+          panel.style.transform = "translateX(0)";
+        });
+        
         // Debug - skontroluj, či sa triedy pridali
         console.log("Panel classes:", panel.className);
         console.log("Overlay classes:", overlay.className);
@@ -788,14 +793,30 @@
       const panel = document.getElementById("mobileMenuPanel");
       const overlay = document.getElementById("mobileMenuOverlay");
       const toggle = document.getElementById("mobileMenuToggle");
+      const closeBtn = document.getElementById("mobileMenuClose");
       
       if (panel && overlay && toggle) {
+        // 🔒 ODSTRÁŇ FOCUS Z CLOSE BUTTONU PRED NASTAVENÍM aria-hidden (accessibility fix)
+        if (closeBtn && document.activeElement === closeBtn) {
+          closeBtn.blur();
+        }
+        
         panel.classList.remove("active");
         overlay.classList.remove("active");
         toggle.setAttribute("aria-expanded", "false");
         panel.setAttribute("aria-hidden", "true");
         overlay.setAttribute("aria-hidden", "true");
         document.body.style.overflow = ""; // obnov scrollovanie
+        
+        // 🔒 EXPLICITNE NASTAV TRANSFORM SPÄŤ (pre istotu, že CSS funguje)
+        requestAnimationFrame(() => {
+          panel.style.transform = "translateX(-100%)";
+        });
+        
+        // Vráť focus na toggle button (hamburger)
+        if (toggle) {
+          toggle.focus();
+        }
       }
     }
 
