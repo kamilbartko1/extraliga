@@ -2420,13 +2420,6 @@ nav button:hover::after {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* === Hlavička s pozadím === */
-header {
-  position: relative;
-  background: rgba(0, 0, 0, 0.6);
-  overflow: hidden;
-}
-
 /* Pozadie headeru */
 header::before {
   content: "";
@@ -2440,12 +2433,6 @@ header::before {
   background-position: center;
   opacity: 0.27;      /* jemná viditeľnosť obrázka */
   z-index: 0;
-}
-
-/* Texty a logá nech sú nad pozadím */
-header * {
-  position: relative;
-  z-index: 1;
 }
 
 /* === Rating tímov – presné zarovnanie stĺpcov === */
@@ -7272,9 +7259,6 @@ body {
 /* ===============================
    Language switch (SK/EN flags)
    =============================== */
-header{
-  position: relative;
-}
 
 .header-right{
   display: flex;
