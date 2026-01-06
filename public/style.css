@@ -2420,20 +2420,21 @@ nav button:hover::after {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* Pozadie headeru */
+/* Pozadie headeru - LEN V HEADERI */
 header::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100%; /* LEN výška headera, nie celého viewportu */
   background-image: url("/pozadie.png");
   background-size: cover;
   background-position: center;
   opacity: 0.27;      /* jemná viditeľnosť obrázka */
   z-index: 0;
   pointer-events: none; /* 🔒 NEBLOKUJ KLIKY V PREMIUM SEKCII */
+  overflow: hidden; /* 🔒 ZABRÁŇ PREKRYTIU MIMO HEADERA */
 }
 
 /* === Rating tímov – presné zarovnanie stĺpcov === */
@@ -4058,11 +4059,7 @@ body {
    =============================== */
 
 .premium-section {
-  background: radial-gradient(
-    circle at top,
-    #0b1a2a,
-    #02070d 70%
-  );
+  background: radial-gradient(circle at top, #001f33 0%, #000814 100%) !important; /* 🔒 ROVNAKÉ AKO BODY */
   padding: 60px 16px;
   position: relative; /* 🔒 PRE Z-INDEX */
   z-index: 1; /* 🔒 NAD HEADER::BEFORE */
