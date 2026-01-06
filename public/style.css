@@ -4064,6 +4064,8 @@ body {
     #02070d 70%
   );
   padding: 60px 16px;
+  position: relative; /* 🔒 PRE Z-INDEX */
+  z-index: 1; /* 🔒 NAD HEADER::BEFORE */
 }
 
 /* ===============================
