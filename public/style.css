@@ -4623,11 +4623,16 @@ body {
     padding: 16px;
     flex-direction: column;
     text-align: center;
+    align-items: center !important; /* Centrovanie obsahu */
   }
 
   .feature-icon {
     font-size: 1.8rem;
     margin-bottom: 8px;
+    display: flex !important;
+    justify-content: center !important; /* Centrovanie ikonky horizontálne */
+    align-items: center !important;
+    width: 100% !important; /* Plná šírka pre centrovanie */
   }
 
   .feature-text strong {
