@@ -7812,13 +7812,17 @@ body {
   left: 12px !important;
   transform: translateY(-50%) !important;
   z-index: 1001 !important;
-  background: #ff6b35 !important; /* Oranžová farba - pestrá a moderná */
-  border: none !important;
-  border-radius: 20px !important; /* Viac zaoblené rohy */
+  background: linear-gradient(135deg, #00b7ff 0%, #00a0e0 100%) !important; /* Farba ako buttony */
+  border: 1px solid rgba(0, 234, 255, 0.4) !important;
+  border-top-color: rgba(255, 255, 255, 0.2) !important;
+  border-left-color: rgba(255, 255, 255, 0.15) !important;
+  border-bottom-color: rgba(0, 100, 150, 0.6) !important;
+  border-right-color: rgba(0, 100, 150, 0.6) !important;
+  border-radius: 10px !important; /* Menej zaoblené rohy */
   padding: 0.7rem !important;
   cursor: pointer !important;
   transition: all 0.25s ease !important;
-  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3) !important; /* Jednoduchý tieň */
+  box-shadow: 0 4px 12px rgba(0, 183, 255, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.3) !important; /* 3D efekt */
   width: 48px !important;
   height: 48px !important;
   align-items: center !important;
@@ -7826,13 +7830,14 @@ body {
 }
 
 .mobile-menu-toggle:hover {
-  background: #ff8555 !important; /* Svetlejšia oranžová pri hover */
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4) !important;
+  background: linear-gradient(135deg, #00e0ff 0%, #00b7ff 100%) !important; /* Svetlejšia pri hover */
+  border-color: rgba(0, 234, 255, 0.6) !important;
+  box-shadow: 0 6px 16px rgba(0, 183, 255, 0.5), inset 0 1px 3px rgba(255, 255, 255, 0.3), inset 0 -2px 5px rgba(0, 0, 0, 0.4) !important;
   transform: translateY(-50%) scale(1.05) !important; /* Jemné zväčšenie */
 }
 
 .mobile-menu-toggle:focus {
-  outline: 2px solid #ff6b35 !important;
+  outline: 2px solid #00b7ff !important;
   outline-offset: 2px !important;
 }
 
