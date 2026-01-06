@@ -7208,6 +7208,13 @@ body {
   .analytics-table td.team-cell {
     padding-left: 4px;
     gap: 4px;
+    min-width: 80px; /* Zabezpečí dostatočnú šírku pre team abbrev */
+  }
+
+  .analytics-table td.team-cell span {
+    white-space: nowrap !important; /* Zobraz celé team abbrev */
+    overflow: visible !important; /* Nech sa nezobrazuje ellipsis */
+    text-overflow: clip !important; /* Bez skracovania */
   }
 
   .analytics-table td.team-cell img {
@@ -7221,6 +7228,26 @@ body {
 
   .analytics-table td.sub {
     font-size: 10px;
+  }
+
+  /* Zväčši šírku stĺpca s tímom na mobile */
+  .analytics-table th:nth-child(2),
+  .analytics-table td:nth-child(2) {
+    width: auto !important;
+    min-width: 90px !important; /* Dostatočná šírka pre 3-4 písmená */
+  }
+
+  /* Zmenši ostatné stĺpce, aby sa zmestil team abbrev */
+  .analytics-table th:nth-child(1) {
+    width: 10% !important;
+  }
+
+  .analytics-table th:nth-child(3) {
+    width: 20% !important;
+  }
+
+  .analytics-table th:nth-child(4) {
+    width: 20% !important;
   }
 }
 
