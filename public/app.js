@@ -457,6 +457,7 @@ const I18N = {
     "absCta.title": "Want to pick your own players for ABS?",
     "absCta.subtitle": "Register and activate membership for just <strong>€4.99 per month</strong> and get access to <strong>daily AI tips</strong>, detailed team form statistics for the last 10 games, and the ability to add your own players with ABS series.",
     "absCta.button": "Create account",
+    "abs.disclaimer": "⚠️ <strong>WARNING:</strong> This section is only an <strong>informative educational simulation</strong>. <strong>This is not real betting</strong> and we do not encourage clients to act based on this information.",
 
     "disclaimer.title": "⚖️ LEGAL DISCLAIMER – NHLPRO.sk",
 
