@@ -3951,6 +3951,11 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
 
   // Show overlay as flex → real modal window
   overlay.style.display = "flex";
+  
+  // Reset animácie
+  modal.style.opacity = "0";
+  modal.style.transform = "scale(0.9) translateY(-20px)";
+  modal.style.transition = "none";
 
   // Loading state
   modal.innerHTML = `
@@ -3962,6 +3967,12 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   // Initial positioning (before fetch)
   requestAnimationFrame(() => {
     positionModalInViewport(modalContent, btnRect);
+    // Trigger animáciu
+    requestAnimationFrame(() => {
+      modal.style.transition = "all 0.3s ease-out";
+      modal.style.opacity = "1";
+      modal.style.transform = "scale(1) translateY(0)";
+    });
   });
 
   // Fetch fresh statistics
@@ -4277,10 +4288,34 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
 }
 
 function closeVipTipAnalysis(e) {
-  // Rovnaký systém ako closeRatingModal - zatvor len ak klik bol na overlay, nie na content
+  // Zastav propagáciu ak sa kliklo na content
+  if (e && e.target && e.target.id === "vip-tip-analysis-modal") {
+    e.stopPropagation();
+    return;
+  }
+  
+  const overlay = document.getElementById("vip-tip-analysis-overlay");
+  const modal = document.getElementById("vip-tip-analysis-modal");
+  
+  if (!overlay) return;
+  
+  // Zatvor len ak sa kliklo na overlay (nie na content)
   if (!e || e.target.id === "vip-tip-analysis-overlay") {
-    const overlay = document.getElementById("vip-tip-analysis-overlay");
-    if (overlay) overlay.style.display = "none";
+    if (modal) {
+      modal.style.transition = "all 0.3s ease";
+      modal.style.opacity = "0";
+      modal.style.transform = "scale(0.9) translateY(-20px)";
+      setTimeout(() => {
+        overlay.style.display = "none";
+        // Reset animácie
+        if (modal) {
+          modal.style.opacity = "";
+          modal.style.transform = "";
+        }
+      }, 300);
+    } else {
+      overlay.style.display = "none";
+    }
   }
 }
 
