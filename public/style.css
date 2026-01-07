@@ -386,7 +386,7 @@ button:hover {
   margin: 0 auto;
   border-collapse: separate;
   border-spacing: 0;
-  font-family: 'Inter', 'Segoe UI', 'Roboto', -apple-system, sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1rem;
   color: #e6faff;
   background: linear-gradient(135deg, rgba(6, 14, 22, 0.95) 0%, rgba(12, 24, 38, 0.95) 100%);
@@ -459,6 +459,7 @@ button:hover {
   gap: 12px;
   font-weight: 500;
   color: #ffffff;
+  white-space: nowrap;
 }
 
 #teamRatings tbody td:first-child img {
@@ -474,11 +475,15 @@ button:hover {
 }
 
 #teamRatings tbody td:last-child {
-  text-align: right;
+  text-align: center;
   font-weight: 600;
   font-size: 1.1rem;
   color: #00ffff;
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+#teamRatings thead th:last-child {
+  text-align: center;
 }
 
 /* Player ratings specific */
@@ -489,11 +494,15 @@ button:hover {
 }
 
 #playerRatings tbody td:last-child {
-  text-align: right;
+  text-align: center;
   font-weight: 600;
   font-size: 1.1rem;
   color: #00ffff;
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+#playerRatings thead th:last-child {
+  text-align: center;
 }
 
 /* Responzivne upravy */
@@ -519,7 +528,13 @@ button:hover {
 
   #teamRatings tbody td:first-child {
     gap: 8px;
-    flex-wrap: wrap;
+    white-space: nowrap;
+  }
+  
+  #teamRatings tbody td:first-child span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   #teamRatings tbody td:first-child img {

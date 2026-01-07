@@ -1836,7 +1836,7 @@ async function displayTeamRatings() {
              onerror="this.src='/icons/nhl_placeholder.svg'">
         <span>${fullName}</span>
       </td>
-      <td>${Number(rating).toFixed(2)}</td>
+      <td>${Math.round(rating)}</td>
     `;
 
    row.setAttribute("data-logo", team.logo);
@@ -1958,7 +1958,7 @@ function displayPlayerRatings() {
         <span style="font-weight:500;">${player}</span>
         ${team ? `<span style="color:#6b8ca3; font-size:0.9em; margin-left:8px;">(${team})</span>` : ""}
       </td>
-      <td>${Number(rating).toFixed(2)}</td>
+      <td>${Math.round(rating)}</td>
     `;
     tableBody.appendChild(row);
   });
