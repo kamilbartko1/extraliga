@@ -5770,6 +5770,45 @@ body {
    Pre zobrazenie: odstráňte alebo zakomentujte nasledujúce pravidlo
    display: none;
 */
+/* ===============================
+   ABS DISCLAIMER – UPOZORNENIE
+   =============================== */
+.abs-disclaimer {
+  max-width: 900px;
+  margin: 0 auto 24px;
+  padding: 16px 20px;
+  background: rgba(220, 53, 69, 0.1); /* Jemné červené pozadie */
+  border: 1px solid rgba(220, 53, 69, 0.3); /* Jemný červený okraj */
+  border-radius: 12px;
+  text-align: center;
+}
+
+.abs-disclaimer-text {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #ff6b6b; /* Červená farba textu */
+  font-weight: 400;
+}
+
+.abs-disclaimer-text strong {
+  color: #ff4757; /* Tmavšia červená pre zvýraznenie */
+  font-weight: 600;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .abs-disclaimer {
+    padding: 14px 16px;
+    margin-bottom: 20px;
+  }
+
+  .abs-disclaimer-text {
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+}
+
 .abs-info-box {
   display: none !important; /* 🔒 DOČASNE SKRYTÉ - pre zobrazenie odstráňte túto riadku */
   position: relative;
