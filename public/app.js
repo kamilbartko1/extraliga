@@ -3888,12 +3888,15 @@ async function renderVipTips() {
 async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   const modal = document.getElementById("vip-tip-analysis-modal");
   const overlay = document.getElementById("vip-tip-analysis-overlay");
-  if (!modal || !overlay) return;
+  if (!modal || !overlay) {
+    console.error("❌ VIP Tip Analysis Modal: modal or overlay not found", { modal, overlay });
+    return;
+  }
 
   // Show overlay as flex → real modal window
-  overlay.style.display = "flex";
+  overlay.style.setProperty("display", "flex", "important");
   
-  // Reset animácie a centrovanie
+  // Reset animácie - modal sa centruje cez CSS flexbox
   modal.style.opacity = "0";
   modal.style.transform = "scale(0.9) translateY(-20px)";
   modal.style.transition = "none";
