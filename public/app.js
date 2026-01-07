@@ -1844,12 +1844,6 @@ async function displayTeamRatings() {
 
     tableBody.appendChild(row);
   });
-
-  // hover efekt
-  document.querySelectorAll("#teamRatings img").forEach((img) => {
-    img.addEventListener("mouseenter", () => (img.style.transform = "scale(1.15)"));
-    img.addEventListener("mouseleave", () => (img.style.transform = "scale(1)"));
-  });
 }
 
 // Načítaj lokálnu databázu hráčov
