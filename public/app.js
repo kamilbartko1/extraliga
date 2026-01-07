@@ -1952,6 +1952,7 @@ function displayPlayerRatings() {
 
     // 🔹 vytvor riadok tabuľky
     const row = document.createElement("tr");
+    row.style.cursor = "pointer";
     row.innerHTML = `
       <td>
         <span style="color:#9bbbd6; font-weight:500; margin-right:8px;">${index + 1}.</span>
@@ -1960,8 +1961,164 @@ function displayPlayerRatings() {
       </td>
       <td>${Math.round(rating)}</td>
     `;
+    
+    // Pridaj event listener pre kliknutie
+    row.addEventListener("click", () => {
+      openPlayerStatsModal(player, team);
+    });
+    
     tableBody.appendChild(row);
   });
+}
+
+// Modal pre štatistiky hráča
+async function openPlayerStatsModal(playerName, teamName) {
+  const modal = document.getElementById("playerStatsModal");
+  const content = document.getElementById("playerStatsContent");
+  
+  if (!modal || !content) {
+    console.error("Modal elementy nenájdené");
+    return;
+  }
+  
+  // Zobraz modal s animáciou
+  modal.style.display = "flex";
+  content.innerHTML = `<p style="text-align:center;padding:40px;color:#00eaff;">${t("common.loading")}</p>`;
+  
+  try {
+    // Načítaj štatistiky
+    const resp = await fetch("/api/statistics", { cache: "no-store" });
+    if (!resp.ok) throw new Error("Failed to fetch statistics");
+    
+    const data = await resp.json();
+    if (!data.ok) throw new Error("Invalid response");
+    
+    // Nájdi hráča v štatistikách
+    const allPlayers = [
+      ...(data.topGoals || []),
+      ...(data.topShots || []),
+      ...(data.topPoints || []),
+      ...(data.topAssists || []),
+      ...(data.topPlusMinus || []),
+      ...(data.topTOI || []),
+      ...(data.topPowerPlayGoals || [])
+    ];
+    
+    // Odstráň duplicity
+    const uniquePlayers = {};
+    allPlayers.forEach(p => {
+      if (p.id && !uniquePlayers[p.id]) {
+        uniquePlayers[p.id] = p;
+      }
+    });
+    
+    // Nájdi hráča podľa mena
+    const playerStats = Object.values(uniquePlayers).find(p => {
+      const fullName = `${p.name || ""}`.toLowerCase().trim();
+      const searchName = playerName.toLowerCase().trim();
+      return fullName === searchName || fullName.includes(searchName) || searchName.includes(fullName);
+    });
+    
+    if (!playerStats) {
+      content.innerHTML = `
+        <div style="padding:40px;text-align:center;">
+          <p style="color:#ff6b6b;margin-bottom:20px;">❌ ${CURRENT_LANG === "en" ? "Player statistics not found" : "Štatistiky hráča sa nenašli"}</p>
+          <p style="color:#9bbbd6;font-size:0.9rem;">${playerName}${teamName ? ` (${teamName})` : ""}</p>
+        </div>
+      `;
+      return;
+    }
+    
+    // Zobraz štatistiky
+    const stats = playerStats;
+    content.innerHTML = `
+      <div class="player-stats-header">
+        <h3>${stats.name || playerName}</h3>
+        ${teamName ? `<p class="player-stats-team">${teamName}</p>` : ""}
+      </div>
+      <div class="player-stats-grid">
+        <div class="player-stats-item">
+          <span class="stats-label">${CURRENT_LANG === "en" ? "Games" : "Zápasy"}</span>
+          <span class="stats-value">${stats.gamesPlayed || 0}</span>
+        </div>
+        <div class="player-stats-item">
+          <span class="stats-label">${CURRENT_LANG === "en" ? "Goals" : "Góly"}</span>
+          <span class="stats-value">${stats.goals || 0}</span>
+        </div>
+        <div class="player-stats-item">
+          <span class="stats-label">${CURRENT_LANG === "en" ? "Assists" : "Asistencie"}</span>
+          <span class="stats-value">${stats.assists || 0}</span>
+        </div>
+        <div class="player-stats-item">
+          <span class="stats-label">${CURRENT_LANG === "en" ? "Points" : "Body"}</span>
+          <span class="stats-value">${stats.points || 0}</span>
+        </div>
+        <div class="player-stats-item">
+          <span class="stats-label">${CURRENT_LANG === "en" ? "Shots" : "Strelby"}</span>
+          <span class="stats-value">${stats.shots || 0}</span>
+        </div>
+        <div class="player-stats-item">
+          <span class="stats-label">${CURRENT_LANG === "en" ? "Shooting %" : "Presnosť"}</span>
+          <span class="stats-value">${stats.shootingPctg || 0}%</span>
+        </div>
+        <div class="player-stats-item">
+          <span class="stats-label">${CURRENT_LANG === "en" ? "+/-" : "+/-"}</span>
+          <span class="stats-value">${stats.plusMinus || 0}</span>
+        </div>
+        <div class="player-stats-item">
+          <span class="stats-label">${CURRENT_LANG === "en" ? "PIM" : "Vylúčenia"}</span>
+          <span class="stats-value">${stats.pim || 0}</span>
+        </div>
+        <div class="player-stats-item">
+          <span class="stats-label">${CURRENT_LANG === "en" ? "TOI/Game" : "Čas/Zápas"}</span>
+          <span class="stats-value">${stats.toi || 0} min</span>
+        </div>
+        <div class="player-stats-item">
+          <span class="stats-label">${CURRENT_LANG === "en" ? "PP Goals" : "PP Góly"}</span>
+          <span class="stats-value">${stats.powerPlayGoals || 0}</span>
+        </div>
+      </div>
+    `;
+    
+    // Trigger animáciu
+    requestAnimationFrame(() => {
+      content.style.opacity = "0";
+      content.style.transform = "scale(0.9)";
+      requestAnimationFrame(() => {
+        content.style.transition = "all 0.3s ease";
+        content.style.opacity = "1";
+        content.style.transform = "scale(1)";
+      });
+    });
+    
+  } catch (err) {
+    console.error("Chyba pri načítaní štatistík:", err);
+    content.innerHTML = `
+      <div style="padding:40px;text-align:center;">
+        <p style="color:#ff6b6b;margin-bottom:20px;">❌ ${CURRENT_LANG === "en" ? "Error loading statistics" : "Chyba pri načítaní štatistík"}</p>
+        <p style="color:#9bbbd6;font-size:0.9rem;">${err.message}</p>
+      </div>
+    `;
+  }
+}
+
+function closePlayerStatsModal(e) {
+  const modal = document.getElementById("playerStatsModal");
+  if (!modal) return;
+  
+  if (!e || e.target.id === "playerStatsModal") {
+    const content = document.getElementById("playerStatsContent");
+    if (content) {
+      content.style.transition = "all 0.3s ease";
+      content.style.opacity = "0";
+      content.style.transform = "scale(0.9)";
+      setTimeout(() => {
+        modal.style.display = "none";
+      }, 300);
+    } else {
+      modal.style.display = "none";
+    }
+  }
 }
 
 function openRatingModal() {
