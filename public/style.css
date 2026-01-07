@@ -5764,7 +5764,14 @@ body {
    🧠 ABS – ADVANCED BETTING STRATEGY (PRO)
    =============================== */
 
+/* ===============================
+   DOČASNÉ SKRYTIE ABS INFO BOX
+   ===============================
+   Pre zobrazenie: odstráňte alebo zakomentujte nasledujúce pravidlo
+   display: none;
+*/
 .abs-info-box {
+  display: none !important; /* 🔒 DOČASNE SKRYTÉ - pre zobrazenie odstráňte túto riadku */
   position: relative;
   width: 100%;
   max-width: 1200px;
