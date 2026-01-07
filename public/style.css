@@ -6254,7 +6254,14 @@ body {
    ABS – CELKOVÝ PROFIT (GLOBAL)
    ================================ */
 
+/* ===============================
+   DOČASNÉ SKRYTIE ABS PROFIT BOX
+   ===============================
+   Pre zobrazenie: odstráňte alebo zakomentujte nasledujúce pravidlo
+   display: none;
+*/
 .abs-profit-box {
+  display: none !important; /* 🔒 DOČASNE SKRYTÉ - pre zobrazenie odstráňte túto riadku */
   margin: 32px auto 28px;
   padding: 28px 36px;
   max-width: 480px;
