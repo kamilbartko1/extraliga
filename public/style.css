@@ -565,6 +565,7 @@ button:hover {
   #teamRatings,
   #playerRatings {
     font-size: 0.85rem;
+    overflow-x: auto;
   }
 
   #teamRatings thead th,
@@ -579,9 +580,24 @@ button:hover {
     font-size: 0.85rem;
   }
 
+  #teamRatings tbody td:first-child {
+    gap: 6px;
+    white-space: nowrap;
+    overflow: visible;
+    min-width: max-content;
+  }
+  
+  #teamRatings tbody td:first-child span {
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+    display: inline-block;
+  }
+
   #teamRatings tbody td:first-child img {
     width: 24px;
     height: 24px;
+    flex-shrink: 0;
   }
 }
 
