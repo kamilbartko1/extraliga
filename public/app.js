@@ -2719,14 +2719,10 @@ document.getElementById("premium-register-confirm")
         return;
       }
 
-      // ÚSPEŠNÁ REGISTRÁCIA - zobraziť správu a po 3 sekundách refreshnúť stránku
+      // Úspešná registrácia - zobraziť správu a refreshnúť stránku
       msg.textContent = t("premium.emailConfirmMessage");
       msg.className = "premium-msg premium-msg-success";
-      
-      // Po 3 sekundách refreshnúť celú stránku
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      setTimeout(() => window.location.reload(), 3000);
 
     } catch (err) {
       console.error(err);
