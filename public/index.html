@@ -382,13 +382,52 @@
 
     <!-- 🔒 LOGGED BUT NOT VIP -->
     <div id="premium-locked" class="premium-state" style="display:none;">
-      <p class="premium-info-text" data-i18n-html="premium.lockedHint">
-        Táto sekcia je dostupná len pre členov <strong>NHLPRO PREMIUM</strong>.
-      </p>
+      <div class="premium-locked-content">
+        <h3 data-i18n="premium.lockedTitle">Aktivuj NHLPRO PREMIUM</h3>
+        <p class="premium-info-text" data-i18n-html="premium.lockedHint">
+          Táto sekcia je dostupná len pre členov <strong>NHLPRO PREMIUM</strong>.
+        </p>
+        
+        <p class="premium-locked-price" data-i18n="premium.lockedPrice">
+          Mesačné predplatné: <strong>4,99 €</strong>
+        </p>
 
-      <button id="premium-upgrade-btn" class="premium-upgrade-btn" data-i18n="premium.upgrade">
-        Staň sa NHLPRO PREMIUM
-      </button>
+        <!-- Čo získaš -->
+        <div class="premium-locked-features">
+          <h4 data-i18n="premium.lockedFeaturesTitle">Čo získavaš ako VIP klient?</h4>
+          <div class="premium-locked-features-list">
+            <div class="premium-locked-feature-item">
+              <span class="feature-icon">🔥</span>
+              <div class="feature-text">
+                <strong data-i18n="premium.featureVipTips">VIP AI Tipy</strong>
+                <p data-i18n="premium.featureVipTipsDesc">Autonómne tipy na strelcov a góly založené na ratingoch a štatistikách z posledných 10 zápasov</p>
+              </div>
+            </div>
+            <div class="premium-locked-feature-item">
+              <span class="feature-icon">📊</span>
+              <div class="feature-text">
+                <strong data-i18n="premium.featureAbs">ABS Stratégia</strong>
+                <p data-i18n="premium.featureAbsDesc">Pridávaj vlastných hráčov do Advanced Betting Strategy a sleduj ich sériu a profit</p>
+              </div>
+            </div>
+            <div class="premium-locked-feature-item">
+              <span class="feature-icon">📈</span>
+              <div class="feature-text">
+                <strong data-i18n="premium.featureAnalytics">Detailná Analytika</strong>
+                <p data-i18n="premium.featureAnalyticsDesc">Štatistiky z posledných 10 zápasov: forma, ofenzíva, obrana a trendy tímov</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button id="premium-upgrade-btn" class="premium-upgrade-btn" data-i18n="premium.upgrade">
+          Staň sa NHLPRO PREMIUM
+        </button>
+
+        <button id="premium-logout-from-locked-btn" class="premium-logout-btn" data-i18n="premium.logout">
+          Odhlásiť sa
+        </button>
+      </div>
     </div>
 
     <!-- 👑 PREMIUM CONTENT -->

@@ -140,7 +140,10 @@ const I18N = {
     "premium.registerTitle": "📝 Registrácia do NHLPRO",
     "premium.registerConfirm": "Zaregistrovať sa",
     "premium.backHome": "← Späť na hlavnú stránku",
-    "premium.lockedHint": "Táto sekcia je dostupná len pre členov <strong>NHLPRO PREMIUM</strong>.",
+    "premium.lockedTitle": "Aktivuj NHLPRO PREMIUM",
+    "premium.lockedHint": "Táto sekcia je dostupná len pre členov <strong>NHLPRO PREMIUM</strong>. Pre aktiváciu si musíš zaplatiť mesačné predplatné.",
+    "premium.lockedPrice": "Mesačné predplatné: <strong>4,99 €</strong>",
+    "premium.lockedFeaturesTitle": "Čo získavaš ako VIP klient?",
     "premium.upgrade": "Staň sa NHLPRO PREMIUM",
     "premium.welcome": "Vitaj v NHLPRO PREMIUM 👑",
     "premium.pickTeam": "Vyber klub",
@@ -2713,10 +2716,24 @@ document.getElementById("premium-register-confirm")
 
       msg.textContent = t("premium.accountCreated");
 
-      setTimeout(() => {
-        hideAllPremiumUI();
-        document.getElementById("premium-not-logged").style.display = "block";
-      }, 1500);
+      // Ak má access_token, automaticky prihlásiť a zobraziť locked box
+      if (data.access_token) {
+        localStorage.setItem("sb-access-token", data.access_token);
+        if (data.refresh_token) {
+          localStorage.setItem("sb-refresh-token", data.refresh_token);
+        }
+        
+        // Po 1.5s zavolať checkPremiumStatus, ktorý zobrazí locked box
+        setTimeout(async () => {
+          await checkPremiumStatus();
+        }, 1500);
+      } else {
+        // Ak nemá token (email confirmation), vrátiť na login
+        setTimeout(() => {
+          hideAllPremiumUI();
+          document.getElementById("premium-not-logged").style.display = "block";
+        }, 1500);
+      }
 
     } catch (err) {
       console.error(err);
@@ -4470,10 +4487,18 @@ window.addEventListener("DOMContentLoaded", async () => {
   // PREMIUM – LOGOUT (priame)
   // ===============================
   document.getElementById("premium-logout-btn")?.addEventListener("click", () => {
-    localStorage.removeItem("sb-access-token");
-    localStorage.removeItem("sb-refresh-token");
+    premiumLogout();
     checkPremiumStatus();
   });
+
+  // ===============================
+  // PREMIUM – LOGOUT z locked boxu
+  // ===============================
+  document.getElementById("premium-logout-from-locked-btn")
+    ?.addEventListener("click", () => {
+      premiumLogout();
+      checkPremiumStatus();
+    });
 
   // ===============================
   // PREMIUM – Logout (delegácia)
