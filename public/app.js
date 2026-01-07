@@ -4110,8 +4110,6 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
   const overlay = document.getElementById("vip-tip-analysis-overlay");
   if (!modal || !overlay) return;
 
-  const modalContent = overlay.querySelector(".modal-content");
-
   overlay.style.setProperty("display", "flex", "important");
   
   // Reset animácie a centrovanie
