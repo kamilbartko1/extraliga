@@ -1328,15 +1328,6 @@ nav button:hover::after {
 }
 
 /* ===== Vylepšenie vzhľadu tabuliek Ratingov a Výsledkov ===== */
-
-/* Tímové a hráčske ratingy */
-#teamRatings td,
-#playerRatings td {
-  font-size: 0.85rem;          /* jemne väčšie písmo */
-  font-family: "Poppins", sans-serif;  /* moderný font, elegantný a čitateľný */
-  font-weight: 400;
-  color: #e6faff;              /* jemne tyrkysová farba ako pri nadpisoch */
-  text-shadow: 1px 1px 3px rgba(0, 255, 255, 0.4); /* svetlý tieň */
   letter-spacing: 0.3px;
 }
 
@@ -1350,9 +1341,7 @@ nav button:hover::after {
 }
 
 /* Hlavičky tabuliek (napr. TÍM, RATING, HOSTIA, SKÓRE...) */
-#matches th,
-#teamRatings th,
-#playerRatings th {
+#matches th {
   font-size: 0.85rem;
   font-family: "Poppins", sans-serif;
   font-weight: 400;
@@ -2535,83 +2524,6 @@ nav button:hover::after {
 #mantingal-history tr.skip { background: rgba(255,255,0,0.05); }
 #mantingal-history h2 { margin-bottom: .3rem; }
 
-/* === Logá v sekcii Rating tímov === */
-#teamRatings img {
-  width: 37px;
-  height: 37px;
-  object-fit: contain;
-  margin-right: 8px;
-  vertical-align: middle;
-  filter: brightness(1.25) contrast(1.1);
-  transition: transform 0.25s ease, filter 0.25s ease;
-}
-
-#teamRatings img:hover {
-  transform: scale(1.1);
-  filter: brightness(1.4) contrast(1.2);
-}
-
-/* Zarovnanie loga a názvu tímu */
-#teamRatings td:first-child {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Čísla ratingov vpravo vycentruj a vyrovnaj s hlavičkou */
-#teamRatings th:last-child,
-#teamRatings td:last-child {
-  text-align: center;
-  width: 80px;
-}
-
-/* Hlavička tabuľky */
-#teamRatings thead th {
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding-bottom: 6px;
-}
-
-/* Menší vertikálny spacing pre jednotný vzhľad */
-#teamRatings tbody tr td {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-/* === Rating tímov – zarovnanie v strede === */
-#teamRatings {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-#teamRatings th,
-#teamRatings td {
-  padding: 10px 15px;
-  font-size: 15px;
-}
-
-/* Nadpis „Tím“ bude zarovnaný do stredu nad stĺpcom tímov */
-#teamRatings th:first-child {
-  text-align: center;
-  width: 55%;               /* trochu širší priestor pre názov tímu */
-}
-
-/* „Rating“ bude bližšie k tímu – nie úplne vpravo */
-#teamRatings th:last-child,
-#teamRatings td:last-child {
-  text-align: left;         /* zľava, nie doprava */
-  width: 25%;               /* nech nie je úplne pri okraji */
-  padding-left: 50px;       /* posun bližšie k tímom */
-}
-
-/* Jemný efekt pre prehľadnosť */
-#teamRatings tr:nth-child(even) {
-  background: rgba(255, 255, 255, 0.03);
-}
-#teamRatings tr:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
 
 /* Pozadie headeru - LEN V HEADERI */
 header::before {
@@ -2629,28 +2541,6 @@ header::before {
   pointer-events: none; /* 🔒 NEBLOKUJ KLIKY */
 }
 
-/* === Rating tímov – presné zarovnanie stĺpcov === */
-#teamRatings {
-  width: 80%;
-  margin: 0 auto;
-  border-collapse: collapse;
-  text-align: center;
-}
-
-/* Hlavička tabuľky */
-#teamRatings thead th {
-  color: #00ffff;
-  font-weight: 400;
-  padding: 10px 0;
-  text-align: center;
-}
-
-/* Riadky dát */
-#teamRatings tbody td {
-  padding: 10px 0;
-  font-size: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
 
 
 
@@ -2911,34 +2801,6 @@ header::before {
   color: red;
 }
 
-#teamRatings tbody tr {
-  position: relative;
-  background-color: rgba(0, 0, 0, 0.3); /* alebo tvoj tmavý odtieň */
-  background-blend-mode: lighten;
-  color: #fff;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-#teamRatings tbody tr:hover {
-  background-color: rgba(0, 0, 0, 0.5);
-  transform: scale(1.01);
-}
-
-#teamRatings tbody tr {
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  background-size: 150px auto !important;
-  opacity: 0.95;
-}
-@media (max-width: 768px) {
-  #teamRatings tbody tr {
-    background-size: 90px auto !important;
-  }
-}
-
-#teamRatings tbody tr::before {
-  background-image: attr(data-logo url);
-}
 
 .stats-grid {
   display: grid;
