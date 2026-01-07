@@ -3942,20 +3942,17 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   const overlay = document.getElementById("vip-tip-analysis-overlay");
   if (!modal || !overlay) return;
 
-  ensureVipModalInBody();
-
-  const modalContent = modal; // IMPORTANT: work directly with the real modal element
-
-  // ✅ SAVE RECT SYNCHRONOUSLY (before await)
-  const btnRect = event?.currentTarget?.getBoundingClientRect() || null;
-
   // Show overlay as flex → real modal window
   overlay.style.display = "flex";
   
-  // Reset animácie
+  // Reset animácie a centrovanie
   modal.style.opacity = "0";
   modal.style.transform = "scale(0.9) translateY(-20px)";
   modal.style.transition = "none";
+  modal.style.position = "relative";
+  modal.style.top = "auto";
+  modal.style.left = "auto";
+  modal.style.margin = "auto";
 
   // Loading state
   modal.innerHTML = `
@@ -3964,10 +3961,8 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
     </p>
   `;
 
-  // Initial positioning (before fetch)
+  // Trigger animáciu - modal je už v strede cez flex
   requestAnimationFrame(() => {
-    positionModalInViewport(modalContent, btnRect);
-    // Trigger animáciu
     requestAnimationFrame(() => {
       modal.style.transition = "all 0.3s ease-out";
       modal.style.opacity = "1";
