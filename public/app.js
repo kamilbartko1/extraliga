@@ -4112,14 +4112,10 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
 
   overlay.style.setProperty("display", "flex", "important");
   
-  // Reset animácie a centrovanie
+  // Reset animácie - modal sa centruje cez CSS flexbox
   modal.style.opacity = "0";
   modal.style.transform = "scale(0.9) translateY(-20px)";
   modal.style.transition = "none";
-  modal.style.position = "relative";
-  modal.style.top = "auto";
-  modal.style.left = "auto";
-  modal.style.margin = "auto";
   
   modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
 
