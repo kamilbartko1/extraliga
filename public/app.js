@@ -4279,10 +4279,14 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
     <button class="close-modal-btn" onclick="closeVipTipAnalysis()">${t("common.close")}</button>
   `;
   
-  // Reposition after content loads (height may have changed)
+  // Trigger animáciu po načítaní obsahu
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       positionModalInViewport(modalContent, btnRect);
+      // Animácia obsahu
+      modal.style.transition = "all 0.3s ease-out";
+      modal.style.opacity = "1";
+      modal.style.transform = "scale(1) translateY(0)";
     });
   });
 }
