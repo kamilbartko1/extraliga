@@ -4170,28 +4170,25 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
 
   const modalContent = overlay.querySelector(".modal-content");
 
-  // ⬇️ ULOŽ RECT OKAMŽITE - ešte pred await
-  const btnRect = event?.currentTarget?.getBoundingClientRect() || null;
-
   overlay.style.setProperty("display", "flex", "important");
   
-  // Reset animácie
+  // Reset animácie a centrovanie
   modal.style.opacity = "0";
   modal.style.transform = "scale(0.9) translateY(-20px)";
   modal.style.transition = "none";
+  modal.style.position = "relative";
+  modal.style.top = "auto";
+  modal.style.left = "auto";
+  modal.style.margin = "auto";
   
   modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
 
-  // Position modal in viewport (wait for dimensions to be available)
+  // Trigger animáciu - modal je už v strede cez flex
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      positionModalInViewport(modalContent, btnRect);
-      // Trigger animáciu
-      requestAnimationFrame(() => {
-        modal.style.transition = "all 0.3s ease-out";
-        modal.style.opacity = "1";
-        modal.style.transform = "scale(1) translateY(0)";
-      });
+      modal.style.transition = "all 0.3s ease-out";
+      modal.style.opacity = "1";
+      modal.style.transform = "scale(1) translateY(0)";
     });
   });
 
