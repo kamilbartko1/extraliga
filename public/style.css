@@ -8023,6 +8023,37 @@ body {
   font-size: 1rem !important;
 }
 
+/* ============================================ */
+/* 👑 VIP ANALYZA – lepšie zarovnanie + ozdobná čiara medzi odstavcami */
+/* ============================================ */
+#vip-tip-analysis-modal p {
+  text-align: center !important;
+}
+
+#vip-tip-analysis-modal p + p {
+  margin-top: 18px !important;
+  padding-top: 18px !important;
+  position: relative !important;
+}
+
+#vip-tip-analysis-modal p + p::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: min(420px, 72%) !important;
+  height: 2px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 221, 85, 0),
+    rgba(255, 221, 85, 0.9),
+    rgba(255, 221, 85, 0)
+  ) !important;
+  box-shadow: 0 0 10px rgba(255, 221, 85, 0.18) !important;
+}
+
 /* Zavrieť tlačidlo */
 .close-modal-btn {
   margin-top: 25px !important;
