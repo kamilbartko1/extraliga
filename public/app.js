@@ -1833,8 +1833,7 @@ async function displayTeamRatings() {
     row.innerHTML = `
       <td>
         <img src="${logoUrl}" alt="${fullName}" title="${fullName}"
-             onerror="this.src='/icons/nhl_placeholder.svg'"
-             style="width:32px; height:32px; object-fit:contain;">
+             onerror="this.src='/icons/nhl_placeholder.svg'">
         <span>${fullName}</span>
       </td>
       <td>${Number(rating).toFixed(2)}</td>
