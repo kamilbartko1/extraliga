@@ -4676,6 +4676,18 @@ body {
     flex-direction: column;
     gap: 10px;
     margin-bottom: 16px;
+    margin-top: 20px;
+    min-height: 50px;
+    padding-top: 10px;
+  }
+  
+  .premium-welcome {
+    top: 0 !important;
+    position: relative !important;
+    transform: none !important;
+    left: auto !important;
+    width: 100% !important;
+    margin-bottom: 20px;
   }
 
   .premium-toolbar {
