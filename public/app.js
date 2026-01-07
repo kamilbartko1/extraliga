@@ -165,6 +165,7 @@ const I18N = {
     "premium.passMismatch": "Heslá sa nezhodujú.",
     "premium.creatingAccount": "⏳ Vytváram účet...",
     "premium.accountCreated": "✅ Účet vytvorený. Skontroluj email.",
+    "premium.emailConfirmMessage": "✅ Registrácia prebehla úspešne! Skontroluj svoj email a potvrď registráciu, potom sa môžeš prihlásiť.",
     "premium.registerError": "❌ Chyba pri registrácii.",
     "premium.paymentStartError": "Chyba pri spustení platby.",
     "premium.addPick": "Vyber klub aj hráča.",
@@ -2717,8 +2718,6 @@ document.getElementById("premium-register-confirm")
         return;
       }
 
-      msg.textContent = t("premium.accountCreated");
-
       // Ak má access_token, automaticky prihlásiť a zobraziť locked box
       if (data.access_token) {
         localStorage.setItem("sb-access-token", data.access_token);
@@ -2726,16 +2725,29 @@ document.getElementById("premium-register-confirm")
           localStorage.setItem("sb-refresh-token", data.refresh_token);
         }
         
+        msg.textContent = t("premium.accountCreated");
+        
         // Po 1.5s zavolať checkPremiumStatus, ktorý zobrazí locked box
         setTimeout(async () => {
           await checkPremiumStatus();
         }, 1500);
       } else {
-        // Ak nemá token (email confirmation), vrátiť na login
+        // Ak nemá token (email confirmation), presunúť na login a zobraziť správu
         setTimeout(() => {
           hideAllPremiumUI();
-          document.getElementById("premium-not-logged").style.display = "block";
-        }, 1500);
+          const loginBox = document.getElementById("premium-not-logged");
+          const authMsg = document.getElementById("premium-auth-msg");
+          
+          if (loginBox) {
+            loginBox.style.display = "block";
+            loginBox.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+          
+          if (authMsg) {
+            authMsg.textContent = t("premium.emailConfirmMessage");
+            authMsg.className = "premium-msg premium-msg-success"; // Pridáme triedu pre zvýraznenie
+          }
+        }, 500); // Kratší timeout pre rýchlejší presun
       }
 
     } catch (err) {
