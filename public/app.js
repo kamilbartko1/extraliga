@@ -4206,29 +4206,41 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
     </div>
     
     <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
-        <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${homeCode} ${CURRENT_LANG === "en" ? "Goals For" : "Góly strelené"}:</span>
-        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${homeAvgGoals.toFixed(2)}</span>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span style="font-size: 0.85rem; color: #7fa9c9; font-family: 'Poppins', 'Segoe UI', sans-serif; font-weight: 400;">${homeCode} ${CURRENT_LANG === "en" ? "Goals For" : "Góly strelené"}:</span>
+        <div style="background: rgba(0, 234, 255, 0.15); border: 2px solid rgba(0, 234, 255, 0.4); border-radius: 6px; padding: 8px 14px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 234, 255, 0.2); min-width: 50px; text-align: center;">
+          <span style="font-size: 1.3rem; font-weight: 500; color: #00eaff; font-family: 'Poppins', 'Segoe UI', sans-serif;">${homeAvgGoals.toFixed(2)}</span>
+        </div>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
-        <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${homeCode} ${CURRENT_LANG === "en" ? "Goals Against" : "Góly inkasované"}:</span>
-        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${homeAvgAllowed.toFixed(2)}</span>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span style="font-size: 0.85rem; color: #7fa9c9; font-family: 'Poppins', 'Segoe UI', sans-serif; font-weight: 400;">${homeCode} ${CURRENT_LANG === "en" ? "Goals Against" : "Góly inkasované"}:</span>
+        <div style="background: rgba(0, 234, 255, 0.15); border: 2px solid rgba(0, 234, 255, 0.4); border-radius: 6px; padding: 8px 14px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 234, 255, 0.2); min-width: 50px; text-align: center;">
+          <span style="font-size: 1.3rem; font-weight: 500; color: #00eaff; font-family: 'Poppins', 'Segoe UI', sans-serif;">${homeAvgAllowed.toFixed(2)}</span>
+        </div>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
-        <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${awayCode} ${CURRENT_LANG === "en" ? "Goals For" : "Góly strelené"}:</span>
-        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${awayAvgGoals.toFixed(2)}</span>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span style="font-size: 0.85rem; color: #7fa9c9; font-family: 'Poppins', 'Segoe UI', sans-serif; font-weight: 400;">${awayCode} ${CURRENT_LANG === "en" ? "Goals For" : "Góly strelené"}:</span>
+        <div style="background: rgba(0, 234, 255, 0.15); border: 2px solid rgba(0, 234, 255, 0.4); border-radius: 6px; padding: 8px 14px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 234, 255, 0.2); min-width: 50px; text-align: center;">
+          <span style="font-size: 1.3rem; font-weight: 500; color: #00eaff; font-family: 'Poppins', 'Segoe UI', sans-serif;">${awayAvgGoals.toFixed(2)}</span>
+        </div>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
-        <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${awayCode} ${CURRENT_LANG === "en" ? "Goals Against" : "Góly inkasované"}:</span>
-        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${awayAvgAllowed.toFixed(2)}</span>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span style="font-size: 0.85rem; color: #7fa9c9; font-family: 'Poppins', 'Segoe UI', sans-serif; font-weight: 400;">${awayCode} ${CURRENT_LANG === "en" ? "Goals Against" : "Góly inkasované"}:</span>
+        <div style="background: rgba(0, 234, 255, 0.15); border: 2px solid rgba(0, 234, 255, 0.4); border-radius: 6px; padding: 8px 14px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 234, 255, 0.2); min-width: 50px; text-align: center;">
+          <span style="font-size: 1.3rem; font-weight: 500; color: #00eaff; font-family: 'Poppins', 'Segoe UI', sans-serif;">${awayAvgAllowed.toFixed(2)}</span>
+        </div>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
-        <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${CURRENT_LANG === "en" ? "Expected Total" : "Očakávaný počet"}:</span>
-        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${expectedTotal.toFixed(2)}</span>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span style="font-size: 0.85rem; color: #7fa9c9; font-family: 'Poppins', 'Segoe UI', sans-serif; font-weight: 400;">${CURRENT_LANG === "en" ? "Expected Total" : "Očakávaný počet"}:</span>
+        <div style="background: rgba(0, 234, 255, 0.15); border: 2px solid rgba(0, 234, 255, 0.4); border-radius: 6px; padding: 8px 14px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 234, 255, 0.2); min-width: 50px; text-align: center;">
+          <span style="font-size: 1.3rem; font-weight: 500; color: #00eaff; font-family: 'Poppins', 'Segoe UI', sans-serif;">${expectedTotal.toFixed(2)}</span>
+        </div>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
-        <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${t("vipTips.confidence")}:</span>
-        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${confidence}%</span>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span style="font-size: 0.85rem; color: #7fa9c9; font-family: 'Poppins', 'Segoe UI', sans-serif; font-weight: 400;">${t("vipTips.confidence")}:</span>
+        <div style="background: rgba(0, 234, 255, 0.15); border: 2px solid rgba(0, 234, 255, 0.4); border-radius: 6px; padding: 8px 14px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 234, 255, 0.2); min-width: 50px; text-align: center;">
+          <span style="font-size: 1.3rem; font-weight: 500; color: #00eaff; font-family: 'Poppins', 'Segoe UI', sans-serif;">${confidence}%</span>
+        </div>
       </div>
     </div>
 
