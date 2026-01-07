@@ -1985,6 +1985,11 @@ async function openPlayerStatsModal(playerName, teamName) {
   modal.style.display = "flex";
   content.innerHTML = `<p style="text-align:center;padding:40px;color:#00eaff;">${t("common.loading")}</p>`;
   
+  // Zastav propagáciu eventu na content
+  content.onclick = (e) => {
+    e.stopPropagation();
+  };
+  
   try {
     // Načítaj štatistiky
     const resp = await fetch("/api/statistics", { cache: "no-store" });
@@ -1993,7 +1998,7 @@ async function openPlayerStatsModal(playerName, teamName) {
     const data = await resp.json();
     if (!data.ok) throw new Error("Invalid response");
     
-    // Nájdi hráča v štatistikách
+    // Nájdi hráča v štatistikách - skús všetky rebríčky
     const allPlayers = [
       ...(data.topGoals || []),
       ...(data.topShots || []),
@@ -2004,26 +2009,60 @@ async function openPlayerStatsModal(playerName, teamName) {
       ...(data.topPowerPlayGoals || [])
     ];
     
-    // Odstráň duplicity
+    // Odstráň duplicity podľa ID
     const uniquePlayers = {};
     allPlayers.forEach(p => {
       if (p.id && !uniquePlayers[p.id]) {
         uniquePlayers[p.id] = p;
+      } else if (!p.id && p.name) {
+        // Ak nemá ID, použij meno ako kľúč
+        const nameKey = p.name.toLowerCase().trim();
+        if (!uniquePlayers[nameKey]) {
+          uniquePlayers[nameKey] = p;
+        }
       }
     });
     
-    // Nájdi hráča podľa mena
-    const playerStats = Object.values(uniquePlayers).find(p => {
-      const fullName = `${p.name || ""}`.toLowerCase().trim();
-      const searchName = playerName.toLowerCase().trim();
-      return fullName === searchName || fullName.includes(searchName) || searchName.includes(fullName);
+    // Normalizuj meno hráča pre vyhľadávanie
+    const normalizeName = (name) => {
+      return name.toLowerCase()
+        .replace(/\./g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    };
+    
+    const searchName = normalizeName(playerName);
+    const searchParts = searchName.split(" ");
+    const lastName = searchParts[searchParts.length - 1];
+    
+    // Nájdi hráča - skús presné zhodu, potom čiastočnú
+    let playerStats = Object.values(uniquePlayers).find(p => {
+      if (!p.name) return false;
+      const fullName = normalizeName(p.name);
+      
+      // Presná zhoda
+      if (fullName === searchName) return true;
+      
+      // Zhoda priezviska
+      if (fullName.includes(lastName) || lastName.includes(fullName.split(" ").pop())) {
+        return true;
+      }
+      
+      // Čiastočná zhoda
+      if (fullName.includes(searchName) || searchName.includes(fullName)) {
+        return true;
+      }
+      
+      return false;
     });
     
     if (!playerStats) {
+      console.warn("Hráč nenájdený:", playerName, "Dostupní hráči:", Object.keys(uniquePlayers).slice(0, 10));
       content.innerHTML = `
         <div style="padding:40px;text-align:center;">
           <p style="color:#ff6b6b;margin-bottom:20px;">❌ ${CURRENT_LANG === "en" ? "Player statistics not found" : "Štatistiky hráča sa nenašli"}</p>
           <p style="color:#9bbbd6;font-size:0.9rem;">${playerName}${teamName ? ` (${teamName})` : ""}</p>
+          <p style="color:#6b8ca3;font-size:0.8rem;margin-top:16px;">${CURRENT_LANG === "en" ? "Player may not be in top 50 rankings" : "Hráč nemusí byť v top 50 rebríčkoch"}</p>
         </div>
       `;
       return;
@@ -2103,9 +2142,16 @@ async function openPlayerStatsModal(playerName, teamName) {
 }
 
 function closePlayerStatsModal(e) {
+  // Zastav propagáciu ak sa kliklo na content
+  if (e && e.target && e.target.id === "playerStatsContent") {
+    e.stopPropagation();
+    return;
+  }
+  
   const modal = document.getElementById("playerStatsModal");
   if (!modal) return;
   
+  // Zatvor len ak sa kliklo na overlay (nie na content)
   if (!e || e.target.id === "playerStatsModal") {
     const content = document.getElementById("playerStatsContent");
     if (content) {
@@ -2114,6 +2160,9 @@ function closePlayerStatsModal(e) {
       content.style.transform = "scale(0.9)";
       setTimeout(() => {
         modal.style.display = "none";
+        // Reset animácie
+        content.style.opacity = "";
+        content.style.transform = "";
       }, 300);
     } else {
       modal.style.display = "none";
