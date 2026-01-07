@@ -2719,51 +2719,14 @@ document.getElementById("premium-register-confirm")
         return;
       }
 
-      // Ak má access_token, automaticky prihlásiť a zobraziť locked box
-      if (data.access_token) {
-        localStorage.setItem("sb-access-token", data.access_token);
-        if (data.refresh_token) {
-          localStorage.setItem("sb-refresh-token", data.refresh_token);
-        }
-        
-        msg.textContent = t("premium.accountCreated");
-        
-        // Po 1.5s zavolať checkPremiumStatus, ktorý zobrazí locked box
-        setTimeout(async () => {
-          await checkPremiumStatus();
-        }, 1500);
-      } else {
-        // Ak nemá token (email confirmation), presunúť na login a zobraziť správu
-        // OKAMŽITE skryť registračný box
-        const registerBox = document.getElementById("premium-register-box");
-        if (registerBox) {
-          registerBox.style.display = "none";
-        }
-        msg.textContent = ""; // Vymazať správu v registračnom boxe
-        
-        // Skryť všetky premium UI elementy
-        hideAllPremiumUI();
-        
-        // Zobraziť login box so správou
-        const loginBox = document.getElementById("premium-not-logged");
-        const authMsg = document.getElementById("premium-auth-msg");
-        
-        if (loginBox) {
-          loginBox.style.display = "block";
-        }
-        
-        if (authMsg) {
-          authMsg.textContent = t("premium.emailConfirmMessage");
-          authMsg.className = "premium-msg premium-msg-success"; // Pridáme triedu pre zvýraznenie
-        }
-        
-        // Scroll na login box po malom čase, aby sa DOM aktualizoval
-        setTimeout(() => {
-          if (loginBox) {
-            loginBox.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
-        }, 100);
-      }
+      // ÚSPEŠNÁ REGISTRÁCIA - zobraziť správu a po 3 sekundách refreshnúť stránku
+      msg.textContent = t("premium.emailConfirmMessage");
+      msg.className = "premium-msg premium-msg-success";
+      
+      // Po 3 sekundách refreshnúť celú stránku
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
 
     } catch (err) {
       console.error(err);
