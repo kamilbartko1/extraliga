@@ -2734,21 +2734,35 @@ document.getElementById("premium-register-confirm")
         }, 1500);
       } else {
         // Ak nemá token (email confirmation), presunúť na login a zobraziť správu
+        // Najprv skryť registračný box a správu v ňom
+        const registerBox = document.getElementById("premium-register-box");
+        if (registerBox) {
+          registerBox.style.display = "none";
+        }
+        msg.textContent = ""; // Vymazať správu v registračnom boxe
+        
+        // Potom zobraziť login box so správou
         setTimeout(() => {
+          // Skryť všetky premium UI elementy
           hideAllPremiumUI();
+          
+          // Zobraziť login box
           const loginBox = document.getElementById("premium-not-logged");
           const authMsg = document.getElementById("premium-auth-msg");
           
           if (loginBox) {
             loginBox.style.display = "block";
-            loginBox.scrollIntoView({ behavior: "smooth", block: "center" });
+            // Scroll na login box
+            requestAnimationFrame(() => {
+              loginBox.scrollIntoView({ behavior: "smooth", block: "center" });
+            });
           }
           
           if (authMsg) {
             authMsg.textContent = t("premium.emailConfirmMessage");
             authMsg.className = "premium-msg premium-msg-success"; // Pridáme triedu pre zvýraznenie
           }
-        }, 500); // Kratší timeout pre rýchlejší presun
+        }, 300); // Kratší timeout pre rýchlejší presun
       }
 
     } catch (err) {
