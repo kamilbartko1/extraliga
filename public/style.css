@@ -8028,30 +8028,34 @@ body {
 /* ============================================ */
 #vip-tip-analysis-modal p {
   text-align: center !important;
+  margin: 15px auto 20px auto !important;
+  max-width: 90% !important;
 }
 
-#vip-tip-analysis-modal p + p {
-  margin-top: 18px !important;
-  padding-top: 18px !important;
+#vip-tip-analysis-modal p:not(:first-of-type) {
+  margin-top: 28px !important;
+  padding-top: 28px !important;
   position: relative !important;
 }
 
-#vip-tip-analysis-modal p + p::before {
+#vip-tip-analysis-modal p:not(:first-of-type)::before {
   content: "" !important;
   position: absolute !important;
   top: 0 !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
-  width: min(420px, 72%) !important;
-  height: 2px !important;
+  width: min(400px, 70%) !important;
+  height: 3px !important;
   border-radius: 999px !important;
   background: linear-gradient(
     90deg,
     rgba(255, 221, 85, 0),
-    rgba(255, 221, 85, 0.9),
+    rgba(255, 221, 85, 0.7) 30%,
+    rgba(255, 221, 85, 1) 50%,
+    rgba(255, 221, 85, 0.7) 70%,
     rgba(255, 221, 85, 0)
   ) !important;
-  box-shadow: 0 0 10px rgba(255, 221, 85, 0.18) !important;
+  box-shadow: 0 0 15px rgba(255, 221, 85, 0.5) !important;
 }
 
 /* Zavrieť tlačidlo */

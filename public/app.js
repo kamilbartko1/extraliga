@@ -4089,7 +4089,7 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
     </ul>
 
     <h3>${CURRENT_LANG === "en" ? "Detailed Analysis" : "Detailná analýza"}</h3>
-    <p>${analysisText}</p>
+    ${analysisText.split(/\.\s+/).filter(s => s.trim().length > 10).map(text => `<p>${text.trim()}${text.trim().endsWith('.') ? '' : '.'}</p>`).join('')}
     
     <button class="close-modal-btn" onclick="closeVipTipAnalysis()">${t("common.close")}</button>
   `;
@@ -4226,7 +4226,7 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
     </ul>
 
     <h3>${CURRENT_LANG === "en" ? "Detailed Analysis" : "Detailná analýza"}</h3>
-    <p>${analysisText}</p>
+    ${analysisText.split(/\.\s+/).filter(s => s.trim().length > 10).map(text => `<p>${text.trim()}${text.trim().endsWith('.') ? '' : '.'}</p>`).join('')}
     
     <button class="close-modal-btn" onclick="closeVipTipAnalysis()">${t("common.close")}</button>
   `;
