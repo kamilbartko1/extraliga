@@ -400,6 +400,7 @@ const I18N = {
     "premium.passMismatch": "Passwords do not match.",
     "premium.creatingAccount": "⏳ Creating account...",
     "premium.accountCreated": "✅ Account created. Check your email.",
+    "premium.emailConfirmMessage": "✅ Registration successful! Check your email and confirm registration, then you can log in.",
     "premium.registerError": "❌ Registration error.",
     "premium.paymentStartError": "Error while starting payment.",
     "premium.addPick": "Select a team and a player.",
