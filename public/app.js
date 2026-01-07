@@ -226,6 +226,7 @@ const I18N = {
     "absCta.title": "Chceš si vybrať vlastných hráčov do ABS?",
     "absCta.subtitle": "Zaregistruj sa a aktivuj členstvo len za <strong>4,99 € mesačne</strong> a získaj prístup k <strong>AI tipom na každý deň</strong>, detailným štatistikám formy tímov za posledných 10 zápasov a možnosti pridávať vlastných hráčov s ABS sériou.",
     "absCta.button": "Registrovať sa",
+    "abs.disclaimer": "⚠️ <strong>UPOZORNENIE:</strong> Táto sekcia je len <strong>informatívna edukatívna simulácia</strong>. <strong>Nejde o skutočné stávkovanie</strong> a nenabádame klientov, aby podľa týchto informácií konali.",
 
     "disclaimer.title": "⚖️ PRÁVNY DISCLAIMER – NHLPRO.sk",
 
