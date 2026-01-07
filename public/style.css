@@ -4949,7 +4949,14 @@ body {
 /* ================================
    HERO BANNER
    ================================ */
+/* ===============================
+   DOČASNÉ SKRYTIE HERO BANNER
+   ===============================
+   Pre zobrazenie: odstráňte alebo zakomentujte nasledujúce pravidlo
+   display: none;
+*/
 .hero-banner {
+  display: none !important; /* 🔒 DOČASNE SKRYTÉ - pre zobrazenie odstráňte túto riadku */
   background: radial-gradient(
     120% 120% at 50% 0%,
     rgba(0, 234, 255, 0.08),
