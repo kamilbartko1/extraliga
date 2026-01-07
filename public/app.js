@@ -4292,10 +4292,9 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
     <button class="close-modal-btn" onclick="closeVipTipAnalysis()">${t("common.close")}</button>
   `;
   
-  // Trigger animáciu po načítaní obsahu
+  // Trigger animáciu po načítaní obsahu - modal zostáva v strede
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      positionModalInViewport(modalContent, btnRect);
       // Animácia obsahu
       modal.style.transition = "all 0.3s ease-out";
       modal.style.opacity = "1";
