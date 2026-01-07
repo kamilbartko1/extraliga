@@ -1328,8 +1328,6 @@ nav button:hover::after {
 }
 
 /* ===== Vylepšenie vzhľadu tabuliek Ratingov a Výsledkov ===== */
-  letter-spacing: 0.3px;
-}
 
 /* Názvy tímov vo Výsledkoch */
 #matches td {
