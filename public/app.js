@@ -1831,13 +1831,13 @@ async function displayTeamRatings() {
     row.dataset.code = code;
 
     row.innerHTML = `
-      <td style="display:flex; align-items:center; gap:10px; min-width:220px;">
+      <td>
         <img src="${logoUrl}" alt="${fullName}" title="${fullName}"
              onerror="this.src='/icons/nhl_placeholder.svg'"
-             style="width:26px; height:26px; object-fit:contain;">
+             style="width:32px; height:32px; object-fit:contain;">
         <span>${fullName}</span>
       </td>
-      <td style="text-align:center; font-weight:400;">${rating}</td>
+      <td>${Number(rating).toFixed(2)}</td>
     `;
 
    row.setAttribute("data-logo", team.logo);
@@ -1961,10 +1961,11 @@ function displayPlayerRatings() {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>
-        ${index + 1}. ${player}
-        ${team ? `<span style="color:#999; font-size:0.9em;"> (${team})</span>` : ""}
+        <span style="color:#9bbbd6; font-weight:500; margin-right:8px;">${index + 1}.</span>
+        <span style="font-weight:500;">${player}</span>
+        ${team ? `<span style="color:#6b8ca3; font-size:0.9em; margin-left:8px;">(${team})</span>` : ""}
       </td>
-      <td>${rating}</td>
+      <td>${Number(rating).toFixed(2)}</td>
     `;
     tableBody.appendChild(row);
   });
