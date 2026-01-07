@@ -4056,30 +4056,34 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
       <p style="color: rgba(232, 244, 255, 0.7); margin: 0;">${teamCode} ${t("vipTips.vs")} ${oppCode}</p>
     </div>
     
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;">
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${t("vipTips.analysisGoals")}</div>
-        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${totalGoals}</div>
+    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div style="text-align: center;">
+          <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 6px;">${t("vipTips.analysisGoals")}:</span>
+          <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${totalGoals}</span>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 6px;">${t("vipTips.analysisAssists")}:</span>
+          <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${totalAssists}</span>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 6px;">${t("vipTips.analysisPoints")}:</span>
+          <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${totalPoints}</span>
+        </div>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${t("vipTips.analysisAssists")}</div>
-        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${totalAssists}</div>
-      </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${t("vipTips.analysisPoints")}</div>
-        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${totalPoints}</div>
-      </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${t("vipTips.analysisShots")}</div>
-        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${totalShots}</div>
-      </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${t("vipTips.analysisGames")}</div>
-        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${gamesPlayed}</div>
-      </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${t("vipTips.confidence")}</div>
-        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${confidence}%</div>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div style="text-align: center;">
+          <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 6px;">${t("vipTips.analysisShots")}:</span>
+          <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${totalShots}</span>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 6px;">${t("vipTips.analysisGames")}:</span>
+          <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${gamesPlayed}</span>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 6px;">${t("vipTips.confidence")}:</span>
+          <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${confidence}%</span>
+        </div>
       </div>
     </div>
 
@@ -4193,30 +4197,36 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
       <p style="color: rgba(232, 244, 255, 0.7); margin: 0;">${CURRENT_LANG === "en" ? "Expected total" : "Očakávaný počet"}: ${expectedTotal.toFixed(2)} | ${CURRENT_LANG === "en" ? "Recommendation" : "Odporúčanie"}: <b>${correctReco === "over" ? t("vipTips.over") : t("vipTips.under")} ${line}</b></p>
     </div>
     
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;">
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${homeCode} ${CURRENT_LANG === "en" ? "Goals For" : "Góly strelené"}</div>
-        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${homeAvgGoals.toFixed(2)}</div>
+    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div style="text-align: center;">
+          <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 6px;">${homeCode} ${CURRENT_LANG === "en" ? "Goals For" : "Góly strelené"}:</span>
+          <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${homeAvgGoals.toFixed(2)}</span>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 6px;">${homeCode} ${CURRENT_LANG === "en" ? "Goals Against" : "Góly inkasované"}:</span>
+          <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${homeAvgAllowed.toFixed(2)}</span>
+        </div>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${homeCode} ${CURRENT_LANG === "en" ? "Goals Against" : "Góly inkasované"}</div>
-        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${homeAvgAllowed.toFixed(2)}</div>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div style="text-align: center;">
+          <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 6px;">${awayCode} ${CURRENT_LANG === "en" ? "Goals For" : "Góly strelené"}:</span>
+          <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${awayAvgGoals.toFixed(2)}</span>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 6px;">${awayCode} ${CURRENT_LANG === "en" ? "Goals Against" : "Góly inkasované"}:</span>
+          <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${awayAvgAllowed.toFixed(2)}</span>
+        </div>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${awayCode} ${CURRENT_LANG === "en" ? "Goals For" : "Góly strelené"}</div>
-        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${awayAvgGoals.toFixed(2)}</div>
-      </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${awayCode} ${CURRENT_LANG === "en" ? "Goals Against" : "Góly inkasované"}</div>
-        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${awayAvgAllowed.toFixed(2)}</div>
-      </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${CURRENT_LANG === "en" ? "Expected Total" : "Očakávaný počet"}</div>
-        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${expectedTotal.toFixed(2)}</div>
-      </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 12px; text-align: center;">
-        <div style="font-size: 0.75rem; color: #7fa9c9; margin-bottom: 6px;">${t("vipTips.confidence")}</div>
-        <div style="font-size: 1.8rem; font-weight: 600; color: #00eaff;">${confidence}%</div>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div style="text-align: center;">
+          <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 6px;">${CURRENT_LANG === "en" ? "Expected Total" : "Očakávaný počet"}:</span>
+          <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${expectedTotal.toFixed(2)}</span>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 6px;">${t("vipTips.confidence")}:</span>
+          <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${confidence}%</span>
+        </div>
       </div>
     </div>
 
