@@ -2734,35 +2734,35 @@ document.getElementById("premium-register-confirm")
         }, 1500);
       } else {
         // Ak nemá token (email confirmation), presunúť na login a zobraziť správu
-        // Najprv skryť registračný box a správu v ňom
+        // OKAMŽITE skryť registračný box
         const registerBox = document.getElementById("premium-register-box");
         if (registerBox) {
           registerBox.style.display = "none";
         }
         msg.textContent = ""; // Vymazať správu v registračnom boxe
         
-        // Potom zobraziť login box so správou
+        // Skryť všetky premium UI elementy
+        hideAllPremiumUI();
+        
+        // Zobraziť login box so správou
+        const loginBox = document.getElementById("premium-not-logged");
+        const authMsg = document.getElementById("premium-auth-msg");
+        
+        if (loginBox) {
+          loginBox.style.display = "block";
+        }
+        
+        if (authMsg) {
+          authMsg.textContent = t("premium.emailConfirmMessage");
+          authMsg.className = "premium-msg premium-msg-success"; // Pridáme triedu pre zvýraznenie
+        }
+        
+        // Scroll na login box po malom čase, aby sa DOM aktualizoval
         setTimeout(() => {
-          // Skryť všetky premium UI elementy
-          hideAllPremiumUI();
-          
-          // Zobraziť login box
-          const loginBox = document.getElementById("premium-not-logged");
-          const authMsg = document.getElementById("premium-auth-msg");
-          
           if (loginBox) {
-            loginBox.style.display = "block";
-            // Scroll na login box
-            requestAnimationFrame(() => {
-              loginBox.scrollIntoView({ behavior: "smooth", block: "center" });
-            });
+            loginBox.scrollIntoView({ behavior: "smooth", block: "center" });
           }
-          
-          if (authMsg) {
-            authMsg.textContent = t("premium.emailConfirmMessage");
-            authMsg.className = "premium-msg premium-msg-success"; // Pridáme triedu pre zvýraznenie
-          }
-        }, 300); // Kratší timeout pre rýchlejší presun
+        }, 100);
       }
 
     } catch (err) {
