@@ -460,6 +460,8 @@ button:hover {
   font-weight: 500;
   color: #ffffff;
   white-space: nowrap;
+  overflow: visible;
+  min-width: 0;
 }
 
 #teamRatings tbody td:first-child img {
@@ -529,12 +531,13 @@ button:hover {
   #teamRatings tbody td:first-child {
     gap: 8px;
     white-space: nowrap;
+    overflow: visible;
   }
   
   #teamRatings tbody td:first-child span {
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: visible;
+    text-overflow: clip;
   }
 
   #teamRatings tbody td:first-child img {
