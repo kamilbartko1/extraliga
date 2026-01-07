@@ -4057,29 +4057,41 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
     </div>
     
     <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
-        <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${t("vipTips.analysisGoals")}:</span>
-        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${totalGoals}</span>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span style="font-size: 0.85rem; color: #7fa9c9; font-family: 'Poppins', 'Segoe UI', sans-serif; font-weight: 400;">${t("vipTips.analysisGoals")}:</span>
+        <div style="background: rgba(0, 234, 255, 0.15); border: 2px solid rgba(0, 234, 255, 0.4); border-radius: 6px; padding: 8px 14px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 234, 255, 0.2); min-width: 50px; text-align: center;">
+          <span style="font-size: 1.3rem; font-weight: 500; color: #00eaff; font-family: 'Poppins', 'Segoe UI', sans-serif;">${totalGoals}</span>
+        </div>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
-        <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${t("vipTips.analysisAssists")}:</span>
-        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${totalAssists}</span>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span style="font-size: 0.85rem; color: #7fa9c9; font-family: 'Poppins', 'Segoe UI', sans-serif; font-weight: 400;">${t("vipTips.analysisAssists")}:</span>
+        <div style="background: rgba(0, 234, 255, 0.15); border: 2px solid rgba(0, 234, 255, 0.4); border-radius: 6px; padding: 8px 14px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 234, 255, 0.2); min-width: 50px; text-align: center;">
+          <span style="font-size: 1.3rem; font-weight: 500; color: #00eaff; font-family: 'Poppins', 'Segoe UI', sans-serif;">${totalAssists}</span>
+        </div>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
-        <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${t("vipTips.analysisPoints")}:</span>
-        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${totalPoints}</span>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span style="font-size: 0.85rem; color: #7fa9c9; font-family: 'Poppins', 'Segoe UI', sans-serif; font-weight: 400;">${t("vipTips.analysisPoints")}:</span>
+        <div style="background: rgba(0, 234, 255, 0.15); border: 2px solid rgba(0, 234, 255, 0.4); border-radius: 6px; padding: 8px 14px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 234, 255, 0.2); min-width: 50px; text-align: center;">
+          <span style="font-size: 1.3rem; font-weight: 500; color: #00eaff; font-family: 'Poppins', 'Segoe UI', sans-serif;">${totalPoints}</span>
+        </div>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
-        <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${t("vipTips.analysisShots")}:</span>
-        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${totalShots}</span>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span style="font-size: 0.85rem; color: #7fa9c9; font-family: 'Poppins', 'Segoe UI', sans-serif; font-weight: 400;">${t("vipTips.analysisShots")}:</span>
+        <div style="background: rgba(0, 234, 255, 0.15); border: 2px solid rgba(0, 234, 255, 0.4); border-radius: 6px; padding: 8px 14px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 234, 255, 0.2); min-width: 50px; text-align: center;">
+          <span style="font-size: 1.3rem; font-weight: 500; color: #00eaff; font-family: 'Poppins', 'Segoe UI', sans-serif;">${totalShots}</span>
+        </div>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
-        <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${t("vipTips.analysisGames")}:</span>
-        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${gamesPlayed}</span>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span style="font-size: 0.85rem; color: #7fa9c9; font-family: 'Poppins', 'Segoe UI', sans-serif; font-weight: 400;">${t("vipTips.analysisGames")}:</span>
+        <div style="background: rgba(0, 234, 255, 0.15); border: 2px solid rgba(0, 234, 255, 0.4); border-radius: 6px; padding: 8px 14px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 234, 255, 0.2); min-width: 50px; text-align: center;">
+          <span style="font-size: 1.3rem; font-weight: 500; color: #00eaff; font-family: 'Poppins', 'Segoe UI', sans-serif;">${gamesPlayed}</span>
+        </div>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
-        <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${t("vipTips.confidence")}:</span>
-        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${confidence}%</span>
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <span style="font-size: 0.85rem; color: #7fa9c9; font-family: 'Poppins', 'Segoe UI', sans-serif; font-weight: 400;">${t("vipTips.confidence")}:</span>
+        <div style="background: rgba(0, 234, 255, 0.15); border: 2px solid rgba(0, 234, 255, 0.4); border-radius: 6px; padding: 8px 14px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 234, 255, 0.2); min-width: 50px; text-align: center;">
+          <span style="font-size: 1.3rem; font-weight: 500; color: #00eaff; font-family: 'Poppins', 'Segoe UI', sans-serif;">${confidence}%</span>
+        </div>
       </div>
     </div>
 
