@@ -4057,29 +4057,29 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
     </div>
     
     <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: center; width: 100%;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
         <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${t("vipTips.analysisGoals")}:</span>
-        <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${totalGoals}</span>
+        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${totalGoals}</span>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: center; width: 100%;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
         <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${t("vipTips.analysisAssists")}:</span>
-        <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${totalAssists}</span>
+        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${totalAssists}</span>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: center; width: 100%;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
         <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${t("vipTips.analysisPoints")}:</span>
-        <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${totalPoints}</span>
+        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${totalPoints}</span>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: center; width: 100%;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
         <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${t("vipTips.analysisShots")}:</span>
-        <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${totalShots}</span>
+        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${totalShots}</span>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: center; width: 100%;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
         <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${t("vipTips.analysisGames")}:</span>
-        <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${gamesPlayed}</span>
+        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${gamesPlayed}</span>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: center; width: 100%;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
         <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${t("vipTips.confidence")}:</span>
-        <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${confidence}%</span>
+        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${confidence}%</span>
       </div>
     </div>
 
@@ -4194,29 +4194,29 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
     </div>
     
     <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: center; width: 100%;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
         <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${homeCode} ${CURRENT_LANG === "en" ? "Goals For" : "Góly strelené"}:</span>
-        <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${homeAvgGoals.toFixed(2)}</span>
+        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${homeAvgGoals.toFixed(2)}</span>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: center; width: 100%;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
         <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${homeCode} ${CURRENT_LANG === "en" ? "Goals Against" : "Góly inkasované"}:</span>
-        <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${homeAvgAllowed.toFixed(2)}</span>
+        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${homeAvgAllowed.toFixed(2)}</span>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: center; width: 100%;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
         <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${awayCode} ${CURRENT_LANG === "en" ? "Goals For" : "Góly strelené"}:</span>
-        <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${awayAvgGoals.toFixed(2)}</span>
+        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${awayAvgGoals.toFixed(2)}</span>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: center; width: 100%;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
         <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${awayCode} ${CURRENT_LANG === "en" ? "Goals Against" : "Góly inkasované"}:</span>
-        <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${awayAvgAllowed.toFixed(2)}</span>
+        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${awayAvgAllowed.toFixed(2)}</span>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: center; width: 100%;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
         <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${CURRENT_LANG === "en" ? "Expected Total" : "Očakávaný počet"}:</span>
-        <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${expectedTotal.toFixed(2)}</span>
+        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${expectedTotal.toFixed(2)}</span>
       </div>
-      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: center; width: 100%;">
+      <div style="background: rgba(0, 234, 255, 0.1); border: 1px solid rgba(0, 234, 255, 0.2); border-radius: 8px; padding: 14px 16px; text-align: left; width: 100%;">
         <span style="font-size: 0.85rem; color: #7fa9c9; margin-right: 8px;">${t("vipTips.confidence")}:</span>
-        <span style="font-size: 1.4rem; font-weight: 600; color: #00eaff;">${confidence}%</span>
+        <span style="font-size: 1.4rem; font-weight: 400; color: #00eaff;">${confidence}%</span>
       </div>
     </div>
 
