@@ -3881,58 +3881,6 @@ async function renderVipTips() {
 // 👑 VIP TIP ANALYSIS MODAL (STABLE VERSION)
 // ===============================
 
-// Ensure overlay is always attached directly to <body>
-// (critical for iOS Safari + position:fixed)
-function ensureVipModalInBody() {
-  const overlay = document.getElementById("vip-tip-analysis-overlay");
-  if (!overlay) return;
-  if (overlay.parentElement !== document.body) {
-    document.body.appendChild(overlay);
-  }
-}
-
-// Robust viewport-based modal positioning with hard fallback
-function positionModalInViewport(modalContent, buttonRect) {
-  const EDGE = 20;
-  const MARGIN = 12;
-
-  // 🚨 HARD FALLBACK — ALWAYS SAFE
-  if (
-    !buttonRect ||
-    typeof buttonRect.top !== "number" ||
-    typeof buttonRect.left !== "number"
-  ) {
-    modalContent.style.top = "50%";
-    modalContent.style.left = "50%";
-    modalContent.style.transform = "translate(-50%, -50%)";
-    return;
-  }
-
-  const vh = window.innerHeight;
-  const vw = window.innerWidth;
-
-  const MODAL_WIDTH = modalContent.offsetWidth || 560;
-  const MODAL_HEIGHT = modalContent.offsetHeight || 400;
-
-  let top = buttonRect.bottom + MARGIN;
-  let left = buttonRect.left + buttonRect.width / 2;
-
-  // If no space below → open above
-  if (top + MODAL_HEIGHT + EDGE > vh) {
-    top = buttonRect.top - MODAL_HEIGHT - MARGIN;
-  }
-
-  // Clamp into viewport
-  top = Math.max(EDGE, Math.min(top, vh - MODAL_HEIGHT - EDGE));
-  left = Math.max(
-    MODAL_WIDTH / 2 + EDGE,
-    Math.min(left, vw - MODAL_WIDTH / 2 - EDGE)
-  );
-
-  modalContent.style.top = `${top}px`;
-  modalContent.style.left = `${left}px`;
-  modalContent.style.transform = "translateX(-50%)";
-}
 
 // ===============================
 // OPEN PLAYER ANALYSIS MODAL
