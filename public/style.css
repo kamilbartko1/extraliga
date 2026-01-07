@@ -8026,10 +8026,38 @@ body {
 /* ============================================ */
 /* 👑 VIP ANALYZA – lepšie zarovnanie + ozdobná čiara medzi odstavcami */
 /* ============================================ */
+#vip-tip-analysis-modal h2,
+#vip-tip-analysis-modal h3 {
+  text-align: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+
 #vip-tip-analysis-modal p {
   text-align: center !important;
   margin: 15px auto 20px auto !important;
   max-width: 90% !important;
+}
+
+#vip-tip-analysis-modal ul {
+  text-align: center !important;
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin: 15px auto 20px auto !important;
+  max-width: 90% !important;
+}
+
+#vip-tip-analysis-modal ul li {
+  text-align: center !important;
+  margin: 10px auto !important;
+  padding-left: 0 !important;
+}
+
+#vip-tip-analysis-modal ul li::before {
+  content: "• " !important;
+  color: #ffdd55 !important;
+  font-weight: bold !important;
+  margin-right: 8px !important;
 }
 
 #vip-tip-analysis-modal p:not(:first-of-type) {
