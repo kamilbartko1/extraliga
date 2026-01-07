@@ -5817,7 +5817,6 @@ body {
 }
 
 .abs-info-box {
-  display: none !important; /* 🔒 DOČASNE SKRYTÉ - pre zobrazenie odstráňte túto riadku */
   position: relative;
   width: 100%;
   max-width: 1200px;
@@ -6307,7 +6306,6 @@ body {
    display: none;
 */
 .abs-profit-box {
-  display: none !important; /* 🔒 DOČASNE SKRYTÉ - pre zobrazenie odstráňte túto riadku */
   margin: 32px auto 28px;
   padding: 28px 36px;
   max-width: 480px;
