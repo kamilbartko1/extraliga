@@ -4279,7 +4279,8 @@ body {
 #premium-add-player-btn:hover,
 .premium-upgrade-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(0,234,255,0.35);
+  box-shadow: 0 4px 12px rgba(0,234,255,0.2);
+  opacity: 0.95;
 }
 
 .premium-link-btn {
@@ -4289,6 +4290,12 @@ body {
   margin-top: 14px;
   cursor: pointer;
   font-size: 0.85rem;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.premium-link-btn:hover {
+  color: #b3e5ff;
+  opacity: 0.9;
 }
 
 /* ===============================
