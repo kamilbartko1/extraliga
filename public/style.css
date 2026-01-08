@@ -3994,6 +3994,14 @@ body {
   text-align: center;
 }
 
+.premium-register-box h3 {
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  font-weight: 300;
+  margin-top: 0;
+  margin-bottom: 25px;
+  padding-top: 0;
+}
+
 .premium-register-box input {
   width: 100%;
   padding: 10px;
