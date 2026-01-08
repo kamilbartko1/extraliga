@@ -6880,15 +6880,15 @@ body {
 
 /* MATCHES */
 .match-day {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .match-day-header {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #9fdfff;
   border-bottom: 1px solid rgba(255,255,255,0.06);
-  padding-bottom: 4px;
-  margin-bottom: 6px;
+  padding-bottom: 3px;
+  margin-bottom: 4px;
 }
 
 .match-row {
@@ -7227,11 +7227,11 @@ body {
   display:grid;
   grid-template-columns: 1fr auto 1fr;
   align-items:center;
-  padding:10px 14px;
-  margin:6px 0;
-  border-radius:14px;
+  padding:6px 12px;
+  margin:3px 0;
+  border-radius:12px;
   background: linear-gradient(180deg, #0f1b24, #0b141c);
-  box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  box-shadow: 0 8px 20px rgba(0,0,0,.35);
 }
 
 .team{
@@ -7250,7 +7250,7 @@ body {
 }
 
 .team-name{
-  font-size:.9rem;
+  font-size:.85rem;
   font-weight:600;
   color:#fff;
   white-space:nowrap;
@@ -7259,8 +7259,8 @@ body {
 .score-center{
   display:flex;
   align-items:center;
-  gap:6px;
-  font-size:1.2rem;
+  gap:5px;
+  font-size:1.1rem;
   font-weight:800;
 }
 
@@ -7294,9 +7294,9 @@ body {
 @media (max-width: 600px) {
 
   .score-row {
-    padding: 8px 10px;
-    margin: 5px 0;
-    border-radius: 12px;
+    padding: 5px 8px;
+    margin: 3px 0;
+    border-radius: 10px;
   }
 
   .team-name {
@@ -7325,8 +7325,9 @@ body {
   }
 
   .match-day-header {
-    font-size: 0.85rem;
-    margin-bottom: 6px;
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+    padding-bottom: 2px;
   }
 }
 
@@ -7335,10 +7336,10 @@ body {
   display: grid;
   grid-template-columns: 1fr 110px 1fr;
   align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  margin-bottom: 8px;
-  border-radius: 14px;
+  gap: 6px;
+  padding: 6px 10px;
+  margin-bottom: 4px;
+  border-radius: 12px;
   background: linear-gradient(
     180deg,
     rgba(255,255,255,0.04),

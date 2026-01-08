@@ -1530,9 +1530,13 @@ async function displayMatches(matches) {
   recentBox.innerHTML = "";
   olderBox.innerHTML  = "";
 
+  // Skryj tlačidlo "Zobraziť viac" - už nie je potrebné
+  if (moreBtn) {
+    moreBtn.style.display = "none";
+  }
+
   if (!matches || matches.length === 0) {
     recentBox.innerHTML = `<p class="nhl-muted">${t("matches.noFinished")}</p>`;
-    if (moreBtn) moreBtn.style.display = "none";
     return;
   }
 
@@ -1562,15 +1566,11 @@ async function displayMatches(matches) {
   }
 
   const days = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
-  const today = new Date();
-  const RECENT_LIMIT_DAYS = 7;
-
-  let recentHtml = "";
-  let olderHtml  = "";
+  
+  let allMatchesHtml = "";
 
   for (const day of days) {
     const d = new Date(day);
-    const diffDays = Math.round((today - d) / (1000 * 60 * 60 * 24));
 
     const formatted = d.toLocaleDateString("sk-SK", {
       day: "2-digit",
@@ -1631,31 +1631,13 @@ async function displayMatches(matches) {
     }
 
     dayHtml += `</div>`;
-
-    if (diffDays <= RECENT_LIMIT_DAYS) recentHtml += dayHtml;
-    else olderHtml += dayHtml;
+    allMatchesHtml += dayHtml;
   }
 
-  recentBox.innerHTML = recentHtml;
-  olderBox.innerHTML  = olderHtml;
-
-  // ===============================
-  // Toggle starších
-  // ===============================
-  if (moreBtn) {
-    if (olderHtml) {
-      moreBtn.style.display = "inline-block";
-      if (!matchesExpanded) {
-        olderBox.classList.add("hidden");
-        moreBtn.textContent = t("matches.more");
-      } else {
-        olderBox.classList.remove("hidden");
-        moreBtn.textContent = t("matches.less");
-      }
-    } else {
-      moreBtn.style.display = "none";
-    }
-  }
+  // Zobraziť VŠETKY zápasy v recentBox
+  recentBox.innerHTML = allMatchesHtml;
+  olderBox.innerHTML = "";
+  olderBox.classList.add("hidden");
 
   // ===============================
   // 🎥 Zostrihy – BEZ ZMENY LOGIKY
@@ -2410,7 +2392,7 @@ function openAbsTableExplanation() {
         </ol>
         <p class="abs-explanation-note">
           <strong>Príklad:</strong> Ak začínaš so stávkou 1€ a prehráš, ďalšia stávka môže byť 2€. Ak prehráš aj tú, ďalšia bude 4€, a tak ďalej, 
-          až kým nevyhráš. Pri výhre vykážeš zisk aj po predošlých prehrách Po výhre sa séria resetuje späť na 1€ alebo akú základnú stávku si si zvolil..
+          až kým nevyhráš. Pri výhre vykážeš zisk aj po predošlých prehrách. Po výhre sa séria resetuje späť na 1€ alebo akú základnú stávku si si zvolil..
         </p>
       </section>
 
