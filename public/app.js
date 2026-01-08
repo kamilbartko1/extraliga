@@ -222,7 +222,7 @@ const I18N = {
     "modal.player.title": "🧠 Ako funguje NHLPRO Rating hráčov?",
 
     "abs.title": "🧠 ABS – Advanced Betting Simulation",
-    "abs.tableTitle": "Tabuľka hráčov ABS",
+    "abs.tableTitle": "🧠 Vysvetlenie ABS",
     "abs.intro": "ABS je analytická stávková stratégia založená na systematickom bankroll manažmente a progresívnom vyhodnocovaní výkonov konkrétnych hráčov NHL.",
     "abs.more1": "Každý hráč má vlastnú stávkovú sériu, ktorá sa vyhodnocuje nezávisle. Po výhre sa séria resetuje, po prehre sa výška stávky upravuje podľa presne definovaných pravidiel stratégie.",
     "abs.more2": "V tabuľke nižšie vidíš aktuálnu stávku hráčov, ktorých autonómne vybral systém vypočtov AI, a ich stake, streak, profit a detailnú históriu každého hráča. V NHLPRO PREMIUM môžeš pridávať vlastných hráčov podľa svojho výberu.",
@@ -458,7 +458,7 @@ const I18N = {
     "modal.player.title": "🧠 How does NHLPRO player rating work?",
 
     "abs.title": "🧠 ABS – Advanced Betting Simulation",
-    "abs.tableTitle": "ABS Players Table",
+    "abs.tableTitle": "🧠 ABS Explanation",
     "abs.intro": "ABS is an analytics-driven betting strategy focused on bankroll management and progressive evaluation of specific NHL players.",
     "abs.more1": "Each player has an independent betting series. After a win, the series resets; after a loss, the stake adjusts based on predefined rules.",
     "abs.more2": "In the table below you can see the current stake of players that were autonomously selected by the AI calculation system, their stake, streak, profit and detailed history per player. In NHLPRO PREMIUM you can add your own players.",
@@ -2349,7 +2349,10 @@ function openAbsTableExplanation() {
   const overlay = document.getElementById("abs-table-explanation-overlay");
   const content = document.getElementById("abs-table-explanation-modal");
   
-  if (!overlay || !content) return;
+  if (!overlay || !content) {
+    console.error("ABS explanation modal elements not found");
+    return;
+  }
   
   const explanationText = `
     <div class="abs-explanation-header">
@@ -2465,21 +2468,19 @@ function openAbsTableExplanation() {
   
   content.innerHTML = explanationText;
   
-  overlay.style.display = "none";
+  // Zobraz overlay a spusti animáciu
+  overlay.style.setProperty("display", "flex", "important");
+  content.style.transform = "scale(0.9)";
+  content.style.opacity = "0";
   requestAnimationFrame(() => {
-    overlay.style.display = "flex";
-    content.style.transform = "scale(0.9)";
-    content.style.opacity = "0";
-    requestAnimationFrame(() => {
-      content.style.transition = "transform 0.3s ease-out, opacity 0.3s ease-out";
-      content.style.transform = "scale(1)";
-      content.style.opacity = "1";
-    });
+    content.style.transition = "transform 0.3s ease-out, opacity 0.3s ease-out";
+    content.style.transform = "scale(1)";
+    content.style.opacity = "1";
   });
 }
 
 function closeAbsTableExplanation(event) {
-  if (event && event.target.id !== "abs-table-explanation-overlay" && !event.target.classList.contains("abs-explanation-close")) {
+  if (event && event.target.id !== "abs-table-explanation-overlay" && !event.target.classList.contains("abs-explanation-close") && !event.target.closest(".abs-explanation-close")) {
     return;
   }
   
@@ -2496,6 +2497,10 @@ function closeAbsTableExplanation(event) {
     overlay.style.display = "none";
   }, 200);
 }
+
+// Vystav funkcie globálne
+window.openAbsTableExplanation = openAbsTableExplanation;
+window.closeAbsTableExplanation = closeAbsTableExplanation;
 
 /// ===================================
 // VIP – delegované kliknutie na Detail
