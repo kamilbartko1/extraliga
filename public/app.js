@@ -887,21 +887,8 @@ function renderTerms() {
 }
 
 function renderAbsInfoBox() {
-  return `
-    <h2>${t("abs.title")}</h2>
-    <div class="abs-content-text">
-      <div class="abs-content-box">
-        <p>${t("abs.intro")}</p>
-      </div>
-      <div class="abs-content-box">
-        <p>${t("abs.more1")}</p>
-      </div>
-      <div class="abs-content-box">
-        <p>${t("abs.more2")}</p>
-      </div>
-    </div>
-    <div class="abs-warning">${t("abs.warn")}</div>
-  `;
+  // Boxy odstránené - text je teraz v modale
+  return '';
 }
 
 function renderDisclaimer() {
@@ -2361,6 +2348,22 @@ function openAbsTableExplanation() {
     </div>
     
     <div class="abs-explanation-content">
+      <section class="abs-explanation-section">
+        <h3>Čo je Advanced Betting Simulation (ABS)?</h3>
+        <p>
+          ABS je analytická stávková simulácia založená na systematickom bankroll manažmente a progresívnom vyhodnocovaní výkonov konkrétnych NHL hráčov. 
+          Každý hráč má vlastnú nezávislú stávkovú sériu, ktorá sa vyhodnocuje samostatne.
+        </p>
+        <p>
+          Každý hráč má vlastnú stávkovú sériu, ktorá sa vyhodnocuje nezávisle. Po výhre sa séria resetuje, po prehre sa výška stávky upravuje podľa presne definovaných pravidiel stratégie.
+        </p>
+        <p>
+          V tabuľke nižšie vidíš aktuálnu stávku hráčov, ktorých autonómne vybral systém vypočtov AI, a ich stake, streak, profit a detailnú históriu každého hráča. V NHLPRO PREMIUM môžeš pridávať vlastných hráčov podľa svojho výberu.
+        </p>
+      </section>
+
+      <div class="abs-explanation-divider"></div>
+
       <section class="abs-explanation-section">
         <h3>Vysvetlenie tabuľky hráčov</h3>
         <div class="abs-explanation-table-details">
