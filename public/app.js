@@ -2354,12 +2354,6 @@ function openAbsTableExplanation() {
           ABS je analytická stávková simulácia založená na systematickom bankroll manažmente a progresívnom vyhodnocovaní výkonov konkrétnych NHL hráčov. 
           Každý hráč má vlastnú nezávislú stávkovú sériu, ktorá sa vyhodnocuje samostatne.
         </p>
-        <p>
-          Každý hráč má vlastnú stávkovú sériu, ktorá sa vyhodnocuje nezávisle. Po výhre sa séria resetuje, po prehre sa výška stávky upravuje podľa presne definovaných pravidiel stratégie.
-        </p>
-        <p>
-          V tabuľke nižšie vidíš aktuálnu stávku hráčov, ktorých autonómne vybral systém vypočtov AI, a ich stake, streak, profit a detailnú históriu každého hráča. V NHLPRO PREMIUM môžeš pridávať vlastných hráčov podľa svojho výberu.
-        </p>
       </section>
 
       <div class="abs-explanation-divider"></div>
