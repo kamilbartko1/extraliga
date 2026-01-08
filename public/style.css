@@ -6315,6 +6315,285 @@ body {
   color: #ff5757;
 }
 
+/* ===============================
+   ABS Table Header with Info Button
+   =============================== */
+.mantingale-table-header {
+  margin-bottom: 20px;
+  padding: 0 2px;
+}
+
+.mantingale-table-header h3 {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  font-weight: 400;
+  font-size: 1.2rem;
+  color: #eaf7ff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.abs-table-info-btn {
+  cursor: pointer;
+  font-size: 1.1rem;
+  opacity: 0.8;
+  transition: 0.2s;
+  color: #00eaff;
+  background: rgba(0, 234, 255, 0.1);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 234, 255, 0.3);
+}
+
+.abs-table-info-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+  background: rgba(0, 234, 255, 0.2);
+  border-color: rgba(0, 234, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .mantingale-table-header h3 {
+    font-size: 1rem;
+  }
+  
+  .abs-table-info-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 1rem;
+  }
+}
+
+/* ===============================
+   ABS Explanation Modal
+   =============================== */
+.abs-explanation-modal-content {
+  max-width: 800px !important;
+  padding: 35px 40px !important;
+}
+
+.abs-explanation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(0, 234, 255, 0.2);
+}
+
+.abs-explanation-header h2 {
+  margin: 0 !important;
+  font-size: 1.8rem !important;
+  color: #00eaff !important;
+  font-family: "Poppins", "Segoe UI", sans-serif !important;
+  font-weight: 400 !important;
+}
+
+.abs-explanation-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #eaf7ff;
+  font-size: 1.8rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  line-height: 1;
+  padding: 0;
+}
+
+.abs-explanation-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
+}
+
+.abs-explanation-content {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.abs-explanation-section {
+  margin-bottom: 30px;
+}
+
+.abs-explanation-section:last-child {
+  margin-bottom: 0;
+}
+
+.abs-explanation-section h3 {
+  font-size: 1.35rem !important;
+  color: #ffdd55 !important;
+  margin-top: 0 !important;
+  margin-bottom: 15px !important;
+  font-weight: 400 !important;
+  font-family: "Poppins", "Segoe UI", sans-serif !important;
+}
+
+.abs-explanation-section p {
+  margin: 0 0 15px 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.abs-explanation-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 221, 85, 0.4),
+    transparent
+  );
+  margin: 30px 0;
+}
+
+.abs-explanation-table-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.abs-explanation-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 18px 20px;
+  transition: all 0.2s;
+}
+
+.abs-explanation-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(0, 234, 255, 0.3);
+}
+
+.abs-explanation-item strong {
+  display: block;
+  font-size: 1.05rem;
+  color: #00eaff;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-family: "Poppins", "Segoe UI", sans-serif;
+}
+
+.abs-explanation-item p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.abs-explanation-list {
+  list-style: none;
+  padding: 0 !important;
+  margin: 15px 0 !important;
+}
+
+.abs-explanation-list li {
+  margin-bottom: 15px;
+  padding-left: 25px;
+  position: relative;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.abs-explanation-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: #ffdd55;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.abs-explanation-list li strong {
+  color: #00eaff;
+  font-weight: 500;
+}
+
+.abs-explanation-note {
+  background: rgba(0, 234, 255, 0.08);
+  border-left: 3px solid #00eaff;
+  padding: 15px 18px;
+  border-radius: 8px;
+  margin-top: 15px !important;
+  font-size: 0.9rem !important;
+  line-height: 1.7 !important;
+}
+
+.abs-explanation-note strong {
+  color: #00eaff;
+  font-weight: 500;
+}
+
+.abs-explanation-warning {
+  background: rgba(255, 204, 0, 0.1);
+  border: 1px solid rgba(255, 212, 0, 0.3);
+  padding: 18px 20px;
+  border-radius: 12px;
+  margin: 0 !important;
+  font-size: 0.9rem !important;
+  line-height: 1.7 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .abs-explanation-modal-content {
+    padding: 25px 20px !important;
+    max-width: 95% !important;
+  }
+  
+  .abs-explanation-header h2 {
+    font-size: 1.4rem !important;
+  }
+  
+  .abs-explanation-close {
+    width: 32px;
+    height: 32px;
+    font-size: 1.5rem;
+  }
+  
+  .abs-explanation-section h3 {
+    font-size: 1.15rem !important;
+  }
+  
+  .abs-explanation-item {
+    padding: 14px 16px;
+  }
+  
+  .abs-explanation-item strong {
+    font-size: 1rem;
+  }
+  
+  .abs-explanation-item p {
+    font-size: 0.85rem;
+  }
+  
+  .abs-explanation-list li {
+    font-size: 0.9rem;
+    padding-left: 22px;
+  }
+  
+  .abs-explanation-note,
+  .abs-explanation-warning {
+    padding: 12px 14px;
+    font-size: 0.85rem !important;
+  }
+}
+
 /* ===== FOOTER ===== */
 .site-footer {
   margin-top: 40px;

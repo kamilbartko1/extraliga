@@ -222,6 +222,7 @@ const I18N = {
     "modal.player.title": "🧠 Ako funguje NHLPRO Rating hráčov?",
 
     "abs.title": "🧠 ABS – Advanced Betting Simulation",
+    "abs.tableTitle": "Tabuľka hráčov ABS",
     "abs.intro": "ABS je analytická stávková stratégia založená na systematickom bankroll manažmente a progresívnom vyhodnocovaní výkonov konkrétnych hráčov NHL.",
     "abs.more1": "Každý hráč má vlastnú stávkovú sériu, ktorá sa vyhodnocuje nezávisle. Po výhre sa séria resetuje, po prehre sa výška stávky upravuje podľa presne definovaných pravidiel stratégie.",
     "abs.more2": "V tabuľke nižšie vidíš aktuálnu stávku hráčov, ktorých autonómne vybral systém vypočtov AI, a ich stake, streak, profit a detailnú históriu každého hráča. V NHLPRO PREMIUM môžeš pridávať vlastných hráčov podľa svojho výberu.",
@@ -457,6 +458,7 @@ const I18N = {
     "modal.player.title": "🧠 How does NHLPRO player rating work?",
 
     "abs.title": "🧠 ABS – Advanced Betting Simulation",
+    "abs.tableTitle": "ABS Players Table",
     "abs.intro": "ABS is an analytics-driven betting strategy focused on bankroll management and progressive evaluation of specific NHL players.",
     "abs.more1": "Each player has an independent betting series. After a win, the series resets; after a loss, the stake adjusts based on predefined rules.",
     "abs.more2": "In the table below you can see the current stake of players that were autonomously selected by the AI calculation system, their stake, streak, profit and detailed history per player. In NHLPRO PREMIUM you can add your own players.",
@@ -2338,6 +2340,161 @@ tbody.querySelectorAll("td.balance").forEach(td => {
   document.querySelectorAll(".mtg-detail-btn").forEach((btn) => {
     btn.addEventListener("click", () => showMantingalDetail(btn.dataset.player));
   });
+}
+
+// ===============================
+// ABS Table Explanation Modal
+// ===============================
+function openAbsTableExplanation() {
+  const overlay = document.getElementById("abs-table-explanation-overlay");
+  const content = document.getElementById("abs-table-explanation-modal");
+  
+  if (!overlay || !content) return;
+  
+  const explanationText = `
+    <div class="abs-explanation-header">
+      <h2>🧠 ABS – Podrobné vysvetlenie</h2>
+      <button class="abs-explanation-close" onclick="closeAbsTableExplanation(event)">×</button>
+    </div>
+    
+    <div class="abs-explanation-content">
+      <section class="abs-explanation-section">
+        <h3>Čo je Advanced Betting Simulation (ABS)?</h3>
+        <p>
+          ABS je analytická stávková simulácia založená na systematickom bankroll manažmente a progresívnom vyhodnocovaní výkonov konkrétnych NHL hráčov. 
+          Každý hráč má vlastnú nezávislú stávkovú sériu, ktorá sa vyhodnocuje samostatne.
+        </p>
+      </section>
+
+      <div class="abs-explanation-divider"></div>
+
+      <section class="abs-explanation-section">
+        <h3>Vysvetlenie tabuľky hráčov</h3>
+        <div class="abs-explanation-table-details">
+          <div class="abs-explanation-item">
+            <strong>Hráč:</strong>
+            <p>Meno hráča NHL, ktorý je zaradený do ABS stratégie. Systém automaticky vyberá hráčov na základe AI analýzy ich výkonnosti.</p>
+          </div>
+          
+          <div class="abs-explanation-item">
+            <strong>Balance (€):</strong>
+            <p>Celkový zisk alebo strata pre daného hráča v eurách. Pozitívna hodnota (zelená) znamená zisk, negatívna hodnota (červená) znamená stratu.</p>
+          </div>
+          
+          <div class="abs-explanation-item">
+            <strong>Stávka /EUR/:</strong>
+            <p>Aktuálna výška stávky v eurách pre nasledujúci zápas. Táto hodnota sa mení podľa výsledkov predchádzajúcich stávok a progresívneho systému násobenia.</p>
+          </div>
+          
+          <div class="abs-explanation-item">
+            <strong>Streak:</strong>
+            <p>Séria výhier alebo prehier. Pozitívne číslo označuje počet po sebe idúcich výhier (napr. +3 = tri výhry za sebou), 
+            negatívne číslo označuje počet prehier za sebou (napr. -2 = dve prehry za sebou).</p>
+          </div>
+          
+          <div class="abs-explanation-item">
+            <strong>ROI (%):</strong>
+            <p>Return on Investment (Návratnosť investície) vyjadrená v percentách. Vypočíta sa ako pomer medzi celkovým ziskom (Balance) a celkovou investovanou sumou všetkých stávok. 
+            Pozitívne ROI znamená profitabilitu stratégie pre daného hráča.</p>
+          </div>
+          
+          <div class="abs-explanation-item">
+            <strong>Detail:</strong>
+            <p>Tlačidlo, ktoré zobrazí detailnú históriu stávok pre daného hráča, vrátane všetkých predchádzajúcich zápasov, stávok, výsledkov a zmien v balance.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="abs-explanation-divider"></div>
+
+      <section class="abs-explanation-section">
+        <h3>Ako funguje násobenie vkladov?</h3>
+        <p>
+          ABS používa progresívny systém násobenia stávok, ktorý sa aktivuje po prehre. Princíp funguje nasledovne:
+        </p>
+        <ol class="abs-explanation-list">
+          <li><strong>Začiatok série:</strong> Prvá stávka má základnú hodnotu (zvyčajne 1€ alebo definovanú hodnotu).</li>
+          <li><strong>Po výhre:</strong> Séria sa resetuje na začiatočnú hodnotu stávky. Balance sa zvyšuje o zisk z výhry.</li>
+          <li><strong>Po prehre:</strong> Ďalšia stávka sa násobí podľa definovaného koeficientu (napr. 2x, 2.5x alebo podľa špecifických pravidiel stratégie).</li>
+          <li><strong>Pokračovanie série:</strong> Ak prehra pokračuje, stávka sa ďalej násobí, až kým nedôjde k výhre, ktorá resetuje sériu.</li>
+        </ol>
+        <p class="abs-explanation-note">
+          <strong>Príklad:</strong> Ak začínaš so stávkou 1€ a prehráš, ďalšia stávka môže byť 2€. Ak prehráš aj tú, ďalšia bude 4€, a tak ďalej, 
+          až kým nevyhráš. Po výhre sa séria resetuje späť na 1€.
+        </p>
+      </section>
+
+      <div class="abs-explanation-divider"></div>
+
+      <section class="abs-explanation-section">
+        <h3>Podrobnosti o ABS stratégii</h3>
+        <div class="abs-explanation-item">
+          <strong>Nezávislé série:</strong>
+          <p>Každý hráč má svoju vlastnú stávkovú sériu, ktorá je úplne nezávislá od ostatných hráčov. To znamená, že výhra alebo prehra jedného hráča neovplyvňuje stávky iných hráčov.</p>
+        </div>
+        
+        <div class="abs-explanation-item">
+          <strong>AI výber hráčov:</strong>
+          <p>Systém automaticky vyberá hráčov na základe komplexnej AI analýzy, ktorá hodnotí ich výkonnosť, formu, štatistiky a ďalšie faktory. 
+          V NHLPRO PREMIUM môžeš pridávať aj vlastných hráčov podľa svojho výberu.</p>
+        </div>
+        
+        <div class="abs-explanation-item">
+          <strong>Bankroll manažment:</strong>
+          <p>ABS je navrhnutá tak, aby minimalizovala riziko pomocou progresívneho systému, ktorý sa zameriava na konkrétnych hráčov s vysokou pravdepodobnosťou úspechu. 
+          Avšak, ako každá stávková stratégia, neexistuje 100% záruka výhry.</p>
+        </div>
+        
+        <div class="abs-explanation-item">
+          <strong>Celkový profit:</strong>
+          <p>Súčet všetkých ziskov a strát všetkých hráčov v ABS stratégii. Tento údaj sa zobrazuje v hornej časti sekcie a poskytuje prehľad o celkovej výkonnosti stratégie.</p>
+        </div>
+      </section>
+
+      <div class="abs-explanation-divider"></div>
+
+      <section class="abs-explanation-section">
+        <h3>⚠️ Dôležité upozornenie</h3>
+        <p class="abs-explanation-warning">
+          ABS nie je záruka výhry. Ide o štatistickú simuláciu určenú pre disciplinovaných používateľov so zodpovedným prístupom k bankrollu. 
+          Minulé výsledky nie sú zárukou budúcich výsledkov. Táto sekcia slúži len na edukatívne a informačné účely.
+        </p>
+      </section>
+    </div>
+  `;
+  
+  content.innerHTML = explanationText;
+  
+  overlay.style.display = "none";
+  requestAnimationFrame(() => {
+    overlay.style.display = "flex";
+    content.style.transform = "scale(0.9)";
+    content.style.opacity = "0";
+    requestAnimationFrame(() => {
+      content.style.transition = "transform 0.3s ease-out, opacity 0.3s ease-out";
+      content.style.transform = "scale(1)";
+      content.style.opacity = "1";
+    });
+  });
+}
+
+function closeAbsTableExplanation(event) {
+  if (event && event.target.id !== "abs-table-explanation-overlay" && !event.target.classList.contains("abs-explanation-close")) {
+    return;
+  }
+  
+  const overlay = document.getElementById("abs-table-explanation-overlay");
+  const content = document.getElementById("abs-table-explanation-modal");
+  
+  if (!overlay || !content) return;
+  
+  content.style.transition = "transform 0.2s ease-in, opacity 0.2s ease-in";
+  content.style.transform = "scale(0.9)";
+  content.style.opacity = "0";
+  
+  setTimeout(() => {
+    overlay.style.display = "none";
+  }, 200);
 }
 
 /// ===================================
