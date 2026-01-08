@@ -5914,7 +5914,7 @@ body {
    =============================== */
 .abs-disclaimer {
   max-width: 900px;
-  margin: 0 auto 24px;
+  margin: 40px auto 24px;
   padding: 16px 20px;
   background: rgba(220, 53, 69, 0.1); /* Jemné červené pozadie */
   border: 1px solid rgba(220, 53, 69, 0.3); /* Jemný červený okraj */
@@ -5939,7 +5939,7 @@ body {
 @media (max-width: 768px) {
   .abs-disclaimer {
     padding: 14px 16px;
-    margin-bottom: 20px;
+    margin: 30px auto 20px;
   }
 
   .abs-disclaimer-text {
