@@ -6321,6 +6321,8 @@ body {
 .mantingale-table-header {
   margin-bottom: 20px;
   padding: 0 2px;
+  display: flex;
+  justify-content: center;
 }
 
 .mantingale-table-header h3 {
@@ -6332,6 +6334,10 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 12px 20px;
+  border: 1px solid rgba(0, 234, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(0, 234, 255, 0.05);
 }
 
 .abs-table-info-btn {

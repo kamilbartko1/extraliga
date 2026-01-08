@@ -2362,16 +2362,6 @@ function openAbsTableExplanation() {
     
     <div class="abs-explanation-content">
       <section class="abs-explanation-section">
-        <h3>Čo je Advanced Betting Simulation (ABS)?</h3>
-        <p>
-          ABS je analytická stávková simulácia založená na systematickom bankroll manažmente a progresívnom vyhodnocovaní výkonov konkrétnych NHL hráčov. 
-          Každý hráč má vlastnú nezávislú stávkovú sériu, ktorá sa vyhodnocuje samostatne.
-        </p>
-      </section>
-
-      <div class="abs-explanation-divider"></div>
-
-      <section class="abs-explanation-section">
         <h3>Vysvetlenie tabuľky hráčov</h3>
         <div class="abs-explanation-table-details">
           <div class="abs-explanation-item">
