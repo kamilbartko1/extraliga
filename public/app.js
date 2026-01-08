@@ -222,7 +222,7 @@ const I18N = {
     "modal.player.title": "🧠 Ako funguje NHLPRO Rating hráčov?",
 
     "abs.title": "🧠 ABS – Advanced Betting Simulation",
-    "abs.tableTitle": "🧠 Vysvetlenie ABS",
+    "abs.tableTitle": "🧠 Ako funguje ABS",
     "abs.intro": "ABS je analytická stávková stratégia založená na systematickom bankroll manažmente a progresívnom vyhodnocovaní výkonov konkrétnych hráčov NHL.",
     "abs.more1": "Každý hráč má vlastnú stávkovú sériu, ktorá sa vyhodnocuje nezávisle. Po výhre sa séria resetuje, po prehre sa výška stávky upravuje podľa presne definovaných pravidiel stratégie.",
     "abs.more2": "V tabuľke nižšie vidíš aktuálnu stávku hráčov, ktorých autonómne vybral systém vypočtov AI, a ich stake, streak, profit a detailnú históriu každého hráča. V NHLPRO PREMIUM môžeš pridávať vlastných hráčov podľa svojho výberu.",
@@ -458,7 +458,7 @@ const I18N = {
     "modal.player.title": "🧠 How does NHLPRO player rating work?",
 
     "abs.title": "🧠 ABS – Advanced Betting Simulation",
-    "abs.tableTitle": "🧠 ABS Explanation",
+    "abs.tableTitle": "🧠 How ABS Works",
     "abs.intro": "ABS is an analytics-driven betting strategy focused on bankroll management and progressive evaluation of specific NHL players.",
     "abs.more1": "Each player has an independent betting series. After a win, the series resets; after a loss, the stake adjusts based on predefined rules.",
     "abs.more2": "In the table below you can see the current stake of players that were autonomously selected by the AI calculation system, their stake, streak, profit and detailed history per player. In NHLPRO PREMIUM you can add your own players.",
@@ -2391,8 +2391,8 @@ function openAbsTableExplanation() {
           
           <div class="abs-explanation-item">
             <strong>Streak:</strong>
-            <p>Séria výhier alebo prehier. Pozitívne číslo označuje počet po sebe idúcich výhier (napr. +3 = tri výhry za sebou), 
-            negatívne číslo označuje počet prehier za sebou (napr. -2 = dve prehry za sebou).</p>
+            <p>Séria nedaných gólov. Číslo označuje počet po sebe idúcich zápasov, v ktorých hráč nedal gól (napr. 4 = nedal gól v štyroch po sebe idúcich zápasoch). 
+            Toto číslo nie je záporné a zvyšuje sa s každým zápasom, v ktorom hráč nedal gól. Po dátom góle sa streak resetuje na 0.</p>
           </div>
           
           <div class="abs-explanation-item">
