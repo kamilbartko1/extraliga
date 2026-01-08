@@ -2379,7 +2379,7 @@ function openAbsTableExplanation() {
           <div class="abs-explanation-item">
             <strong>Streak:</strong>
             <p>Séria zápasov bez gólu. Číslo označuje počet po sebe idúcich zápasov, v ktorých hráč nedal gól (napr. 4 = nedal gól v štyroch po sebe idúcich zápasoch). 
-            Po dátom góle sa streak resetuje na 0.</p>
+            Po strelenom góle sa streak resetuje na 0.</p>
           </div>
           
           <div class="abs-explanation-item">
