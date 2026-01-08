@@ -1509,15 +1509,6 @@ async function fetchMatches() {
   }
 }
 
-let matchesExpanded = false; // globálny flag pre Zobraziť viac
-
-// HTML uses onclick="toggleMoreMatches()"
-function toggleMoreMatches() {
-  matchesExpanded = !matchesExpanded;
-  if (Array.isArray(allMatches) && allMatches.length) {
-    displayMatches(allMatches);
-  }
-}
 
 // === Zápasy ===
 async function displayMatches(matches) {
