@@ -2410,7 +2410,7 @@ function openAbsTableExplanation() {
         </ol>
         <p class="abs-explanation-note">
           <strong>Príklad:</strong> Ak začínaš so stávkou 1€ a prehráš, ďalšia stávka môže byť 2€. Ak prehráš aj tú, ďalšia bude 4€, a tak ďalej, 
-          až kým nevyhráš. Po výhre sa séria resetuje späť na 1€.
+          až kým nevyhráš. Pri výhre vykážeš zisk aj po predošlých prehrách Po výhre sa séria resetuje späť na 1€ alebo akú základnú stávku si si zvolil..
         </p>
       </section>
 
