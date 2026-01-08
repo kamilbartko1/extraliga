@@ -8190,6 +8190,19 @@ body {
   color: #9bbbd6;
   font-size: 1rem;
   font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.player-stats-photo {
+  display: block;
+  width: 150px;
+  height: 150px;
+  margin: 16px auto 0;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 234, 255, 0.4);
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.3);
+  object-fit: cover;
+  background: rgba(0, 234, 255, 0.05);
 }
 
 .player-stats-grid {

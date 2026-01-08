@@ -2070,10 +2070,19 @@ async function openPlayerStatsModal(playerName, teamName) {
     
     // Zobraz štatistiky
     const stats = playerStats;
+    
+    // Vytvor URL pre headshot ak nie je v dátach
+    let headshotUrl = stats.headshot;
+    if (!headshotUrl && stats.id && stats.team) {
+      const season = "20252026";
+      headshotUrl = `https://assets.nhle.com/mugs/nhl/${season}/${stats.team}/${stats.id}.png`;
+    }
+    
     content.innerHTML = `
       <div class="player-stats-header">
         <h3>${stats.name || playerName}</h3>
         ${teamName ? `<p class="player-stats-team">${teamName}</p>` : ""}
+        ${headshotUrl ? `<img src="${headshotUrl}" alt="${stats.name || playerName}" class="player-stats-photo" onerror="this.style.display='none';">` : ""}
       </div>
       <div class="player-stats-grid">
         <div class="player-stats-item">
