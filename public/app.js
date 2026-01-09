@@ -3272,6 +3272,16 @@ tbody.querySelectorAll("td.balance").forEach(td => {
   });
 }
 
+// Back Button - AS sekcia
+// ===============================
+document
+  .getElementById("mtg-back-btn")
+  ?.addEventListener("click", () => {
+    document
+      .getElementById("mantingale-detail")
+      .classList.add("hidden");
+  });
+
 // === ABS sekcia (nová verzia) ===
 async function displayMantingal() {
   const container = document.getElementById("mantingal-container");
