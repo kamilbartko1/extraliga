@@ -1681,6 +1681,44 @@ async function displayMatches(matches) {
 // ===============================
 // LIVE GAMES
 // ===============================
+
+// Globálna premenná pre interval automatickej aktualizácie
+let liveGamesUpdateInterval = null;
+
+// Spustí automatickú aktualizáciu live zápasov (každých 30 sekúnd)
+function startLiveGamesAutoUpdate() {
+  // Ak už interval beží, zastav ho najprv
+  if (liveGamesUpdateInterval) {
+    clearInterval(liveGamesUpdateInterval);
+  }
+  
+  // Načítaj hneď
+  loadLiveGames();
+  
+  // Potom aktualizuj každých 30 sekúnd
+  liveGamesUpdateInterval = setInterval(() => {
+    // Skontroluj, či je sekcia stále otvorená
+    const matchesSection = document.getElementById("matches-section");
+    if (matchesSection && matchesSection.style.display !== "none") {
+      loadLiveGames();
+    } else {
+      // Sekcia nie je otvorená, zastav aktualizáciu
+      stopLiveGamesAutoUpdate();
+    }
+  }, 30000); // 30 sekúnd
+  
+  console.log("🔄 Automatická aktualizácia live zápasov spustená (každých 30s)");
+}
+
+// Zastaví automatickú aktualizáciu live zápasov
+function stopLiveGamesAutoUpdate() {
+  if (liveGamesUpdateInterval) {
+    clearInterval(liveGamesUpdateInterval);
+    liveGamesUpdateInterval = null;
+    console.log("⏹️ Automatická aktualizácia live zápasov zastavená");
+  }
+}
+
 async function loadLiveGames() {
   const liveList = document.getElementById("live-games-list");
   if (!liveList) return;
@@ -5028,42 +5066,52 @@ document.querySelectorAll("nav button").forEach(btn => {
     // 🔹 Dynamické načítanie obsahu
     switch (targetId) {
       case "home-section":
+        stopLiveGamesAutoUpdate(); // Zastav automatickú aktualizáciu, ak sa otvorí iná sekcia
         await displayHome();
         break;
 
       case "matches-section":
-        // Načítaj live zápasy pri otvorení sekcie
-        loadLiveGames();
-        break;
+        // Načítaj live zápasy pri otvorení sekcie a spustí automatickú aktualizáciu
+        startLiveGamesAutoUpdate();
         fetchMatches();
         break;
 
       case "teams-section":
+        stopLiveGamesAutoUpdate(); // Zastav automatickú aktualizáciu, ak sa otvorí iná sekcia
         await displayTeamRatings();
         break;
 
       case "players-section":
+        stopLiveGamesAutoUpdate(); // Zastav automatickú aktualizáciu, ak sa otvorí iná sekcia
         await displayPlayerRatings();
         break;
 
       case "mantingal-container":
+        stopLiveGamesAutoUpdate(); // Zastav automatickú aktualizáciu, ak sa otvorí iná sekcia
         await displayMantingal();
         await displayMantingalHistory();
         break;
 
       case "premium-section":
+        stopLiveGamesAutoUpdate(); // Zastav automatickú aktualizáciu, ak sa otvorí iná sekcia
         await checkPremiumStatus(); // 🔥 KĽÚČOVÉ
         break;
 
       case "shooting-section":
+        stopLiveGamesAutoUpdate(); // Zastav automatickú aktualizáciu, ak sa otvorí iná sekcia
         await displayShootingLeaders();
         break;
 
       case "strategies-section":
+        stopLiveGamesAutoUpdate(); // Zastav automatickú aktualizáciu, ak sa otvorí iná sekcia
         await displayStrategies();
         break;
 
       default:
+        // Pre ostatné sekcie tiež zastav automatickú aktualizáciu
+        if (targetId !== "matches-section") {
+          stopLiveGamesAutoUpdate();
+        }
         break;
     }
   });
@@ -5094,15 +5142,18 @@ document.getElementById("mobileSelect")?.addEventListener("change", async (e) =>
 
   switch (targetId) {
     case "matches-section":
-      loadLiveGames();
+      // Načítaj live zápasy pri otvorení sekcie a spustí automatickú aktualizáciu
+      startLiveGamesAutoUpdate();
       await fetchMatches();
       break;
 
     case "teams-section":
+      stopLiveGamesAutoUpdate(); // Zastav automatickú aktualizáciu, ak sa otvorí iná sekcia
       await displayTeamRatings();
       break;
 
     case "players-section":
+      stopLiveGamesAutoUpdate(); // Zastav automatickú aktualizáciu, ak sa otvorí iná sekcia
       await displayPlayerRatings();
       break;
 
