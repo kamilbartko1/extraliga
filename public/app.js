@@ -1213,7 +1213,7 @@ async function displayHome() {
         ${
           homeData.matchesToday.length === 0
             ? `<p class="nhl-muted">${t("home.noGamesToday")}</p>`
-            : homeData.matchesToday.slice(0,6).map(m => `
+            : homeData.matchesToday.map(m => `
               <div class="nhl-game-row" onclick="showSection('matches-section')">
                 <div class="nhl-game-teams">
                   <img src="${m.homeLogo}" class="nhl-team-logo">
@@ -1227,10 +1227,6 @@ async function displayHome() {
             `).join("")
         }
       </div>
-
-      <button class="nhl-btn nhl-btn-link" onclick="showSection('matches-section')">
-        ${t("home.viewAll")}
-      </button>
     </div>
 
     <!-- AI STRELEC DNA -->
