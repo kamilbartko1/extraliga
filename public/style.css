@@ -7144,27 +7144,51 @@ body {
     text-align: center;
   }
 
+  /* GP a PTS - prvé dva stĺpce, nie sú sticky */
   .standings-table th:first-child,
   .standings-table td:first-child {
-    position: sticky;
-    left: 0;
-    background: rgba(6, 14, 22, 0.95);
-    z-index: 5;
-    padding-left: 8px;
-    padding-right: 8px;
-    min-width: 40px;
+    padding: 8px 4px;
+    min-width: 35px;
   }
 
   .standings-table th:nth-child(2),
   .standings-table td:nth-child(2) {
+    padding: 8px 4px;
+    min-width: 40px;
+  }
+
+  /* # a Tím - sticky stĺpce, natlačené bližšie */
+  .standings-table th:nth-child(3),
+  .standings-table td:nth-child(3) {
     position: sticky;
-    left: 40px;
+    left: 0;
     background: rgba(6, 14, 22, 0.95);
     z-index: 5;
-    padding-left: 8px;
-    padding-right: 8px;
-    min-width: 140px;
+    padding: 8px 2px;
+    min-width: 28px;
+    text-align: center;
+  }
+
+  .standings-table th:nth-child(4),
+  .standings-table td:nth-child(4) {
+    position: sticky;
+    left: 32px;
+    background: rgba(6, 14, 22, 0.95);
+    z-index: 5;
+    padding: 8px 4px;
+    min-width: 130px;
     text-align: left;
+  }
+
+  /* Rank cell - natlačené bližšie k tímu */
+  .rank-cell {
+    padding-right: 2px !important;
+  }
+
+  /* Team cell - natlačené bližšie k rank */
+  .team-cell {
+    padding-left: 2px !important;
+    gap: 6px;
   }
 }
 

@@ -2382,12 +2382,12 @@ function renderStandings(standings) {
     <table class="standings-table wide">
       <thead>
         <tr>
+          <th>GP</th>
+          <th class="pts">PTS</th>
           <th>#</th>
           <th>Tím</th>
-          <th>GP</th>
           <th>W</th>
           <th>L</th>
-          <th class="pts">PTS</th>
           <th>GF</th>
           <th>GA</th>
           <th>+/-</th>
@@ -2407,22 +2407,17 @@ function renderStandings(standings) {
 
           return `
             <tr>
-              <td>${i + 1}</td>
-
+              <td>${GP}</td>
+              <td class="pts">${t.points}</td>
+              <td class="rank-cell">${i + 1}</td>
               <td class="team-cell">
                 <img src="${t.teamLogo}" alt="${t.teamName?.default || ""}">
                 <span>${t.teamName?.default || ""}</span>
               </td>
-
-              <td>${GP}</td>
               <td>${W}</td>
               <td>${L}</td>
-
-              <td class="pts">${t.points}</td>
-
               <td>${GF}</td>
               <td>${GA}</td>
-
               <td class="${DIFF >= 0 ? "pos" : "neg"}">
                 ${DIFF > 0 ? "+" : ""}${DIFF}
               </td>
