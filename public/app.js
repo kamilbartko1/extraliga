@@ -1758,6 +1758,18 @@ function displayLiveGames(games) {
   }
 
   liveList.innerHTML = html || `<p class="nhl-muted">Žiadne zápasy</p>`;
+  
+  // Pridaj event listenery pre každý riadok zápasu
+  liveList.querySelectorAll('.live-game-row').forEach(row => {
+    const gameId = row.getAttribute('data-game-id');
+    if (gameId) {
+      row.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openLiveGameDetails(gameId);
+      });
+    }
+  });
 }
 
 function createLiveGameRow(game) {
@@ -1773,13 +1785,13 @@ function createLiveGameRow(game) {
     statusText = game.startTime || "Čoskoro";
   }
 
-  // Zabezpeč, že ID je správne formatované pre onclick
-  // Ulož ID do data atribútu a použij event handler
+  // Zabezpeč, že ID je správne formatované
+  // Ulož ID do data atribútu (event listener sa pridá neskôr)
   const gameId = game.id || null;
-  const gameIdAttr = gameId !== null ? String(gameId) : '';
+  const gameIdAttr = gameId !== null ? String(gameId).replace(/"/g, '&quot;') : '';
   
   return `
-    <div class="live-game-row" data-game-id="${gameIdAttr}" onclick="openLiveGameDetails('${gameIdAttr}')">
+    <div class="live-game-row" data-game-id="${gameIdAttr}">
       <div class="live-game-teams">
         <div class="live-game-team">
           <img src="${home.logo}" class="live-team-logo" alt="${home.fullName}">
