@@ -1723,7 +1723,14 @@ async function loadLiveGames() {
   const liveList = document.getElementById("live-games-list");
   if (!liveList) return;
 
-  liveList.innerHTML = '<p class="nhl-muted">Načítavam live zápasy…</p>';
+  // Zobraz loading len pri prvom načítaní
+  const isFirstLoad = !liveList.querySelector('.live-game-row') && 
+                      liveList.innerHTML.indexOf("Načítavam") === -1 &&
+                      liveList.innerHTML.indexOf("nehrajú") === -1;
+  
+  if (isFirstLoad) {
+    liveList.innerHTML = '<p class="nhl-muted">Načítavam live zápasy…</p>';
+  }
 
   try {
     const resp = await fetch("/api/live", { cache: "no-store" });
@@ -1731,14 +1738,20 @@ async function loadLiveGames() {
 
     const data = await resp.json();
     if (!data.ok) {
-      liveList.innerHTML = `<p class="nhl-muted">Žiadne live zápasy</p>`;
+      // Len ak ešte nie je prázdna správa
+      if (liveList.innerHTML.indexOf("Žiadne live zápasy") === -1) {
+        liveList.innerHTML = `<p class="nhl-muted">Žiadne live zápasy</p>`;
+      }
       return;
     }
 
     displayLiveGames(data.games || []);
   } catch (err) {
     console.error("❌ Chyba pri načítaní live zápasov:", err);
-    liveList.innerHTML = `<p class="nhl-muted">Chyba pri načítaní live zápasov</p>`;
+    // Len ak ešte nie je chybová správa
+    if (liveList.innerHTML.indexOf("Chyba pri načítaní") === -1) {
+      liveList.innerHTML = `<p class="nhl-muted">Chyba pri načítaní live zápasov</p>`;
+    }
   }
 }
 
@@ -1749,8 +1762,10 @@ function displayLiveGames(games) {
   if (!liveList) return;
 
   if (!games || games.length === 0) {
-    liveList.innerHTML = `<p class="nhl-muted">Momentálne sa nehrajú žiadne zápasy</p>`;
-    // Skryj box ak nie sú žiadne zápasy
+    // Len ak ešte nie je prázdna správa, nastav ju
+    if (liveList.innerHTML.indexOf("nehrajú žiadne zápasy") === -1) {
+      liveList.innerHTML = `<p class="nhl-muted">Momentálne sa nehrajú žiadne zápasy</p>`;
+    }
     if (liveBox) liveBox.style.display = "none";
     return;
   }
@@ -1761,7 +1776,9 @@ function displayLiveGames(games) {
 
   // Ak nie sú ani LIVE ani Preview zápasy, skryj box
   if (liveGames.length === 0 && previewGames.length === 0) {
-    liveList.innerHTML = `<p class="nhl-muted">Momentálne sa nehrajú žiadne zápasy</p>`;
+    if (liveList.innerHTML.indexOf("nehrajú žiadne zápasy") === -1) {
+      liveList.innerHTML = `<p class="nhl-muted">Momentálne sa nehrajú žiadne zápasy</p>`;
+    }
     if (liveBox) liveBox.style.display = "none";
     return;
   }
@@ -1769,43 +1786,218 @@ function displayLiveGames(games) {
   // Zobraz box
   if (liveBox) liveBox.style.display = "block";
 
-  let html = "";
-
-  // LIVE zápasy
-  if (liveGames.length > 0) {
-    html += `<div class="live-games-group">
-      <div class="live-games-header">🔴 LIVE (${liveGames.length})</div>`;
-    
-    liveGames.forEach(game => {
-      html += createLiveGameRow(game);
-    });
-    
-    html += `</div>`;
-  }
-
-  // Preview zápasy (čoskoro začínajúce)
-  if (previewGames.length > 0) {
-    html += `<div class="live-games-group">
-      <div class="live-games-header">⏰ Čoskoro (${previewGames.length})</div>`;
-    
-    previewGames.forEach(game => {
-      html += createLiveGameRow(game);
-    });
-    
-    html += `</div>`;
-  }
-
-  liveList.innerHTML = html || `<p class="nhl-muted">Žiadne zápasy</p>`;
+  // PLYNULÁ AKTUALIZÁCIA - namiesto prerenderovania celej sekcie
+  // aktualizujeme len zmenené hodnoty
   
-  // Pridaj event listenery pre každý riadok zápasu
-  liveList.querySelectorAll('.live-game-row').forEach(row => {
+  // Vymaž loading text ak existuje
+  if (liveList.innerHTML.indexOf("Načítavam") !== -1 || 
+      liveList.innerHTML.indexOf("nehrajú žiadne zápasy") !== -1) {
+    liveList.innerHTML = '';
+  }
+  
+  // Získaj existujúce riadky
+  const existingRows = liveList.querySelectorAll('.live-game-row');
+  const existingGameIds = new Set();
+  existingRows.forEach(row => {
     const gameId = row.getAttribute('data-game-id');
-    if (gameId) {
-      row.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        openLiveGameDetails(gameId);
-      });
+    if (gameId) existingGameIds.add(gameId);
+  });
+
+  // Vytvor mapu nových zápasov
+  const allGames = [...liveGames, ...previewGames];
+  const newGameIds = new Set(allGames.map(g => String(g.id || '')));
+
+  // Aktualizuj existujúce riadky alebo vytvor nové
+  allGames.forEach(game => {
+    const gameId = String(game.id || '');
+    const existingRow = liveList.querySelector(`.live-game-row[data-game-id="${gameId}"]`);
+    
+    if (existingRow) {
+      // Aktualizuj len zmenené hodnoty bez prerenderovania celého riadku
+      updateLiveGameRow(existingRow, game);
+    } else {
+      // Vytvor nový riadok
+      const rowHtml = createLiveGameRow(game);
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = rowHtml;
+      const newRow = tempDiv.firstElementChild;
+      
+      if (newRow) {
+        // Pridaj event listener
+        newRow.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openLiveGameDetails(gameId);
+        });
+        
+        // Vlož na správne miesto (LIVE alebo PREVIEW skupina)
+        insertGameRow(liveList, newRow, game.status.state === "LIVE");
+      }
+    }
+  });
+
+  // Odstráň riadky, ktoré už nie sú v nových dátach
+  existingRows.forEach(row => {
+    const gameId = row.getAttribute('data-game-id');
+    if (gameId && !newGameIds.has(gameId)) {
+      row.remove();
+    }
+  });
+
+  // Aktualizuj hlavičky skupín (počet zápasov)
+  updateLiveGamesHeaders(liveList, liveGames.length, previewGames.length);
+}
+
+// Aktualizuje existujúci riadok zápasu bez prerenderovania
+function updateLiveGameRow(row, game) {
+  const home = game.teams?.home || {};
+  const away = game.teams?.away || {};
+  const isLive = game.status?.state === "LIVE";
+  const progress = game.status?.progress || {};
+  
+  // Aktualizuj skóre (len ak sa zmenilo)
+  const scoreContainer = row.querySelector('.live-game-score');
+  if (scoreContainer) {
+    if (isLive) {
+      const homeScoreEl = scoreContainer.querySelector('.live-score:first-of-type');
+      const awayScoreEl = scoreContainer.querySelector('.live-score:last-of-type');
+      const sepEl = scoreContainer.querySelector('.live-sep');
+      
+      if (homeScoreEl && homeScoreEl.textContent !== String(game.scores.home)) {
+        homeScoreEl.textContent = game.scores.home;
+      }
+      if (awayScoreEl && awayScoreEl.textContent !== String(game.scores.away)) {
+        awayScoreEl.textContent = game.scores.away;
+      }
+      if (sepEl && sepEl.textContent !== ":") {
+        sepEl.textContent = ":";
+      }
+      
+      // Odstráň čas ak existuje
+      const timeEl = scoreContainer.querySelector('.live-time');
+      if (timeEl) timeEl.remove();
+    } else {
+      // Preview - zobraz čas
+      const timeEl = scoreContainer.querySelector('.live-time');
+      const sepEl = scoreContainer.querySelector('.live-sep');
+      
+      if (!timeEl) {
+        // Vytvor čas element ak neexistuje
+        const homeScoreEl = scoreContainer.querySelector('.live-score:first-of-type');
+        const awayScoreEl = scoreContainer.querySelector('.live-score:last-of-type');
+        if (homeScoreEl) homeScoreEl.remove();
+        if (awayScoreEl) awayScoreEl.remove();
+        
+        const timeSpan = document.createElement('span');
+        timeSpan.className = 'live-time';
+        timeSpan.textContent = game.startTime || '';
+        scoreContainer.insertBefore(timeSpan, sepEl);
+      } else if (timeEl.textContent !== game.startTime) {
+        timeEl.textContent = game.startTime || '';
+      }
+      
+      if (sepEl && sepEl.textContent !== "vs") {
+        sepEl.textContent = "vs";
+      }
+    }
+  }
+  
+  // Aktualizuj status (čas zápasu) - pre LIVE zápasy zobrazuj aj minútu
+  const statusEl = row.querySelector('.live-game-status');
+  if (statusEl) {
+    if (isLive) {
+      // Pre LIVE zápasy zobrazuj minútu a čas
+      const periodText = progress.currentPeriodOrdinal || "";
+      const timeText = progress.timeRemaining || "";
+      const statusText = `${periodText} ${timeText}`.trim() || "LIVE";
+      const fullStatusText = `🔴 ${statusText}`;
+      
+      // Aktualizuj len ak sa zmenil čas
+      if (statusEl.textContent !== fullStatusText) {
+        statusEl.textContent = fullStatusText;
+        statusEl.className = 'live-game-status live';
+      }
+    } else {
+      const statusText = game.startTime || "Čoskoro";
+      const fullStatusText = `⏰ ${statusText}`;
+      if (statusEl.textContent !== fullStatusText) {
+        statusEl.textContent = fullStatusText;
+        statusEl.className = 'live-game-status preview';
+      }
+    }
+  }
+}
+
+// Vloží riadok zápasu na správne miesto (do LIVE alebo PREVIEW skupiny)
+function insertGameRow(container, row, isLive) {
+  const groups = container.querySelectorAll('.live-games-group');
+  let targetGroup = null;
+  
+  if (isLive) {
+    // Nájdi alebo vytvor LIVE skupinu
+    targetGroup = Array.from(groups).find(g => 
+      g.querySelector('.live-games-header')?.textContent.includes('LIVE')
+    );
+    
+    if (!targetGroup) {
+      // Vytvor LIVE skupinu
+      targetGroup = document.createElement('div');
+      targetGroup.className = 'live-games-group';
+      const header = document.createElement('div');
+      header.className = 'live-games-header';
+      header.textContent = '🔴 LIVE (0)';
+      targetGroup.appendChild(header);
+      
+      // Vlož na začiatok
+      const firstGroup = groups[0];
+      if (firstGroup) {
+        container.insertBefore(targetGroup, firstGroup);
+      } else {
+        container.appendChild(targetGroup);
+      }
+    }
+  } else {
+    // Nájdi alebo vytvor PREVIEW skupinu
+    targetGroup = Array.from(groups).find(g => 
+      g.querySelector('.live-games-header')?.textContent.includes('Čoskoro')
+    );
+    
+    if (!targetGroup) {
+      // Vytvor PREVIEW skupinu
+      targetGroup = document.createElement('div');
+      targetGroup.className = 'live-games-group';
+      const header = document.createElement('div');
+      header.className = 'live-games-header';
+      header.textContent = '⏰ Čoskoro (0)';
+      targetGroup.appendChild(header);
+      
+      // Vlož na koniec
+      container.appendChild(targetGroup);
+    }
+  }
+  
+  if (targetGroup) {
+    targetGroup.appendChild(row);
+  }
+}
+
+// Aktualizuje hlavičky skupín (počet zápasov)
+function updateLiveGamesHeaders(container, liveCount, previewCount) {
+  const headers = container.querySelectorAll('.live-games-header');
+  headers.forEach(header => {
+    if (header.textContent.includes('LIVE')) {
+      header.textContent = `🔴 LIVE (${liveCount})`;
+    } else if (header.textContent.includes('Čoskoro')) {
+      header.textContent = `⏰ Čoskoro (${previewCount})`;
+    }
+  });
+  
+  // Odstráň prázdne skupiny
+  const groups = container.querySelectorAll('.live-games-group');
+  groups.forEach(group => {
+    const rows = group.querySelectorAll('.live-game-row');
+    if (rows.length === 0) {
+      group.remove();
     }
   });
 }

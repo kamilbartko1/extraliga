@@ -8876,11 +8876,18 @@ html, body {
 
 .live-score {
   color: #00ff9c;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+
+.live-score:empty {
+  display: none;
 }
 
 .live-time {
   font-size: 0.9rem;
   color: rgba(255,255,255,0.7);
+  transition: color 0.2s ease;
 }
 
 .live-sep {
@@ -8891,6 +8898,7 @@ html, body {
   text-align: center;
   font-size: 0.85rem;
   font-weight: 600;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
   padding: 4px 8px;
   border-radius: 6px;
 }
