@@ -221,7 +221,7 @@ const I18N = {
     "modal.team.title": "🧠 Ako funguje NHLPRO Rating tímov?",
     "modal.player.title": "🧠 Ako funguje NHLPRO Rating hráčov?",
 
-    "abs.title": "🧠 ABS – Advanced Prediction Simulation",
+    "abs.title": "🧠 AS – Advanced Simulation",
     "abs.tableTitle": "🧠 Ako funguje AS",
     "abs.intro": "AS je analytická predikčná stratégia založená na systematickom bankroll manažmente a progresívnom vyhodnocovaní výkonov konkrétnych hráčov NHL.",
     "abs.more1": "Každý hráč má vlastnú predikčnú sériu, ktorá sa vyhodnocuje nezávisle. Po výhre sa séria resetuje, po prehre sa výška vkladu upravuje podľa presne definovaných pravidiel stratégie.",
@@ -497,7 +497,7 @@ const I18N = {
     "modal.team.title": "🧠 How does NHLPRO team rating work?",
     "modal.player.title": "🧠 How does NHLPRO player rating work?",
 
-    "abs.title": "🧠 ABS – Advanced Prediction Simulation",
+    "abs.title": "🧠 AS – Advanced Simulation",
     "abs.tableTitle": "🧠 How AS Works",
     "abs.intro": "AS is an analytics-driven prediction strategy focused on bankroll management and progressive evaluation of specific NHL players.",
     "abs.more1": "Each player has an independent prediction series. After a win, the series resets; after a loss, the investment adjusts based on predefined rules.",
