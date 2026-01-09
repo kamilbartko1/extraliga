@@ -6991,6 +6991,32 @@ body {
     0 16px 40px rgba(0,0,0,0.55);
 }
 
+/* === MOBILE - SKRYTIE BOXOV MIMO SEKCII VÝSLEDKY === */
+@media (max-width: 768px) {
+  /* Skryj boxy s výsledkami a tabuľkou ak nie sú v sekcii Výsledky */
+  .section:not(#matches-section) .matches-box,
+  .section:not(#matches-section) .standings-box,
+  .section:not(#matches-section) .matches-layout,
+  .section:not(#matches-section) .matches-left,
+  .section:not(#matches-section) .matches-right {
+    display: none !important;
+  }
+  
+  /* Zobraz boxy len v sekcii Výsledky */
+  #matches-section .matches-box,
+  #matches-section .standings-box,
+  #matches-section .matches-layout,
+  #matches-section .matches-left,
+  #matches-section .matches-right {
+    display: block !important;
+  }
+  
+  #matches-section .matches-layout {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
+
 .matches-box h3,
 .standings-box h3 {
   text-align: center;
