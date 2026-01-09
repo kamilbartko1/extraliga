@@ -1685,7 +1685,7 @@ async function displayMatches(matches) {
 // Globálna premenná pre interval automatickej aktualizácie
 let liveGamesUpdateInterval = null;
 
-// Spustí automatickú aktualizáciu live zápasov (každých 30 sekúnd)
+// Spustí automatickú aktualizáciu live zápasov (každých 10 sekúnd)
 function startLiveGamesAutoUpdate() {
   // Ak už interval beží, zastav ho najprv
   if (liveGamesUpdateInterval) {
@@ -1695,7 +1695,7 @@ function startLiveGamesAutoUpdate() {
   // Načítaj hneď
   loadLiveGames();
   
-  // Potom aktualizuj každých 30 sekúnd
+  // Potom aktualizuj každých 10 sekúnd
   liveGamesUpdateInterval = setInterval(() => {
     // Skontroluj, či je sekcia stále otvorená
     const matchesSection = document.getElementById("matches-section");
@@ -1705,9 +1705,9 @@ function startLiveGamesAutoUpdate() {
       // Sekcia nie je otvorená, zastav aktualizáciu
       stopLiveGamesAutoUpdate();
     }
-  }, 30000); // 30 sekúnd
+  }, 10000); // 10 sekúnd
   
-  console.log("🔄 Automatická aktualizácia live zápasov spustená (každých 30s)");
+  console.log("🔄 Automatická aktualizácia live zápasov spustená (každých 10s)");
 }
 
 // Zastaví automatickú aktualizáciu live zápasov
