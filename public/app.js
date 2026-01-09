@@ -30,7 +30,7 @@ const I18N = {
     "nav.teamRating": "Rating tímov",
     "nav.playerRating": "Rating hráčov",
     "nav.stats": "Štatistiky hráčov",
-    "nav.abs": "AdvancedBettingSimulation",
+    "nav.abs": "AdvancedPredictionSimulation",
     "nav.premium": "NHLPRO PREMIUM",
 
     "sections.home": "Domov",
@@ -57,7 +57,7 @@ const I18N = {
 
     "home.loading": "⏳ Načítavam domovskú stránku...",
     "home.heroTitle": "Použi pokročilú stratégiu tipovania",
-    "home.heroSubtitle": "Advanced Betting Simulation pre maximálny zisk z NHL stávok",
+    "home.heroSubtitle": "Advanced Prediction Simulation pre maximálny zisk z NHL predikcií",
     "home.ctaStart": "Začať teraz",
     "home.ctaLearn": "Zistiť viac",
     "home.statTotalProfit": "Celkový zisk",
@@ -69,7 +69,7 @@ const I18N = {
     "home.featureStats": "Kompletné štatistiky",
     "home.featureStatsDesc": "Dostup k detailným štatistikám hráčov a tímov v reálnom čase",
     "home.featureStrategy": "ABS Stratégia",
-    "home.featureStrategyDesc": "Advanced Betting Simulation pre maximálny zisk",
+    "home.featureStrategyDesc": "Advanced Prediction Simulation pre maximálny zisk",
     "home.featureRealTime": "Aktuálne dáta",
     "home.featureRealTimeDesc": "Vždy najnovšie výsledky, tabuľky a štatistiky",
     "home.featureCTA": "Vyskúšať Premium",
@@ -107,7 +107,7 @@ const I18N = {
     "matches.standingsUnavailable": "Tabuľka nie je dostupná.",
 
     "mantingale.totalProfit": "CELKOVÝ PROFIT",
-    "mantingale.stake": "Stávka /EUR/",
+    "mantingale.stake": "Vklad /EUR/",
     "mantingale.streak": "Streak",
     "mantingale.balance": "Balance (€)",
     "mantingale.roi": "ROI (%)",
@@ -129,7 +129,7 @@ const I18N = {
     "stats.pim": "Vylúčenia",
 
     "premium.title": "👑 NHLPRO PREMIUM",
-    "premium.subtitle": "Advanced betting simulation",
+    "premium.subtitle": "Advanced prediction simulation",
     "premium.loginHint": "Najprv sa prihlás, aby si mohol používať NHLPRO PREMIUM.",
     "premium.email": "Email",
     "premium.password": "Heslo",
@@ -151,7 +151,7 @@ const I18N = {
     "premium.addPlayer": "Pridať hráča",
     "premium.advancedStats": "📊 Detailné štatistiky",
     "premium.totalProfit": "Celkový profit",
-    "premium.tableStake": "Stávka",
+    "premium.tableStake": "Vklad",
     "premium.tableStreak": "Streak",
     "premium.tableBalance": "Balance",
     "premium.tableOdds": "Kurzy",
@@ -189,16 +189,16 @@ const I18N = {
     "premium.featureVipTips": "VIP AI Tipy",
     "premium.featureVipTipsDesc": "Autonómne tipy na strelcov a góly založené na ratingoch a štatistikách z posledných 10 zápasov",
     "premium.featureAbs": "ABS Stratégia",
-    "premium.featureAbsDesc": "Pridávaj vlastných hráčov do Advanced Betting Simulation a sleduj ich sériu a profit",
+    "premium.featureAbsDesc": "Pridávaj vlastných hráčov do Advanced Prediction Simulation a sleduj ich sériu a profit",
     "premium.featureAnalytics": "Detailná Analytika",
     "premium.featureAnalyticsDesc": "Štatistiky z posledných 10 zápasov: forma, ofenzíva, obrana a trendy tímov",
     "premium.absStrategyTitle": "🎯 Moja ABS Stratégia",
-    "premium.absStrategyDesc": "Pridaj hráčov do svojej Advanced Betting Simulation a sleduj ich výkonnosť a profit.",
+    "premium.absStrategyDesc": "Pridaj hráčov do svojej Advanced Prediction Simulation a sleduj ich výkonnosť a profit.",
 
     "vipTips.title": "🔥 VIP tipy na dnes",
     "vipTips.subtitle": "Autonómne tipy na strelcov a góly podľa ratingov a štatistík z posledných 10 zápasov.",
     "vipTips.loading": "Načítavam VIP tipy…",
-    "vipTips.noGames": "Dnes nie sú žiadne zápasy na tipovanie.",
+    "vipTips.noGames": "Dnes nie sú žiadne zápasy na predikciu.",
     "vipTips.sectionScorers": "Tipy na strelcov (Top 3)",
     "vipTips.sectionTotals": "Tipy na góly v zápase",
     "vipTips.confidence": "Confidence",
@@ -221,53 +221,53 @@ const I18N = {
     "modal.team.title": "🧠 Ako funguje NHLPRO Rating tímov?",
     "modal.player.title": "🧠 Ako funguje NHLPRO Rating hráčov?",
 
-    "abs.title": "🧠 ABS – Advanced Betting Simulation",
+    "abs.title": "🧠 ABS – Advanced Prediction Simulation",
     "abs.tableTitle": "🧠 Ako funguje ABS",
-    "abs.intro": "ABS je analytická stávková stratégia založená na systematickom bankroll manažmente a progresívnom vyhodnocovaní výkonov konkrétnych hráčov NHL.",
-    "abs.more1": "Každý hráč má vlastnú stávkovú sériu, ktorá sa vyhodnocuje nezávisle. Po výhre sa séria resetuje, po prehre sa výška stávky upravuje podľa presne definovaných pravidiel stratégie.",
-    "abs.more2": "V tabuľke nižšie vidíš aktuálnu stávku hráčov, ktorých autonómne vybral systém vypočtov AI, a ich stake, streak, profit a detailnú históriu každého hráča. V NHLPRO PREMIUM môžeš pridávať vlastných hráčov podľa svojho výberu.",
+    "abs.intro": "ABS je analytická predikčná stratégia založená na systematickom bankroll manažmente a progresívnom vyhodnocovaní výkonov konkrétnych hráčov NHL.",
+    "abs.more1": "Každý hráč má vlastnú predikčnú sériu, ktorá sa vyhodnocuje nezávisle. Po výhre sa séria resetuje, po prehre sa výška vkladu upravuje podľa presne definovaných pravidiel stratégie.",
+    "abs.more2": "V tabuľke nižšie vidíš aktuálny vklad hráčov, ktorých autonómne vybral systém vypočtov AI, a ich vklad, streak, profit a detailnú históriu každého hráča. V NHLPRO PREMIUM môžeš pridávať vlastných hráčov podľa svojho výberu.",
     "abs.warn": "⚠️ ABS nie je záruka výhry. Ide o štatistickú stratégiu určenú pre disciplinovaných používateľov so zodpovedným prístupom k bankrollu.",
 
     "absCta.title": "Chceš si vybrať vlastných hráčov do ABS?",
     "absCta.subtitle": "Zaregistruj sa a aktivuj členstvo len za <strong>4,99 € mesačne</strong> a získaj prístup k <strong>AI tipom na každý deň</strong>, detailným štatistikám formy tímov za posledných 10 zápasov a možnosti pridávať vlastných hráčov s ABS sériou.",
     "absCta.button": "Registrovať sa",
-    "abs.disclaimer": "⚠️ <strong>UPOZORNENIE:</strong> Táto sekcia je len <strong>informatívna edukatívna simulácia</strong>. <strong>Nejde o skutočné stávkovanie</strong> a nenabádame klientov, aby podľa týchto informácií konali.",
+    "abs.disclaimer": "⚠️ <strong>UPOZORNENIE:</strong> Táto sekcia je len <strong>informatívna edukatívna simulácia</strong>. <strong>Nejde o skutočnú predikciu</strong> a nenabádame klientov, aby podľa týchto informácií konali.",
 
     "abs.explanation.title": "🧠 ABS – Podrobné vysvetlenie",
-    "abs.explanation.whatIs": "Čo je Advanced Betting Simulation (ABS)?",
-    "abs.explanation.whatIsText": "ABS je analytická stávková simulácia založená na systematickom bankroll manažmente a progresívnom vyhodnocovaní výkonov konkrétnych NHL hráčov. Každý hráč má vlastnú nezávislú stávkovú sériu, ktorá sa vyhodnocuje samostatne.",
+    "abs.explanation.whatIs": "Čo je Advanced Prediction Simulation (ABS)?",
+    "abs.explanation.whatIsText": "ABS je analytická predikčná simulácia založená na systematickom bankroll manažmente a progresívnom vyhodnocovaní výkonov konkrétnych NHL hráčov. Každý hráč má vlastnú nezávislú predikčnú sériu, ktorá sa vyhodnocuje samostatne.",
     "abs.explanation.tableTitle": "Vysvetlenie tabuľky hráčov",
     "abs.explanation.player": "Hráč:",
     "abs.explanation.playerText": "Meno hráča NHL, ktorý je zaradený do ABS stratégie. Systém automaticky vyberá hráčov na základe AI analýzy ich výkonnosti.",
     "abs.explanation.balance": "Balance (€):",
     "abs.explanation.balanceText": "Celkový zisk alebo strata pre daného hráča v eurách. Pozitívna hodnota (zelená) znamená zisk, negatívna hodnota (červená) znamená stratu.",
-    "abs.explanation.stake": "Stávka /EUR/:",
-    "abs.explanation.stakeText": "Aktuálna výška stávky v eurách pre nasledujúci zápas. Táto hodnota sa mení podľa výsledkov predchádzajúcich stávok a progresívneho systému násobenia.",
+    "abs.explanation.stake": "Vklad /EUR/:",
+    "abs.explanation.stakeText": "Aktuálna výška vkladu v eurách pre nasledujúci zápas. Táto hodnota sa mení podľa výsledkov predchádzajúcich predikcií a progresívneho systému násobenia.",
     "abs.explanation.streak": "Streak:",
     "abs.explanation.streakText": "Séria zápasov bez gólu. Číslo označuje počet po sebe idúcich zápasov, v ktorých hráč nedal gól (napr. 4 = nedal gól v štyroch po sebe idúcich zápasoch). Po strelenom góle sa streak resetuje na 0.",
     "abs.explanation.roi": "ROI (%):",
-    "abs.explanation.roiText": "Return on Investment (Návratnosť investície) vyjadrená v percentách. Vypočíta sa ako pomer medzi celkovým ziskom (Balance) a celkovou investovanou sumou všetkých stávok. Pozitívne ROI znamená profitabilitu stratégie pre daného hráča.",
+    "abs.explanation.roiText": "Return on Investment (Návratnosť investície) vyjadrená v percentách. Vypočíta sa ako pomer medzi celkovým ziskom (Balance) a celkovou investovanou sumou všetkých vkladov. Pozitívne ROI znamená profitabilitu stratégie pre daného hráča.",
     "abs.explanation.detail": "Detail:",
-    "abs.explanation.detailText": "Tlačidlo, ktoré zobrazí detailnú históriu stávok pre daného hráča, vrátane všetkých predchádzajúcich zápasov, stávok, výsledkov a zmien v balance.",
+    "abs.explanation.detailText": "Tlačidlo, ktoré zobrazí detailnú históriu predikcií pre daného hráča, vrátane všetkých predchádzajúcich zápasov, vkladov, výsledkov a zmien v balance.",
     "abs.explanation.multiplyTitle": "Ako funguje násobenie vkladov?",
-    "abs.explanation.multiplyText": "ABS používa progresívny systém násobenia stávok, ktorý sa aktivuje po prehre. Princíp funguje nasledovne:",
+    "abs.explanation.multiplyText": "ABS používa progresívny systém násobenia vkladov, ktorý sa aktivuje po prehre. Princíp funguje nasledovne:",
     "abs.explanation.multiplyStart": "Začiatok série:",
-    "abs.explanation.multiplyStartText": "Prvá stávka má základnú hodnotu (zvyčajne 1€ alebo definovanú hodnotu).",
+    "abs.explanation.multiplyStartText": "Prvý vklad má základnú hodnotu (zvyčajne 1€ alebo definovanú hodnotu).",
     "abs.explanation.multiplyWin": "Po výhre:",
-    "abs.explanation.multiplyWinText": "Séria sa resetuje na začiatočnú hodnotu stávky. Balance sa zvyšuje o zisk z výhry.",
+    "abs.explanation.multiplyWinText": "Séria sa resetuje na začiatočnú hodnotu vkladu. Balance sa zvyšuje o zisk z výhry.",
     "abs.explanation.multiplyLoss": "Po prehre:",
-    "abs.explanation.multiplyLossText": "Ďalšia stávka sa násobí podľa definovaného koeficientu (napr. 2x, 2.5x alebo podľa špecifických pravidiel stratégie).",
+    "abs.explanation.multiplyLossText": "Ďalší vklad sa násobí podľa definovaného koeficientu (napr. 2x, 2.5x alebo podľa špecifických pravidiel stratégie).",
     "abs.explanation.multiplyContinue": "Pokračovanie série:",
-    "abs.explanation.multiplyContinueText": "Ak prehra pokračuje, stávka sa ďalej násobí, až kým nedôjde k výhre, ktorá resetuje sériu.",
+    "abs.explanation.multiplyContinueText": "Ak prehra pokračuje, vklad sa ďalej násobí, až kým nedôjde k výhre, ktorá resetuje sériu.",
     "abs.explanation.multiplyExample": "Príklad:",
-    "abs.explanation.multiplyExampleText": "Ak začínaš so stávkou 1€ a prehráš, ďalšia stávka môže byť 2€. Ak prehráš aj tú, ďalšia bude 4€, a tak ďalej, až kým nevyhráš. Pri výhre vykážeš zisk aj po predošlých prehrách. Po výhre sa séria resetuje späť na 1€ alebo akú základnú stávku si si zvolil.",
+    "abs.explanation.multiplyExampleText": "Ak začínaš s vkladom 1€ a prehráš, ďalší vklad môže byť 2€. Ak prehráš aj tú, ďalší bude 4€, a tak ďalej, až kým nevyhráš. Pri výhre vykážeš zisk aj po predošlých prehrách. Po výhre sa séria resetuje späť na 1€ alebo aký základný vklad si si zvolil.",
     "abs.explanation.detailsTitle": "Podrobnosti o ABS stratégii",
     "abs.explanation.independent": "Nezávislé série:",
-    "abs.explanation.independentText": "Každý hráč má svoju vlastnú stávkovú sériu, ktorá je úplne nezávislá od ostatných hráčov. To znamená, že výhra alebo prehra jedného hráča neovplyvňuje stávky iných hráčov.",
+    "abs.explanation.independentText": "Každý hráč má svoju vlastnú predikčnú sériu, ktorá je úplne nezávislá od ostatných hráčov. To znamená, že výhra alebo prehra jedného hráča neovplyvňuje vklady iných hráčov.",
     "abs.explanation.aiSelection": "AI výber hráčov:",
     "abs.explanation.aiSelectionText": "Systém automaticky vyberá hráčov na základe komplexnej AI analýzy, ktorá hodnotí ich výkonnosť, formu, štatistiky a ďalšie faktory. V NHLPRO PREMIUM môžeš pridávať aj vlastných hráčov podľa svojho výberu.",
     "abs.explanation.bankroll": "Bankroll manažment:",
-    "abs.explanation.bankrollText": "ABS je navrhnutá tak, aby minimalizovala riziko pomocou progresívneho systému, ktorý sa zameriava na konkrétnych hráčov s vysokou pravdepodobnosťou úspechu. Avšak, ako každá stávková stratégia, neexistuje 100% záruka výhry.",
+    "abs.explanation.bankrollText": "ABS je navrhnutá tak, aby minimalizovala riziko pomocou progresívneho systému, ktorý sa zameriava na konkrétnych hráčov s vysokou pravdepodobnosťou úspechu. Avšak, ako každá predikčná stratégia, neexistuje 100% záruka výhry.",
     "abs.explanation.totalProfit": "Celkový profit:",
     "abs.explanation.totalProfitText": "Súčet všetkých ziskov a strát všetkých hráčov v ABS stratégii. Tento údaj sa zobrazuje v hornej časti sekcie a poskytuje prehľad o celkovej výkonnosti stratégie.",
     "abs.explanation.warningTitle": "⚠️ Dôležité upozornenie",
@@ -281,8 +281,8 @@ const I18N = {
     "mantingale.title": "ABS stratégia",
     "mantingale.loadingData": "Načítavam dáta...",
     "mantingale.loadFailed": "❌ Nepodarilo sa načítať dáta ABS.",
-    "mantingale.historyTitle": "História stávok ABS",
-    "mantingale.historyLoadFailed": "❌ Nepodarilo sa načítať históriu stávok.",
+    "mantingale.historyTitle": "História predikcií ABS",
+    "mantingale.historyLoadFailed": "❌ Nepodarilo sa načítať históriu predikcií.",
     "mantingale.historyEmpty": "Zatiaľ žiadne dáta.",
 
     "strategies.title": "Databáza hráčov NHL",
@@ -300,7 +300,7 @@ const I18N = {
     "premium.signupFailed": "Registrácia zlyhala.",
   },
   en: {
-    "header.tagline": "Bet NHL like a pro!",
+    "header.tagline": "Predict NHL like a pro!",
     "header.powered": "Powered by <span>AI-Logic</span>",
 
     "nav.home": "Home",
@@ -308,7 +308,7 @@ const I18N = {
     "nav.teamRating": "Team rating",
     "nav.playerRating": "Player rating",
     "nav.stats": "Player stats",
-    "nav.abs": "AdvancedBettingSimulation",
+    "nav.abs": "AdvancedPredictionSimulation",
     "nav.premium": "NHLPRO PREMIUM",
 
     "sections.home": "Home",
@@ -332,8 +332,8 @@ const I18N = {
     "footer.disclaimer": "⚖️ Legal disclaimer",
 
     "home.loading": "⏳ Loading home…",
-    "home.heroTitle": "Use Advanced Betting Simulation",
-    "home.heroSubtitle": "Advanced Betting Simulation for maximum profit from NHL bets",
+    "home.heroTitle": "Use Advanced Prediction Simulation",
+    "home.heroSubtitle": "Advanced Prediction Simulation for maximum profit from NHL predictions",
     "home.ctaStart": "Get Started",
     "home.ctaLearn": "Learn More",
     "home.statTotalProfit": "Total Profit",
@@ -345,7 +345,7 @@ const I18N = {
     "home.featureStats": "Complete Statistics",
     "home.featureStatsDesc": "Access detailed player and team statistics in real-time",
     "home.featureStrategy": "ABS Strategy",
-    "home.featureStrategyDesc": "Advanced Betting Simulation for maximum profit",
+    "home.featureStrategyDesc": "Advanced Prediction Simulation for maximum profit",
     "home.featureRealTime": "Real-time Data",
     "home.featureRealTimeDesc": "Always the latest results, standings and statistics",
     "home.featureCTA": "Try Premium",
@@ -383,7 +383,7 @@ const I18N = {
     "matches.standingsUnavailable": "Standings are not available.",
 
     "mantingale.totalProfit": "TOTAL PROFIT",
-    "mantingale.stake": "Stake (EUR)",
+    "mantingale.stake": "Investment (EUR)",
     "mantingale.streak": "Streak",
     "mantingale.balance": "Balance (€)",
     "mantingale.roi": "ROI (%)",
@@ -405,7 +405,7 @@ const I18N = {
     "stats.pim": "Penalty minutes",
 
     "premium.title": "👑 NHLPRO PREMIUM",
-    "premium.subtitle": "Advanced betting simulation",
+    "premium.subtitle": "Advanced prediction simulation",
     "premium.loginHint": "Log in first to use NHLPRO PREMIUM.",
     "premium.email": "Email",
     "premium.password": "Password",
@@ -427,7 +427,7 @@ const I18N = {
     "premium.addPlayer": "Add player",
     "premium.advancedStats": "📊 Detailed statistics",
     "premium.totalProfit": "Total profit",
-    "premium.tableStake": "Stake",
+    "premium.tableStake": "Investment",
     "premium.tableStreak": "Streak",
     "premium.tableBalance": "Balance",
     "premium.tableOdds": "Odds",
@@ -465,11 +465,11 @@ const I18N = {
     "premium.featureVipTips": "VIP AI Tips",
     "premium.featureVipTipsDesc": "Autonomous tips for scorers and goals based on ratings and statistics from the last 10 games",
     "premium.featureAbs": "ABS Strategy",
-    "premium.featureAbsDesc": "Add your own players to Advanced Betting Simulation and track their series and profit",
+    "premium.featureAbsDesc": "Add your own players to Advanced Prediction Simulation and track their series and profit",
     "premium.featureAnalytics": "Detailed Analytics",
     "premium.featureAnalyticsDesc": "Statistics from the last 10 games: form, offense, defense and team trends",
     "premium.absStrategyTitle": "🎯 My ABS Strategy",
-    "premium.absStrategyDesc": "Add players to your Advanced Betting Simulation and track their performance and profit.",
+    "premium.absStrategyDesc": "Add players to your Advanced Prediction Simulation and track their performance and profit.",
 
     "vipTips.title": "🔥 VIP tips for today",
     "vipTips.subtitle": "Autonomous scorer and goals tips based on ratings and stats from the last 10 games.",
@@ -497,53 +497,53 @@ const I18N = {
     "modal.team.title": "🧠 How does NHLPRO team rating work?",
     "modal.player.title": "🧠 How does NHLPRO player rating work?",
 
-    "abs.title": "🧠 ABS – Advanced Betting Simulation",
+    "abs.title": "🧠 ABS – Advanced Prediction Simulation",
     "abs.tableTitle": "🧠 How ABS Works",
-    "abs.intro": "ABS is an analytics-driven betting strategy focused on bankroll management and progressive evaluation of specific NHL players.",
-    "abs.more1": "Each player has an independent betting series. After a win, the series resets; after a loss, the stake adjusts based on predefined rules.",
-    "abs.more2": "In the table below you can see the current stake of players that were autonomously selected by the AI calculation system, their stake, streak, profit and detailed history per player. In NHLPRO PREMIUM you can add your own players.",
+    "abs.intro": "ABS is an analytics-driven prediction strategy focused on bankroll management and progressive evaluation of specific NHL players.",
+    "abs.more1": "Each player has an independent prediction series. After a win, the series resets; after a loss, the investment adjusts based on predefined rules.",
+    "abs.more2": "In the table below you can see the current investment of players that were autonomously selected by the AI calculation system, their investment, streak, profit and detailed history per player. In NHLPRO PREMIUM you can add your own players.",
     "abs.warn": "⚠️ ABS is not a guarantee of profit. It is intended for disciplined users with responsible bankroll management.",
 
     "absCta.title": "Want to pick your own players for ABS?",
     "absCta.subtitle": "Register and activate membership for just <strong>€4.99 per month</strong> and get access to <strong>daily AI tips</strong>, detailed team form statistics for the last 10 games, and the ability to add your own players with ABS series.",
     "absCta.button": "Create account",
-    "abs.disclaimer": "⚠️ <strong>WARNING:</strong> This section is only an <strong>informative educational simulation</strong>. <strong>This is not real betting</strong> and we do not encourage clients to act based on this information.",
+    "abs.disclaimer": "⚠️ <strong>WARNING:</strong> This section is only an <strong>informative educational simulation</strong>. <strong>This is not real prediction</strong> and we do not encourage clients to act based on this information.",
 
     "abs.explanation.title": "🧠 ABS – Detailed Explanation",
-    "abs.explanation.whatIs": "What is Advanced Betting Simulation (ABS)?",
-    "abs.explanation.whatIsText": "ABS is an analytical betting simulation based on systematic bankroll management and progressive evaluation of specific NHL players' performance. Each player has their own independent betting series that is evaluated separately.",
+    "abs.explanation.whatIs": "What is Advanced Prediction Simulation (ABS)?",
+    "abs.explanation.whatIsText": "ABS is an analytical prediction simulation based on systematic bankroll management and progressive evaluation of specific NHL players' performance. Each player has their own independent prediction series that is evaluated separately.",
     "abs.explanation.tableTitle": "Player Table Explanation",
     "abs.explanation.player": "Player:",
     "abs.explanation.playerText": "Name of the NHL player included in the ABS strategy. The system automatically selects players based on AI analysis of their performance.",
     "abs.explanation.balance": "Balance (€):",
     "abs.explanation.balanceText": "Total profit or loss for the player in euros. A positive value (green) means profit, a negative value (red) means loss.",
-    "abs.explanation.stake": "Stake /EUR/:",
-    "abs.explanation.stakeText": "Current stake amount in euros for the next game. This value changes based on previous bet results and the progressive multiplication system.",
+    "abs.explanation.stake": "Investment /EUR/:",
+    "abs.explanation.stakeText": "Current investment amount in euros for the next game. This value changes based on previous prediction results and the progressive multiplication system.",
     "abs.explanation.streak": "Streak:",
     "abs.explanation.streakText": "Series of games without a goal. The number indicates the number of consecutive games in which the player did not score a goal (e.g., 4 = did not score in four consecutive games). After scoring a goal, the streak resets to 0.",
     "abs.explanation.roi": "ROI (%):",
     "abs.explanation.roiText": "Return on Investment expressed as a percentage. Calculated as the ratio between total profit (Balance) and the total invested amount of all bets. Positive ROI means profitability of the strategy for the player.",
     "abs.explanation.detail": "Detail:",
-    "abs.explanation.detailText": "Button that displays detailed betting history for the player, including all previous games, bets, results, and balance changes.",
-    "abs.explanation.multiplyTitle": "How does stake multiplication work?",
-    "abs.explanation.multiplyText": "ABS uses a progressive stake multiplication system that activates after a loss. The principle works as follows:",
+    "abs.explanation.detailText": "Button that displays detailed prediction history for the player, including all previous games, investments, results, and balance changes.",
+    "abs.explanation.multiplyTitle": "How does investment multiplication work?",
+    "abs.explanation.multiplyText": "ABS uses a progressive investment multiplication system that activates after a loss. The principle works as follows:",
     "abs.explanation.multiplyStart": "Series start:",
-    "abs.explanation.multiplyStartText": "The first bet has a base value (usually €1 or a defined value).",
+    "abs.explanation.multiplyStartText": "The first investment has a base value (usually €1 or a defined value).",
     "abs.explanation.multiplyWin": "After a win:",
-    "abs.explanation.multiplyWinText": "The series resets to the initial stake value. Balance increases by the profit from the win.",
+    "abs.explanation.multiplyWinText": "The series resets to the initial investment value. Balance increases by the profit from the win.",
     "abs.explanation.multiplyLoss": "After a loss:",
-    "abs.explanation.multiplyLossText": "The next bet is multiplied according to a defined coefficient (e.g., 2x, 2.5x, or according to specific strategy rules).",
+    "abs.explanation.multiplyLossText": "The next investment is multiplied according to a defined coefficient (e.g., 2x, 2.5x, or according to specific strategy rules).",
     "abs.explanation.multiplyContinue": "Series continuation:",
-    "abs.explanation.multiplyContinueText": "If the loss continues, the bet is further multiplied until a win occurs, which resets the series.",
+    "abs.explanation.multiplyContinueText": "If the loss continues, the investment is further multiplied until a win occurs, which resets the series.",
     "abs.explanation.multiplyExample": "Example:",
-    "abs.explanation.multiplyExampleText": "If you start with a €1 bet and lose, the next bet may be €2. If you lose that too, the next will be €4, and so on, until you win. When you win, you show profit even after previous losses. After a win, the series resets back to €1 or whatever base stake you chose.",
+    "abs.explanation.multiplyExampleText": "If you start with a €1 investment and lose, the next investment may be €2. If you lose that too, the next will be €4, and so on, until you win. When you win, you show profit even after previous losses. After a win, the series resets back to €1 or whatever base investment you chose.",
     "abs.explanation.detailsTitle": "ABS Strategy Details",
     "abs.explanation.independent": "Independent series:",
-    "abs.explanation.independentText": "Each player has their own betting series that is completely independent of other players. This means that one player's win or loss does not affect other players' bets.",
+    "abs.explanation.independentText": "Each player has their own prediction series that is completely independent of other players. This means that one player's win or loss does not affect other players' investments.",
     "abs.explanation.aiSelection": "AI player selection:",
     "abs.explanation.aiSelectionText": "The system automatically selects players based on comprehensive AI analysis that evaluates their performance, form, statistics, and other factors. In NHLPRO PREMIUM you can also add your own players according to your choice.",
     "abs.explanation.bankroll": "Bankroll management:",
-    "abs.explanation.bankrollText": "ABS is designed to minimize risk through a progressive system that focuses on specific players with a high probability of success. However, like any betting strategy, there is no 100% guarantee of winning.",
+    "abs.explanation.bankrollText": "ABS is designed to minimize risk through a progressive system that focuses on specific players with a high probability of success. However, like any prediction strategy, there is no 100% guarantee of winning.",
     "abs.explanation.totalProfit": "Total profit:",
     "abs.explanation.totalProfitText": "Sum of all profits and losses of all players in the ABS strategy. This data is displayed at the top of the section and provides an overview of the overall strategy performance.",
     "abs.explanation.warningTitle": "⚠️ Important Notice",
@@ -557,8 +557,8 @@ const I18N = {
     "mantingale.title": "ABS strategy",
     "mantingale.loadingData": "Loading data...",
     "mantingale.loadFailed": "❌ Failed to load ABS data.",
-    "mantingale.historyTitle": "ABS bet history",
-    "mantingale.historyLoadFailed": "❌ Failed to load bet history.",
+    "mantingale.historyTitle": "ABS prediction history",
+    "mantingale.historyLoadFailed": "❌ Failed to load prediction history.",
     "mantingale.historyEmpty": "No data yet.",
 
     "strategies.title": "NHL players database",
@@ -713,7 +713,7 @@ function renderPrivacy() {
         <li><strong>Registration data:</strong> Email address, password (encrypted)</li>
         <li><strong>Usage data:</strong> IP address, browser type, device information, pages visited, time spent on site</li>
         <li><strong>Analytics data:</strong> Data collected through Google Analytics (anonymized)</li>
-        <li><strong>Premium service data:</strong> Selected players, betting strategies, preferences</li>
+        <li><strong>Premium service data:</strong> Selected players, prediction strategies, preferences</li>
       </ul>
 
       <h3>3️⃣ Purpose of Data Processing</h3>
@@ -838,7 +838,7 @@ function renderTerms() {
       <ul>
         <li>Game statistics and results</li>
         <li>Player and team ratings</li>
-        <li>Analytical models and betting strategies</li>
+        <li>Analytical models and prediction strategies</li>
         <li>Premium services for registered users</li>
       </ul>
 
@@ -864,7 +864,7 @@ function renderTerms() {
       <p>Premium services are provided on a subscription basis. Terms include:</p>
       <ul>
         <li>Access to advanced features and analytics</li>
-        <li>No guarantee of profit or betting success</li>
+        <li>No guarantee of profit or prediction success</li>
         <li>Refund policy as specified at time of purchase</li>
       </ul>
 
@@ -976,14 +976,14 @@ function renderDisclaimer() {
     return `
       <h2>${t("disclaimer.title")}</h2>
       <h3>1️⃣ General notice</h3>
-      <p><strong>NHLPRO.sk</strong> is for informational, analytical and educational purposes only. The content is not betting advice, investment advice, or a solicitation to place bets.</p>
+      <p><strong>NHLPRO.sk</strong> is for informational, analytical and educational purposes only. The content is not prediction advice, investment advice, or a solicitation to make predictions.</p>
       <p>All information, statistics, models, ratings and strategies are provided without any guarantee of success or profit.</p>
 
       <h3>2️⃣ Risk and user responsibility</h3>
-      <p>Betting and gambling involve financial risk and may lead to loss of money. You use the information on this website at your own risk.</p>
+      <p>Predictions and financial decisions involve financial risk and may lead to loss of money. You use the information on this website at your own risk.</p>
       <p>The operator is not responsible for any financial losses resulting from the use of information, strategies or tools provided on the website.</p>
 
-      <h3>3️⃣ Advanced betting simulation and analytical models</h3>
+      <h3>3️⃣ Advanced prediction simulation and analytical models</h3>
       <p>Strategies and models are not a guaranteed way to make profit. They are theoretical and analytical approaches.</p>
       <p>Past results are not a guarantee of future results.</p>
 
@@ -991,13 +991,13 @@ function renderDisclaimer() {
       <p>NHLPRO.sk publishes complete historical data (including wins, losses and skipped games) for transparency and analysis purposes.</p>
 
       <h3>5️⃣ Independence from bookmakers</h3>
-      <p>NHLPRO.sk is not a bookmaker and does not accept bets or deposits.</p>
+      <p>NHLPRO.sk is not a bookmaker and does not accept predictions or deposits.</p>
 
       <h3>6️⃣ Age restriction</h3>
       <p>This website is intended for users aged 18+ only.</p>
 
       <h3>7️⃣ VIP / Premium services</h3>
-      <p>Purchasing VIP/Premium does not provide any guarantee of profit or personal betting advice.</p>
+      <p>Purchasing VIP/Premium does not provide any guarantee of profit or personal prediction advice.</p>
 
       <h3>8️⃣ Final provisions</h3>
       <p>By using NHLPRO.sk you agree to this legal disclaimer. If you do not agree, any use of the nhlpro.sk web portal is prohibited.</p>
@@ -1011,10 +1011,10 @@ function renderDisclaimer() {
     <p>Používateľ berie na vedomie, že všetky informácie, štatistiky, modely, hodnotenia a stratégie zverejnené na stránke sú poskytované bez akejkoľvek záruky úspechu alebo zisku.</p>
 
     <h3>2️⃣ Riziko a zodpovednosť používateľa</h3>
-    <p>Stávkovanie a hazardné hry sú spojené s finančným rizikom a môžu viesť k strate peňazí. Používateľ používa informácie zverejnené na stránke výlučne na vlastnú zodpovednosť.</p>
+    <p>Predikcie a finančné rozhodnutia sú spojené s finančným rizikom a môžu viesť k strate peňazí. Používateľ používa informácie zverejnené na stránke výlučne na vlastnú zodpovednosť.</p>
     <p>Prevádzkovateľ stránky nezodpovedá za žiadne finančné straty, ktoré môžu vzniknúť v dôsledku použitia informácií, stratégií alebo nástrojov dostupných na stránke.</p>
 
-    <h3>3️⃣ Advanced betting simulation a analytické modely</h3>
+    <h3>3️⃣ Advanced prediction simulation a analytické modely</h3>
     <p>Stratégie a modely (vrátane tzv. Pokročilej stávkovej stratégie) nepredstavujú zaručený spôsob dosahovania zisku. Ide o teoretické a analytické prístupy.</p>
     <p>Minulé výsledky nie sú zárukou budúcich výsledkov.</p>
 
@@ -2915,8 +2915,8 @@ async function loadMantingal() {
     
     const playerDisplay = teamAbbrev ? `${name} <span style="color:#999; font-size:0.9em;">(${teamAbbrev})</span>` : name;
 
-    // V mobile: Hráč | Balance | Stávka | Streak | ROI | Detail
-    // V desktop: Hráč | Stávka | Streak | Balance | ROI | Detail
+    // V mobile: Hráč | Balance | Vklad | Streak | ROI | Detail
+    // V desktop: Hráč | Vklad | Streak | Balance | ROI | Detail
     if (isMobile) {
       tr.innerHTML = `
         <td class="player-cell">${playerDisplay}</td>
@@ -2950,15 +2950,15 @@ async function loadMantingal() {
       // Vypočítaj celkovú investovanú sumu (súčet všetkých stávok)
       // Pri "miss" (prehre): stake = -profitChange (pretože profitChange je záporný)
       // Pri "hit" (výhre): nemáme priamo stake, ale vieme že profitChange = stake * (odds - 1)
-      // Pre jednoduchosť použijeme len miss stávky pre výpočet totalStaked
-      // a aproximáciu: totalStaked ≈ súčet abs(profitChange) z miss + počet hit stávok * priemerná stake
+      // Pre jednoduchosť použijeme len miss predikcie pre výpočet totalStaked
+      // a aproximáciu: totalStaked ≈ súčet abs(profitChange) z miss + počet hit predikcií * priemerná stake
       let totalStaked = 0;
       let missCount = 0;
       let hitCount = 0;
       
       histData.history.forEach(h => {
         if (h.result === "miss" && h.profitChange) {
-          // Pri prehre: stake = -profitChange (profitChange je záporný)
+          // Pri prehre: stake (vklad) = -profitChange (profitChange je záporný)
           totalStaked += Math.abs(Number(h.profitChange));
           missCount++;
         } else if (h.result === "hit" || h.result === "win") {
@@ -2966,7 +2966,7 @@ async function loadMantingal() {
         }
       });
 
-      // Ak máme aj hit stávky, aproximujeme ich stake ako priemer miss stávok
+      // Ak máme aj hit predikcie, aproximujeme ich stake ako priemer miss predikcií
       // Alebo použijeme base stake 1€ (ak nemáme žiadne miss)
       if (missCount === 0 && hitCount > 0) {
         totalStaked = hitCount * 1; // base stake
@@ -3290,7 +3290,7 @@ async function displayMantingal() {
 
     const { players, dateChecked, totalGames, scorers } = data;
     // 🔹 Spočítaj sumár ABS dňa
-    const totalBets = players.length; // každý hráč = 1 stávka
+    const totalBets = players.length; // každý hráč = 1 predikcia
     const totalProfit = players.reduce((sum, p) => sum + p.profit, 0);
     const roi = ((totalProfit / (totalBets * 1)) * 100).toFixed(1); // ak je base stake 1€
 
@@ -3316,7 +3316,7 @@ async function displayMantingal() {
         <thead>
           <tr>
             <th>${t("table.player")}</th>
-            <th>${CURRENT_LANG === "en" ? "Stake (€)" : "Stávka (€)"}</th>
+            <th>${CURRENT_LANG === "en" ? "Investment (€)" : "Vklad (€)"}</th>
             <th>${CURRENT_LANG === "en" ? "Profit (€)" : "Zisk (€)"}</th>
             <th>${t("mantingale.streak")}</th>
             <th>${CURRENT_LANG === "en" ? "Result" : "Výsledok"}</th>
@@ -3397,7 +3397,7 @@ async function displayMantingalHistory() {
             <th>${t("mantingale.date")}</th>
             <th>${t("table.player")}</th>
             <th>${t("mantingale.result")}</th>
-            <th>${CURRENT_LANG === "en" ? "Stake (€)" : "Stávka (€)"}</th>
+            <th>${CURRENT_LANG === "en" ? "Investment (€)" : "Vklad (€)"}</th>
             <th>${CURRENT_LANG === "en" ? "Profit after (€)" : "Profit po (€)"}</th>
           </tr>
         </thead>
