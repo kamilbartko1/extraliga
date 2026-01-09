@@ -3889,6 +3889,30 @@ body {
   display: none;
 }
 
+/* ===============================
+   AS DENNÍK HRÁČA - HLAVIČKA
+   =============================== */
+.mtg-player-header {
+  text-align: center !important;
+  font-family: "Poppins", sans-serif !important;
+  font-weight: 500;
+  font-size: 1.4rem;
+  color: #ffffff;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mtg-player-team {
+  color: #00eaff;
+  font-weight: 400;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
 #mtg-back-btn {
   margin-top: 20px;
   padding: 8px 15px;

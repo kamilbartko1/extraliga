@@ -3229,7 +3229,21 @@ async function showMantingalDetail(player) {
   const data = await res.json();
   if (!data.ok) return;
 
-  document.getElementById("mtg-player-name").textContent = player;
+  // Zobraz meno hráča
+  document.getElementById("mtg-player-name-text").textContent = player;
+  
+  // Získaj klub hráča (rovnako ako v iných sekciách)
+  const parts = player.split(" ");
+  const lastName = parts[parts.length - 1].replace(/\./g, "").toLowerCase();
+  const team = playerTeams && playerTeams[lastName] ? playerTeams[lastName] : "";
+  
+  // Zobraz klub vedľa mena
+  const teamElement = document.getElementById("mtg-player-team");
+  if (team) {
+    teamElement.textContent = `(${team})`;
+  } else {
+    teamElement.textContent = "";
+  }
 
   // ===================================
   // HISTÓRIA HRÁČA – GLOBAL
