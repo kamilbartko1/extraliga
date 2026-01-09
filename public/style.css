@@ -7048,6 +7048,76 @@ body {
   font-weight: 600;
 }
 
+/* === STANDINGS MOBILE - HORIZONTAL SCROLL === */
+@media (max-width: 768px) {
+  .standings-wrapper {
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .standings-table {
+    min-width: 700px;
+    width: 100%;
+    table-layout: auto;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+
+  .standings-table thead th {
+    padding: 8px 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    background: rgba(6, 14, 22, 0.95);
+    z-index: 10;
+  }
+
+  .standings-table td {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .team-cell {
+    min-width: 120px;
+    white-space: nowrap;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    text-align: center;
+  }
+
+  .standings-table th:first-child,
+  .standings-table td:first-child {
+    position: sticky;
+    left: 0;
+    background: rgba(6, 14, 22, 0.95);
+    z-index: 5;
+    padding-left: 8px;
+    padding-right: 8px;
+    min-width: 40px;
+  }
+
+  .standings-table th:nth-child(2),
+  .standings-table td:nth-child(2) {
+    position: sticky;
+    left: 40px;
+    background: rgba(6, 14, 22, 0.95);
+    z-index: 5;
+    padding-left: 8px;
+    padding-right: 8px;
+    min-width: 140px;
+    text-align: left;
+  }
+}
+
 .pos {
   color: #00ff88;
 }
