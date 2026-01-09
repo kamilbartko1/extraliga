@@ -2021,7 +2021,7 @@ function displayLiveGameDetails(game) {
 
   content.innerHTML = detailsHtml;
   
-  overlay.style.setProperty("display", "flex", "important");
+  // Overlay už je zobrazený z openLiveGameDetails, len animuj obsah
   content.style.transform = "scale(0.9)";
   content.style.opacity = "0";
   requestAnimationFrame(() => {
