@@ -7173,10 +7173,10 @@ body {
   .standings-table th:nth-child(2),
   .standings-table td:nth-child(2) {
     position: sticky;
-    left: 26px;
+    left: 20px;
     background: rgba(6, 14, 22, 0.95);
     z-index: 5;
-    padding: 8px 4px 8px 2px;
+    padding: 8px 4px 8px 0;
     min-width: 130px;
     text-align: left;
   }
@@ -7202,8 +7202,8 @@ body {
 
   /* Team cell - natlačené bližšie k rank */
   .team-cell {
-    padding-left: 2px !important;
-    gap: 6px;
+    padding-left: 0 !important;
+    gap: 4px;
   }
 }
 
