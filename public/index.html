@@ -144,8 +144,22 @@
       <div class="matches-box">
         <h3 class="box-title" data-i18n="matches.resultsBox">Výsledky</h3>
 
-        <!-- VŠETKY ZÁPASY -->
+        <!-- POSLEDNÉ ZÁPASY -->
         <div id="matches-recent" class="matches-list"></div>
+
+        <!-- BUTTON -->
+        <div class="matches-actions">
+          <button
+            id="matches-more-btn"
+            class="nhl-btn nhl-btn-ghost"
+            onclick="toggleMoreMatches()"
+          >
+            <span data-i18n="matches.more">Zobraziť viac ↓</span>
+          </button>
+        </div>
+
+        <!-- STARŠIE ZÁPASY -->
+        <div id="matches-older" class="matches-list hidden"></div>
       </div>
 
     </div>
