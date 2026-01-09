@@ -844,13 +844,13 @@ header {
   .header-center {
     position: absolute;
     top: 60%; /* Posunuté nižšie z 50% */
-    left: 50%;
+    left: 55%; /* Posunuté viac doprava, aby sa neprekryvalo s hamburger menu */
     transform: translate(-50%, -50%);
     display: block !important;
     z-index: 2;
     font-family: "Permanent Marker", cursive;
     color: #ffd400;
-    font-size: clamp(16px, 4.5vw, 22px); /* Trochu zväčšené z clamp(14px, 4vw, 20px) */
+    font-size: clamp(12px, 3.5vw, 18px); /* Zmenšené, aby sa neprekryvalo */
     text-shadow: 0 3px 8px rgba(0,0,0,.7), 0 0 15px rgba(255,215,0,.5);
     white-space: nowrap;
     text-align: center;
@@ -1032,10 +1032,10 @@ nav button.nav-premium:hover::before {
 
   .header-center {
     top: 60%; /* Posunuté nižšie z 50% */
-    left: 50%;
+    left: 55%; /* Posunuté viac doprava, aby sa neprekryvalo s hamburger menu */
     transform: translate(-50%, -50%) rotate(-2deg);
     text-align: center;
-    font-size: clamp(16px, 4.5vw, 22px); /* Trochu zväčšené z clamp(14px, 4vw, 20px) */
+    font-size: clamp(12px, 3.5vw, 18px); /* Zmenšené, aby sa neprekryvalo */
   }
 }
 
