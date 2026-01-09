@@ -1506,6 +1506,16 @@ async function fetchMatches() {
 }
 
 
+let matchesExpanded = false; // globálny flag pre Zobraziť viac
+
+// HTML uses onclick="toggleMoreMatches()"
+function toggleMoreMatches() {
+  matchesExpanded = !matchesExpanded;
+  if (Array.isArray(allMatches) && allMatches.length) {
+    displayMatches(allMatches);
+  }
+}
+
 // === Zápasy ===
 async function displayMatches(matches) {
   const recentBox = document.getElementById("matches-recent");
@@ -1517,13 +1527,9 @@ async function displayMatches(matches) {
   recentBox.innerHTML = "";
   olderBox.innerHTML  = "";
 
-  // Skryj tlačidlo "Zobraziť viac" - už nie je potrebné
-  if (moreBtn) {
-    moreBtn.style.display = "none";
-  }
-
   if (!matches || matches.length === 0) {
     recentBox.innerHTML = `<p class="nhl-muted">${t("matches.noFinished")}</p>`;
+    if (moreBtn) moreBtn.style.display = "none";
     return;
   }
 
@@ -1553,11 +1559,15 @@ async function displayMatches(matches) {
   }
 
   const days = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
-  
-  let allMatchesHtml = "";
+  const today = new Date();
+  const RECENT_LIMIT_DAYS = 7;
+
+  let recentHtml = "";
+  let olderHtml  = "";
 
   for (const day of days) {
     const d = new Date(day);
+    const diffDays = Math.round((today - d) / (1000 * 60 * 60 * 24));
 
     const formatted = d.toLocaleDateString("sk-SK", {
       day: "2-digit",
@@ -1618,13 +1628,31 @@ async function displayMatches(matches) {
     }
 
     dayHtml += `</div>`;
-    allMatchesHtml += dayHtml;
+
+    if (diffDays <= RECENT_LIMIT_DAYS) recentHtml += dayHtml;
+    else olderHtml += dayHtml;
   }
 
-  // Zobraziť VŠETKY zápasy v recentBox
-  recentBox.innerHTML = allMatchesHtml;
-  olderBox.innerHTML = "";
-  olderBox.classList.add("hidden");
+  recentBox.innerHTML = recentHtml;
+  olderBox.innerHTML  = olderHtml;
+
+  // ===============================
+  // Toggle starších
+  // ===============================
+  if (moreBtn) {
+    if (olderHtml) {
+      moreBtn.style.display = "inline-block";
+      if (!matchesExpanded) {
+        olderBox.classList.add("hidden");
+        moreBtn.textContent = t("matches.more");
+      } else {
+        olderBox.classList.remove("hidden");
+        moreBtn.textContent = t("matches.less");
+      }
+    } else {
+      moreBtn.style.display = "none";
+    }
+  }
 
   // ===============================
   // 🎥 Zostrihy – BEZ ZMENY LOGIKY
