@@ -30,7 +30,7 @@ const I18N = {
     "nav.teamRating": "Rating tímov",
     "nav.playerRating": "Rating hráčov",
     "nav.stats": "Štatistiky hráčov",
-    "nav.abs": "AdvancedSimulation",
+    "nav.abs": "Advanced Simulation",
     "nav.premium": "NHLPRO PREMIUM",
 
     "sections.home": "Domov",
@@ -308,7 +308,7 @@ const I18N = {
     "nav.teamRating": "Team rating",
     "nav.playerRating": "Player rating",
     "nav.stats": "Player stats",
-    "nav.abs": "AdvancedSimulation",
+    "nav.abs": "Advanced Simulation",
     "nav.premium": "NHLPRO PREMIUM",
 
     "sections.home": "Home",
