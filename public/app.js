@@ -1706,16 +1706,30 @@ async function loadLiveGames() {
 
 function displayLiveGames(games) {
   const liveList = document.getElementById("live-games-list");
+  const liveBox = document.getElementById("live-games-box");
+  
   if (!liveList) return;
 
   if (!games || games.length === 0) {
     liveList.innerHTML = `<p class="nhl-muted">Momentálne sa nehrajú žiadne zápasy</p>`;
+    // Skryj box ak nie sú žiadne zápasy
+    if (liveBox) liveBox.style.display = "none";
     return;
   }
 
   // Rozdelenie podľa stavu
   const liveGames = games.filter(g => g.status.state === "LIVE");
   const previewGames = games.filter(g => g.status.state === "PREVIEW");
+
+  // Ak nie sú ani LIVE ani Preview zápasy, skryj box
+  if (liveGames.length === 0 && previewGames.length === 0) {
+    liveList.innerHTML = `<p class="nhl-muted">Momentálne sa nehrajú žiadne zápasy</p>`;
+    if (liveBox) liveBox.style.display = "none";
+    return;
+  }
+
+  // Zobraz box
+  if (liveBox) liveBox.style.display = "block";
 
   let html = "";
 
@@ -1747,10 +1761,10 @@ function displayLiveGames(games) {
 }
 
 function createLiveGameRow(game) {
-  const home = game.teams.home;
-  const away = game.teams.away;
-  const isLive = game.status.state === "LIVE";
-  const progress = game.status.progress || {};
+  const home = game.teams?.home || {};
+  const away = game.teams?.away || {};
+  const isLive = game.status?.state === "LIVE";
+  const progress = game.status?.progress || {};
   
   let statusText = "";
   if (isLive) {
@@ -1759,8 +1773,13 @@ function createLiveGameRow(game) {
     statusText = game.startTime || "Čoskoro";
   }
 
+  // Zabezpeč, že ID je správne formatované pre onclick
+  // Ulož ID do data atribútu a použij event handler
+  const gameId = game.id || null;
+  const gameIdAttr = gameId !== null ? String(gameId) : '';
+  
   return `
-    <div class="live-game-row" onclick="openLiveGameDetails(${game.id})">
+    <div class="live-game-row" data-game-id="${gameIdAttr}" onclick="openLiveGameDetails('${gameIdAttr}')">
       <div class="live-game-teams">
         <div class="live-game-team">
           <img src="${home.logo}" class="live-team-logo" alt="${home.fullName}">
@@ -1787,10 +1806,33 @@ function createLiveGameRow(game) {
 let liveGamesData = {};
 
 async function openLiveGameDetails(gameId) {
+  console.log("🔹 Otváram detail zápasu:", gameId);
+  
+  if (!gameId || gameId === 'null' || gameId === 'undefined') {
+    console.error("❌ Neplatné ID zápasu:", gameId);
+    alert("Chyba: Neplatné ID zápasu");
+    return;
+  }
+  
   const overlay = document.getElementById("live-game-details-overlay");
   const content = document.getElementById("live-game-details-modal");
   
-  if (!overlay || !content) return;
+  if (!overlay || !content) {
+    console.error("❌ Modal elementy sa nenašli!");
+    alert("Chyba: Modal sa nenašiel");
+    return;
+  }
+
+  // Zobraz overlay hneď, aby sa užívateľovi zdalo, že sa niečo deje
+  overlay.style.setProperty("display", "flex", "important");
+  content.innerHTML = '<p class="nhl-muted" style="text-align:center;padding:40px;">Načítavam podrobnosti zápasu...</p>';
+  content.style.transform = "scale(0.9)";
+  content.style.opacity = "0";
+  requestAnimationFrame(() => {
+    content.style.transition = "transform 0.3s ease-out, opacity 0.3s ease-out";
+    content.style.transform = "scale(1)";
+    content.style.opacity = "1";
+  });
 
   // Načítaj aktuálne dáta
   try {
@@ -1798,37 +1840,58 @@ async function openLiveGameDetails(gameId) {
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     
     const data = await resp.json();
-    if (!data.ok) {
-      content.innerHTML = `<p>Zápas sa nenašiel</p>`;
-      overlay.style.setProperty("display", "flex", "important");
+    console.log("📦 API odpoveď:", data);
+    
+    if (!data.ok || !data.games || !Array.isArray(data.games)) {
+      content.innerHTML = `<p style="text-align:center;padding:40px;">Chyba: Zápasy sa nepodarilo načítať</p>`;
       return;
     }
 
-    const game = data.games.find(g => g.id === gameId);
+    // Porovnaj ID ako string aj číslo
+    const game = data.games.find(g => {
+      const gameIdStr = String(gameId);
+      const gIdStr = String(g.id || '');
+      return gIdStr === gameIdStr || String(g.id) === String(gameId);
+    });
+    
+    console.log("🔍 Nájdený zápas:", game);
+    console.log("🔍 Hľadané ID:", gameId, "Typ:", typeof gameId);
+    console.log("🔍 Dostupné ID:", data.games.map(g => ({ id: g.id, type: typeof g.id })));
+    
     if (!game) {
-      content.innerHTML = `<p>Zápas sa nenašiel</p>`;
-      overlay.style.setProperty("display", "flex", "important");
+      console.warn("⚠️ Zápas sa nenašiel.");
+      content.innerHTML = `
+        <div style="text-align:center;padding:40px;">
+          <p>Zápas sa nenašiel</p>
+          <p style="font-size:0.9rem;color:rgba(255,255,255,0.6);margin-top:10px;">ID: ${gameId}</p>
+          <button onclick="closeLiveGameDetails(event)" style="margin-top:20px;padding:10px 20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:#fff;cursor:pointer;">Zavrieť</button>
+        </div>
+      `;
       return;
     }
 
     displayLiveGameDetails(game);
   } catch (err) {
-    console.error("Chyba pri načítaní detailu zápasu:", err);
-    content.innerHTML = `<p>Chyba pri načítaní detailu zápasu</p>`;
-    overlay.style.setProperty("display", "flex", "important");
+    console.error("❌ Chyba pri načítaní detailu zápasu:", err);
+    content.innerHTML = `<p style="text-align:center;padding:40px;">Chyba pri načítaní detailu zápasu: ${err.message}</p>`;
   }
 }
 
 function displayLiveGameDetails(game) {
+  console.log("🎮 Zobrazujem detail zápasu:", game);
+  
   const content = document.getElementById("live-game-details-modal");
-  if (!content) return;
+  if (!content) {
+    console.error("❌ Modal content sa nenašiel!");
+    return;
+  }
 
-  const home = game.teams.home;
-  const away = game.teams.away;
-  const isLive = game.status.state === "LIVE";
-  const progress = game.status.progress || {};
+  const home = game.teams?.home || {};
+  const away = game.teams?.away || {};
+  const isLive = game.status?.state === "LIVE";
+  const progress = game.status?.progress || {};
   const stats = game.gameStats || {};
-  const goals = game.goals || [];
+  const goals = Array.isArray(game.goals) ? game.goals : [];
   const homeCurrent = game.currentStats?.home || {};
   const awayCurrent = game.currentStats?.away || {};
 

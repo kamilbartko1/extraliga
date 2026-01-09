@@ -127,8 +127,20 @@ export default async function handler(req, res) {
         timeRemainingSec: progress.currentPeriodTimeRemaining?.sec || 0,
       };
 
+      // Vytvor unikátny ID z kombinácie tímov a dátumu
+      // Alebo extrahuj z links.gameCenter ak existuje
+      let gameId = game.id || null;
+      if (!gameId && game.links?.gameCenter) {
+        const match = game.links.gameCenter.match(/\/(\d+)$/);
+        if (match) gameId = parseInt(match[1]);
+      }
+      // Fallback - vytvor ID z tímov a dátumu
+      if (!gameId) {
+        gameId = `${away.abbreviation || 'AWAY'}-${home.abbreviation || 'HOME'}-${date.raw || ''}`;
+      }
+
       return {
-        id: game.id || null,
+        id: gameId,
         date: date.raw || "",
         datePretty: date.pretty || "",
         startTime,
