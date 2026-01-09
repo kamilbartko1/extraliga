@@ -30,7 +30,7 @@ const I18N = {
     "nav.teamRating": "Rating tímov",
     "nav.playerRating": "Rating hráčov",
     "nav.stats": "Štatistiky hráčov",
-    "nav.abs": "AdvancedPredictionSimulation",
+    "nav.abs": "AdvancedSimulation",
     "nav.premium": "NHLPRO PREMIUM",
 
     "sections.home": "Domov",
@@ -57,7 +57,7 @@ const I18N = {
 
     "home.loading": "⏳ Načítavam domovskú stránku...",
     "home.heroTitle": "Použi pokročilú stratégiu tipovania",
-    "home.heroSubtitle": "Advanced Prediction Simulation pre maximálny zisk z NHL predikcií",
+    "home.heroSubtitle": "Advanced Simulation pre maximálny zisk z NHL predikcií",
     "home.ctaStart": "Začať teraz",
     "home.ctaLearn": "Zistiť viac",
     "home.statTotalProfit": "Celkový zisk",
@@ -69,7 +69,7 @@ const I18N = {
     "home.featureStats": "Kompletné štatistiky",
     "home.featureStatsDesc": "Dostup k detailným štatistikám hráčov a tímov v reálnom čase",
     "home.featureStrategy": "AS Stratégia",
-    "home.featureStrategyDesc": "Advanced Prediction Simulation pre maximálny zisk",
+    "home.featureStrategyDesc": "Advanced Simulation pre maximálny zisk",
     "home.featureRealTime": "Aktuálne dáta",
     "home.featureRealTimeDesc": "Vždy najnovšie výsledky, tabuľky a štatistiky",
     "home.featureCTA": "Vyskúšať Premium",
@@ -129,7 +129,7 @@ const I18N = {
     "stats.pim": "Vylúčenia",
 
     "premium.title": "👑 NHLPRO PREMIUM",
-    "premium.subtitle": "Advanced prediction simulation",
+    "premium.subtitle": "Advanced simulation",
     "premium.loginHint": "Najprv sa prihlás, aby si mohol používať NHLPRO PREMIUM.",
     "premium.email": "Email",
     "premium.password": "Heslo",
@@ -189,11 +189,11 @@ const I18N = {
     "premium.featureVipTips": "VIP AI Tipy",
     "premium.featureVipTipsDesc": "Autonómne tipy na strelcov a góly založené na ratingoch a štatistikách z posledných 10 zápasov",
     "premium.featureAbs": "AS Stratégia",
-    "premium.featureAbsDesc": "Pridávaj vlastných hráčov do Advanced Prediction Simulation a sleduj ich sériu a profit",
+    "premium.featureAbsDesc": "Pridávaj vlastných hráčov do Advanced Simulation a sleduj ich sériu a profit",
     "premium.featureAnalytics": "Detailná Analytika",
     "premium.featureAnalyticsDesc": "Štatistiky z posledných 10 zápasov: forma, ofenzíva, obrana a trendy tímov",
     "premium.absStrategyTitle": "🎯 Moja AS Stratégia",
-    "premium.absStrategyDesc": "Pridaj hráčov do svojej Advanced Prediction Simulation a sleduj ich výkonnosť a profit.",
+    "premium.absStrategyDesc": "Pridaj hráčov do svojej Advanced Simulation a sleduj ich výkonnosť a profit.",
 
     "vipTips.title": "🔥 VIP tipy na dnes",
     "vipTips.subtitle": "Autonómne tipy na strelcov a góly podľa ratingov a štatistík z posledných 10 zápasov.",
@@ -308,7 +308,7 @@ const I18N = {
     "nav.teamRating": "Team rating",
     "nav.playerRating": "Player rating",
     "nav.stats": "Player stats",
-    "nav.abs": "AdvancedPredictionSimulation",
+    "nav.abs": "AdvancedSimulation",
     "nav.premium": "NHLPRO PREMIUM",
 
     "sections.home": "Home",
@@ -332,8 +332,8 @@ const I18N = {
     "footer.disclaimer": "⚖️ Legal disclaimer",
 
     "home.loading": "⏳ Loading home…",
-    "home.heroTitle": "Use Advanced Prediction Simulation",
-    "home.heroSubtitle": "Advanced Prediction Simulation for maximum profit from NHL predictions",
+    "home.heroTitle": "Use Advanced Simulation",
+    "home.heroSubtitle": "Advanced Simulation for maximum profit from NHL predictions",
     "home.ctaStart": "Get Started",
     "home.ctaLearn": "Learn More",
     "home.statTotalProfit": "Total Profit",
@@ -345,7 +345,7 @@ const I18N = {
     "home.featureStats": "Complete Statistics",
     "home.featureStatsDesc": "Access detailed player and team statistics in real-time",
     "home.featureStrategy": "AS Strategy",
-    "home.featureStrategyDesc": "Advanced Prediction Simulation for maximum profit",
+    "home.featureStrategyDesc": "Advanced Simulation for maximum profit",
     "home.featureRealTime": "Real-time Data",
     "home.featureRealTimeDesc": "Always the latest results, standings and statistics",
     "home.featureCTA": "Try Premium",
@@ -405,7 +405,7 @@ const I18N = {
     "stats.pim": "Penalty minutes",
 
     "premium.title": "👑 NHLPRO PREMIUM",
-    "premium.subtitle": "Advanced prediction simulation",
+    "premium.subtitle": "Advanced simulation",
     "premium.loginHint": "Log in first to use NHLPRO PREMIUM.",
     "premium.email": "Email",
     "premium.password": "Password",
@@ -465,11 +465,11 @@ const I18N = {
     "premium.featureVipTips": "VIP AI Tips",
     "premium.featureVipTipsDesc": "Autonomous tips for scorers and goals based on ratings and statistics from the last 10 games",
     "premium.featureAbs": "AS Strategy",
-    "premium.featureAbsDesc": "Add your own players to Advanced Prediction Simulation and track their series and profit",
+    "premium.featureAbsDesc": "Add your own players to Advanced Simulation and track their series and profit",
     "premium.featureAnalytics": "Detailed Analytics",
     "premium.featureAnalyticsDesc": "Statistics from the last 10 games: form, offense, defense and team trends",
     "premium.absStrategyTitle": "🎯 My AS Strategy",
-    "premium.absStrategyDesc": "Add players to your Advanced Prediction Simulation and track their performance and profit.",
+    "premium.absStrategyDesc": "Add players to your Advanced Simulation and track their performance and profit.",
 
     "vipTips.title": "🔥 VIP tips for today",
     "vipTips.subtitle": "Autonomous scorer and goals tips based on ratings and stats from the last 10 games.",
@@ -983,7 +983,7 @@ function renderDisclaimer() {
       <p>Predictions and financial decisions involve financial risk and may lead to loss of money. You use the information on this website at your own risk.</p>
       <p>The operator is not responsible for any financial losses resulting from the use of information, strategies or tools provided on the website.</p>
 
-      <h3>3️⃣ Advanced prediction simulation and analytical models</h3>
+      <h3>3️⃣ Advanced simulation and analytical models</h3>
       <p>Strategies and models are not a guaranteed way to make profit. They are theoretical and analytical approaches.</p>
       <p>Past results are not a guarantee of future results.</p>
 
@@ -1014,7 +1014,7 @@ function renderDisclaimer() {
     <p>Predikcie a finančné rozhodnutia sú spojené s finančným rizikom a môžu viesť k strate peňazí. Používateľ používa informácie zverejnené na stránke výlučne na vlastnú zodpovednosť.</p>
     <p>Prevádzkovateľ stránky nezodpovedá za žiadne finančné straty, ktoré môžu vzniknúť v dôsledku použitia informácií, stratégií alebo nástrojov dostupných na stránke.</p>
 
-    <h3>3️⃣ Advanced prediction simulation a analytické modely</h3>
+    <h3>3️⃣ Advanced simulation a analytické modely</h3>
     <p>Stratégie a modely (vrátane tzv. Pokročilej stávkovej stratégie) nepredstavujú zaručený spôsob dosahovania zisku. Ide o teoretické a analytické prístupy.</p>
     <p>Minulé výsledky nie sú zárukou budúcich výsledkov.</p>
 
