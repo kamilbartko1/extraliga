@@ -22,7 +22,7 @@ const API_BASE = "";
 
 const I18N = {
   sk: {
-    "header.tagline": "Tipuj NHL ako profík!",
+    "header.tagline": "National Hockey League 2025-2026",
     "header.powered": "Powered by <span>AI-Logic</span>",
 
     "nav.home": "Domov",
@@ -300,7 +300,7 @@ const I18N = {
     "premium.signupFailed": "Registrácia zlyhala.",
   },
   en: {
-    "header.tagline": "Predict NHL like a pro!",
+    "header.tagline": "National Hockey League 2025-2026",
     "header.powered": "Powered by <span>AI-Logic</span>",
 
     "nav.home": "Home",
