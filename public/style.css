@@ -7125,16 +7125,9 @@ body {
     min-width: 40px;
   }
 
-  /* Rank cell - natlačené bližšie k tímu, úplne vľavo */
-  .rank-cell {
-    padding-right: 2px !important;
-    padding-left: 0 !important;
-  }
-
-  /* Team cell - natlačené bližšie k rank */
+  /* Team cell - sticky, viditeľný pri scrollovaní */
   .team-cell {
-    padding-left: 0 !important;
-    gap: 4px;
+    gap: 6px;
   }
 }
 
