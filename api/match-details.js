@@ -129,12 +129,16 @@ export default async function handler(req, res) {
       const periodScoresMap = {};
       
       goals.forEach((goal, index) => {
-        const periodNum = goal.period || goal.periodDescriptor?.number;
-        console.log(`📊 Goal ${index}: period=${periodNum}, homeScore=${goal.homeScore}, awayScore=${goal.awayScore}`);
+        // Skús rôzne formáty period a scores
+        const periodNum = goal.period || goal.periodDescriptor?.number || goal.periodNumber;
+        const homeScore = goal.homeScore || goal.homeScoreAfter || goal.home ?? 0;
+        const awayScore = goal.awayScore || goal.awayScoreAfter || goal.away ?? 0;
+        
+        console.log(`📊 Goal ${index}: period=${periodNum}, homeScore=${homeScore}, awayScore=${awayScore}`);
         
         if (periodNum) {
-          const currentHome = goal.homeScore ?? 0;
-          const currentAway = goal.awayScore ?? 0;
+          const currentHome = Number(homeScore) || 0;
+          const currentAway = Number(awayScore) || 0;
           const currentTotal = currentHome + currentAway;
           
           // Ulož najvyššie skóre pre každú tretinu (posledný gól má najvyššie kumulatívne skóre)
