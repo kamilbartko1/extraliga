@@ -2199,6 +2199,71 @@ async function openLiveGameDetails(gameId) {
   }
 }
 
+// Pomocná funkcia pre vytvorenie riadku štatistiky s bar grafom
+function createStatRow(label, homeValue, awayValue, suffix = "", isPowerPlay = false) {
+  // Pre Power Play nepočítame percentuálne rozdelenie
+  if (isPowerPlay) {
+    return `
+      <div class="live-stat-row">
+        <div class="live-stat-values">
+          <span class="live-stat-value-left">${homeValue}</span>
+          <span class="live-stat-label">${label}</span>
+          <span class="live-stat-value-right">${awayValue}</span>
+        </div>
+        <div class="live-stat-bar">
+          <div class="live-stat-bar-separator"></div>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Pre percentuálne hodnoty (faceoff)
+  if (suffix === "%") {
+    const homeNum = parseFloat(homeValue) || 0;
+    const awayNum = parseFloat(awayValue) || 0;
+    const total = homeNum + awayNum;
+    const homePercent = total > 0 ? (homeNum / total) * 100 : 50;
+    const awayPercent = total > 0 ? (awayNum / total) * 100 : 50;
+    
+    return `
+      <div class="live-stat-row">
+        <div class="live-stat-values">
+          <span class="live-stat-value-left">${homeValue}${suffix}</span>
+          <span class="live-stat-label">${label}</span>
+          <span class="live-stat-value-right">${awayValue}${suffix}</span>
+        </div>
+        <div class="live-stat-bar">
+          <div class="live-stat-bar-left" style="width: ${homePercent}%"></div>
+          <div class="live-stat-bar-separator"></div>
+          <div class="live-stat-bar-right" style="width: ${awayPercent}%"></div>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Pre numerické hodnoty
+  const homeNum = Number(homeValue) || 0;
+  const awayNum = Number(awayValue) || 0;
+  const total = homeNum + awayNum;
+  const homePercent = total > 0 ? (homeNum / total) * 100 : 50;
+  const awayPercent = total > 0 ? (awayNum / total) * 100 : 50;
+  
+  return `
+    <div class="live-stat-row">
+      <div class="live-stat-values">
+        <span class="live-stat-value-left">${homeValue}</span>
+        <span class="live-stat-label">${label}</span>
+        <span class="live-stat-value-right">${awayValue}</span>
+      </div>
+      <div class="live-stat-bar">
+        <div class="live-stat-bar-left" style="width: ${homePercent}%"></div>
+        <div class="live-stat-bar-separator"></div>
+        <div class="live-stat-bar-right" style="width: ${awayPercent}%"></div>
+      </div>
+    </div>
+  `;
+}
+
 function displayLiveGameDetails(game) {
   console.log("🎮 Zobrazujem detail zápasu:", game);
   
@@ -2270,27 +2335,17 @@ function displayLiveGameDetails(game) {
       <!-- Štatistiky zápasu -->
       <div class="live-details-stats">
         <h3>Štatistiky zápasu</h3>
-        <div class="live-stats-grid">
-          <div class="live-stat-item">
-            <span class="live-stat-label">Strely</span>
-            <span class="live-stat-value">${stats.shots?.home || 0} - ${stats.shots?.away || 0}</span>
-          </div>
-          <div class="live-stat-item">
-            <span class="live-stat-label">Blokované strely</span>
-            <span class="live-stat-value">${stats.blocked?.home || 0} - ${stats.blocked?.away || 0}</span>
-          </div>
-          <div class="live-stat-item">
-            <span class="live-stat-label">Faceoff</span>
-            <span class="live-stat-value">${stats.faceOffWinPercentage?.home?.toFixed(1) || 0}% - ${stats.faceOffWinPercentage?.away?.toFixed(1) || 0}%</span>
-          </div>
-          <div class="live-stat-item">
-            <span class="live-stat-label">Power Play</span>
-            <span class="live-stat-value">${stats.powerPlay?.home?.opportunities || 0}/${stats.powerPlay?.home?.goals || 0} - ${stats.powerPlay?.away?.opportunities || 0}/${stats.powerPlay?.away?.goals || 0}</span>
-          </div>
-          <div class="live-stat-item">
-            <span class="live-stat-label">Trestné minúty</span>
-            <span class="live-stat-value">${stats.pim?.home || 0} - ${stats.pim?.away || 0}</span>
-          </div>
+        <div class="live-stats-list">
+          ${createStatRow("Strely", stats.shots?.home || 0, stats.shots?.away || 0)}
+          ${createStatRow("Blokované strely", stats.blocked?.home || 0, stats.blocked?.away || 0)}
+          ${createStatRow("Faceoff", stats.faceOffWinPercentage?.home?.toFixed(1) || 0, stats.faceOffWinPercentage?.away?.toFixed(1) || 0, "%")}
+          ${createStatRow("Power Play", 
+            `${stats.powerPlay?.home?.opportunities || 0}/${stats.powerPlay?.home?.goals || 0}`, 
+            `${stats.powerPlay?.away?.opportunities || 0}/${stats.powerPlay?.away?.goals || 0}`,
+            "",
+            true
+          )}
+          ${createStatRow("Trestné minúty", stats.pim?.home || 0, stats.pim?.away || 0)}
         </div>
       </div>
 

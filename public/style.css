@@ -9048,31 +9048,76 @@ html, body {
   text-align: center !important;
 }
 
-.live-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+/* Nový layout pre štatistiky - riadky s bar grafmi */
+.live-stats-list {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 
-.live-stat-item {
+.live-stat-row {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 12px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 10px;
+  gap: 6px;
+}
+
+.live-stat-values {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.live-stat-value-left,
+.live-stat-value-right {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  min-width: 40px;
+  text-align: center;
+}
+
+.live-stat-value-left {
+  text-align: left;
+}
+
+.live-stat-value-right {
+  text-align: right;
 }
 
 .live-stat-label {
   font-size: 0.85rem;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.7);
+  flex: 1;
+  text-align: center;
 }
 
-.live-stat-value {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #00eaff;
+.live-stat-bar {
+  display: flex;
+  height: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.live-stat-bar-left {
+  background: rgba(0, 150, 200, 0.8);
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.live-stat-bar-right {
+  background: rgba(255, 68, 68, 0.8);
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.live-stat-bar-separator {
+  width: 2px;
+  background: #fff;
+  height: 100%;
+  flex-shrink: 0;
 }
 
 .live-details-goals {
