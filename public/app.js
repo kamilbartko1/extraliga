@@ -2403,6 +2403,22 @@ function displayLiveGameDetails(game) {
 
   content.innerHTML = detailsHtml;
   
+  // Ak sa zmenilo skóre, pridaj animáciu a odstráň ju po 5 sekundách
+  if (scoreChanged) {
+    const scoreBox = content.querySelector('.live-details-score');
+    if (scoreBox) {
+      // Odstráň triedu ak už existuje (pre prípad, že sa zmenilo viackrát)
+      scoreBox.classList.remove('score-changed');
+      // Pridaj triedu s malým oneskorením, aby sa animácia spustila
+      setTimeout(() => {
+        scoreBox.classList.add('score-changed');
+        setTimeout(() => {
+          scoreBox.classList.remove('score-changed');
+        }, 5000);
+      }, 10);
+    }
+  }
+  
   // Overlay už je zobrazený z openLiveGameDetails, len animuj obsah
   content.style.transform = "scale(0.9)";
   content.style.opacity = "0";
