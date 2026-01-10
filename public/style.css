@@ -9272,26 +9272,25 @@ html, body {
   }
 
   .live-details-score {
-    padding: 15px;
-    flex-direction: row;
-    justify-content: space-around;
-    gap: 10px;
-  }
-
-  .live-details-vs {
-    display: none;
+    padding: 15px 12px;
+    gap: 8px;
   }
 
   .live-details-team {
-    flex-direction: row;
     gap: 8px;
-    width: auto;
-    flex: 1;
-    justify-content: center;
+  }
+
+  .live-details-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .live-details-team-name {
+    font-size: 0.85rem;
   }
 
   .live-details-score-value {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 
   .live-game-teams {
