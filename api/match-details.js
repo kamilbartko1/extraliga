@@ -20,16 +20,20 @@ export default async function handler(req, res) {
     const boxscoreUrl = `${BASE_URL}/gamecenter/${gameId}/boxscore`;
     const gamecenterUrl = `${BASE_URL}/gamecenter/${gameId}/landing`;
     
-    const [boxscoreResp, gamecenterResp] = await Promise.all([
-      axios.get(boxscoreUrl).catch(() => ({ data: {} })),
-      axios.get(gamecenterUrl).catch(() => ({ data: {} }))
+    const [boxscoreResp, gamecenterResp] = await Promise.allSettled([
+      axios.get(boxscoreUrl),
+      axios.get(gamecenterUrl)
     ]);
     
-    const boxscore = boxscoreResp.data;
-    const gamecenter = gamecenterResp.data;
+    const boxscore = boxscoreResp.status === 'fulfilled' ? boxscoreResp.value.data : {};
+    const gamecenter = gamecenterResp.status === 'fulfilled' ? gamecenterResp.value.data : {};
     
     // Získaj goals z gamecenter (ak boxscore nemá goals)
-    const goals = boxscore?.goals || gamecenter?.goals || [];
+    // Goals môžu byť v gamecenter.goals alebo gamecenter.games[0].goals
+    const goals = boxscore?.goals || 
+                  gamecenter?.goals || 
+                  (Array.isArray(gamecenter?.games) && gamecenter.games.length > 0 ? gamecenter.games[0].goals : []) ||
+                  [];
 
     // --- štruktúra odpovede (aby pasovala na frontend) ---
     const homeTeam = boxscore?.homeTeam || {};
