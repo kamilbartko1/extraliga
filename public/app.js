@@ -2487,6 +2487,9 @@ async function openFinishedGameDetails(gameId) {
     
     const boxscoreData = await resp.json();
     console.log("📦 Boxscore dáta:", boxscoreData);
+    console.log("📦 Period scores:", boxscoreData.sport_event_status?.period_scores);
+    console.log("📦 Home players:", boxscoreData.statistics?.totals?.competitors?.find(c => c.qualifier === "home")?.players?.length);
+    console.log("📦 Away players:", boxscoreData.statistics?.totals?.competitors?.find(c => c.qualifier === "away")?.players?.length);
     
     displayFinishedGameDetails(gameId, boxscoreData);
   } catch (err) {

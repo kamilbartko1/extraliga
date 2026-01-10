@@ -21,6 +21,8 @@ export default async function handler(req, res) {
     const response = await axios.get(url);
     const boxscore = response.data;
 
+    console.log("📦 Raw boxscore structure:", JSON.stringify(boxscore, null, 2).substring(0, 500));
+
     // --- štruktúra odpovede (aby pasovala na frontend) ---
     const homeTeam = boxscore?.homeTeam || {};
     const awayTeam = boxscore?.awayTeam || {};
@@ -36,13 +38,32 @@ export default async function handler(req, res) {
     const homePlayers = [...homeForwards, ...homeDefense, ...homeGoalies];
     const awayPlayers = [...awayForwards, ...awayDefense, ...awayGoalies];
 
+    console.log("📊 Home players count:", homePlayers.length);
+    console.log("📊 Away players count:", awayPlayers.length);
+    if (homePlayers.length > 0) {
+      console.log("📊 Sample home player:", JSON.stringify(homePlayers[0], null, 2));
+    }
+
     const formatPlayer = (p) => {
-      const name = p.playerName?.default || 
-                   [p.firstName?.default, p.lastName?.default].filter(Boolean).join(" ").trim() ||
-                   "Unknown Player";
+      // NHL API môže mať meno v rôznych formátoch
+      let name = null;
+      
+      if (p.name?.default) {
+        name = p.name.default;
+      } else if (p.playerName?.default) {
+        name = p.playerName.default;
+      } else if (p.firstName?.default || p.lastName?.default) {
+        name = [p.firstName?.default, p.lastName?.default].filter(Boolean).join(" ").trim();
+      }
+      
+      if (!name || name === "") {
+        // Fallback - skús ešte raz z iných polí
+        name = p.name || p.playerName || `${p.firstName || ""} ${p.lastName || ""}`.trim();
+      }
+      
       return {
         id: p.playerId,
-        name: name,
+        name: name || "Unknown Player",
         statistics: {
           goals: p.goals ?? 0,
           assists: p.assists ?? 0,
@@ -50,15 +71,20 @@ export default async function handler(req, res) {
       };
     };
 
+    // Získaj period scores z linescore
+    const periods = boxscore?.linescore?.periods || [];
+    console.log("📊 Periods from linescore:", JSON.stringify(periods, null, 2));
+    
+    const period_scores = periods.map((p) => ({
+      home_score: p.home ?? 0,
+      away_score: p.away ?? 0,
+    }));
+
     const formatted = {
       sport_event_status: {
         home_score: homeTeam.score ?? 0,
         away_score: awayTeam.score ?? 0,
-        period_scores:
-          boxscore?.linescore?.periods?.map((p) => ({
-            home_score: p.home ?? 0,
-            away_score: p.away ?? 0,
-          })) || [],
+        period_scores: period_scores,
       },
       statistics: {
         totals: {
@@ -77,6 +103,8 @@ export default async function handler(req, res) {
         },
       },
     };
+    
+    console.log("📦 Formatted response:", JSON.stringify(formatted, null, 2).substring(0, 1000));
 
     res.status(200).json(formatted);
   } catch (err) {
