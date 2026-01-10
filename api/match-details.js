@@ -36,37 +36,56 @@ export default async function handler(req, res) {
       axios.get(scoreUrl)
     ]);
     
-    const boxscore = boxscoreResp.status === 'fulfilled' ? boxscoreResp.value.data : {};
-    const scoreData = scoreResp.status === 'fulfilled' ? scoreResp.value.data : {};
+    // Bezpečné parsovanie odpovedí
+    let boxscore = {};
+    let scoreData = {};
+    
+    if (boxscoreResp.status === 'fulfilled') {
+      try {
+        boxscore = boxscoreResp.value?.data || {};
+      } catch (e) {
+        console.error("❌ Error parsing boxscore:", e.message);
+      }
+    } else {
+      console.error("❌ Boxscore request failed:", boxscoreResp.reason?.message);
+    }
+    
+    if (scoreResp.status === 'fulfilled') {
+      try {
+        scoreData = scoreResp.value?.data || {};
+      } catch (e) {
+        console.error("❌ Error parsing score data:", e.message);
+      }
+    } else {
+      console.error("❌ Score request failed:", scoreResp.reason?.message);
+    }
     
     console.log("📊 Score API response status:", scoreResp.status);
     console.log("📊 Games in score response:", scoreData?.games?.length || 0);
     
     // Získaj goals z score endpointu alebo z boxscore - nájdi zápas s daným ID
     let goals = [];
-    console.log("📊 Score API response status:", scoreResp.status);
-    console.log("📊 Score error:", scoreResp.status === 'rejected' ? scoreResp.reason?.message : 'none');
-    console.log("📊 Games in score response:", scoreData?.games?.length || 0);
     
     // Skús najprv score endpoint
-    if (Array.isArray(scoreData?.games)) {
-      console.log("📊 Available game IDs in score:", scoreData.games.map(g => g.id));
-      const game = scoreData.games.find(g => String(g.id) === String(gameId));
-      console.log("📊 Found game in score:", game ? "YES" : "NO");
-      
-      if (game) {
-        console.log("📊 Game goals property:", game.goals ? "EXISTS" : "MISSING");
-        console.log("📊 Game goals is array:", Array.isArray(game.goals) ? "YES" : "NO");
-        if (Array.isArray(game.goals)) {
+    if (Array.isArray(scoreData?.games) && scoreData.games.length > 0) {
+      try {
+        const gameIds = scoreData.games.map(g => g?.id).filter(Boolean);
+        console.log("📊 Available game IDs in score:", gameIds);
+        const game = scoreData.games.find(g => g && String(g.id) === String(gameId));
+        console.log("📊 Found game in score:", game ? "YES" : "NO");
+        
+        if (game && Array.isArray(game.goals)) {
           goals = game.goals;
           console.log("📊 Goals found in score game:", goals.length);
-        } else if (game.goals) {
-          console.warn("⚠️ game.goals is not an array:", typeof game.goals);
+        } else if (game) {
+          console.log("📊 Game found but no goals array:", game.goals ? typeof game.goals : "missing");
         }
+      } catch (e) {
+        console.error("❌ Error processing score games:", e.message);
       }
     } else {
-      console.warn("⚠️ scoreData.games is not an array:", typeof scoreData?.games);
-      if (scoreData) {
+      console.warn("⚠️ scoreData.games is not an array or is empty");
+      if (scoreData && typeof scoreData === 'object') {
         console.log("📊 Score data keys:", Object.keys(scoreData));
       }
     }
@@ -74,45 +93,66 @@ export default async function handler(req, res) {
     // Ak nemáme goals z score, skús boxscore
     if (!goals || goals.length === 0) {
       console.log("📊 Trying to get goals from boxscore...");
-      if (boxscore?.scoringPlays && Array.isArray(boxscore.scoringPlays)) {
-        console.log("📊 Found scoringPlays in boxscore:", boxscore.scoringPlays.length);
-        goals = boxscore.scoringPlays;
-      } else if (boxscore?.plays && Array.isArray(boxscore.plays)) {
-        console.log("📊 Found plays in boxscore:", boxscore.plays.length);
-        const scoringPlays = boxscore.plays.filter(p => p.type === 'GOAL');
-        if (scoringPlays.length > 0) {
-          goals = scoringPlays;
+      try {
+        if (boxscore?.scoringPlays && Array.isArray(boxscore.scoringPlays)) {
+          console.log("📊 Found scoringPlays in boxscore:", boxscore.scoringPlays.length);
+          goals = boxscore.scoringPlays;
+        } else if (boxscore?.plays && Array.isArray(boxscore.plays)) {
+          console.log("📊 Found plays in boxscore:", boxscore.plays.length);
+          const scoringPlays = boxscore.plays.filter(p => p && p.type === 'GOAL');
+          if (scoringPlays.length > 0) {
+            goals = scoringPlays;
+          }
         }
+      } catch (e) {
+        console.error("❌ Error getting goals from boxscore:", e.message);
       }
     }
     
     console.log("📊 Final goals array length:", goals.length);
     if (goals.length > 0) {
-      console.log("📊 First goal structure:", JSON.stringify(goals[0], null, 2).substring(0, 500));
-      console.log("📊 All goals periods:", goals.map(g => ({ 
-        period: g.period || g.periodDescriptor?.number, 
-        home: g.homeScore || g.homeScoreAfter, 
-        away: g.awayScore || g.awayScoreAfter 
-      })));
+      try {
+        console.log("📊 First goal structure:", JSON.stringify(goals[0], null, 2).substring(0, 500));
+        console.log("📊 All goals periods:", goals.slice(0, 5).map(g => ({ 
+          period: g?.period || g?.periodDescriptor?.number, 
+          home: g?.homeScore || g?.homeScoreAfter, 
+          away: g?.awayScore || g?.awayScoreAfter 
+        })));
+      } catch (e) {
+        console.error("❌ Error logging goals:", e.message);
+      }
     } else {
-      console.error("❌ NO GOALS FOUND! Score data sample:", JSON.stringify(scoreData, null, 2).substring(0, 500));
-      console.error("❌ Boxscore sample keys:", Object.keys(boxscore || {}));
+      console.warn("⚠️ NO GOALS FOUND!");
+      if (scoreData && typeof scoreData === 'object') {
+        try {
+          console.log("📊 Score data sample:", JSON.stringify(scoreData, null, 2).substring(0, 300));
+        } catch (e) {
+          console.log("📊 Score data exists but cannot stringify");
+        }
+      }
+      if (boxscore && typeof boxscore === 'object') {
+        console.log("📊 Boxscore keys:", Object.keys(boxscore).slice(0, 10));
+      }
     }
 
     // --- štruktúra odpovede (aby pasovala na frontend) ---
-    const homeTeam = boxscore?.homeTeam || {};
-    const awayTeam = boxscore?.awayTeam || {};
+    const homeTeam = (boxscore && boxscore.homeTeam) ? boxscore.homeTeam : {};
+    const awayTeam = (boxscore && boxscore.awayTeam) ? boxscore.awayTeam : {};
     
-    // Získaj všetkých hráčov (forwards + defense + goalies)
-    const homeForwards = boxscore?.playerByGameStats?.homeTeam?.forwards || [];
-    const homeDefense = boxscore?.playerByGameStats?.homeTeam?.defense || [];
-    const homeGoalies = boxscore?.playerByGameStats?.homeTeam?.goalies || [];
-    const awayForwards = boxscore?.playerByGameStats?.awayTeam?.forwards || [];
-    const awayDefense = boxscore?.playerByGameStats?.awayTeam?.defense || [];
-    const awayGoalies = boxscore?.playerByGameStats?.awayTeam?.goalies || [];
+    // Získaj všetkých hráčov (forwards + defense + goalies) - bezpečne
+    const playerStats = boxscore?.playerByGameStats || {};
+    const homeStats = playerStats.homeTeam || {};
+    const awayStats = playerStats.awayTeam || {};
     
-    const homePlayers = [...homeForwards, ...homeDefense, ...homeGoalies];
-    const awayPlayers = [...awayForwards, ...awayDefense, ...awayGoalies];
+    const homeForwards = Array.isArray(homeStats.forwards) ? homeStats.forwards : [];
+    const homeDefense = Array.isArray(homeStats.defense) ? homeStats.defense : [];
+    const homeGoalies = Array.isArray(homeStats.goalies) ? homeStats.goalies : [];
+    const awayForwards = Array.isArray(awayStats.forwards) ? awayStats.forwards : [];
+    const awayDefense = Array.isArray(awayStats.defense) ? awayStats.defense : [];
+    const awayGoalies = Array.isArray(awayStats.goalies) ? awayStats.goalies : [];
+    
+    const homePlayers = [...homeForwards, ...homeDefense, ...homeGoalies].filter(Boolean);
+    const awayPlayers = [...awayForwards, ...awayDefense, ...awayGoalies].filter(Boolean);
 
     // Debugging - ukáž prvého hráča
     if (homePlayers.length > 0) {
@@ -239,11 +279,19 @@ export default async function handler(req, res) {
       },
     };
     
-    console.log("📦 Formatted response:", JSON.stringify(formatted, null, 2).substring(0, 1000));
-
-    res.status(200).json(formatted);
+    try {
+      console.log("📦 Formatted response preview - period_scores:", formatted.sport_event_status.period_scores.length);
+      res.status(200).json(formatted);
+    } catch (jsonErr) {
+      console.error("❌ Error serializing response:", jsonErr.message);
+      res.status(500).json({ error: "Chyba pri serializácii odpovede" });
+    }
   } catch (err) {
     console.error("❌ Chyba pri načítaní detailov zápasu:", err.message);
-    res.status(500).json({ error: "Chyba pri načítaní detailov zápasu NHL" });
+    console.error("❌ Stack trace:", err.stack);
+    res.status(500).json({ 
+      error: "Chyba pri načítaní detailov zápasu NHL",
+      message: err.message 
+    });
   }
 }
