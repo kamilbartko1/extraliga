@@ -122,40 +122,53 @@ export default async function handler(req, res) {
         away_score: p.away ?? 0,
       }));
     } else if (goals && goals.length > 0) {
+      console.log("📊 Calculating period scores from goals array (length:", goals.length, ")");
       // Ak nie sú v linescore, vypočítaj z goals array
       // Každý gól má period, homeScore a awayScore (kumulatívne)
       // Nájdi najvyššie kumulatívne skóre pre každú tretinu
       const periodScoresMap = {};
       
-      goals.forEach(goal => {
+      goals.forEach((goal, index) => {
         const periodNum = goal.period || goal.periodDescriptor?.number;
+        console.log(`📊 Goal ${index}: period=${periodNum}, homeScore=${goal.homeScore}, awayScore=${goal.awayScore}`);
+        
         if (periodNum) {
           const currentHome = goal.homeScore ?? 0;
           const currentAway = goal.awayScore ?? 0;
           const currentTotal = currentHome + currentAway;
           
           // Ulož najvyššie skóre pre každú tretinu (posledný gól má najvyššie kumulatívne skóre)
-          if (!periodScoresMap[periodNum] || currentTotal > periodScoresMap[periodNum].total) {
+          if (!periodScoresMap[periodNum] || currentTotal >= periodScoresMap[periodNum].total) {
             periodScoresMap[periodNum] = {
               home_score: currentHome,
               away_score: currentAway,
               total: currentTotal
             };
+            console.log(`📊 Updated period ${periodNum}: ${currentHome}:${currentAway}`);
           }
+        } else {
+          console.warn(`⚠️ Goal ${index} has no period number!`, JSON.stringify(goal, null, 2).substring(0, 200));
         }
       });
+      
+      console.log("📊 PeriodScoresMap before sorting:", JSON.stringify(periodScoresMap, null, 2));
       
       // Konvertuj na pole v správnom poradí (1, 2, 3...)
       const sortedPeriods = Object.keys(periodScoresMap)
         .map(Number)
         .sort((a, b) => a - b);
       
+      console.log("📊 Sorted periods:", sortedPeriods);
+      
       period_scores = sortedPeriods.map(key => ({
         home_score: periodScoresMap[key].home_score,
         away_score: periodScoresMap[key].away_score
       }));
       
-      console.log("📊 Period scores calculated from goals:", JSON.stringify(period_scores, null, 2));
+      console.log("📊 FINAL period_scores:", JSON.stringify(period_scores, null, 2));
+    } else {
+      console.error("❌ No goals found! Goals array length:", goals?.length || 0);
+      console.error("❌ Linescore periods:", linescorePeriods?.length || 0);
     }
 
     const formatted = {
