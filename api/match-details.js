@@ -42,34 +42,37 @@ export default async function handler(req, res) {
     
     if (boxscoreResp.status === 'fulfilled') {
       try {
-        boxscore = boxscoreResp.value?.data || {};
+        boxscore = (boxscoreResp.value && boxscoreResp.value.data) ? boxscoreResp.value.data : {};
       } catch (e) {
         console.error("❌ Error parsing boxscore:", e.message);
       }
     } else {
-      console.error("❌ Boxscore request failed:", boxscoreResp.reason?.message);
+      const reasonMsg = (boxscoreResp.reason && boxscoreResp.reason.message) ? boxscoreResp.reason.message : 'unknown';
+      console.error("❌ Boxscore request failed:", reasonMsg);
     }
     
     if (scoreResp.status === 'fulfilled') {
       try {
-        scoreData = scoreResp.value?.data || {};
+        scoreData = (scoreResp.value && scoreResp.value.data) ? scoreResp.value.data : {};
       } catch (e) {
         console.error("❌ Error parsing score data:", e.message);
       }
     } else {
-      console.error("❌ Score request failed:", scoreResp.reason?.message);
+      const reasonMsg = (scoreResp.reason && scoreResp.reason.message) ? scoreResp.reason.message : 'unknown';
+      console.error("❌ Score request failed:", reasonMsg);
     }
     
     console.log("📊 Score API response status:", scoreResp.status);
-    console.log("📊 Games in score response:", scoreData?.games?.length || 0);
+    const gamesLength = (scoreData && scoreData.games && Array.isArray(scoreData.games)) ? scoreData.games.length : 0;
+    console.log("📊 Games in score response:", gamesLength);
     
     // Získaj goals z score endpointu alebo z boxscore - nájdi zápas s daným ID
     let goals = [];
     
     // Skús najprv score endpoint
-    if (Array.isArray(scoreData?.games) && scoreData.games.length > 0) {
+    if (Array.isArray(scoreData && scoreData.games) && scoreData.games.length > 0) {
       try {
-        const gameIds = scoreData.games.map(g => g?.id).filter(Boolean);
+        const gameIds = scoreData.games.map(g => (g && g.id) ? g.id : null).filter(Boolean);
         console.log("📊 Available game IDs in score:", gameIds);
         const game = scoreData.games.find(g => g && String(g.id) === String(gameId));
         console.log("📊 Found game in score:", game ? "YES" : "NO");
@@ -94,10 +97,10 @@ export default async function handler(req, res) {
     if (!goals || goals.length === 0) {
       console.log("📊 Trying to get goals from boxscore...");
       try {
-        if (boxscore?.scoringPlays && Array.isArray(boxscore.scoringPlays)) {
+        if (boxscore && boxscore.scoringPlays && Array.isArray(boxscore.scoringPlays)) {
           console.log("📊 Found scoringPlays in boxscore:", boxscore.scoringPlays.length);
           goals = boxscore.scoringPlays;
-        } else if (boxscore?.plays && Array.isArray(boxscore.plays)) {
+        } else if (boxscore && boxscore.plays && Array.isArray(boxscore.plays)) {
           console.log("📊 Found plays in boxscore:", boxscore.plays.length);
           const scoringPlays = boxscore.plays.filter(p => p && p.type === 'GOAL');
           if (scoringPlays.length > 0) {
@@ -113,11 +116,12 @@ export default async function handler(req, res) {
     if (goals.length > 0) {
       try {
         console.log("📊 First goal structure:", JSON.stringify(goals[0], null, 2).substring(0, 500));
-        console.log("📊 All goals periods:", goals.slice(0, 5).map(g => ({ 
-          period: g?.period || g?.periodDescriptor?.number, 
-          home: g?.homeScore || g?.homeScoreAfter, 
-          away: g?.awayScore || g?.awayScoreAfter 
-        })));
+        console.log("📊 All goals periods:", goals.slice(0, 5).map(g => {
+          const period = (g && g.period) ? g.period : ((g && g.periodDescriptor && g.periodDescriptor.number) ? g.periodDescriptor.number : null);
+          const home = (g && g.homeScore) ? g.homeScore : ((g && g.homeScoreAfter) ? g.homeScoreAfter : null);
+          const away = (g && g.awayScore) ? g.awayScore : ((g && g.awayScoreAfter) ? g.awayScoreAfter : null);
+          return { period: period, home: home, away: away };
+        }));
       } catch (e) {
         console.error("❌ Error logging goals:", e.message);
       }
@@ -140,9 +144,9 @@ export default async function handler(req, res) {
     const awayTeam = (boxscore && boxscore.awayTeam) ? boxscore.awayTeam : {};
     
     // Získaj všetkých hráčov (forwards + defense + goalies) - bezpečne
-    const playerStats = boxscore?.playerByGameStats || {};
-    const homeStats = playerStats.homeTeam || {};
-    const awayStats = playerStats.awayTeam || {};
+    const playerStats = (boxscore && boxscore.playerByGameStats) ? boxscore.playerByGameStats : {};
+    const homeStats = (playerStats && playerStats.homeTeam) ? playerStats.homeTeam : {};
+    const awayStats = (playerStats && playerStats.awayTeam) ? playerStats.awayTeam : {};
     
     const homeForwards = Array.isArray(homeStats.forwards) ? homeStats.forwards : [];
     const homeDefense = Array.isArray(homeStats.defense) ? homeStats.defense : [];
@@ -162,17 +166,17 @@ export default async function handler(req, res) {
     }
 
     const formatPlayer = (p) => {
-      // NHL API používa p.name?.default (ako v matches.js a ai.js)
+      // NHL API používa p.name.default (ako v matches.js a ai.js)
       // Skús všetky možné formáty
       let name = null;
       
-      if (p?.name?.default) {
+      if (p && p.name && p.name.default) {
         name = p.name.default;
-      } else if (p?.firstName?.default && p?.lastName?.default) {
+      } else if (p && p.firstName && p.firstName.default && p.lastName && p.lastName.default) {
         name = `${p.firstName.default} ${p.lastName.default}`;
-      } else if (p?.name) {
+      } else if (p && p.name) {
         name = String(p.name);
-      } else if (p?.firstName && p?.lastName) {
+      } else if (p && p.firstName && p.lastName) {
         name = `${p.firstName} ${p.lastName}`;
       }
       
@@ -182,11 +186,11 @@ export default async function handler(req, res) {
       }
       
       return {
-        id: p.playerId,
+        id: p ? p.playerId : null,
         name: name.trim(),
         statistics: {
-          goals: p.goals ?? 0,
-          assists: p.assists ?? 0,
+          goals: (p && p.goals !== undefined && p.goals !== null) ? p.goals : 0,
+          assists: (p && p.assists !== undefined && p.assists !== null) ? p.assists : 0,
         },
       };
     };
@@ -195,11 +199,12 @@ export default async function handler(req, res) {
     let period_scores = [];
     
     // Skús najprv linescore.periods (ak existuje)
-    const linescorePeriods = boxscore?.linescore?.periods || [];
+    const linescore = (boxscore && boxscore.linescore) ? boxscore.linescore : {};
+    const linescorePeriods = (linescore && linescore.periods && Array.isArray(linescore.periods)) ? linescore.periods : [];
     if (linescorePeriods && linescorePeriods.length > 0) {
       period_scores = linescorePeriods.map((p) => ({
-        home_score: p.home ?? 0,
-        away_score: p.away ?? 0,
+        home_score: (p && p.home !== undefined && p.home !== null) ? p.home : 0,
+        away_score: (p && p.away !== undefined && p.away !== null) ? p.away : 0,
       }));
     } else if (goals && goals.length > 0) {
       console.log("📊 Calculating period scores from goals array (length:", goals.length, ")");
@@ -210,9 +215,9 @@ export default async function handler(req, res) {
       
       goals.forEach((goal, index) => {
         // Skús rôzne formáty period a scores
-        const periodNum = goal.period || goal.periodDescriptor?.number || goal.periodNumber;
-        const homeScore = goal.homeScore || goal.homeScoreAfter || goal.home ?? 0;
-        const awayScore = goal.awayScore || goal.awayScoreAfter || goal.away ?? 0;
+        const periodNum = (goal && goal.period) ? goal.period : ((goal && goal.periodDescriptor && goal.periodDescriptor.number) ? goal.periodDescriptor.number : ((goal && goal.periodNumber) ? goal.periodNumber : null));
+        const homeScore = (goal && goal.homeScore) ? goal.homeScore : ((goal && goal.homeScoreAfter) ? goal.homeScoreAfter : ((goal && goal.home) ? goal.home : 0));
+        const awayScore = (goal && goal.awayScore) ? goal.awayScore : ((goal && goal.awayScoreAfter) ? goal.awayScoreAfter : ((goal && goal.away) ? goal.away : 0));
         
         console.log(`📊 Goal ${index}: period=${periodNum}, homeScore=${homeScore}, awayScore=${awayScore}`);
         
@@ -251,14 +256,16 @@ export default async function handler(req, res) {
       
       console.log("📊 FINAL period_scores:", JSON.stringify(period_scores, null, 2));
     } else {
-      console.error("❌ No goals found! Goals array length:", goals?.length || 0);
-      console.error("❌ Linescore periods:", linescorePeriods?.length || 0);
+      const goalsLength = (goals && Array.isArray(goals)) ? goals.length : 0;
+      const periodsLength = (linescorePeriods && Array.isArray(linescorePeriods)) ? linescorePeriods.length : 0;
+      console.error("❌ No goals found! Goals array length:", goalsLength);
+      console.error("❌ Linescore periods:", periodsLength);
     }
 
     const formatted = {
       sport_event_status: {
-        home_score: homeTeam.score ?? 0,
-        away_score: awayTeam.score ?? 0,
+        home_score: (homeTeam.score !== undefined && homeTeam.score !== null) ? homeTeam.score : 0,
+        away_score: (awayTeam.score !== undefined && awayTeam.score !== null) ? awayTeam.score : 0,
         period_scores: period_scores,
       },
       statistics: {
@@ -266,12 +273,12 @@ export default async function handler(req, res) {
           competitors: [
             {
               qualifier: "home",
-              name: `${homeTeam.placeName?.default || ""} ${homeTeam.commonName?.default || ""}`.trim() || "Home Team",
+              name: `${((homeTeam && homeTeam.placeName && homeTeam.placeName.default) ? homeTeam.placeName.default : "")} ${((homeTeam && homeTeam.commonName && homeTeam.commonName.default) ? homeTeam.commonName.default : "")}`.trim() || "Home Team",
               players: homePlayers.map(formatPlayer),
             },
             {
               qualifier: "away",
-              name: `${awayTeam.placeName?.default || ""} ${awayTeam.commonName?.default || ""}`.trim() || "Away Team",
+              name: `${((awayTeam && awayTeam.placeName && awayTeam.placeName.default) ? awayTeam.placeName.default : "")} ${((awayTeam && awayTeam.commonName && awayTeam.commonName.default) ? awayTeam.commonName.default : "")}`.trim() || "Away Team",
               players: awayPlayers.map(formatPlayer),
             },
           ],
