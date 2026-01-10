@@ -28,6 +28,9 @@ export default async function handler(req, res) {
     
     const scoreUrl = `${BASE_URL}/score/${gameDate}`;
     
+    console.log("📊 Fetching score for date:", gameDate);
+    console.log("📊 GameId:", gameId);
+    
     const [boxscoreResp, scoreResp] = await Promise.allSettled([
       axios.get(boxscoreUrl),
       axios.get(scoreUrl)
@@ -36,18 +39,24 @@ export default async function handler(req, res) {
     const boxscore = boxscoreResp.status === 'fulfilled' ? boxscoreResp.value.data : {};
     const scoreData = scoreResp.status === 'fulfilled' ? scoreResp.value.data : {};
     
+    console.log("📊 Score API response status:", scoreResp.status);
+    console.log("📊 Games in score response:", scoreData?.games?.length || 0);
+    
     // Získaj goals z score endpointu - nájdi zápas s daným ID
     let goals = [];
     if (Array.isArray(scoreData?.games)) {
       const game = scoreData.games.find(g => String(g.id) === String(gameId));
+      console.log("📊 Found game in score:", game ? "YES" : "NO");
       if (game && Array.isArray(game.goals)) {
         goals = game.goals;
+        console.log("📊 Goals found in game:", goals.length);
       }
     }
     
-    console.log("📊 Goals from score endpoint:", goals.length);
+    console.log("📊 Final goals array length:", goals.length);
     if (goals.length > 0) {
-      console.log("📊 Sample goal:", JSON.stringify(goals[0], null, 2).substring(0, 400));
+      console.log("📊 First goal:", JSON.stringify(goals[0], null, 2));
+      console.log("📊 All goals periods:", goals.map(g => ({ period: g.period, home: g.homeScore, away: g.awayScore })));
     }
 
     // --- štruktúra odpovede (aby pasovala na frontend) ---
