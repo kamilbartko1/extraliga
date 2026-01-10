@@ -73,26 +73,49 @@ export default async function handler(req, res) {
       };
     };
 
-    // Získaj period scores z linescore - skús rôzne možnosti
-    let periods = boxscore?.linescore?.periods || [];
+    // Získaj period scores - vypočítaj z goals array alebo použij linescore
+    let period_scores = [];
     
-    // Ak nie sú v linescore.periods, skús iné miesta
-    if (!periods || periods.length === 0) {
-      // Skús boxscore.periods
-      periods = boxscore?.periods || [];
+    // Skús najprv linescore.periods (ak existuje)
+    const linescorePeriods = boxscore?.linescore?.periods || [];
+    if (linescorePeriods && linescorePeriods.length > 0) {
+      period_scores = linescorePeriods.map((p) => ({
+        home_score: p.home ?? 0,
+        away_score: p.away ?? 0,
+      }));
+    } else {
+      // Ak nie sú v linescore, vypočítaj z goals array
+      const goals = boxscore?.goals || [];
+      if (goals.length > 0) {
+        // Nájdi posledný gól z každej tretiny
+        const periodScores = {};
+        
+        goals.forEach(goal => {
+          const periodNum = goal.period || goal.periodDescriptor?.number;
+          if (periodNum) {
+            // Použij kumulatívne skóre z posledného gólu každej tretiny
+            const currentHome = goal.homeScore ?? 0;
+            const currentAway = goal.awayScore ?? 0;
+            
+            // Ak sme ešte nemali skóre pre túto tretinu, alebo je to neskorší gól, ulož ho
+            if (!periodScores[periodNum] || 
+                (currentHome + currentAway) > (periodScores[periodNum].home_score + periodScores[periodNum].away_score)) {
+              periodScores[periodNum] = {
+                home_score: currentHome,
+                away_score: currentAway
+              };
+            }
+          }
+        });
+        
+        // Konvertuj na pole v správnom poradí
+        period_scores = Object.keys(periodScores)
+          .sort((a, b) => Number(a) - Number(b))
+          .map(key => periodScores[key]);
+      }
     }
-    if (!periods || periods.length === 0) {
-      // Skús boxscore.gameState.periods
-      periods = boxscore?.gameState?.periods || [];
-    }
     
-    console.log("📊 Linescore object:", boxscore?.linescore ? Object.keys(boxscore.linescore) : "not found");
-    console.log("📊 Periods found:", periods.length, JSON.stringify(periods, null, 2));
-    
-    const period_scores = periods.map((p) => ({
-      home_score: p.home ?? p.homeScore ?? 0,
-      away_score: p.away ?? p.awayScore ?? 0,
-    }));
+    console.log("📊 Period scores calculated:", JSON.stringify(period_scores, null, 2));
 
     const formatted = {
       sport_event_status: {
