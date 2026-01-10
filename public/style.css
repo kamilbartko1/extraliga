@@ -8885,6 +8885,10 @@ html, body {
   font-size: 1.3rem;
   font-weight: 800;
   color: #fff;
+  border-radius: 8px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .live-score {
