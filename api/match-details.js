@@ -21,8 +21,6 @@ export default async function handler(req, res) {
     const response = await axios.get(url);
     const boxscore = response.data;
 
-    console.log("📦 Raw boxscore structure:", JSON.stringify(boxscore, null, 2).substring(0, 500));
-
     // --- štruktúra odpovede (aby pasovala na frontend) ---
     const homeTeam = boxscore?.homeTeam || {};
     const awayTeam = boxscore?.awayTeam || {};
@@ -38,22 +36,36 @@ export default async function handler(req, res) {
     const homePlayers = [...homeForwards, ...homeDefense, ...homeGoalies];
     const awayPlayers = [...awayForwards, ...awayDefense, ...awayGoalies];
 
-    console.log("📊 Home players count:", homePlayers.length);
-    console.log("📊 Away players count:", awayPlayers.length);
+    // Debugging - ukáž prvého hráča
     if (homePlayers.length > 0) {
-      console.log("📊 Sample home player:", JSON.stringify(homePlayers[0], null, 2));
+      const samplePlayer = homePlayers[0];
+      console.log("📊 Sample home player keys:", Object.keys(samplePlayer));
+      console.log("📊 Sample home player:", JSON.stringify(samplePlayer, null, 2).substring(0, 500));
     }
 
     const formatPlayer = (p) => {
       // NHL API používa p.name?.default (ako v matches.js a ai.js)
-      const name =
-        p?.name?.default ||
-        [p?.firstName?.default, p?.lastName?.default].filter(Boolean).join(" ").trim() ||
-        "Unknown Player";
+      // Skús všetky možné formáty
+      let name = null;
+      
+      if (p?.name?.default) {
+        name = p.name.default;
+      } else if (p?.firstName?.default && p?.lastName?.default) {
+        name = `${p.firstName.default} ${p.lastName.default}`;
+      } else if (p?.name) {
+        name = String(p.name);
+      } else if (p?.firstName && p?.lastName) {
+        name = `${p.firstName} ${p.lastName}`;
+      }
+      
+      if (!name || name.trim() === "") {
+        console.warn("⚠️ Nepodarilo sa parsovať meno hráča. Objekt:", JSON.stringify(p, null, 2).substring(0, 300));
+        name = "Unknown Player";
+      }
       
       return {
         id: p.playerId,
-        name: name,
+        name: name.trim(),
         statistics: {
           goals: p.goals ?? 0,
           assists: p.assists ?? 0,
@@ -61,13 +73,25 @@ export default async function handler(req, res) {
       };
     };
 
-    // Získaj period scores z linescore
-    const periods = boxscore?.linescore?.periods || [];
-    console.log("📊 Periods from linescore:", JSON.stringify(periods, null, 2));
+    // Získaj period scores z linescore - skús rôzne možnosti
+    let periods = boxscore?.linescore?.periods || [];
+    
+    // Ak nie sú v linescore.periods, skús iné miesta
+    if (!periods || periods.length === 0) {
+      // Skús boxscore.periods
+      periods = boxscore?.periods || [];
+    }
+    if (!periods || periods.length === 0) {
+      // Skús boxscore.gameState.periods
+      periods = boxscore?.gameState?.periods || [];
+    }
+    
+    console.log("📊 Linescore object:", boxscore?.linescore ? Object.keys(boxscore.linescore) : "not found");
+    console.log("📊 Periods found:", periods.length, JSON.stringify(periods, null, 2));
     
     const period_scores = periods.map((p) => ({
-      home_score: p.home ?? 0,
-      away_score: p.away ?? 0,
+      home_score: p.home ?? p.homeScore ?? 0,
+      away_score: p.away ?? p.awayScore ?? 0,
     }));
 
     const formatted = {
