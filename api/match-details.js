@@ -109,33 +109,24 @@ export default async function handler(req, res) {
       }));
     } else if (goals && goals.length > 0) {
       // Ak nie sú v linescore, vypočítaj z goals array
-      // Nájdi posledný gól z každej tretiny - použij kumulatívne skóre
+      // Každý gól má period, homeScore a awayScore (kumulatívne)
+      // Nájdi najvyššie kumulatívne skóre pre každú tretinu
       const periodScoresMap = {};
       
       goals.forEach(goal => {
         const periodNum = goal.period || goal.periodDescriptor?.number;
         if (periodNum) {
-          // Použij kumulatívne skóre z gólu (homeScore a awayScore sú kumulatívne)
           const currentHome = goal.homeScore ?? 0;
           const currentAway = goal.awayScore ?? 0;
+          const currentTotal = currentHome + currentAway;
           
-          // Ulož posledné skóre pre každú tretinu (prepíše, ak už existuje neskorší gól)
-          if (!periodScoresMap[periodNum]) {
+          // Ulož najvyššie skóre pre každú tretinu (posledný gól má najvyššie kumulatívne skóre)
+          if (!periodScoresMap[periodNum] || currentTotal > periodScoresMap[periodNum].total) {
             periodScoresMap[periodNum] = {
               home_score: currentHome,
               away_score: currentAway,
-              total: currentHome + currentAway
+              total: currentTotal
             };
-          } else {
-            // Ak je toto skóre väčšie (novší gól), ulož ho
-            const existingTotal = periodScoresMap[periodNum].total;
-            if (currentHome + currentAway > existingTotal) {
-              periodScoresMap[periodNum] = {
-                home_score: currentHome,
-                away_score: currentAway,
-                total: currentHome + currentAway
-              };
-            }
           }
         }
       });
@@ -149,10 +140,9 @@ export default async function handler(req, res) {
         home_score: periodScoresMap[key].home_score,
         away_score: periodScoresMap[key].away_score
       }));
+      
+      console.log("📊 Period scores calculated from goals:", JSON.stringify(period_scores, null, 2));
     }
-    
-    console.log("📊 Goals array length:", goals.length);
-    console.log("📊 Period scores calculated:", JSON.stringify(period_scores, null, 2));
 
     const formatted = {
       sport_event_status: {
