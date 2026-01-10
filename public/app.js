@@ -81,10 +81,6 @@ const I18N = {
     "home.aiLoading": "Načítavam AI tip…",
     "home.aiFailed": "AI strelec sa nepodarilo vypočítať.",
     "home.aiHistory": "📅 História AI tipov",
-    "home.aiGoals": "Góly:",
-    "home.aiPPGoals": "PP Góly:",
-    "home.aiShots": "Strely:",
-    "home.aiProbability": "Pravdepodobnosť:",
     "home.noTips": "Žiadne vyhodnotené tipy",
     "home.topStats": "📊 Top štatistiky hráčov",
     "home.viewAllStats": "Zobraziť všetky",
@@ -361,10 +357,6 @@ const I18N = {
     "home.aiLoading": "Loading AI pick…",
     "home.aiFailed": "Could not compute today's AI scorer.",
     "home.aiHistory": "📅 AI picks history",
-    "home.aiGoals": "Goals:",
-    "home.aiPPGoals": "PP Goals:",
-    "home.aiShots": "Shots:",
-    "home.aiProbability": "Probability:",
     "home.noTips": "No evaluated picks yet",
     "home.topStats": "📊 Top player stats",
     "home.viewAllStats": "View all",
@@ -1474,9 +1466,9 @@ home.innerHTML = html;
           <div class="ai-scorer-info">
             <p><b>${ai.player}</b> (${ai.team})</p>
             <p style="color:#00eaff;">${ai.match}</p>
-            <p>${t("home.aiGoals")} <b>${ai.goals}</b> |  ${t("home.aiPPGoals")} ${ai.powerPlayGoals}</p>
-            <p>${t("home.aiShots")} <b>${ai.shots}</b></p>
-            <p>🧠 ${t("home.aiProbability")} 
+            <p>Góly: <b>${ai.goals}</b> |  PP Góly: ${ai.powerPlayGoals}</p>
+            <p>Strely: <b>${ai.shots}</b></p>
+            <p>🧠 Pravdepodobnosť: 
               <b style="color:#ffcc00;">${ai.probability}%</b>
             </p>
           </div>
@@ -3727,62 +3719,83 @@ document.getElementById("premium-signup-btn")
 });
 
 // ===============================
-// REGISTRÁCIA – SUPABASE SIGNUP
+// REGISTRÁCIA – SUPABASE SIGNUP funkcia
 // ===============================
-document.getElementById("premium-register-confirm")
-  ?.addEventListener("click", async () => {
+async function handleRegister() {
+  const email = document.getElementById("reg-email")?.value.trim();
+  const pass = document.getElementById("reg-pass")?.value;
+  const pass2 = document.getElementById("reg-pass2")?.value;
+  const msg = document.getElementById("premium-register-msg");
 
-    const email = document.getElementById("reg-email")?.value.trim();
-    const pass = document.getElementById("reg-pass")?.value;
-    const pass2 = document.getElementById("reg-pass2")?.value;
-    const msg = document.getElementById("premium-register-msg");
+  if (!email || !pass || !pass2) {
+    msg.textContent = t("premium.fillAll");
+    return;
+  }
 
-    if (!email || !pass || !pass2) {
-      msg.textContent = t("premium.fillAll");
-      return;
-    }
+  if (pass.length < 8) {
+    msg.textContent = t("premium.passMin");
+    return;
+  }
 
-    if (pass.length < 8) {
-      msg.textContent = t("premium.passMin");
-      return;
-    }
+  if (pass !== pass2) {
+    msg.textContent = t("premium.passMismatch");
+    return;
+  }
 
-    if (pass !== pass2) {
-      msg.textContent = t("premium.passMismatch");
-      return;
-    }
+  msg.textContent = t("premium.creatingAccount");
 
-    msg.textContent = t("premium.creatingAccount");
-
-    try {
-      const r = await fetch(
-        `${SUPABASE_URL}/auth/v1/signup`,
-        {
-          method: "POST",
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password: pass }),
-        }
-      );
-
-      const data = await r.json();
-
-      if (!r.ok) {
-        msg.textContent = data?.error_description || data?.error || t("premium.signupFailed");
-        return;
+  try {
+    const r = await fetch(
+      `${SUPABASE_URL}/auth/v1/signup`,
+      {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password: pass }),
       }
+    );
 
-      // Úspešná registrácia - zobraziť správu a refreshnúť stránku
-      msg.textContent = t("premium.emailConfirmMessage");
-      msg.className = "premium-msg premium-msg-success";
-      setTimeout(() => window.location.reload(), 3000);
+    const data = await r.json();
 
-    } catch (err) {
-      console.error(err);
-      msg.textContent = t("premium.registerError");
+    if (!r.ok) {
+      msg.textContent = data?.error_description || data?.error || t("premium.signupFailed");
+      return;
     }
+
+    // Úspešná registrácia - zobraziť správu a refreshnúť stránku
+    msg.textContent = t("premium.emailConfirmMessage");
+    msg.className = "premium-msg premium-msg-success";
+    setTimeout(() => window.location.reload(), 3000);
+
+  } catch (err) {
+    console.error(err);
+    msg.textContent = t("premium.registerError");
+  }
+}
+
+// Register button
+document.getElementById("premium-register-confirm")
+  ?.addEventListener("click", handleRegister);
+
+// Enter key support for register inputs
+document.getElementById("reg-email")?.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    handleRegister();
+  }
+});
+
+document.getElementById("reg-pass")?.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    handleRegister();
+  }
+});
+
+document.getElementById("reg-pass2")?.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    handleRegister();
+  }
 });
 
 // ===============================
@@ -5516,7 +5529,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   // ===============================
   // PREMIUM – LOGIN
   // ===============================
-  document.getElementById("premium-login-btn")?.addEventListener("click", async () => {
+  // PREMIUM – LOGIN funkcia
+  // ===============================
+  async function handleLogin() {
     const email = document.getElementById("premium-email")?.value?.trim();
     const pass = document.getElementById("premium-pass")?.value;
 
@@ -5555,6 +5570,22 @@ window.addEventListener("DOMContentLoaded", async () => {
     } catch (e) {
       alert(t("premium.loginFailed"));
       console.error(e);
+    }
+  }
+
+  // Login button
+  document.getElementById("premium-login-btn")?.addEventListener("click", handleLogin);
+
+  // Enter key support for login inputs
+  document.getElementById("premium-email")?.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  });
+
+  document.getElementById("premium-pass")?.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
     }
   });
 
