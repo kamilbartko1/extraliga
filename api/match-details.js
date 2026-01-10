@@ -28,12 +28,22 @@ export default async function handler(req, res) {
     const boxscore = boxscoreResp.status === 'fulfilled' ? boxscoreResp.value.data : {};
     const gamecenter = gamecenterResp.status === 'fulfilled' ? gamecenterResp.value.data : {};
     
-    // Získaj goals z gamecenter (ak boxscore nemá goals)
-    // Goals môžu byť v gamecenter.goals alebo gamecenter.games[0].goals
-    const goals = boxscore?.goals || 
-                  gamecenter?.goals || 
-                  (Array.isArray(gamecenter?.games) && gamecenter.games.length > 0 ? gamecenter.games[0].goals : []) ||
-                  [];
+    // Získaj goals z gamecenter - podľa JSON-u sú v gamecenter.games[0].goals
+    let goals = [];
+    if (Array.isArray(gamecenter?.games) && gamecenter.games.length > 0) {
+      // Nájdi zápas s daným ID alebo použij prvý
+      const game = gamecenter.games.find(g => String(g.id) === String(gameId)) || gamecenter.games[0];
+      goals = game?.goals || [];
+    } else if (gamecenter?.goals && Array.isArray(gamecenter.goals)) {
+      goals = gamecenter.goals;
+    } else if (boxscore?.goals && Array.isArray(boxscore.goals)) {
+      goals = boxscore.goals;
+    }
+    
+    console.log("📊 Goals from gamecenter:", goals.length);
+    if (goals.length > 0) {
+      console.log("📊 Sample goal structure:", JSON.stringify(goals[0], null, 2).substring(0, 500));
+    }
 
     // --- štruktúra odpovede (aby pasovala na frontend) ---
     const homeTeam = boxscore?.homeTeam || {};
