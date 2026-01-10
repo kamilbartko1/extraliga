@@ -9205,11 +9205,21 @@ html, body {
 
   .live-details-score {
     padding: 15px;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 10px;
+  }
+
+  .live-details-vs {
+    display: none;
   }
 
   .live-details-team {
-    flex-direction: column;
+    flex-direction: row;
     gap: 8px;
+    width: auto;
+    flex: 1;
+    justify-content: center;
   }
 
   .live-details-score-value {

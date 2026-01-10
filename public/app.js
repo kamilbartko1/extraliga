@@ -2272,24 +2272,20 @@ function displayLiveGameDetails(game) {
         <h3>Štatistiky zápasu</h3>
         <div class="live-stats-grid">
           <div class="live-stat-item">
-            <span class="live-stat-label">Strelby</span>
+            <span class="live-stat-label">Strely</span>
             <span class="live-stat-value">${stats.shots?.home || 0} - ${stats.shots?.away || 0}</span>
           </div>
           <div class="live-stat-item">
-            <span class="live-stat-label">Zásahy</span>
-            <span class="live-stat-value">${stats.hits?.home || 0} - ${stats.hits?.away || 0}</span>
-          </div>
-          <div class="live-stat-item">
-            <span class="live-stat-label">Blokované</span>
+            <span class="live-stat-label">Blokované strely</span>
             <span class="live-stat-value">${stats.blocked?.home || 0} - ${stats.blocked?.away || 0}</span>
           </div>
           <div class="live-stat-item">
-            <span class="live-stat-label">Výhry v faceoff</span>
+            <span class="live-stat-label">Faceoff</span>
             <span class="live-stat-value">${stats.faceOffWinPercentage?.home?.toFixed(1) || 0}% - ${stats.faceOffWinPercentage?.away?.toFixed(1) || 0}%</span>
           </div>
           <div class="live-stat-item">
             <span class="live-stat-label">Power Play</span>
-            <span class="live-stat-value">${stats.powerPlay?.home?.goals || 0}/${stats.powerPlay?.home?.opportunities || 0} - ${stats.powerPlay?.away?.goals || 0}/${stats.powerPlay?.away?.opportunities || 0}</span>
+            <span class="live-stat-value">${stats.powerPlay?.home?.opportunities || 0}/${stats.powerPlay?.home?.goals || 0} - ${stats.powerPlay?.away?.opportunities || 0}/${stats.powerPlay?.away?.goals || 0}</span>
           </div>
           <div class="live-stat-item">
             <span class="live-stat-label">Trestné minúty</span>
