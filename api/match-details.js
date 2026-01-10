@@ -45,25 +45,39 @@ export default async function handler(req, res) {
     }
 
     const formatPlayer = (p) => {
-      // NHL API môže mať meno v rôznych formátoch
+      // NHL API používa rôzne formáty mena - skús všetky možnosti
       let name = null;
       
+      // Skús najprv p.name?.default (ako v matches.js a ai.js)
       if (p.name?.default) {
-        name = p.name.default;
-      } else if (p.playerName?.default) {
-        name = p.playerName.default;
-      } else if (p.firstName?.default || p.lastName?.default) {
+        name = p.name.default.trim();
+      } 
+      // Potom skús p.playerName?.default
+      else if (p.playerName?.default) {
+        name = p.playerName.default.trim();
+      } 
+      // Potom skús firstName + lastName
+      else if (p.firstName?.default || p.lastName?.default) {
         name = [p.firstName?.default, p.lastName?.default].filter(Boolean).join(" ").trim();
       }
+      // Fallback - skús priamo bez .default
+      else if (p.name) {
+        name = String(p.name).trim();
+      } else if (p.playerName) {
+        name = String(p.playerName).trim();
+      } else if (p.firstName || p.lastName) {
+        name = [p.firstName, p.lastName].filter(Boolean).join(" ").trim();
+      }
       
+      // Ak stále nemáme meno, skús sa pozrieť do priečinkov
       if (!name || name === "") {
-        // Fallback - skús ešte raz z iných polí
-        name = p.name || p.playerName || `${p.firstName || ""} ${p.lastName || ""}`.trim();
+        console.warn("⚠️ Nepodarilo sa parsovať meno hráča:", JSON.stringify(p, null, 2).substring(0, 200));
+        name = "Unknown Player";
       }
       
       return {
         id: p.playerId,
-        name: name || "Unknown Player",
+        name: name,
         statistics: {
           goals: p.goals ?? 0,
           assists: p.assists ?? 0,
