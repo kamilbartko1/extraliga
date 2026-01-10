@@ -16,10 +16,20 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Missing parameter: gameId" });
     }
 
-    // načítanie boxscore pre daný zápas
-    const url = `${BASE_URL}/gamecenter/${gameId}/boxscore`;
-    const response = await axios.get(url);
-    const boxscore = response.data;
+    // načítanie boxscore a gamecenter dát pre daný zápas
+    const boxscoreUrl = `${BASE_URL}/gamecenter/${gameId}/boxscore`;
+    const gamecenterUrl = `${BASE_URL}/gamecenter/${gameId}/landing`;
+    
+    const [boxscoreResp, gamecenterResp] = await Promise.all([
+      axios.get(boxscoreUrl).catch(() => ({ data: {} })),
+      axios.get(gamecenterUrl).catch(() => ({ data: {} }))
+    ]);
+    
+    const boxscore = boxscoreResp.data;
+    const gamecenter = gamecenterResp.data;
+    
+    // Získaj goals z gamecenter (ak boxscore nemá goals)
+    const goals = boxscore?.goals || gamecenter?.goals || [];
 
     // --- štruktúra odpovede (aby pasovala na frontend) ---
     const homeTeam = boxscore?.homeTeam || {};
@@ -83,38 +93,51 @@ export default async function handler(req, res) {
         home_score: p.home ?? 0,
         away_score: p.away ?? 0,
       }));
-    } else {
+    } else if (goals && goals.length > 0) {
       // Ak nie sú v linescore, vypočítaj z goals array
-      const goals = boxscore?.goals || [];
-      if (goals.length > 0) {
-        // Nájdi posledný gól z každej tretiny
-        const periodScores = {};
-        
-        goals.forEach(goal => {
-          const periodNum = goal.period || goal.periodDescriptor?.number;
-          if (periodNum) {
-            // Použij kumulatívne skóre z posledného gólu každej tretiny
-            const currentHome = goal.homeScore ?? 0;
-            const currentAway = goal.awayScore ?? 0;
-            
-            // Ak sme ešte nemali skóre pre túto tretinu, alebo je to neskorší gól, ulož ho
-            if (!periodScores[periodNum] || 
-                (currentHome + currentAway) > (periodScores[periodNum].home_score + periodScores[periodNum].away_score)) {
-              periodScores[periodNum] = {
+      // Nájdi posledný gól z každej tretiny - použij kumulatívne skóre
+      const periodScoresMap = {};
+      
+      goals.forEach(goal => {
+        const periodNum = goal.period || goal.periodDescriptor?.number;
+        if (periodNum) {
+          // Použij kumulatívne skóre z gólu (homeScore a awayScore sú kumulatívne)
+          const currentHome = goal.homeScore ?? 0;
+          const currentAway = goal.awayScore ?? 0;
+          
+          // Ulož posledné skóre pre každú tretinu (prepíše, ak už existuje neskorší gól)
+          if (!periodScoresMap[periodNum]) {
+            periodScoresMap[periodNum] = {
+              home_score: currentHome,
+              away_score: currentAway,
+              total: currentHome + currentAway
+            };
+          } else {
+            // Ak je toto skóre väčšie (novší gól), ulož ho
+            const existingTotal = periodScoresMap[periodNum].total;
+            if (currentHome + currentAway > existingTotal) {
+              periodScoresMap[periodNum] = {
                 home_score: currentHome,
-                away_score: currentAway
+                away_score: currentAway,
+                total: currentHome + currentAway
               };
             }
           }
-        });
-        
-        // Konvertuj na pole v správnom poradí
-        period_scores = Object.keys(periodScores)
-          .sort((a, b) => Number(a) - Number(b))
-          .map(key => periodScores[key]);
-      }
+        }
+      });
+      
+      // Konvertuj na pole v správnom poradí (1, 2, 3...)
+      const sortedPeriods = Object.keys(periodScoresMap)
+        .map(Number)
+        .sort((a, b) => a - b);
+      
+      period_scores = sortedPeriods.map(key => ({
+        home_score: periodScoresMap[key].home_score,
+        away_score: periodScoresMap[key].away_score
+      }));
     }
     
+    console.log("📊 Goals array length:", goals.length);
     console.log("📊 Period scores calculated:", JSON.stringify(period_scores, null, 2));
 
     const formatted = {
