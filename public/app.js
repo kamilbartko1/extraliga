@@ -2313,16 +2313,19 @@ function displayLiveGameDetails(game) {
     <div class="live-details-content">
       <!-- Skóre a stav -->
       <div class="live-details-score">
-        <div class="live-details-team">
+        <div class="live-details-team live-details-team-home">
           <img src="${home.logo}" class="live-details-logo">
-          <span class="live-details-team-name">${home.fullName}</span>
-          <span class="live-details-score-value">${game.scores.home}</span>
+          <div class="live-details-team-info">
+            <span class="live-details-team-name">${home.fullName}</span>
+            <span class="live-details-score-value">${game.scores.home}</span>
+          </div>
         </div>
-        <div class="live-details-vs">vs</div>
-        <div class="live-details-team">
+        <div class="live-details-team live-details-team-away">
           <img src="${away.logo}" class="live-details-logo">
-          <span class="live-details-team-name">${away.fullName}</span>
-          <span class="live-details-score-value">${game.scores.away}</span>
+          <div class="live-details-team-info">
+            <span class="live-details-team-name">${away.fullName}</span>
+            <span class="live-details-score-value">${game.scores.away}</span>
+          </div>
         </div>
       </div>
 
