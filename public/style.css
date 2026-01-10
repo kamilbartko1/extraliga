@@ -9051,6 +9051,39 @@ html, body {
   white-space: nowrap;
 }
 
+/* Animácia pri zmene skóre - červený obvod */
+.live-details-score.score-changed,
+.live-game-score.score-changed {
+  animation: scoreChangePulse 5s ease-out;
+}
+
+@keyframes scoreChangePulse {
+  0% {
+    border-color: rgba(255, 68, 68, 1);
+    box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7), 0 0 20px rgba(255, 68, 68, 0.5);
+  }
+  20% {
+    border-color: rgba(255, 68, 68, 0.8);
+    box-shadow: 0 0 0 4px rgba(255, 68, 68, 0.4), 0 0 30px rgba(255, 68, 68, 0.3);
+  }
+  40% {
+    border-color: rgba(255, 68, 68, 0.6);
+    box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.3), 0 0 20px rgba(255, 68, 68, 0.2);
+  }
+  60% {
+    border-color: rgba(255, 68, 68, 0.4);
+    box-shadow: 0 0 0 1px rgba(255, 68, 68, 0.2), 0 0 15px rgba(255, 68, 68, 0.15);
+  }
+  80% {
+    border-color: rgba(255, 68, 68, 0.2);
+    box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.1), 0 0 10px rgba(255, 68, 68, 0.1);
+  }
+  100% {
+    border-color: rgba(0, 234, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  }
+}
+
 .live-details-progress {
   text-align: center;
   font-size: 1.1rem;

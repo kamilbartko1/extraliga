@@ -1943,12 +1943,27 @@ function updateLiveGameRow(row, game) {
       const awayScoreEl = scoreContainer.querySelector('.live-score:last-of-type');
       const sepEl = scoreContainer.querySelector('.live-sep');
       
+      let scoreChanged = false;
       if (homeScoreEl && homeScoreEl.textContent !== String(game.scores.home)) {
         homeScoreEl.textContent = game.scores.home;
+        scoreChanged = true;
       }
       if (awayScoreEl && awayScoreEl.textContent !== String(game.scores.away)) {
         awayScoreEl.textContent = game.scores.away;
+        scoreChanged = true;
       }
+      
+      // Pridaj efekt pri zmene skóre
+      if (scoreChanged) {
+        const scoreBox = row.querySelector('.live-game-score');
+        if (scoreBox) {
+          scoreBox.classList.add('score-changed');
+          setTimeout(() => {
+            scoreBox.classList.remove('score-changed');
+          }, 5000);
+        }
+      }
+      
       if (sepEl && sepEl.textContent !== ":") {
         sepEl.textContent = ":";
       }
@@ -2264,6 +2279,9 @@ function createStatRow(label, homeValue, awayValue, suffix = "", isPowerPlay = f
   `;
 }
 
+// Sledovanie predchádzajúceho skóre pre modal
+let previousModalScore = null;
+
 function displayLiveGameDetails(game) {
   console.log("🎮 Zobrazujem detail zápasu:", game);
   
@@ -2281,6 +2299,11 @@ function displayLiveGameDetails(game) {
   const goals = Array.isArray(game.goals) ? game.goals : [];
   const homeCurrent = game.currentStats?.home || {};
   const awayCurrent = game.currentStats?.away || {};
+  
+  // Detekuj zmenu skóre
+  const currentScore = `${game.scores.home}:${game.scores.away}`;
+  const scoreChanged = previousModalScore !== null && previousModalScore !== currentScore;
+  previousModalScore = currentScore;
 
   let goalsHtml = "";
   if (goals.length > 0) {
