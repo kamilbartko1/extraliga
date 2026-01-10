@@ -262,10 +262,13 @@ export default async function handler(req, res) {
       console.error("❌ Linescore periods:", periodsLength);
     }
 
+    const homeScore = (homeTeam && homeTeam.score !== undefined && homeTeam.score !== null) ? homeTeam.score : 0;
+    const awayScore = (awayTeam && awayTeam.score !== undefined && awayTeam.score !== null) ? awayTeam.score : 0;
+    
     const formatted = {
       sport_event_status: {
-        home_score: (homeTeam.score !== undefined && homeTeam.score !== null) ? homeTeam.score : 0,
-        away_score: (awayTeam.score !== undefined && awayTeam.score !== null) ? awayTeam.score : 0,
+        home_score: homeScore,
+        away_score: awayScore,
         period_scores: period_scores,
       },
       statistics: {
