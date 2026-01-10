@@ -24,17 +24,31 @@ export default async function handler(req, res) {
     // --- štruktúra odpovede (aby pasovala na frontend) ---
     const homeTeam = boxscore?.homeTeam || {};
     const awayTeam = boxscore?.awayTeam || {};
-    const homePlayers = boxscore?.playerByGameStats?.homeTeam?.skaters || [];
-    const awayPlayers = boxscore?.playerByGameStats?.awayTeam?.skaters || [];
+    
+    // Získaj všetkých hráčov (forwards + defense + goalies)
+    const homeForwards = boxscore?.playerByGameStats?.homeTeam?.forwards || [];
+    const homeDefense = boxscore?.playerByGameStats?.homeTeam?.defense || [];
+    const homeGoalies = boxscore?.playerByGameStats?.homeTeam?.goalies || [];
+    const awayForwards = boxscore?.playerByGameStats?.awayTeam?.forwards || [];
+    const awayDefense = boxscore?.playerByGameStats?.awayTeam?.defense || [];
+    const awayGoalies = boxscore?.playerByGameStats?.awayTeam?.goalies || [];
+    
+    const homePlayers = [...homeForwards, ...homeDefense, ...homeGoalies];
+    const awayPlayers = [...awayForwards, ...awayDefense, ...awayGoalies];
 
-    const formatPlayer = (p) => ({
-      id: p.playerId,
-      name: p.playerName?.default,
-      statistics: {
-        goals: p.goals ?? 0,
-        assists: p.assists ?? 0,
-      },
-    });
+    const formatPlayer = (p) => {
+      const name = p.playerName?.default || 
+                   [p.firstName?.default, p.lastName?.default].filter(Boolean).join(" ").trim() ||
+                   "Unknown Player";
+      return {
+        id: p.playerId,
+        name: name,
+        statistics: {
+          goals: p.goals ?? 0,
+          assists: p.assists ?? 0,
+        },
+      };
+    };
 
     const formatted = {
       sport_event_status: {
@@ -42,8 +56,8 @@ export default async function handler(req, res) {
         away_score: awayTeam.score ?? 0,
         period_scores:
           boxscore?.linescore?.periods?.map((p) => ({
-            home_score: p.home,
-            away_score: p.away,
+            home_score: p.home ?? 0,
+            away_score: p.away ?? 0,
           })) || [],
       },
       statistics: {
@@ -51,12 +65,12 @@ export default async function handler(req, res) {
           competitors: [
             {
               qualifier: "home",
-              name: `${homeTeam.placeName?.default} ${homeTeam.commonName?.default}`,
+              name: `${homeTeam.placeName?.default || ""} ${homeTeam.commonName?.default || ""}`.trim() || "Home Team",
               players: homePlayers.map(formatPlayer),
             },
             {
               qualifier: "away",
-              name: `${awayTeam.placeName?.default} ${awayTeam.commonName?.default}`,
+              name: `${awayTeam.placeName?.default || ""} ${awayTeam.commonName?.default || ""}`.trim() || "Away Team",
               players: awayPlayers.map(formatPlayer),
             },
           ],
