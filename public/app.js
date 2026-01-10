@@ -2257,8 +2257,8 @@ function createStatRow(label, homeValue, awayValue, suffix = "", isPowerPlay = f
       </div>
       <div class="live-stat-bar">
         <div class="live-stat-bar-left" style="width: ${homePercent}%"></div>
-        <div class="live-stat-bar-separator"></div>
-        <div class="live-stat-bar-right" style="width: ${awayPercent}%"></div>
+        <div class="live-stat-bar-separator" style="left: ${homePercent}%"></div>
+        <div class="live-stat-bar-right" style="flex: 1"></div>
       </div>
     </div>
   `;
