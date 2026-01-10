@@ -9272,6 +9272,31 @@ html, body {
   margin: 6px 0;
 }
 
+.player-stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.player-stat-item:last-child {
+  border-bottom: none;
+}
+
+.player-stat-item .player-name {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.9);
+  flex: 1;
+}
+
+.player-stat-item .player-stats {
+  font-size: 0.85rem;
+  color: #00eaff;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
 .live-details-link {
   text-align: center;
   margin-top: 20px;

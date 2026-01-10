@@ -1684,7 +1684,7 @@ async function displayMatches(matches) {
         : "";
 
       dayHtml += `
-        <div class="score-row">
+        <div class="score-row" onclick="openFinishedGameDetails('${match.id}')" style="cursor: pointer;">
 
           <div class="team team-left">
             ${homeLogo ? `<img src="${homeLogo}" class="team-logo" alt="${home}">` : ""}
@@ -1700,7 +1700,7 @@ async function displayMatches(matches) {
           <div class="team team-right">
             <span class="team-name">${awayAbbr}</span>
             ${awayLogo ? `<img src="${awayLogo}" class="team-logo" alt="${away}">` : ""}
-            <div id="${recapId}" class="highlight-slot"></div>
+            <div id="${recapId}" class="highlight-slot" onclick="event.stopPropagation();"></div>
           </div>
 
         </div>
@@ -2445,12 +2445,221 @@ function closeLiveGameDetails(event) {
   
   setTimeout(() => {
     overlay.style.display = "none";
+    content.innerHTML = "";
+  }, 200);
+}
+
+// === MODAL PRE ODOHRANÉ ZÁPASY ===
+
+async function openFinishedGameDetails(gameId) {
+  console.log("🔹 Otváram detail odohraného zápasu:", gameId);
+  
+  if (!gameId || gameId === 'null' || gameId === 'undefined') {
+    console.error("❌ Neplatné ID zápasu:", gameId);
+    alert("Chyba: Neplatné ID zápasu");
+    return;
+  }
+  
+  const overlay = document.getElementById("finished-game-details-overlay");
+  const content = document.getElementById("finished-game-details-modal");
+  
+  if (!overlay || !content) {
+    console.error("❌ Modal elementy sa nenašli!");
+    alert("Chyba: Modal sa nenašiel");
+    return;
+  }
+
+  // Zobraz overlay hneď
+  overlay.style.setProperty("display", "flex", "important");
+  content.innerHTML = '<p class="nhl-muted" style="text-align:center;padding:40px;">Načítavam podrobnosti zápasu...</p>';
+  content.style.transform = "scale(0.9)";
+  content.style.opacity = "0";
+  requestAnimationFrame(() => {
+    content.style.transition = "transform 0.3s ease-out, opacity 0.3s ease-out";
+    content.style.transform = "scale(1)";
+    content.style.opacity = "1";
+  });
+
+  // Načítaj boxscore
+  try {
+    const resp = await fetch(`/api/match-details?gameId=${gameId}`, { cache: "no-store" });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    
+    const boxscoreData = await resp.json();
+    console.log("📦 Boxscore dáta:", boxscoreData);
+    
+    displayFinishedGameDetails(gameId, boxscoreData);
+  } catch (err) {
+    console.error("❌ Chyba pri načítaní detailu zápasu:", err);
+    content.innerHTML = `<p style="text-align:center;padding:40px;">Chyba pri načítaní detailu zápasu: ${err.message}</p>`;
+  }
+}
+
+function displayFinishedGameDetails(gameId, boxscoreData) {
+  const content = document.getElementById("finished-game-details-modal");
+  if (!content) {
+    console.error("❌ Modal content sa nenašiel!");
+    return;
+  }
+
+  const status = boxscoreData.sport_event_status || {};
+  const stats = boxscoreData.statistics || {};
+  const competitors = stats.totals?.competitors || [];
+  const homeTeam = competitors.find(c => c.qualifier === "home") || {};
+  const awayTeam = competitors.find(c => c.qualifier === "away") || {};
+  
+  const homeScore = status.home_score || 0;
+  const awayScore = status.away_score || 0;
+  const periods = status.period_scores || [];
+  
+  // Nájdeme match v allMatches pre logá a názvy tímov
+  const match = allMatches.find(m => String(m.id) === String(gameId));
+  const homeName = homeTeam.name || match?.home_team || "Home";
+  const awayName = awayTeam.name || match?.away_team || "Away";
+  
+  const TEAM_NAME_TO_ABBREV = {
+    "Maple Leafs":"TOR","Penguins":"PIT","Red Wings":"DET","Stars":"DAL",
+    "Capitals":"WSH","Rangers":"NYR","Bruins":"BOS","Canadiens":"MTL",
+    "Senators":"OTT","Sabres":"BUF","Islanders":"NYI","Devils":"NJD",
+    "Hurricanes":"CAR","Panthers":"FLA","Wild":"MIN","Predators":"NSH",
+    "Blackhawks":"CHI","Flyers":"PHI","Avalanche":"COL","Oilers":"EDM",
+    "Flames":"CGY","Golden Knights":"VGK","Kings":"LAK","Kraken":"SEA",
+    "Sharks":"SJS","Ducks":"ANA","Lightning":"TBL","Jets":"WPG",
+    "Coyotes":"ARI","Blues":"STL","Blue Jackets":"CBJ",
+    "Mammoth":"UTA","Canucks":"VAN"
+  };
+  
+  const getTeamAbbr = (name) => {
+    for (const [fullName, abbr] of Object.entries(TEAM_NAME_TO_ABBREV)) {
+      if (name.includes(fullName)) return abbr;
+    }
+    return name.slice(0, 3).toUpperCase();
+  };
+  
+  const homeAbbr = getTeamAbbr(homeName);
+  const awayAbbr = getTeamAbbr(awayName);
+  const homeLogo = `https://assets.nhle.com/logos/nhl/svg/${homeAbbr}_light.svg`;
+  const awayLogo = `https://assets.nhle.com/logos/nhl/svg/${awayAbbr}_light.svg`;
+  
+  // Formátovanie gólov po tretinách
+  let periodsHtml = "";
+  if (periods.length > 0) {
+    periodsHtml = periods.map((p, i) => 
+      `${i + 1}. ${p.home_score || 0}:${p.away_score || 0}`
+    ).join(" | ");
+  }
+
+  const detailsHtml = `
+    <div class="live-details-header">
+      <h2>${homeName} vs ${awayName}</h2>
+      <button class="live-details-close" onclick="closeFinishedGameDetails(event)">×</button>
+    </div>
+
+    <div class="live-details-content">
+      <!-- Skóre a stav -->
+      <div class="live-details-score">
+        <div class="live-details-team live-details-team-home">
+          <img src="${homeLogo}" class="live-details-logo">
+          <span class="live-details-team-name">${homeName}</span>
+        </div>
+        <div class="live-details-score-value">${homeScore}:${awayScore}</div>
+        <div class="live-details-team live-details-team-away">
+          <img src="${awayLogo}" class="live-details-logo">
+          <span class="live-details-team-name">${awayName}</span>
+        </div>
+      </div>
+
+      ${periodsHtml ? `
+        <div class="live-details-progress">
+          <span>Po tretinách: ${periodsHtml}</span>
+        </div>
+      ` : ""}
+
+      <!-- Boxscore - hráči s gólmi/asistencami -->
+      <div class="live-details-team-stats">
+        <h3>Boxscore</h3>
+        <div class="live-team-stats-grid">
+          <div class="live-team-stat-box">
+            <h4>${homeName}</h4>
+            ${renderPlayerStats(homeTeam.players || [])}
+          </div>
+          <div class="live-team-stat-box">
+            <h4>${awayName}</h4>
+            ${renderPlayerStats(awayTeam.players || [])}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  content.innerHTML = detailsHtml;
+  
+  // Animácia
+  content.style.transform = "scale(0.9)";
+  content.style.opacity = "0";
+  requestAnimationFrame(() => {
+    content.style.transition = "transform 0.3s ease-out, opacity 0.3s ease-out";
+    content.style.transform = "scale(1)";
+    content.style.opacity = "1";
+  });
+}
+
+function renderPlayerStats(players) {
+  if (!players || players.length === 0) {
+    return `<p class="nhl-muted">Žiadni hráči s bodmi</p>`;
+  }
+  
+  // Filtruj hráčov s gólmi alebo asistencami
+  const playersWithPoints = players.filter(p => 
+    (p.statistics?.goals || 0) > 0 || (p.statistics?.assists || 0) > 0
+  );
+  
+  if (playersWithPoints.length === 0) {
+    return `<p class="nhl-muted">Žiadni hráči s bodmi</p>`;
+  }
+  
+  return playersWithPoints.map(p => {
+    const goals = p.statistics?.goals || 0;
+    const assists = p.statistics?.assists || 0;
+    const points = goals + assists;
+    return `
+      <div class="player-stat-item">
+        <span class="player-name">${p.name}</span>
+        <span class="player-stats">
+          ${points > 0 ? `${points}P` : ""} 
+          ${goals > 0 ? `${goals}G` : ""} 
+          ${assists > 0 ? `${assists}A` : ""}
+        </span>
+      </div>
+    `;
+  }).join("");
+}
+
+function closeFinishedGameDetails(event) {
+  if (event && event.target.id !== "finished-game-details-overlay" && !event.target.classList.contains("live-details-close") && !event.target.closest(".live-details-close")) {
+    return;
+  }
+  
+  const overlay = document.getElementById("finished-game-details-overlay");
+  const content = document.getElementById("finished-game-details-modal");
+  
+  if (!overlay || !content) return;
+  
+  content.style.transition = "transform 0.2s ease-in, opacity 0.2s ease-in";
+  content.style.transform = "scale(0.9)";
+  content.style.opacity = "0";
+  
+  setTimeout(() => {
+    overlay.style.display = "none";
+    content.innerHTML = "";
   }, 200);
 }
 
 // Vystav funkcie globálne
 window.openLiveGameDetails = openLiveGameDetails;
 window.closeLiveGameDetails = closeLiveGameDetails;
+window.openFinishedGameDetails = openFinishedGameDetails;
+window.closeFinishedGameDetails = closeFinishedGameDetails;
 
 // === Tabuľka NHL – zjednodušená (prehľadná) ===
 function renderStandings(standings) {
