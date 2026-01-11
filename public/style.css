@@ -7599,6 +7599,17 @@ body {
   font-weight: 600;
 }
 
+/* Premium table balance coloring - vyššia špecificita */
+.premium-table td.balance-plus {
+  color: #2ecc71 !important;
+  font-weight: 600;
+}
+
+.premium-table td.balance-minus {
+  color: #e74c3c !important;
+  font-weight: 600;
+}
+
 .matches-layout {
   display: grid;
   grid-template-columns: 0.85fr 1.15fr; /* výsledky užšie, tabuľka širšia */
