@@ -3167,8 +3167,17 @@ async function loadMantingal() {
   const data = await res.json();
   if (!data.ok) return;
 
-  document.getElementById("mtg-total-profit").textContent =
-    data.totalProfit.toFixed(2);
+  const totalProfitEl = document.getElementById("mtg-total-profit");
+  const totalProfitValue = Number(data.totalProfit || 0);
+  totalProfitEl.textContent = totalProfitValue.toFixed(2);
+  
+  // 🎨 Zafarbenie total profit
+  totalProfitEl.classList.remove("balance-plus", "balance-minus");
+  if (totalProfitValue > 0) {
+    totalProfitEl.classList.add("balance-plus");
+  } else if (totalProfitValue < 0) {
+    totalProfitEl.classList.add("balance-minus");
+  }
 
   const tbody = document.getElementById("mantingale-table-body");
   tbody.innerHTML = "";
