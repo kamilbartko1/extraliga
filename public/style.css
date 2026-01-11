@@ -9979,10 +9979,9 @@ body {
    =============================== */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  /* Zväčšená minimálna šírka */
-  gap: 25px;
-  /* Väčšia medzera medzi boxami */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  /* Naspäť na menšie, ak je font menší */
+  gap: 20px;
   width: 100%;
   margin-top: 25px;
 }
@@ -9992,16 +9991,15 @@ body {
   border: 1px solid rgba(0, 234, 255, 0.15);
   border-radius: 18px;
   /* Jemnejšie rohy */
-  padding: 30px 25px;
-  /* Výrazne viac miesta ("dýchanie") */
+  padding: 20px 15px;
+  /* Menší padding */
   height: auto;
   /* Nech sa prispôsobí obsahu */
-  min-height: 180px;
-  /* Zvýšené minimum */
+  min-height: 160px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  /* Roztiahnutie obsahu */
+  justify-content: flex-start;
+  /* Zarovnanie odhora */
   align-items: center;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -10019,25 +10017,23 @@ body {
 }
 
 .stat-box h4 {
-  margin: 0 0 15px 0;
-  /* Odstup od preview */
+  margin: 0 0 10px 0;
   width: 100%;
   text-align: center;
   z-index: 2;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  /* Menšia medzera */
 }
 
 .stat-box .top {
   display: block;
   font-family: "Poppins", sans-serif;
   /* Zmena na Poppins */
-  font-size: 1.1rem;
-  /* Menší font */
-  font-weight: 500;
-  /* Tenšie */
+  font-size: 0.9rem;
+  /* Menšie */
+  font-weight: 300;
+  /* Light */
   color: #fff;
   letter-spacing: 1px;
   /* Menej rozťahané */
@@ -10048,16 +10044,18 @@ body {
 .stat-box .divider {
   height: 1px;
   /* Tenšia čiara */
-  width: 40px;
-  background: linear-gradient(90deg, transparent, #00eaff, transparent);
-  margin: 6px auto;
+  width: 30px;
+  /* Menšia čiara */
+  background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  /* Žltá čiara */
+  margin: 4px auto;
 }
 
 .stat-box .bottom {
   display: block;
   font-family: "Poppins", sans-serif;
-  font-size: 0.85rem;
-  /* Menšie */
+  font-size: 0.75rem;
+  /* Ešte menšie */
   color: rgba(255, 255, 255, 0.7);
   text-transform: uppercase;
   font-weight: 300;
@@ -10068,46 +10066,46 @@ body {
 /* Náhľad hráča (preview) */
 .stat-box-preview {
   display: flex;
+  flex-direction: column;
+  /* Pod seba */
   align-items: center;
-  gap: 15px;
-  margin-top: auto;
-  /* Tlačí sa naspodok ak je miesto */
-  padding-top: 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  /* Na stred */
+  gap: 6px;
+  margin-top: 5px;
+  padding-top: 0;
+  border-top: none;
+  /* Odstránená čiara */
   width: 100%;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .stat-box-preview img {
-  width: 48px;
-  /* Ešte trochu väčšia fotka */
-  height: 48px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   object-fit: cover;
   border: 1px solid #00eaff;
-  /* Tenší rámik */
   box-shadow: 0 0 10px rgba(0, 234, 255, 0.25);
   flex-shrink: 0;
+  margin-bottom: 2px;
 }
 
 .stat-box-info {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
+  /* Na stred */
   gap: 2px;
-  flex: 1;
-  /* Nech zaberie zvyšok miesta */
-  min-width: 0;
-  /* Nutné pre flex ellipsis */
+  width: 100%;
 }
 
 .stat-box-name {
   font-family: "Poppins", sans-serif;
-  font-size: 0.9rem;
-  /* Menšie */
-  font-weight: 500;
-  /* Stredná hrúbka - čitateľné */
+  font-size: 0.7rem;
+  /* Požadované 0.7rem */
+  font-weight: 300;
+  /* Požadované ~250 (Light) */
   color: #fff;
   line-height: 1.2;
   white-space: nowrap;
@@ -10115,20 +10113,19 @@ body {
   text-overflow: ellipsis;
   width: 100%;
   /* Plná šírka v rámci parenta */
+  text-align: center;
+  /* Centrovanie mena */
+  opacity: 0.9;
 }
 
 .stat-box-value {
   font-family: "Poppins", sans-serif;
-  font-size: 0.95rem;
-  /* Menšie */
+  font-size: 0.85rem;
   color: #00eaff;
-  background: rgba(0, 234, 255, 0.08);
   /* Jemné podfarbenie hodnoty */
-  padding: 1px 6px;
-  border-radius: 4px;
-  letter-spacing: 0.3px;
-  font-weight: 600;
-  /* Tučné pre číslo */
+  letter-spacing: 0.5px;
+  font-weight: 400;
+  /* Regular */
   text-shadow: none;
   /* Čistejší vzhľad */
 }
