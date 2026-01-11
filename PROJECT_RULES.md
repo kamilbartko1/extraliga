@@ -35,3 +35,7 @@
 - Tento súbor MUSÍ byť čítaný na začiatku každej relácie
 - Ak niečo nie je jasné, vždy sa opýtať používateľa
 
+
+### 7. AUTO-COMMIT & PUSH
+- Po každej úprave kódu automaticky vykonať `git commit` a `git push`
+- Používať pravidlá pre správy z bodu 1
