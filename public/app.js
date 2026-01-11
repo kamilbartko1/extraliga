@@ -611,21 +611,21 @@ function renderTeamRatingModalContent() {
   // Keep it short and clear
   const items = CURRENT_LANG === "en"
     ? {
-        intro: "<b>NHLPRO Team Rating</b> is a custom performance index that combines results, form, offense, defense and special teams across the season.",
-        form: ["Wins", "Losses", "Winning / losing streaks"],
-        off: ["Goals scored", "Power play efficiency (PP %)"],
-        def: ["Goals against", "Penalty kill efficiency (PK %)", "Goalie impact (basic)"],
-        spec: ["Power play", "Penalty kill", "Power-play goals", "Short-handed defense"],
-        stab: "The rating tracks long-term consistency and balance between offense and defense.",
-      }
+      intro: "<b>NHLPRO Team Rating</b> is a custom performance index that combines results, form, offense, defense and special teams across the season.",
+      form: ["Wins", "Losses", "Winning / losing streaks"],
+      off: ["Goals scored", "Power play efficiency (PP %)"],
+      def: ["Goals against", "Penalty kill efficiency (PK %)", "Goalie impact (basic)"],
+      spec: ["Power play", "Penalty kill", "Power-play goals", "Short-handed defense"],
+      stab: "The rating tracks long-term consistency and balance between offense and defense.",
+    }
     : {
-        intro: "<b>NHLPRO Team Rating</b> je vlastný analytický index výkonnosti tímov, ktorý kombinuje výsledky, formu, ofenzívu, defenzívu a špeciálne formácie počas sezóny.",
-        form: ["Víťazstvá", "Prehry", "Séria výhier / prehier"],
-        off: ["Počet strelených gólov", "Efektivita presiloviek (PP %)"],
-        def: ["Inkasované góly", "Účinnosť oslabení (PK %)", "Brankársky výkon (základný vplyv)"],
-        spec: ["Presilovky", "Oslabenia", "Presilovkové góly", "Defenzíva v oslabení"],
-        stab: "Rating sleduje dlhodobú konzistentnosť tímu a rovnováhu medzi útokom a obranou.",
-      };
+      intro: "<b>NHLPRO Team Rating</b> je vlastný analytický index výkonnosti tímov, ktorý kombinuje výsledky, formu, ofenzívu, defenzívu a špeciálne formácie počas sezóny.",
+      form: ["Víťazstvá", "Prehry", "Séria výhier / prehier"],
+      off: ["Počet strelených gólov", "Efektivita presiloviek (PP %)"],
+      def: ["Inkasované góly", "Účinnosť oslabení (PK %)", "Brankársky výkon (základný vplyv)"],
+      spec: ["Presilovky", "Oslabenia", "Presilovkové góly", "Defenzíva v oslabení"],
+      stab: "Rating sleduje dlhodobú konzistentnosť tímu a rovnováhu medzi útokom a obranou.",
+    };
 
   return `
     <h2>${t("modal.team.title")}</h2>
@@ -700,7 +700,7 @@ function renderPlayerRatingModalContent() {
 
 function renderPrivacy() {
   if (CURRENT_LANG === "en") {
-  return `
+    return `
       <h2>🔒 Privacy Policy - NHLPRO.sk</h2>
       <p><strong>Last updated:</strong> ${new Date().toLocaleDateString('en-GB')}</p>
 
@@ -1245,7 +1245,7 @@ async function displayHome() {
 
     // 🔥 2️⃣ VŠETKO OKREM AI TIPU SA RENDERUJE HNEĎ
     const gamesCountText = t("home.gamesCount", { count: homeData.matchesToday.length });
-    
+
     let html = `
 <section class="nhl-home">
 
@@ -1290,10 +1290,9 @@ async function displayHome() {
       </div>
 
       <div class="nhl-games-list">
-        ${
-          homeData.matchesToday.length === 0
-            ? `<p class="nhl-muted">${t("home.noGamesToday")}</p>`
-            : homeData.matchesToday.map(m => `
+        ${homeData.matchesToday.length === 0
+        ? `<p class="nhl-muted">${t("home.noGamesToday")}</p>`
+        : homeData.matchesToday.map(m => `
               <div class="nhl-game-row" onclick="showSection('matches-section')">
                 <div class="nhl-game-teams">
                   <img src="${m.homeLogo}" class="nhl-team-logo">
@@ -1305,7 +1304,7 @@ async function displayHome() {
                 <div class="nhl-game-time">${m.startTime}</div>
               </div>
             `).join("")
-        }
+      }
       </div>
     </div>
 
@@ -1327,10 +1326,9 @@ async function displayHome() {
       </div>
 
       <div class="nhl-ai-history">
-        ${
-          history.length === 0
-            ? `<p class="nhl-muted">${t("home.noTips")}</p>`
-            : history.slice(0,6).map(h => `
+        ${history.length === 0
+        ? `<p class="nhl-muted">${t("home.noTips")}</p>`
+        : history.slice(0, 6).map(h => `
               <div class="nhl-ai-row">
                 <span>${h.date}</span>
                 <span>${h.player}</span>
@@ -1339,7 +1337,7 @@ async function displayHome() {
                 </span>
               </div>
             `).join("")
-        }
+      }
       </div>
     </div>
 
@@ -1437,7 +1435,7 @@ async function displayHome() {
 </section>
 `;
 
-home.innerHTML = html;
+    home.innerHTML = html;
 
     // 🎬 Aplikuj animácie na nové elementy
     setTimeout(() => {
@@ -1600,13 +1598,13 @@ function toggleMoreMatches() {
 // === Zápasy ===
 async function displayMatches(matches) {
   const recentBox = document.getElementById("matches-recent");
-  const olderBox  = document.getElementById("matches-older");
-  const moreBtn   = document.getElementById("matches-more-btn");
+  const olderBox = document.getElementById("matches-older");
+  const moreBtn = document.getElementById("matches-more-btn");
 
   if (!recentBox || !olderBox) return;
 
   recentBox.innerHTML = "";
-  olderBox.innerHTML  = "";
+  olderBox.innerHTML = "";
 
   if (!matches || matches.length === 0) {
     recentBox.innerHTML = `<p class="nhl-muted">${t("matches.noFinished")}</p>`;
@@ -1618,15 +1616,15 @@ async function displayMatches(matches) {
   // MAPA NÁZOV → SKRATKA
   // ===============================
   const TEAM_NAME_TO_ABBREV = {
-    "Maple Leafs":"TOR","Penguins":"PIT","Red Wings":"DET","Stars":"DAL",
-    "Capitals":"WSH","Rangers":"NYR","Bruins":"BOS","Canadiens":"MTL",
-    "Senators":"OTT","Sabres":"BUF","Islanders":"NYI","Devils":"NJD",
-    "Hurricanes":"CAR","Panthers":"FLA","Wild":"MIN","Predators":"NSH",
-    "Blackhawks":"CHI","Flyers":"PHI","Avalanche":"COL","Oilers":"EDM",
-    "Flames":"CGY","Golden Knights":"VGK","Kings":"LAK","Kraken":"SEA",
-    "Sharks":"SJS","Ducks":"ANA","Lightning":"TBL","Jets":"WPG",
-    "Coyotes":"ARI","Blues":"STL","Blue Jackets":"CBJ",
-    "Mammoth":"UTA","Canucks":"VAN"
+    "Maple Leafs": "TOR", "Penguins": "PIT", "Red Wings": "DET", "Stars": "DAL",
+    "Capitals": "WSH", "Rangers": "NYR", "Bruins": "BOS", "Canadiens": "MTL",
+    "Senators": "OTT", "Sabres": "BUF", "Islanders": "NYI", "Devils": "NJD",
+    "Hurricanes": "CAR", "Panthers": "FLA", "Wild": "MIN", "Predators": "NSH",
+    "Blackhawks": "CHI", "Flyers": "PHI", "Avalanche": "COL", "Oilers": "EDM",
+    "Flames": "CGY", "Golden Knights": "VGK", "Kings": "LAK", "Kraken": "SEA",
+    "Sharks": "SJS", "Ducks": "ANA", "Lightning": "TBL", "Jets": "WPG",
+    "Coyotes": "ARI", "Blues": "STL", "Blue Jackets": "CBJ",
+    "Mammoth": "UTA", "Canucks": "VAN"
   };
 
   // ===============================
@@ -1644,7 +1642,7 @@ async function displayMatches(matches) {
   const RECENT_LIMIT_DAYS = 7;
 
   let recentHtml = "";
-  let olderHtml  = "";
+  let olderHtml = "";
 
   for (const day of days) {
     const d = new Date(day);
@@ -1673,8 +1671,8 @@ async function displayMatches(matches) {
 
       const recapId = `recap-${match.id}`;
 
-      const homeAbbr = TEAM_NAME_TO_ABBREV[home] || home.slice(0,3).toUpperCase();
-      const awayAbbr = TEAM_NAME_TO_ABBREV[away] || away.slice(0,3).toUpperCase();
+      const homeAbbr = TEAM_NAME_TO_ABBREV[home] || home.slice(0, 3).toUpperCase();
+      const awayAbbr = TEAM_NAME_TO_ABBREV[away] || away.slice(0, 3).toUpperCase();
 
       const homeLogo = TEAM_NAME_TO_ABBREV[home]
         ? `https://assets.nhle.com/logos/nhl/svg/${homeAbbr}_light.svg`
@@ -1715,7 +1713,7 @@ async function displayMatches(matches) {
   }
 
   recentBox.innerHTML = recentHtml;
-  olderBox.innerHTML  = olderHtml;
+  olderBox.innerHTML = olderHtml;
 
   // ===============================
   // Toggle starších
@@ -1754,7 +1752,7 @@ async function displayMatches(matches) {
         if (data.ok && data.highlight) {
           cell.innerHTML = `<a href="${data.highlight}" target="_blank" class="highlight-link">🎥</a>`;
         }
-      } catch {}
+      } catch { }
     }
   }
 }
@@ -1772,10 +1770,10 @@ function startLiveGamesAutoUpdate() {
   if (liveGamesUpdateInterval) {
     clearInterval(liveGamesUpdateInterval);
   }
-  
+
   // Načítaj hneď
   loadLiveGames();
-  
+
   // Potom aktualizuj každých 10 sekúnd
   liveGamesUpdateInterval = setInterval(() => {
     // Skontroluj, či je sekcia stále otvorená
@@ -1787,7 +1785,7 @@ function startLiveGamesAutoUpdate() {
       stopLiveGamesAutoUpdate();
     }
   }, 10000); // 10 sekúnd
-  
+
   console.log("🔄 Automatická aktualizácia live zápasov spustená (každých 10s)");
 }
 
@@ -1805,10 +1803,10 @@ async function loadLiveGames() {
   if (!liveList) return;
 
   // Zobraz loading len pri prvom načítaní
-  const isFirstLoad = !liveList.querySelector('.live-game-row') && 
-                      liveList.innerHTML.indexOf("Načítavam") === -1 &&
-                      liveList.innerHTML.indexOf("nehrajú") === -1;
-  
+  const isFirstLoad = !liveList.querySelector('.live-game-row') &&
+    liveList.innerHTML.indexOf("Načítavam") === -1 &&
+    liveList.innerHTML.indexOf("nehrajú") === -1;
+
   if (isFirstLoad) {
     liveList.innerHTML = '<p class="nhl-muted">Načítavam live zápasy…</p>';
   }
@@ -1839,7 +1837,7 @@ async function loadLiveGames() {
 function displayLiveGames(games) {
   const liveList = document.getElementById("live-games-list");
   const liveBox = document.getElementById("live-games-box");
-  
+
   if (!liveList) return;
 
   if (!games || games.length === 0) {
@@ -1869,13 +1867,13 @@ function displayLiveGames(games) {
 
   // PLYNULÁ AKTUALIZÁCIA - namiesto prerenderovania celej sekcie
   // aktualizujeme len zmenené hodnoty
-  
+
   // Vymaž loading text ak existuje
-  if (liveList.innerHTML.indexOf("Načítavam") !== -1 || 
-      liveList.innerHTML.indexOf("nehrajú žiadne zápasy") !== -1) {
+  if (liveList.innerHTML.indexOf("Načítavam") !== -1 ||
+    liveList.innerHTML.indexOf("nehrajú žiadne zápasy") !== -1) {
     liveList.innerHTML = '';
   }
-  
+
   // Získaj existujúce riadky
   const existingRows = liveList.querySelectorAll('.live-game-row');
   const existingGameIds = new Set();
@@ -1892,7 +1890,7 @@ function displayLiveGames(games) {
   allGames.forEach(game => {
     const gameId = String(game.id || '');
     const existingRow = liveList.querySelector(`.live-game-row[data-game-id="${gameId}"]`);
-    
+
     if (existingRow) {
       // Aktualizuj len zmenené hodnoty bez prerenderovania celého riadku
       updateLiveGameRow(existingRow, game);
@@ -1902,7 +1900,7 @@ function displayLiveGames(games) {
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = rowHtml;
       const newRow = tempDiv.firstElementChild;
-      
+
       if (newRow) {
         // Pridaj event listener
         newRow.addEventListener('click', (e) => {
@@ -1910,7 +1908,7 @@ function displayLiveGames(games) {
           e.stopPropagation();
           openLiveGameDetails(gameId);
         });
-        
+
         // Vlož na správne miesto (LIVE alebo PREVIEW skupina)
         insertGameRow(liveList, newRow, game.status.state === "LIVE");
       }
@@ -1935,7 +1933,7 @@ function updateLiveGameRow(row, game) {
   const away = game.teams?.away || {};
   const isLive = game.status?.state === "LIVE";
   const progress = game.status?.progress || {};
-  
+
   // Aktualizuj skóre (len ak sa zmenilo)
   const scoreContainer = row.querySelector('.live-game-score');
   if (scoreContainer) {
@@ -1943,7 +1941,7 @@ function updateLiveGameRow(row, game) {
       const homeScoreEl = scoreContainer.querySelector('.live-score:first-of-type');
       const awayScoreEl = scoreContainer.querySelector('.live-score:last-of-type');
       const sepEl = scoreContainer.querySelector('.live-sep');
-      
+
       let scoreChanged = false;
       if (homeScoreEl && homeScoreEl.textContent !== String(game.scores.home)) {
         homeScoreEl.textContent = game.scores.home;
@@ -1953,7 +1951,7 @@ function updateLiveGameRow(row, game) {
         awayScoreEl.textContent = game.scores.away;
         scoreChanged = true;
       }
-      
+
       // Pridaj efekt pri zmene skóre
       if (scoreChanged) {
         const scoreBox = row.querySelector('.live-game-score');
@@ -1964,11 +1962,11 @@ function updateLiveGameRow(row, game) {
           }, 5000);
         }
       }
-      
+
       if (sepEl && sepEl.textContent !== ":") {
         sepEl.textContent = ":";
       }
-      
+
       // Odstráň čas ak existuje
       const timeEl = scoreContainer.querySelector('.live-time');
       if (timeEl) timeEl.remove();
@@ -1976,14 +1974,14 @@ function updateLiveGameRow(row, game) {
       // Preview - zobraz čas
       const timeEl = scoreContainer.querySelector('.live-time');
       const sepEl = scoreContainer.querySelector('.live-sep');
-      
+
       if (!timeEl) {
         // Vytvor čas element ak neexistuje
         const homeScoreEl = scoreContainer.querySelector('.live-score:first-of-type');
         const awayScoreEl = scoreContainer.querySelector('.live-score:last-of-type');
         if (homeScoreEl) homeScoreEl.remove();
         if (awayScoreEl) awayScoreEl.remove();
-        
+
         const timeSpan = document.createElement('span');
         timeSpan.className = 'live-time';
         timeSpan.textContent = game.startTime || '';
@@ -1991,13 +1989,13 @@ function updateLiveGameRow(row, game) {
       } else if (timeEl.textContent !== game.startTime) {
         timeEl.textContent = game.startTime || '';
       }
-      
+
       if (sepEl && sepEl.textContent !== "vs") {
         sepEl.textContent = "vs";
       }
     }
   }
-  
+
   // Aktualizuj status (čas zápasu) - pre LIVE zápasy zobrazuj aj minútu
   const statusEl = row.querySelector('.live-game-status');
   if (statusEl) {
@@ -2007,7 +2005,7 @@ function updateLiveGameRow(row, game) {
       const timeText = progress.timeRemaining || "";
       const statusText = `${periodText} ${timeText}`.trim() || "LIVE";
       const fullStatusText = `🔴 ${statusText}`;
-      
+
       // Aktualizuj len ak sa zmenil čas
       if (statusEl.textContent !== fullStatusText) {
         statusEl.textContent = fullStatusText;
@@ -2028,13 +2026,13 @@ function updateLiveGameRow(row, game) {
 function insertGameRow(container, row, isLive) {
   const groups = container.querySelectorAll('.live-games-group');
   let targetGroup = null;
-  
+
   if (isLive) {
     // Nájdi alebo vytvor LIVE skupinu
-    targetGroup = Array.from(groups).find(g => 
+    targetGroup = Array.from(groups).find(g =>
       g.querySelector('.live-games-header')?.textContent.includes('LIVE')
     );
-    
+
     if (!targetGroup) {
       // Vytvor LIVE skupinu
       targetGroup = document.createElement('div');
@@ -2043,7 +2041,7 @@ function insertGameRow(container, row, isLive) {
       header.className = 'live-games-header';
       header.textContent = '🔴 LIVE (0)';
       targetGroup.appendChild(header);
-      
+
       // Vlož na začiatok
       const firstGroup = groups[0];
       if (firstGroup) {
@@ -2054,10 +2052,10 @@ function insertGameRow(container, row, isLive) {
     }
   } else {
     // Nájdi alebo vytvor PREVIEW skupinu
-    targetGroup = Array.from(groups).find(g => 
+    targetGroup = Array.from(groups).find(g =>
       g.querySelector('.live-games-header')?.textContent.includes('Čoskoro')
     );
-    
+
     if (!targetGroup) {
       // Vytvor PREVIEW skupinu
       targetGroup = document.createElement('div');
@@ -2066,12 +2064,12 @@ function insertGameRow(container, row, isLive) {
       header.className = 'live-games-header';
       header.textContent = '⏰ Čoskoro (0)';
       targetGroup.appendChild(header);
-      
+
       // Vlož na koniec
       container.appendChild(targetGroup);
     }
   }
-  
+
   if (targetGroup) {
     targetGroup.appendChild(row);
   }
@@ -2087,7 +2085,7 @@ function updateLiveGamesHeaders(container, liveCount, previewCount) {
       header.textContent = `⏰ Čoskoro (${previewCount})`;
     }
   });
-  
+
   // Odstráň prázdne skupiny
   const groups = container.querySelectorAll('.live-games-group');
   groups.forEach(group => {
@@ -2103,7 +2101,7 @@ function createLiveGameRow(game) {
   const away = game.teams?.away || {};
   const isLive = game.status?.state === "LIVE";
   const progress = game.status?.progress || {};
-  
+
   let statusText = "";
   if (isLive) {
     statusText = `${progress.currentPeriodOrdinal || ""} ${progress.timeRemaining || ""}`.trim();
@@ -2115,7 +2113,7 @@ function createLiveGameRow(game) {
   // Ulož ID do data atribútu (event listener sa pridá neskôr)
   const gameId = game.id || null;
   const gameIdAttr = gameId !== null ? String(gameId).replace(/"/g, '&quot;') : '';
-  
+
   return `
     <div class="live-game-row" data-game-id="${gameIdAttr}">
       <div class="live-game-teams">
@@ -2145,16 +2143,16 @@ let liveGamesData = {};
 
 async function openLiveGameDetails(gameId) {
   console.log("🔹 Otváram detail zápasu:", gameId);
-  
+
   if (!gameId || gameId === 'null' || gameId === 'undefined') {
     console.error("❌ Neplatné ID zápasu:", gameId);
     alert("Chyba: Neplatné ID zápasu");
     return;
   }
-  
+
   const overlay = document.getElementById("live-game-details-overlay");
   const content = document.getElementById("live-game-details-modal");
-  
+
   if (!overlay || !content) {
     console.error("❌ Modal elementy sa nenašli!");
     alert("Chyba: Modal sa nenašiel");
@@ -2176,10 +2174,10 @@ async function openLiveGameDetails(gameId) {
   try {
     const resp = await fetch("/api/live", { cache: "no-store" });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    
+
     const data = await resp.json();
     console.log("📦 API odpoveď:", data);
-    
+
     if (!data.ok || !data.games || !Array.isArray(data.games)) {
       content.innerHTML = `<p style="text-align:center;padding:40px;">Chyba: Zápasy sa nepodarilo načítať</p>`;
       return;
@@ -2191,11 +2189,11 @@ async function openLiveGameDetails(gameId) {
       const gIdStr = String(g.id || '');
       return gIdStr === gameIdStr || String(g.id) === String(gameId);
     });
-    
+
     console.log("🔍 Nájdený zápas:", game);
     console.log("🔍 Hľadané ID:", gameId, "Typ:", typeof gameId);
     console.log("🔍 Dostupné ID:", data.games.map(g => ({ id: g.id, type: typeof g.id })));
-    
+
     if (!game) {
       console.warn("⚠️ Zápas sa nenašiel.");
       content.innerHTML = `
@@ -2232,7 +2230,7 @@ function createStatRow(label, homeValue, awayValue, suffix = "", isPowerPlay = f
       </div>
     `;
   }
-  
+
   // Pre percentuálne hodnoty (faceoff)
   if (suffix === "%") {
     const homeNum = parseFloat(homeValue) || 0;
@@ -2240,7 +2238,7 @@ function createStatRow(label, homeValue, awayValue, suffix = "", isPowerPlay = f
     const total = homeNum + awayNum;
     const homePercent = total > 0 ? (homeNum / total) * 100 : 50;
     const awayPercent = total > 0 ? (awayNum / total) * 100 : 50;
-    
+
     return `
       <div class="live-stat-row">
         <div class="live-stat-values">
@@ -2256,14 +2254,14 @@ function createStatRow(label, homeValue, awayValue, suffix = "", isPowerPlay = f
       </div>
     `;
   }
-  
+
   // Pre numerické hodnoty
   const homeNum = Number(homeValue) || 0;
   const awayNum = Number(awayValue) || 0;
   const total = homeNum + awayNum;
   const homePercent = total > 0 ? (homeNum / total) * 100 : 50;
   const awayPercent = total > 0 ? (awayNum / total) * 100 : 50;
-  
+
   return `
     <div class="live-stat-row">
       <div class="live-stat-values">
@@ -2285,7 +2283,7 @@ let previousModalScore = null;
 
 function displayLiveGameDetails(game) {
   console.log("🎮 Zobrazujem detail zápasu:", game);
-  
+
   const content = document.getElementById("live-game-details-modal");
   if (!content) {
     console.error("❌ Modal content sa nenašiel!");
@@ -2300,7 +2298,7 @@ function displayLiveGameDetails(game) {
   const goals = Array.isArray(game.goals) ? game.goals : [];
   const homeCurrent = game.currentStats?.home || {};
   const awayCurrent = game.currentStats?.away || {};
-  
+
   // Detekuj zmenu skóre
   const currentScore = `${game.scores.home}:${game.scores.away}`;
   const scoreChanged = previousModalScore !== null && previousModalScore !== currentScore;
@@ -2361,12 +2359,12 @@ function displayLiveGameDetails(game) {
           ${createStatRow("Strely", stats.shots?.home || 0, stats.shots?.away || 0)}
           ${createStatRow("Blokované strely", stats.blocked?.home || 0, stats.blocked?.away || 0)}
           ${createStatRow("Faceoff", stats.faceOffWinPercentage?.home?.toFixed(1) || 0, stats.faceOffWinPercentage?.away?.toFixed(1) || 0, "%")}
-          ${createStatRow("Power Play", 
-            `${stats.powerPlay?.home?.opportunities || 0}/${stats.powerPlay?.home?.goals || 0}`, 
-            `${stats.powerPlay?.away?.opportunities || 0}/${stats.powerPlay?.away?.goals || 0}`,
-            "",
-            true
-          )}
+          ${createStatRow("Power Play",
+    `${stats.powerPlay?.home?.opportunities || 0}/${stats.powerPlay?.home?.goals || 0}`,
+    `${stats.powerPlay?.away?.opportunities || 0}/${stats.powerPlay?.away?.goals || 0}`,
+    "",
+    true
+  )}
           ${createStatRow("Trestné minúty", stats.pim?.home || 0, stats.pim?.away || 0)}
         </div>
       </div>
@@ -2403,7 +2401,7 @@ function displayLiveGameDetails(game) {
   `;
 
   content.innerHTML = detailsHtml;
-  
+
   // Ak sa zmenilo skóre, pridaj animáciu a odstráň ju po 5 sekundách
   if (scoreChanged) {
     const scoreBox = content.querySelector('.live-details-score');
@@ -2419,7 +2417,7 @@ function displayLiveGameDetails(game) {
       }, 10);
     }
   }
-  
+
   // Overlay už je zobrazený z openLiveGameDetails, len animuj obsah
   content.style.transform = "scale(0.9)";
   content.style.opacity = "0";
@@ -2434,16 +2432,16 @@ function closeLiveGameDetails(event) {
   if (event && event.target.id !== "live-game-details-overlay" && !event.target.classList.contains("live-details-close") && !event.target.closest(".live-details-close")) {
     return;
   }
-  
+
   const overlay = document.getElementById("live-game-details-overlay");
   const content = document.getElementById("live-game-details-modal");
-  
+
   if (!overlay || !content) return;
-  
+
   content.style.transition = "transform 0.2s ease-in, opacity 0.2s ease-in";
   content.style.transform = "scale(0.9)";
   content.style.opacity = "0";
-  
+
   setTimeout(() => {
     overlay.style.display = "none";
     content.innerHTML = "";
@@ -2454,16 +2452,16 @@ function closeLiveGameDetails(event) {
 
 async function openFinishedGameDetails(gameId) {
   console.log("🔹 Otváram detail odohraného zápasu:", gameId);
-  
+
   if (!gameId || gameId === 'null' || gameId === 'undefined') {
     console.error("❌ Neplatné ID zápasu:", gameId);
     alert("Chyba: Neplatné ID zápasu");
     return;
   }
-  
+
   const overlay = document.getElementById("finished-game-details-overlay");
   const content = document.getElementById("finished-game-details-modal");
-  
+
   if (!overlay || !content) {
     console.error("❌ Modal elementy sa nenašli!");
     alert("Chyba: Modal sa nenašiel");
@@ -2485,13 +2483,13 @@ async function openFinishedGameDetails(gameId) {
   try {
     const resp = await fetch(`/api/match-details?gameId=${gameId}`, { cache: "no-store" });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    
+
     const boxscoreData = await resp.json();
     console.log("📦 Boxscore dáta:", boxscoreData);
     console.log("📦 Period scores:", boxscoreData.sport_event_status?.period_scores);
     console.log("📦 Home players:", boxscoreData.statistics?.totals?.competitors?.find(c => c.qualifier === "home")?.players?.length);
     console.log("📦 Away players:", boxscoreData.statistics?.totals?.competitors?.find(c => c.qualifier === "away")?.players?.length);
-    
+
     displayFinishedGameDetails(gameId, boxscoreData);
   } catch (err) {
     console.error("❌ Chyba pri načítaní detailu zápasu:", err);
@@ -2511,44 +2509,44 @@ function displayFinishedGameDetails(gameId, boxscoreData) {
   const competitors = stats.totals?.competitors || [];
   const homeTeam = competitors.find(c => c.qualifier === "home") || {};
   const awayTeam = competitors.find(c => c.qualifier === "away") || {};
-  
+
   const homeScore = status.home_score || 0;
   const awayScore = status.away_score || 0;
   const periods = status.period_scores || [];
-  
+
   // Nájdeme match v allMatches pre logá a názvy tímov
   const match = allMatches.find(m => String(m.id) === String(gameId));
   const homeName = homeTeam.name || match?.home_team || "Home";
   const awayName = awayTeam.name || match?.away_team || "Away";
-  
+
   const TEAM_NAME_TO_ABBREV = {
-    "Maple Leafs":"TOR","Penguins":"PIT","Red Wings":"DET","Stars":"DAL",
-    "Capitals":"WSH","Rangers":"NYR","Bruins":"BOS","Canadiens":"MTL",
-    "Senators":"OTT","Sabres":"BUF","Islanders":"NYI","Devils":"NJD",
-    "Hurricanes":"CAR","Panthers":"FLA","Wild":"MIN","Predators":"NSH",
-    "Blackhawks":"CHI","Flyers":"PHI","Avalanche":"COL","Oilers":"EDM",
-    "Flames":"CGY","Golden Knights":"VGK","Kings":"LAK","Kraken":"SEA",
-    "Sharks":"SJS","Ducks":"ANA","Lightning":"TBL","Jets":"WPG",
-    "Coyotes":"ARI","Blues":"STL","Blue Jackets":"CBJ",
-    "Mammoth":"UTA","Canucks":"VAN"
+    "Maple Leafs": "TOR", "Penguins": "PIT", "Red Wings": "DET", "Stars": "DAL",
+    "Capitals": "WSH", "Rangers": "NYR", "Bruins": "BOS", "Canadiens": "MTL",
+    "Senators": "OTT", "Sabres": "BUF", "Islanders": "NYI", "Devils": "NJD",
+    "Hurricanes": "CAR", "Panthers": "FLA", "Wild": "MIN", "Predators": "NSH",
+    "Blackhawks": "CHI", "Flyers": "PHI", "Avalanche": "COL", "Oilers": "EDM",
+    "Flames": "CGY", "Golden Knights": "VGK", "Kings": "LAK", "Kraken": "SEA",
+    "Sharks": "SJS", "Ducks": "ANA", "Lightning": "TBL", "Jets": "WPG",
+    "Coyotes": "ARI", "Blues": "STL", "Blue Jackets": "CBJ",
+    "Mammoth": "UTA", "Canucks": "VAN"
   };
-  
+
   const getTeamAbbr = (name) => {
     for (const [fullName, abbr] of Object.entries(TEAM_NAME_TO_ABBREV)) {
       if (name.includes(fullName)) return abbr;
     }
     return name.slice(0, 3).toUpperCase();
   };
-  
+
   const homeAbbr = getTeamAbbr(homeName);
   const awayAbbr = getTeamAbbr(awayName);
   const homeLogo = `https://assets.nhle.com/logos/nhl/svg/${homeAbbr}_light.svg`;
   const awayLogo = `https://assets.nhle.com/logos/nhl/svg/${awayAbbr}_light.svg`;
-  
+
   // Formátovanie gólov po tretinách
   let periodsHtml = "";
   if (periods.length > 0) {
-    periodsHtml = periods.map((p, i) => 
+    periodsHtml = periods.map((p, i) =>
       `${i + 1}. ${p.home_score || 0}:${p.away_score || 0}`
     ).join(" | ");
   }
@@ -2597,7 +2595,7 @@ function displayFinishedGameDetails(gameId, boxscoreData) {
   `;
 
   content.innerHTML = detailsHtml;
-  
+
   // Animácia
   content.style.transform = "scale(0.9)";
   content.style.opacity = "0";
@@ -2612,16 +2610,16 @@ function renderPlayerStats(players) {
   if (!players || players.length === 0) {
     return `<p class="nhl-muted">Žiadni hráči s bodmi</p>`;
   }
-  
+
   // Filtruj hráčov s gólmi alebo asistencami
-  const playersWithPoints = players.filter(p => 
+  const playersWithPoints = players.filter(p =>
     (p.statistics?.goals || 0) > 0 || (p.statistics?.assists || 0) > 0
   );
-  
+
   if (playersWithPoints.length === 0) {
     return `<p class="nhl-muted">Žiadni hráči s bodmi</p>`;
   }
-  
+
   return playersWithPoints.map(p => {
     const goals = p.statistics?.goals || 0;
     const assists = p.statistics?.assists || 0;
@@ -2643,16 +2641,16 @@ function closeFinishedGameDetails(event) {
   if (event && event.target.id !== "finished-game-details-overlay" && !event.target.classList.contains("live-details-close") && !event.target.closest(".live-details-close")) {
     return;
   }
-  
+
   const overlay = document.getElementById("finished-game-details-overlay");
   const content = document.getElementById("finished-game-details-modal");
-  
+
   if (!overlay || !content) return;
-  
+
   content.style.transition = "transform 0.2s ease-in, opacity 0.2s ease-in";
   content.style.transform = "scale(0.9)";
   content.style.opacity = "0";
-  
+
   setTimeout(() => {
     overlay.style.display = "none";
     content.innerHTML = "";
@@ -2696,17 +2694,17 @@ function renderStandings(standings) {
       </thead>
       <tbody>
         ${rows.map((t, i) => {
-          const GP = t.gamesPlayed ?? 0;
-          const W  = t.wins ?? 0;
+    const GP = t.gamesPlayed ?? 0;
+    const W = t.wins ?? 0;
 
-          // L = regulárne prehry + OT/SO prehry
-          const L  = (t.losses ?? 0) + (t.otLosses ?? 0);
+    // L = regulárne prehry + OT/SO prehry
+    const L = (t.losses ?? 0) + (t.otLosses ?? 0);
 
-          const GF = t.goalFor ?? 0;
-          const GA = t.goalAgainst ?? 0;
-          const DIFF = t.goalDifferential ?? (GF - GA);
+    const GF = t.goalFor ?? 0;
+    const GA = t.goalAgainst ?? 0;
+    const DIFF = t.goalDifferential ?? (GF - GA);
 
-          return `
+    return `
             <tr>
               <td class="rank-cell">${i + 1}</td>
               <td class="team-cell">
@@ -2724,13 +2722,13 @@ function renderStandings(standings) {
               </td>
             </tr>
           `;
-        }).join("")}
+  }).join("")}
       </tbody>
     </table>
   `;
 
-     // 👑 PREMIUM – analytické boxy (L10)
-     renderPremiumAnalytics(standings);
+  // 👑 PREMIUM – analytické boxy (L10)
+  renderPremiumAnalytics(standings);
 }
 
 // === RATING TÍMOV ===
@@ -2807,7 +2805,7 @@ async function displayTeamRatings() {
       <td>${Math.round(rating)}</td>
     `;
 
-   row.setAttribute("data-logo", team.logo);
+    row.setAttribute("data-logo", team.logo);
 
     tableBody.appendChild(row);
   });
@@ -2929,12 +2927,12 @@ function displayPlayerRatings() {
       </td>
       <td>${Math.round(rating)}</td>
     `;
-    
+
     // Pridaj event listener pre kliknutie
     row.addEventListener("click", () => {
       openPlayerStatsModal(player, team);
     });
-    
+
     tableBody.appendChild(row);
   });
 }
@@ -2943,29 +2941,29 @@ function displayPlayerRatings() {
 async function openPlayerStatsModal(playerName, teamName) {
   const modal = document.getElementById("playerStatsModal");
   const content = document.getElementById("playerStatsContent");
-  
+
   if (!modal || !content) {
     console.error("Modal elementy nenájdené");
     return;
   }
-  
+
   // Zobraz modal s animáciou
   modal.style.display = "flex";
   content.innerHTML = `<p style="text-align:center;padding:40px;color:#00eaff;">${t("common.loading")}</p>`;
-  
+
   // Zastav propagáciu eventu na content
   content.onclick = (e) => {
     e.stopPropagation();
   };
-  
+
   try {
     // Načítaj štatistiky
     const resp = await fetch("/api/statistics", { cache: "no-store" });
     if (!resp.ok) throw new Error("Failed to fetch statistics");
-    
+
     const data = await resp.json();
     if (!data.ok) throw new Error("Invalid response");
-    
+
     // Nájdi hráča v štatistikách - skús všetky rebríčky
     const allPlayers = [
       ...(data.topGoals || []),
@@ -2976,7 +2974,7 @@ async function openPlayerStatsModal(playerName, teamName) {
       ...(data.topTOI || []),
       ...(data.topPowerPlayGoals || [])
     ];
-    
+
     // Odstráň duplicity podľa ID
     const uniquePlayers = {};
     allPlayers.forEach(p => {
@@ -2990,7 +2988,7 @@ async function openPlayerStatsModal(playerName, teamName) {
         }
       }
     });
-    
+
     // Normalizuj meno hráča pre vyhľadávanie
     const normalizeName = (name) => {
       return name.toLowerCase()
@@ -2998,32 +2996,32 @@ async function openPlayerStatsModal(playerName, teamName) {
         .replace(/\s+/g, " ")
         .trim();
     };
-    
+
     const searchName = normalizeName(playerName);
     const searchParts = searchName.split(" ");
     const lastName = searchParts[searchParts.length - 1];
-    
+
     // Nájdi hráča - skús presné zhodu, potom čiastočnú
     let playerStats = Object.values(uniquePlayers).find(p => {
       if (!p.name) return false;
       const fullName = normalizeName(p.name);
-      
+
       // Presná zhoda
       if (fullName === searchName) return true;
-      
+
       // Zhoda priezviska
       if (fullName.includes(lastName) || lastName.includes(fullName.split(" ").pop())) {
         return true;
       }
-      
+
       // Čiastočná zhoda
       if (fullName.includes(searchName) || searchName.includes(fullName)) {
         return true;
       }
-      
+
       return false;
     });
-    
+
     if (!playerStats) {
       console.warn("Hráč nenájdený:", playerName, "Dostupní hráči:", Object.keys(uniquePlayers).slice(0, 10));
       content.innerHTML = `
@@ -3035,17 +3033,17 @@ async function openPlayerStatsModal(playerName, teamName) {
       `;
       return;
     }
-    
+
     // Zobraz štatistiky
     const stats = playerStats;
-    
+
     // Vytvor URL pre headshot ak nie je v dátach
     let headshotUrl = stats.headshot;
     if (!headshotUrl && stats.id && stats.team) {
       const season = "20252026";
       headshotUrl = `https://assets.nhle.com/mugs/nhl/${season}/${stats.team}/${stats.id}.png`;
     }
-    
+
     content.innerHTML = `
       <div class="player-stats-header">
         <h3>${stats.name || playerName}</h3>
@@ -3095,7 +3093,7 @@ async function openPlayerStatsModal(playerName, teamName) {
         </div>
       </div>
     `;
-    
+
     // Trigger animáciu
     requestAnimationFrame(() => {
       content.style.opacity = "0";
@@ -3106,7 +3104,7 @@ async function openPlayerStatsModal(playerName, teamName) {
         content.style.transform = "scale(1)";
       });
     });
-    
+
   } catch (err) {
     console.error("Chyba pri načítaní štatistík:", err);
     content.innerHTML = `
@@ -3124,10 +3122,10 @@ function closePlayerStatsModal(e) {
     e.stopPropagation();
     return;
   }
-  
+
   const modal = document.getElementById("playerStatsModal");
   if (!modal) return;
-  
+
   // Zatvor len ak sa kliklo na overlay (nie na content)
   if (!e || e.target.id === "playerStatsModal") {
     const content = document.getElementById("playerStatsContent");
@@ -3163,7 +3161,7 @@ async function loadMantingal() {
   if (!playerTeams || Object.keys(playerTeams).length === 0) {
     await loadPlayerTeams();
   }
-  
+
   const res = await fetch("/api/mantingal?task=all");
   const data = await res.json();
   if (!data.ok) return;
@@ -3171,7 +3169,7 @@ async function loadMantingal() {
   const totalProfitEl = document.getElementById("mtg-total-profit");
   const totalProfitValue = Number(data.totalProfit || 0);
   totalProfitEl.textContent = totalProfitValue.toFixed(2);
-  
+
   // 🎨 Zafarbenie total profit
   totalProfitEl.classList.remove("balance-plus", "balance-minus");
   if (totalProfitValue > 0) {
@@ -3185,45 +3183,45 @@ async function loadMantingal() {
 
   // Detekcia mobile zariadenia
   const isMobile = window.innerWidth <= 768;
-  
+
   // Zoradiť hráčov podľa balance (od najvyššieho po najnižší)
   const sortedPlayers = Object.entries(data.players).sort((a, b) => {
     const balanceA = Number(a[1].balance || 0);
     const balanceB = Number(b[1].balance || 0);
     return balanceB - balanceA; // descending order
   });
-  
+
   sortedPlayers.forEach(([name, p]) => {
     const tr = document.createElement("tr");
     // Skús nájsť tím - najprv v playerTeams, potom v premium cache
     let teamAbbrev = getPlayerTeamAbbrev(name, false);
-    
+
     // Ak sa nenašiel, skús aj s premium cache
     if (!teamAbbrev) {
       teamAbbrev = getPlayerTeamAbbrev(name, true);
     }
-    
+
     // Debug log pre prvých 3 hráčov
     if (Object.keys(data.players).indexOf(name) < 3) {
       const lastName = name.trim().split(/\s+/).pop().toLowerCase().replace(/[.,]/g, '');
       console.log(`🔍 Hráč: "${name}" -> Priezvisko: "${lastName}" -> Tím: "${teamAbbrev || 'NENAŠIEL'}"`);
       console.log(`   playerTeams["${lastName}"] = "${playerTeams[lastName] || 'NENÁJDENÉ'}"`);
-      
+
       // Skús nájsť podobné kľúče
-      const similarKeys = Object.keys(playerTeams).filter(k => 
+      const similarKeys = Object.keys(playerTeams).filter(k =>
         k.includes(lastName) || lastName.includes(k)
       ).slice(0, 5);
       console.log(`   Podobné kľúče v playerTeams:`, similarKeys);
-      
+
       console.log(`   playerTeams keys: ${Object.keys(playerTeams).length}, premium cache: ${PREMIUM_PLAYERS_CACHE?.length || 0}`);
     }
-    
+
     const playerDisplay = teamAbbrev ? `${name} <span style="color:#999; font-size:0.9em;">(${teamAbbrev})</span>` : name;
 
     // V mobile: Hráč | Balance | Vklad | Streak | ROI | Detail
     // V desktop: Hráč | Vklad | Streak | Balance | ROI | Detail
     if (isMobile) {
-    tr.innerHTML = `
+      tr.innerHTML = `
         <td class="player-cell">${playerDisplay}</td>
         <td class="balance balance-mobile-first">${p.balance.toFixed(2)}</td>
         <td>${p.stake}</td>
@@ -3260,7 +3258,7 @@ async function loadMantingal() {
       let totalStaked = 0;
       let missCount = 0;
       let hitCount = 0;
-      
+
       histData.history.forEach(h => {
         if (h.result === "miss" && h.profitChange) {
           // Pri prehre: stake (vklad) = -profitChange (profitChange je záporný)
@@ -3303,13 +3301,13 @@ async function loadMantingal() {
   });
 
   // 🎨 Zafarbenie balance (plus / mínus)
-tbody.querySelectorAll("td.balance").forEach(td => {
-  const value = parseFloat(td.textContent.replace(",", "."));
-  if (isNaN(value)) return;
+  tbody.querySelectorAll("td.balance").forEach(td => {
+    const value = parseFloat(td.textContent.replace(",", "."));
+    if (isNaN(value)) return;
 
-  if (value > 0) td.classList.add("balance-plus");
-  else if (value < 0) td.classList.add("balance-minus");
-});
+    if (value > 0) td.classList.add("balance-plus");
+    else if (value < 0) td.classList.add("balance-minus");
+  });
 
   // kliknutie na detail hráča
   document.querySelectorAll(".mtg-detail-btn").forEach((btn) => {
@@ -3323,12 +3321,12 @@ tbody.querySelectorAll("td.balance").forEach(td => {
 function openAbsTableExplanation() {
   const overlay = document.getElementById("abs-table-explanation-overlay");
   const content = document.getElementById("abs-table-explanation-modal");
-  
+
   if (!overlay || !content) {
     console.error("AS explanation modal elements not found");
     return;
   }
-  
+
   const explanationText = `
     <div class="abs-explanation-header">
       <h2>${t("abs.explanation.title")}</h2>
@@ -3427,9 +3425,9 @@ function openAbsTableExplanation() {
       </section>
     </div>
   `;
-  
+
   content.innerHTML = explanationText;
-  
+
   // Zobraz overlay a spusti animáciu
   overlay.style.setProperty("display", "flex", "important");
   content.style.transform = "scale(0.9)";
@@ -3445,16 +3443,16 @@ function closeAbsTableExplanation(event) {
   if (event && event.target.id !== "abs-table-explanation-overlay" && !event.target.classList.contains("abs-explanation-close") && !event.target.closest(".abs-explanation-close")) {
     return;
   }
-  
+
   const overlay = document.getElementById("abs-table-explanation-overlay");
   const content = document.getElementById("abs-table-explanation-modal");
-  
+
   if (!overlay || !content) return;
-  
+
   content.style.transition = "transform 0.2s ease-in, opacity 0.2s ease-in";
   content.style.transform = "scale(0.9)";
   content.style.opacity = "0";
-  
+
   setTimeout(() => {
     overlay.style.display = "none";
   }, 200);
@@ -3477,23 +3475,23 @@ document.addEventListener("click", (e) => {
 // Funkcia na konverziu gameId na formát "HOME-AWAY"
 function formatGameId(gameId) {
   if (!gameId) return "-";
-  
+
   // Nájdi zápas v allMatches podľa ID
   const match = allMatches.find(m => {
     const matchId = m.id || m.sport_event?.id;
     return String(matchId) === String(gameId);
   });
-  
+
   if (!match) {
     // Ak sa zápas nenašiel, skús ešte raz s rôznymi formátmi
     console.warn(`Zápas s ID ${gameId} sa nenašiel v allMatches`);
     return gameId;
   }
-  
+
   // Získaj názvy tímov - podporujeme rôzne formáty
   let homeTeam = "";
   let awayTeam = "";
-  
+
   if (match.sport_event?.competitors && match.sport_event.competitors.length >= 2) {
     homeTeam = match.sport_event.competitors[0]?.name || "";
     awayTeam = match.sport_event.competitors[1]?.name || "";
@@ -3501,28 +3499,28 @@ function formatGameId(gameId) {
     homeTeam = match.home_team;
     awayTeam = match.away_team;
   }
-  
+
   if (!homeTeam || !awayTeam) {
     console.warn(`Nepodarilo sa získať tímy pre zápas ${gameId}`);
     return gameId;
   }
-  
+
   // Konvertuj na abbreviatúry
   const TEAM_NAME_TO_ABBREV = {
-    "Maple Leafs":"TOR","Penguins":"PIT","Red Wings":"DET","Stars":"DAL",
-    "Capitals":"WSH","Rangers":"NYR","Bruins":"BOS","Canadiens":"MTL",
-    "Senators":"OTT","Sabres":"BUF","Islanders":"NYI","Devils":"NJD",
-    "Hurricanes":"CAR","Panthers":"FLA","Wild":"MIN","Predators":"NSH",
-    "Blackhawks":"CHI","Flyers":"PHI","Avalanche":"COL","Oilers":"EDM",
-    "Flames":"CGY","Golden Knights":"VGK","Kings":"LAK","Kraken":"SEA",
-    "Sharks":"SJS","Ducks":"ANA","Lightning":"TBL","Jets":"WPG",
-    "Coyotes":"ARI","Blues":"STL","Blue Jackets":"CBJ",
-    "Mammoth":"UTA","Canucks":"VAN"
+    "Maple Leafs": "TOR", "Penguins": "PIT", "Red Wings": "DET", "Stars": "DAL",
+    "Capitals": "WSH", "Rangers": "NYR", "Bruins": "BOS", "Canadiens": "MTL",
+    "Senators": "OTT", "Sabres": "BUF", "Islanders": "NYI", "Devils": "NJD",
+    "Hurricanes": "CAR", "Panthers": "FLA", "Wild": "MIN", "Predators": "NSH",
+    "Blackhawks": "CHI", "Flyers": "PHI", "Avalanche": "COL", "Oilers": "EDM",
+    "Flames": "CGY", "Golden Knights": "VGK", "Kings": "LAK", "Kraken": "SEA",
+    "Sharks": "SJS", "Ducks": "ANA", "Lightning": "TBL", "Jets": "WPG",
+    "Coyotes": "ARI", "Blues": "STL", "Blue Jackets": "CBJ",
+    "Mammoth": "UTA", "Canucks": "VAN"
   };
-  
+
   const homeAbbr = TEAM_NAME_TO_ABBREV[homeTeam] || homeTeam.slice(0, 3).toUpperCase();
   const awayAbbr = TEAM_NAME_TO_ABBREV[awayTeam] || awayTeam.slice(0, 3).toUpperCase();
-  
+
   return `${homeAbbr}-${awayAbbr}`;
 }
 
@@ -3536,12 +3534,12 @@ async function showMantingalDetail(player) {
 
   // Zobraz meno hráča
   document.getElementById("mtg-player-name-text").textContent = player;
-  
+
   // Získaj klub hráča (rovnako ako v iných sekciách)
   const parts = player.split(" ");
   const lastName = parts[parts.length - 1].replace(/\./g, "").toLowerCase();
   const team = playerTeams && playerTeams[lastName] ? playerTeams[lastName] : "";
-  
+
   // Zobraz klub vedľa mena
   const teamElement = document.getElementById("mtg-player-team");
   if (team) {
@@ -3557,10 +3555,10 @@ async function showMantingalDetail(player) {
   tbody.innerHTML = "";
 
   data.history
-  .filter(h => h.result !== "skip")
-  .forEach((h) => {
-    const gameDisplay = formatGameId(h.gameId);
-    tbody.innerHTML += `
+    .filter(h => h.result !== "skip")
+    .forEach((h) => {
+      const gameDisplay = formatGameId(h.gameId);
+      tbody.innerHTML += `
       <tr>
         <td>${h.date}</td>
         <td>${gameDisplay}</td>
@@ -3570,16 +3568,16 @@ async function showMantingalDetail(player) {
         <td class="balance">${h.balanceAfter}</td>
       </tr>
     `;
-  });
+    });
 
   // 🎨 Zafarbenie balance (plus / mínus)
-tbody.querySelectorAll("td.balance").forEach(td => {
-  const value = parseFloat(td.textContent.replace(",", "."));
-  if (isNaN(value)) return;
+  tbody.querySelectorAll("td.balance").forEach(td => {
+    const value = parseFloat(td.textContent.replace(",", "."));
+    if (isNaN(value)) return;
 
-  if (value > 0) td.classList.add("balance-plus");
-  else if (value < 0) td.classList.add("balance-minus");
-});
+    if (value > 0) td.classList.add("balance-plus");
+    else if (value < 0) td.classList.add("balance-minus");
+  });
 
   const detailBox = document.getElementById("mantingale-detail");
   detailBox.classList.remove("hidden");
@@ -3657,7 +3655,7 @@ async function displayMantingal() {
     players.forEach((p) => {
       const teamAbbrev = getPlayerTeamAbbrev(p.name);
       const playerDisplay = teamAbbrev ? `${p.name} <span style="color:#999; font-size:0.9em;">(${teamAbbrev})</span>` : p.name;
-      
+
       html += `
         <tr>
           <td>${playerDisplay}</td>
@@ -3665,15 +3663,14 @@ async function displayMantingal() {
           <td style="color:${p.profit >= 0 ? "limegreen" : "red"}">${p.profit.toFixed(2)}</td>
           <td>${p.streak}</td>
           <td>
-  ${
-    p.lastResult === "win"
-      ? "✅"
-      : p.lastResult === "loss"
-      ? "❌"
-      : p.lastResult === "skip"
-      ? "⏸️"
-      : "-"
-  }
+  ${p.lastResult === "win"
+          ? "✅"
+          : p.lastResult === "loss"
+            ? "❌"
+            : p.lastResult === "skip"
+              ? "⏸️"
+              : "-"
+        }
 </td>
 
         </tr>
@@ -3738,10 +3735,10 @@ async function displayMantingalHistory() {
         b.result === "win"
           ? "✅"
           : b.result === "loss"
-          ? "❌"
-          : b.result === "skip"
-          ? "⏸️"
-          : "-";
+            ? "❌"
+            : b.result === "skip"
+              ? "⏸️"
+              : "-";
 
       html += `
         <tr class="${b.result}">
@@ -3789,32 +3786,32 @@ async function displayStrategies() {
     table.className = "players-table";
 
     const getFlag = (code) => {
-  if (!code) return "";
+      if (!code) return "";
 
-  const map = {
-    CAN: "ca",
-    USA: "us",
-    RUS: "ru",
-    SWE: "se",
-    FIN: "fi",
-    DNK: "dk",
-    CZE: "cz",
-    SVK: "sk",
-    GER: "de",
-    SUI: "ch",
-    NOR: "no",
-    AUT: "at",
-    LVA: "lv",
-    EST: "ee",
-    FRA: "fr",
-    GBR: "gb",
-    AUS: "au",
-  };
+      const map = {
+        CAN: "ca",
+        USA: "us",
+        RUS: "ru",
+        SWE: "se",
+        FIN: "fi",
+        DNK: "dk",
+        CZE: "cz",
+        SVK: "sk",
+        GER: "de",
+        SUI: "ch",
+        NOR: "no",
+        AUT: "at",
+        LVA: "lv",
+        EST: "ee",
+        FRA: "fr",
+        GBR: "gb",
+        AUS: "au",
+      };
 
-  const c = String(code).trim().toUpperCase();
-  const iso2 = map[c] || c.slice(0, 2).toLowerCase();
+      const c = String(code).trim().toUpperCase();
+      const iso2 = map[c] || c.slice(0, 2).toLowerCase();
 
-  return `
+      return `
     <img 
       src="https://flagcdn.com/24x18/${iso2}.png" 
       alt="${c}" 
@@ -3822,7 +3819,7 @@ async function displayStrategies() {
       class="flag" 
       onerror="this.style.display='none'">
   `;
-};
+    };
 
     table.innerHTML = `
       <thead>
@@ -3835,17 +3832,17 @@ async function displayStrategies() {
       </thead>
       <tbody>
         ${data.players
-          .slice(0, 300)
-          .map(
-            (p, i) => `
+        .slice(0, 300)
+        .map(
+          (p, i) => `
             <tr>
               <td>${i + 1}</td>
               <td>${p.name}</td>
               <td>${p.team}</td>
               <td>${getFlag(p.country)} ${p.country}</td>
             </tr>`
-          )
-          .join("")}
+        )
+        .join("")}
       </tbody>
     `;
     wrap.appendChild(table);
@@ -3880,13 +3877,13 @@ async function checkPremiumStatus() {
   if (!section) return;
 
   // ===== ZÁKLAD: skry všetko =====
-  const loginBox   = document.getElementById("premium-not-logged");
+  const loginBox = document.getElementById("premium-not-logged");
   const registerBox = document.getElementById("premium-register-box");
-  const lockedBox  = document.getElementById("premium-locked");
+  const lockedBox = document.getElementById("premium-locked");
   const contentBox = document.getElementById("premium-content");
-  const signupBtn  = document.getElementById("premium-signup-btn");
-  const logoutBtn  = document.getElementById("premium-logout-btn");
-  const authMsg    = document.getElementById("premium-auth-msg");
+  const signupBtn = document.getElementById("premium-signup-btn");
+  const logoutBtn = document.getElementById("premium-logout-btn");
+  const authMsg = document.getElementById("premium-auth-msg");
 
   [loginBox, registerBox, lockedBox, contentBox].forEach(el => {
     if (el) el.style.display = "none";
@@ -3931,61 +3928,61 @@ async function checkPremiumStatus() {
 
     const data = await res.json();
 
-// ===============================
-// PREMIUM – Stripe Checkout
-// ===============================
-document.getElementById("premium-upgrade-btn")
-  ?.addEventListener("click", async () => {
+    // ===============================
+    // PREMIUM – Stripe Checkout
+    // ===============================
+    document.getElementById("premium-upgrade-btn")
+      ?.addEventListener("click", async () => {
 
-    const token = localStorage.getItem("sb-access-token");
-    if (!token) {
-      alert(t("premium.mustLoginFirst"));
+        const token = localStorage.getItem("sb-access-token");
+        if (!token) {
+          alert(t("premium.mustLoginFirst"));
+          return;
+        }
+
+        try {
+          const res = await fetch(
+            "/api/vip?task=create_checkout_session",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const data = await res.json();
+          if (!data.ok || !data.url) {
+            alert(t("premium.paymentCreateFailed"));
+            return;
+          }
+
+          // 🔥 presmerovanie na Stripe Checkout
+          window.location.href = data.url;
+
+        } catch (err) {
+          console.error(err);
+          alert(t("premium.paymentStartError"));
+        }
+      });
+
+    // ===== VIP USER =====
+    if (data.ok && data.isVip === true) {
+      if (contentBox) contentBox.style.display = "block";
+
+      if (!premiumPlayersLoaded) {
+        premiumPlayersLoaded = true;
+        await loadPremiumTeams();
+        await loadPremiumPlayers();
+      }
+
+      // VIP tips (today)
+      await renderVipTips();
+
       return;
     }
 
-    try {
-      const res = await fetch(
-        "/api/vip?task=create_checkout_session",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await res.json();
-      if (!data.ok || !data.url) {
-        alert(t("premium.paymentCreateFailed"));
-        return;
-      }
-
-      // 🔥 presmerovanie na Stripe Checkout
-      window.location.href = data.url;
-
-    } catch (err) {
-      console.error(err);
-      alert(t("premium.paymentStartError"));
-    }
-});
-    
-    // ===== VIP USER =====
-if (data.ok && data.isVip === true) {
-  if (contentBox) contentBox.style.display = "block";
-
-  if (!premiumPlayersLoaded) {
-    premiumPlayersLoaded = true;
-    await loadPremiumTeams();
-    await loadPremiumPlayers();
-  }
-
-  // VIP tips (today)
-  await renderVipTips();
-
-  return;
-}
-
-// expose for CTA helper
-window.checkPremiumStatus = checkPremiumStatus;
+    // expose for CTA helper
+    window.checkPremiumStatus = checkPremiumStatus;
 
     // ===== PRIHLÁSENÝ, ALE NIE VIP =====
     if (lockedBox) lockedBox.style.display = "block";
@@ -4026,63 +4023,63 @@ document.getElementById("premium-signup-btn")
 
     box.style.display = "block";
     box.scrollIntoView({ behavior: "smooth", block: "center" });
-});
+  });
 
 // ===============================
 // REGISTRÁCIA – SUPABASE SIGNUP funkcia
 // ===============================
 async function handleRegister() {
-    const email = document.getElementById("reg-email")?.value.trim();
-    const pass = document.getElementById("reg-pass")?.value;
-    const pass2 = document.getElementById("reg-pass2")?.value;
-    const msg = document.getElementById("premium-register-msg");
+  const email = document.getElementById("reg-email")?.value.trim();
+  const pass = document.getElementById("reg-pass")?.value;
+  const pass2 = document.getElementById("reg-pass2")?.value;
+  const msg = document.getElementById("premium-register-msg");
 
-    if (!email || !pass || !pass2) {
-      msg.textContent = t("premium.fillAll");
-      return;
-    }
+  if (!email || !pass || !pass2) {
+    msg.textContent = t("premium.fillAll");
+    return;
+  }
 
-    if (pass.length < 8) {
-      msg.textContent = t("premium.passMin");
-      return;
-    }
+  if (pass.length < 8) {
+    msg.textContent = t("premium.passMin");
+    return;
+  }
 
-    if (pass !== pass2) {
-      msg.textContent = t("premium.passMismatch");
-      return;
-    }
+  if (pass !== pass2) {
+    msg.textContent = t("premium.passMismatch");
+    return;
+  }
 
-    msg.textContent = t("premium.creatingAccount");
+  msg.textContent = t("premium.creatingAccount");
 
-    try {
-      const r = await fetch(
-        `${SUPABASE_URL}/auth/v1/signup`,
-        {
-          method: "POST",
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password: pass }),
-        }
-      );
-
-      const data = await r.json();
-
-      if (!r.ok) {
-        msg.textContent = data?.error_description || data?.error || t("premium.signupFailed");
-        return;
+  try {
+    const r = await fetch(
+      `${SUPABASE_URL}/auth/v1/signup`,
+      {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password: pass }),
       }
+    );
+
+    const data = await r.json();
+
+    if (!r.ok) {
+      msg.textContent = data?.error_description || data?.error || t("premium.signupFailed");
+      return;
+    }
 
     // Úspešná registrácia - zobraziť správu a refreshnúť stránku
     msg.textContent = t("premium.emailConfirmMessage");
     msg.className = "premium-msg premium-msg-success";
     setTimeout(() => window.location.reload(), 3000);
 
-    } catch (err) {
-      console.error(err);
-      msg.textContent = t("premium.registerError");
-    }
+  } catch (err) {
+    console.error(err);
+    msg.textContent = t("premium.registerError");
+  }
 }
 
 // Register button
@@ -4126,35 +4123,35 @@ function formatPlayerName(fullName) {
 // Funkcia na konverziu názvu tímu na abbreviatúru
 function getTeamAbbrev(teamName) {
   if (!teamName) return "";
-  
+
   const TEAM_NAME_TO_ABBREV = {
     // Krátke názvy (posledné slovo)
-    "Maple Leafs":"TOR","Penguins":"PIT","Red Wings":"DET","Wings":"DET","Stars":"DAL",
-    "Capitals":"WSH","Rangers":"NYR","Bruins":"BOS","Canadiens":"MTL",
-    "Senators":"OTT","Sabres":"BUF","Islanders":"NYI","Devils":"NJD",
-    "Hurricanes":"CAR","Panthers":"FLA","Wild":"MIN","Predators":"NSH",
-    "Blackhawks":"CHI","Flyers":"PHI","Avalanche":"COL","Oilers":"EDM",
-    "Flames":"CGY","Golden Knights":"VGK","Knights":"VGK","Kings":"LAK","Kraken":"SEA",
-    "Sharks":"SJS","Ducks":"ANA","Lightning":"TBL","Jets":"WPG",
-    "Coyotes":"ARI","Blues":"STL","Blue Jackets":"CBJ",
-    "Mammoth":"UTA","Canucks":"VAN",
+    "Maple Leafs": "TOR", "Penguins": "PIT", "Red Wings": "DET", "Wings": "DET", "Stars": "DAL",
+    "Capitals": "WSH", "Rangers": "NYR", "Bruins": "BOS", "Canadiens": "MTL",
+    "Senators": "OTT", "Sabres": "BUF", "Islanders": "NYI", "Devils": "NJD",
+    "Hurricanes": "CAR", "Panthers": "FLA", "Wild": "MIN", "Predators": "NSH",
+    "Blackhawks": "CHI", "Flyers": "PHI", "Avalanche": "COL", "Oilers": "EDM",
+    "Flames": "CGY", "Golden Knights": "VGK", "Knights": "VGK", "Kings": "LAK", "Kraken": "SEA",
+    "Sharks": "SJS", "Ducks": "ANA", "Lightning": "TBL", "Jets": "WPG",
+    "Coyotes": "ARI", "Blues": "STL", "Blue Jackets": "CBJ",
+    "Mammoth": "UTA", "Canucks": "VAN",
     // Celé názvy (pre istotu)
-    "Toronto Maple Leafs":"TOR","Pittsburgh Penguins":"PIT","Detroit Red Wings":"DET","Dallas Stars":"DAL",
-    "Washington Capitals":"WSH","New York Rangers":"NYR","Boston Bruins":"BOS","Montreal Canadiens":"MTL",
-    "Ottawa Senators":"OTT","Buffalo Sabres":"BUF","New York Islanders":"NYI","New Jersey Devils":"NJD",
-    "Carolina Hurricanes":"CAR","Florida Panthers":"FLA","Minnesota Wild":"MIN","Nashville Predators":"NSH",
-    "Chicago Blackhawks":"CHI","Philadelphia Flyers":"PHI","Colorado Avalanche":"COL","Edmonton Oilers":"EDM",
-    "Calgary Flames":"CGY","Vegas Golden Knights":"VGK","Los Angeles Kings":"LAK","Seattle Kraken":"SEA",
-    "San Jose Sharks":"SJS","Anaheim Ducks":"ANA","Tampa Bay Lightning":"TBL","Winnipeg Jets":"WPG",
-    "Arizona Coyotes":"ARI","St. Louis Blues":"STL","Columbus Blue Jackets":"CBJ",
-    "Utah Mammoth":"UTA","Vancouver Canucks":"VAN"
+    "Toronto Maple Leafs": "TOR", "Pittsburgh Penguins": "PIT", "Detroit Red Wings": "DET", "Dallas Stars": "DAL",
+    "Washington Capitals": "WSH", "New York Rangers": "NYR", "Boston Bruins": "BOS", "Montreal Canadiens": "MTL",
+    "Ottawa Senators": "OTT", "Buffalo Sabres": "BUF", "New York Islanders": "NYI", "New Jersey Devils": "NJD",
+    "Carolina Hurricanes": "CAR", "Florida Panthers": "FLA", "Minnesota Wild": "MIN", "Nashville Predators": "NSH",
+    "Chicago Blackhawks": "CHI", "Philadelphia Flyers": "PHI", "Colorado Avalanche": "COL", "Edmonton Oilers": "EDM",
+    "Calgary Flames": "CGY", "Vegas Golden Knights": "VGK", "Los Angeles Kings": "LAK", "Seattle Kraken": "SEA",
+    "San Jose Sharks": "SJS", "Anaheim Ducks": "ANA", "Tampa Bay Lightning": "TBL", "Winnipeg Jets": "WPG",
+    "Arizona Coyotes": "ARI", "St. Louis Blues": "STL", "Columbus Blue Jackets": "CBJ",
+    "Utah Mammoth": "UTA", "Vancouver Canucks": "VAN"
   };
-  
+
   // Skús presné zhodu
   if (TEAM_NAME_TO_ABBREV[teamName]) {
     return TEAM_NAME_TO_ABBREV[teamName];
   }
-  
+
   // Skús extrahovať posledné slovo
   const parts = String(teamName).trim().split(/\s+/);
   if (parts.length > 0) {
@@ -4163,7 +4160,7 @@ function getTeamAbbrev(teamName) {
       return TEAM_NAME_TO_ABBREV[lastWord];
     }
   }
-  
+
   // Debug: ak sa nenašiel
   console.warn(`⚠️ Tím "${teamName}" sa nenašiel v mapovaní`);
   return "";
@@ -4172,15 +4169,15 @@ function getTeamAbbrev(teamName) {
 // Funkcia na získanie abbreviatúry tímu hráča
 function getPlayerTeamAbbrev(playerName, usePremiumCache = false) {
   if (!playerName) return "";
-  
+
   // Pre premium sekciu použij cache
   if (usePremiumCache && PREMIUM_PLAYERS_CACHE && PREMIUM_PLAYERS_CACHE.length > 0) {
     // Skús presné zhodu
-    let player = PREMIUM_PLAYERS_CACHE.find(p => 
-      p.name === playerName || 
+    let player = PREMIUM_PLAYERS_CACHE.find(p =>
+      p.name === playerName ||
       p.name.toLowerCase() === playerName.toLowerCase()
     );
-    
+
     // Ak sa nenašiel, skús podľa priezviska
     if (!player) {
       const searchLastName = playerName.trim().split(/\s+/).pop().toLowerCase();
@@ -4189,12 +4186,12 @@ function getPlayerTeamAbbrev(playerName, usePremiumCache = false) {
         return pLastName === searchLastName;
       });
     }
-    
+
     if (player && player.team) {
       return getTeamAbbrev(player.team);
     }
   }
-  
+
   // Pre ABS sekciu použij playerTeams
   if (playerTeams && Object.keys(playerTeams).length > 0) {
     // Extrahuj priezvisko (posledné slovo, odstráň bodky)
@@ -4203,21 +4200,21 @@ function getPlayerTeamAbbrev(playerName, usePremiumCache = false) {
       let lastName = parts[parts.length - 1].toLowerCase();
       // Odstráň bodky a špeciálne znaky
       lastName = lastName.replace(/[.,]/g, '');
-      
+
       let teamFullName = playerTeams[lastName] || "";
-      
+
       // Ak sa nenašiel, skús aj bez posledného znaku (ak je to skratka)
       if (!teamFullName && lastName.length > 1) {
         const altLastName = lastName.slice(0, -1);
         teamFullName = playerTeams[altLastName] || "";
       }
-      
+
       if (teamFullName) {
         return getTeamAbbrev(teamFullName);
       }
     }
   }
-  
+
   // Fallback: skús nájsť v premium cache podľa priezviska
   if (PREMIUM_PLAYERS_CACHE && PREMIUM_PLAYERS_CACHE.length > 0) {
     const searchLastName = playerName.trim().split(/\s+/).pop().toLowerCase().replace(/[.,]/g, '');
@@ -4225,12 +4222,12 @@ function getPlayerTeamAbbrev(playerName, usePremiumCache = false) {
       const pLastName = p.name.split(' ').pop().toLowerCase();
       return pLastName === searchLastName || pLastName.startsWith(searchLastName) || searchLastName.startsWith(pLastName);
     });
-    
+
     if (player && player.team) {
       return getTeamAbbrev(player.team);
     }
   }
-  
+
   return "";
 }
 
@@ -4321,14 +4318,14 @@ async function loadPremiumPlayers() {
       tbody.appendChild(tr);
     }
 
-     // 🎨 Zafarbenie balance (plus / mínus)
-tbody.querySelectorAll("td.balance").forEach(td => {
-  const value = parseFloat(td.textContent.replace(",", "."));
-  if (isNaN(value)) return;
+    // 🎨 Zafarbenie balance (plus / mínus)
+    tbody.querySelectorAll("td.balance").forEach(td => {
+      const value = parseFloat(td.textContent.replace(",", "."));
+      if (isNaN(value)) return;
 
-  if (value > 0) td.classList.add("balance-plus");
-  else if (value < 0) td.classList.add("balance-minus");
-});
+      if (value > 0) td.classList.add("balance-plus");
+      else if (value < 0) td.classList.add("balance-minus");
+    });
 
   } catch (err) {
     console.error(err);
@@ -4379,14 +4376,14 @@ async function showVipMantingalDetail(player) {
       `;
     });
 
-     // 🎨 Zafarbenie balance (plus / mínus)
-tbody.querySelectorAll("td.balance").forEach(td => {
-  const value = parseFloat(td.textContent.replace(",", "."));
-  if (isNaN(value)) return;
+  // 🎨 Zafarbenie balance (plus / mínus)
+  tbody.querySelectorAll("td.balance").forEach(td => {
+    const value = parseFloat(td.textContent.replace(",", "."));
+    if (isNaN(value)) return;
 
-  if (value > 0) td.classList.add("balance-plus");
-  else if (value < 0) td.classList.add("balance-minus");
-});
+    if (value > 0) td.classList.add("balance-plus");
+    else if (value < 0) td.classList.add("balance-minus");
+  });
 
   const detailBox = document.getElementById("vip-mantingale-detail");
   detailBox.classList.remove("hidden");
@@ -4560,9 +4557,9 @@ async function addPremiumPlayer() {
   try {
     const res = await fetch(
       `/api/vip?task=add_player` +
-        `&name=${encodeURIComponent(player)}` +
-        `&team=${encodeURIComponent(team)}` +
-        `&odds=${encodeURIComponent(odds)}`,
+      `&name=${encodeURIComponent(player)}` +
+      `&team=${encodeURIComponent(team)}` +
+      `&odds=${encodeURIComponent(odds)}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -4628,13 +4625,13 @@ function renderPremiumAnalytics(standings) {
       </thead>
       <tbody>
         ${byForm.map((t, i) =>
-          row(
-            t,
-            i,
-            t.l10Points,
-            `${t.l10Wins}-${t.l10Losses}-${t.l10OtLosses}`
-          )
-        ).join("")}
+    row(
+      t,
+      i,
+      t.l10Points,
+      `${t.l10Wins}-${t.l10Losses}-${t.l10OtLosses}`
+    )
+  ).join("")}
       </tbody>
     </table>
   `;
@@ -4652,8 +4649,8 @@ function renderPremiumAnalytics(standings) {
       </thead>
       <tbody>
         ${byOffense.map((t, i) =>
-          row(t, i, t.l10GoalsFor)
-        ).join("")}
+    row(t, i, t.l10GoalsFor)
+  ).join("")}
       </tbody>
     </table>
   `;
@@ -4670,8 +4667,8 @@ function renderPremiumAnalytics(standings) {
       </thead>
       <tbody>
         ${byDefense.map((t, i) =>
-          row(t, i, t.l10GoalsAgainst)
-        ).join("")}
+    row(t, i, t.l10GoalsAgainst)
+  ).join("")}
       </tbody>
     </table>
   `;
@@ -4689,12 +4686,12 @@ function renderPremiumAnalytics(standings) {
       </thead>
       <tbody>
         ${byTrend.map((t, i) =>
-          row(
-            t,
-            i,
-            `${t.l10GoalDifferential > 0 ? "+" : ""}${t.l10GoalDifferential}`
-          )
-        ).join("")}
+    row(
+      t,
+      i,
+      `${t.l10GoalDifferential > 0 ? "+" : ""}${t.l10GoalDifferential}`
+    )
+  ).join("")}
       </tbody>
     </table>
   `;
@@ -4779,7 +4776,7 @@ async function renderVipTips() {
   const dateElement = document.getElementById("vip-tips-date");
   if (dateElement) {
     const today = new Date();
-    const dateStr = CURRENT_LANG === "en" 
+    const dateStr = CURRENT_LANG === "en"
       ? today.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
       : today.toLocaleDateString("sk-SK", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
     dateElement.textContent = dateStr;
@@ -4984,10 +4981,10 @@ async function renderVipTips() {
     const totalPoints = (totalGoals || 0) + (totalAssists || 0);
     const gamesPlayed = st?.gamesPlayed || pick.gp || 0;
     const oppCode = pick.teamCode === game.homeCode ? game.awayCode : game.homeCode;
-    
+
     // Escape single quotes in player name for onclick
     const playerNameEscaped = pick.player.replace(/'/g, "\\'");
-    
+
     return `
       <div class="vip-tip-row" data-player-key="${playerKey}" data-player-name="${pick.player}">
         <div class="vip-tip-left">
@@ -5026,9 +5023,9 @@ async function renderVipTips() {
       g.reco === "over"
         ? `${t("vipTips.over")} ${g.line}`
         : g.reco === "under"
-        ? `${t("vipTips.under")} ${g.line}`
-        : t("vipTips.noReco");
-    
+          ? `${t("vipTips.under")} ${g.line}`
+          : t("vipTips.noReco");
+
     const recoClass = g.reco === "over" ? "vip-reco-over" : g.reco === "under" ? "vip-reco-under" : "";
 
     return `
@@ -5082,7 +5079,7 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
 
   // Show overlay as flex → real modal window
   overlay.style.setProperty("display", "flex", "important");
-  
+
   // Reset animácie - modal sa centruje cez CSS flexbox
   modal.style.opacity = "0";
   modal.style.transform = "scale(0.9) translateY(-20px)";
@@ -5129,7 +5126,7 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
 
   const nameKey = (n) => norm(String(n || "").replace(/\./g, ""));
   const statsByName = new Map();
-  
+
   // Build map with all players - using the same approach as in renderVipTips
   for (const p of allPlayerArrays) {
     if (!p?.name) continue;
@@ -5155,7 +5152,7 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   const nameParts = playerNameNorm.split(" ").filter(Boolean);
   const firstPart = nameParts[0] || "";
   const lastPart = nameParts[nameParts.length - 1] || "";
-  
+
   // Generate name variants to try (all normalized with norm())
   const variants = [
     playerNameNorm, // "kirill kaprizov" or "k kaprizov"
@@ -5163,7 +5160,7 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
     firstPart.length > 0 && lastPart ? `${firstPart.charAt(0)}${lastPart}` : null, // "kkaprizov"
     lastPart, // "kaprizov"
   ].filter(Boolean);
-  
+
   let st = null;
   for (const variant of variants) {
     st = statsByName.get(variant);
@@ -5172,7 +5169,7 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
       break;
     }
   }
-  
+
   // If still not found, try to find by last name only
   if (!st && lastPart) {
     for (const [key, value] of statsByName.entries()) {
@@ -5189,14 +5186,14 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
       }
     }
   }
-  
+
   // Debug logging
   if (!st) {
     console.warn("VIP Analysis - Player not found:", playerName, "Normalized:", playerNameNorm, "Variants tried:", variants);
     console.warn("Sample available keys (first 10):", Array.from(statsByName.keys()).slice(0, 10));
     console.warn("Sample stats names (first 10):", Array.from(statsByName.values()).slice(0, 10).map(v => v.name));
   }
-  
+
   const totalGoals = st?.goals || 0;
   const totalShots = st?.shots || 0;
   const totalAssists = st?.assists || 0;
@@ -5206,17 +5203,17 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   const shotsPerGame = gamesPlayed > 0 ? (totalShots / gamesPlayed) : 0;
   const ppGoalsPerGame = gamesPlayed > 0 ? ((st?.powerPlayGoals || 0) / gamesPlayed) : 0;
   const toiMin = st?.toi || 0;
-  
+
   // Get player rating (approximate - using a default)
   const rating = 2000; // Default, could be improved later
-  
+
   // Calculate confidence based on stats
   const confidence = Math.min(95, Math.round(60 + (goalsPerGame * 10) + (shotsPerGame * 2)));
 
   const oppStanding = findStandingByCode(oppCode);
   const oppDefenseRank = oppStanding ? (LAST_STANDINGS || []).filter(s => (s.l10GoalsAgainst || 0) > (oppStanding.l10GoalsAgainst || 0)).length + 1 : null;
   const oppDefenseL10 = oppStanding?.l10GoalsAgainst || 0;
-  
+
   // Generovanie analýzy
   const reasons = [];
   if (rating > 2000) reasons.push(CURRENT_LANG === "en" ? "High player rating" : "Vysoký rating hráča");
@@ -5225,8 +5222,8 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   if (ppGoalsPerGame > 0.1) reasons.push(CURRENT_LANG === "en" ? "Power play effectiveness" : "Efektívnosť v presilových hrách");
   if (toiMin > 18) reasons.push(CURRENT_LANG === "en" ? "Significant ice time" : "Významný čas na ľade");
   if (oppDefenseRank && oppDefenseRank <= 10) {
-    reasons.push(CURRENT_LANG === "en" 
-      ? `Weak opponent defense (${oppDefenseRank}. in goals allowed)` 
+    reasons.push(CURRENT_LANG === "en"
+      ? `Weak opponent defense (${oppDefenseRank}. in goals allowed)`
       : `Slabá obrana súpera (${oppDefenseRank}. miesto v inkasovaných góloch)`);
   }
 
@@ -5292,7 +5289,7 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
     
     <button class="close-modal-btn" onclick="closeVipTipAnalysis()">${t("common.close")}</button>
   `;
-  
+
   // Trigger animáciu po načítaní obsahu - modal zostáva v strede
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -5313,12 +5310,12 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
   if (!modal || !overlay) return;
 
   overlay.style.setProperty("display", "flex", "important");
-  
+
   // Reset animácie - modal sa centruje cez CSS flexbox
   modal.style.opacity = "0";
   modal.style.transform = "scale(0.9) translateY(-20px)";
   modal.style.transition = "none";
-  
+
   modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
 
   // Trigger animáciu - modal je už v strede cez flex
@@ -5333,21 +5330,21 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
   // Získaj štatistiky tímov
   const homeStanding = findStandingByCode(homeCode);
   const awayStanding = findStandingByCode(awayCode);
-  
+
   // Vypočítaj priemery
   const homeGoalsFor = homeStanding?.l10GoalsFor || 0;
   const homeGoalsAgainst = homeStanding?.l10GoalsAgainst || 0;
   const awayGoalsFor = awayStanding?.l10GoalsFor || 0;
   const awayGoalsAgainst = awayStanding?.l10GoalsAgainst || 0;
-  
+
   const homeAvgGoals = homeGoalsFor / 10;
   const homeAvgAllowed = homeGoalsAgainst / 10;
   const awayAvgGoals = awayGoalsFor / 10;
   const awayAvgAllowed = awayGoalsAgainst / 10;
-  
+
   // Vypočítaj očakávaný počet gólov
   const expectedTotal = (homeAvgGoals + awayAvgGoals + homeAvgAllowed + awayAvgAllowed) / 2;
-  
+
   // 🔥 KĽÚČOVÉ: Odporúčanie MUSÍ byť založené na matematike, nie na nesprávnom reco z backendu
   // Ak expectedTotal > line → MUSÍ byť OVER
   // Ak expectedTotal < line → MUSÍ byť UNDER
@@ -5355,7 +5352,7 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
   const isActuallyOver = expectedTotal > line;
   const isActuallyUnder = expectedTotal < line;
   const difference = Math.abs(expectedTotal - line);
-  
+
   // Generuj dôvody na základe SPRÁVNEHO odporúčania (založeného na matematike)
   const reasons = [];
   if (correctReco === "over") {
@@ -5375,10 +5372,10 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
     if (awayAvgAllowed < 2) reasons.push(`${awayCode} má silnú obranu (${awayAvgAllowed.toFixed(2)} inkasovaných/zápas v L10)`);
     reasons.push(`Očakávaný počet gólov (${expectedTotal.toFixed(2)}) je nižší ako línia (${line}) o ${difference.toFixed(2)} gólov`);
   }
-  
+
   // Text - používa SPRÁVNE odporúčanie založené na matematike
   const actualRelation = isActuallyOver ? (CURRENT_LANG === "en" ? "exceeds" : "nad") : isActuallyUnder ? (CURRENT_LANG === "en" ? "is below" : "pod") : (CURRENT_LANG === "en" ? "matches" : "sa rovná");
-  
+
   const analysisText = CURRENT_LANG === "en"
     ? `Based on the last 10 games statistics, ${homeCode} averages ${homeAvgGoals.toFixed(2)} goals scored and ${homeAvgAllowed.toFixed(2)} goals allowed per game. ${awayCode} averages ${awayAvgGoals.toFixed(2)} goals scored and ${awayAvgAllowed.toFixed(2)} goals allowed per game. The expected total goals for this match is ${expectedTotal.toFixed(2)}, which ${actualRelation} the line of ${line} goals. Therefore, we recommend ${correctReco === "over" ? "OVER" : "UNDER"} ${line}. The AI confidence of ${confidence}% reflects our analysis.`
     : `Na základe štatistík z posledných 10 zápasov, ${homeCode} má priemer ${homeAvgGoals.toFixed(2)} gólov strelených a ${homeAvgAllowed.toFixed(2)} gólov inkasovaných na zápas. ${awayCode} má priemer ${awayAvgGoals.toFixed(2)} gólov strelených a ${awayAvgAllowed.toFixed(2)} gólov inkasovaných na zápas. Očakávaný počet gólov pre tento zápas je ${expectedTotal.toFixed(2)}, čo je ${actualRelation} líniou ${line} gólov. Preto odporúčame ${correctReco === "over" ? "OVER" : "UNDER"} ${line}. AI confidence ${confidence}% odráža našu analýzu.`;
@@ -5441,7 +5438,7 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
     
     <button class="close-modal-btn" onclick="closeVipTipAnalysis()">${t("common.close")}</button>
   `;
-  
+
   // Trigger animáciu po načítaní obsahu - modal zostáva v strede
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -5459,12 +5456,12 @@ function closeVipTipAnalysis(e) {
     e.stopPropagation();
     return;
   }
-  
+
   const overlay = document.getElementById("vip-tip-analysis-overlay");
   const modal = document.getElementById("vip-tip-analysis-modal");
-  
+
   if (!overlay) return;
-  
+
   // Zatvor len ak sa kliklo na overlay (nie na content)
   if (!e || e.target.id === "vip-tip-analysis-overlay") {
     if (modal) {
@@ -5491,12 +5488,82 @@ async function displayShootingLeaders() {
   const detail = document.getElementById("stats-detail");
   if (!grid || !detail) return;
 
-  let lastStats = null;
-  let lastFetchTime = 0;
+  // 🔹 OKAMŽITÉ NAČÍTANIE DÁT PRE PREVIEW
+  if (!window.lastStatsCache || (Date.now() - window.lastStatsFetchTime > 60000)) {
+    try {
+      const resp = await fetch("/api/statistics", { cache: "force-cache" }); // cache pre rýchlosť
+      if (resp.ok) {
+        window.lastStatsCache = await resp.json();
+        window.lastStatsFetchTime = Date.now();
+      }
+    } catch (err) {
+      console.warn("Failed to fetch stats for preview:", err);
+    }
+  }
+
+  // 🔹 Vykreslenie preview do boxov
+  if (window.lastStatsCache) {
+    const data = window.lastStatsCache;
+
+    // Mapovanie typu boxu na názov poľa v dátach
+    const TYPE_TO_LIST = {
+      "goals": "topGoals",
+      "assists": "topAssists",
+      "points": "topPoints",
+      "shots": "topShots",
+      "accuracy": "topAccuracy",
+      "plusminus": "topPlusMinus",
+      "powerPlayGoals": "topPowerPlayGoals",
+      "toi": "topTOI",
+      "pim": "topPIM"
+    };
+
+    grid.querySelectorAll(".stat-box").forEach(box => {
+      const type = box.dataset.type;
+      const listName = TYPE_TO_LIST[type];
+      const players = data[listName];
+
+      // Ak už máme preview, nepridávaj ho znova (iba ak by sa zmenili dáta)
+      if (box.querySelector(".stat-box-preview")) return;
+
+      if (players && players.length > 0) {
+        const topPlayer = players[0];
+        let displayValue = "";
+
+        // Formátovanie hodnoty podľa typu
+        switch (type) {
+          case "goals": displayValue = `${topPlayer.goals} G`; break;
+          case "assists": displayValue = `${topPlayer.assists} A`; break;
+          case "points": displayValue = `${topPlayer.points} B`; break;
+          case "shots": displayValue = `${topPlayer.shots} S`; break;
+          case "accuracy": displayValue = `${topPlayer.shootingPctg?.toFixed(1)}%`; break;
+          case "plusminus": displayValue = `${topPlayer.plusMinus > 0 ? "+" : ""}${topPlayer.plusMinus}`; break;
+          case "powerPlayGoals": displayValue = `${topPlayer.powerPlayGoals} PPG`; break;
+          case "toi": displayValue = `${topPlayer.toi} min`; break;
+          case "pim": displayValue = `${topPlayer.pim} TM`; break;
+        }
+
+        const previewHtml = `
+          <div class="stat-box-preview">
+            <img src="${topPlayer.headshot}" alt="${topPlayer.name}" onerror="this.src='/icons/user.svg'">
+            <div class="stat-box-info">
+              <span class="stat-box-name">${topPlayer.name}</span>
+              <span class="stat-box-value">${displayValue}</span>
+            </div>
+          </div>
+        `;
+
+        // Vlož preview ZA nadpis "Top 50" (box obsahuje h4)
+        box.querySelector("h4")?.insertAdjacentHTML('afterend', previewHtml);
+      }
+    });
+  }
+
 
   // 💎 Vykreslenie tabuľky v modernom kompaktnom mobile-friendly režime
   function renderStats(data, type) {
     detail.innerHTML = `<p style="text-align:center;color:#00eaff;">📊 ${CURRENT_LANG === "en" ? "Loading stats..." : "Načítavam štatistiky..."}</p>`;
+
 
     let players = [];
     let title = "";
@@ -5633,31 +5700,32 @@ async function displayShootingLeaders() {
 
   // 📌 Listener
   grid.querySelectorAll(".stat-box").forEach((box) => {
-    box.addEventListener("click", async () => {
+    // Odstránime staré listenery klonovaním (ak treba, inak stačí check na attached)
+    // Tu zjednodušene predpokladáme, že sa funkcia volá opakovane, tak pozor na multiple listeners.
+    // Ideálne by bolo dať listener mimo funckiu alebo použiť .onclick = ...
+    box.onclick = async () => {
       const type = box.dataset.type;
       detail.innerHTML = `<p style="text-align:center;color:#00eaff;">${t("common.loading")}</p>`;
       detail.scrollIntoView({ behavior: "smooth", block: "start" });
 
       try {
-        const now = Date.now();
-
-        if (lastStats && now - lastFetchTime < 30000) {
-          renderStats(lastStats, type);
+        if (window.lastStatsCache) {
+          renderStats(window.lastStatsCache, type);
           return;
         }
 
-        let resp = await fetch("/api/statistics", { cache: "no-store" });
+        let resp = await fetch("/api/statistics", { cache: "force-cache" });
         if (!resp.ok) throw new Error(t("common.failedToLoad"));
         const data = await resp.json();
 
-        lastStats = data;
-        lastFetchTime = now;
+        window.lastStatsCache = data;
+        window.lastStatsFetchTime = Date.now();
 
         renderStats(data, type);
       } catch (err) {
         detail.innerHTML = `<p style="color:red;text-align:center;">❌ ${err.message}</p>`;
       }
-    });
+    };
   });
 }
 
@@ -5922,8 +5990,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("premium-logout-from-locked-btn")
     ?.addEventListener("click", () => {
       premiumLogout();
-    checkPremiumStatus();
-  });
+      checkPremiumStatus();
+    });
 
   // ===============================
   // PREMIUM – Logout (delegácia)
@@ -5937,14 +6005,14 @@ window.addEventListener("DOMContentLoaded", async () => {
   });
 
 
-// ===============================
-// PREMIUM – Pridať hráča (PRIAMY listener)
-// ===============================
-document.getElementById("premium-add-player-btn")
-  ?.addEventListener("click", (e) => {
-    e.preventDefault();
-    addPremiumPlayer();
-  });
+  // ===============================
+  // PREMIUM – Pridať hráča (PRIAMY listener)
+  // ===============================
+  document.getElementById("premium-add-player-btn")
+    ?.addEventListener("click", (e) => {
+      e.preventDefault();
+      addPremiumPlayer();
+    });
 
   // ===============================
   // PREMIUM – Akcie (delegácia)
@@ -6031,14 +6099,14 @@ function initScrollAnimations() {
     document.querySelectorAll(selector).forEach((el) => {
       // Preskoč ak už má triedu
       if (el.classList.contains('animate-on-scroll')) return;
-      
+
       el.classList.add('animate-on-scroll');
-      
+
       // Postupný staggered efekt pre každý box
       const staggerClass = `stagger-${(boxIndex % 6) + 1}`;
       el.classList.add(staggerClass);
       boxIndex++;
-      
+
       // Pridaj do observera
       scrollObserver.observe(el);
     });
@@ -6048,10 +6116,10 @@ function initScrollAnimations() {
   headerSelectors.forEach(selector => {
     document.querySelectorAll(selector).forEach((el) => {
       if (el.classList.contains('animate-on-scroll')) return;
-      
+
       el.classList.add('animate-on-scroll');
       el.classList.add('stagger-1'); // Kratšie oneskorenie pre nadpisy
-      
+
       scrollObserver.observe(el);
     });
   });
@@ -6072,7 +6140,7 @@ function initScrollAnimations() {
 // Funkcia pre aplikovanie animácií na nové dynamicky vytvorené elementy
 function animateNewElements(container) {
   if (!scrollObserver) return;
-  
+
   const boxSelectors = [
     '.home-panel',
     '.matches-box',
@@ -6087,22 +6155,22 @@ function animateNewElements(container) {
     'table tbody tr',
     '.nhl-home section'
   ];
-  
+
   let boxIndex = 0;
   boxSelectors.forEach(selector => {
     const elements = container.querySelectorAll(selector);
     elements.forEach((el) => {
       if (el.classList.contains('animate-on-scroll')) return;
-      
+
       el.classList.add('animate-on-scroll');
-      
+
       // Postupný staggered efekt pre každý box
       const staggerClass = `stagger-${(boxIndex % 6) + 1}`;
       el.classList.add(staggerClass);
       boxIndex++;
-      
+
       scrollObserver.observe(el);
-      
+
       // Ak je už viditeľný, animuj okamžite
       const rect = el.getBoundingClientRect();
       if (rect.top < window.innerHeight && rect.bottom > 0) {
