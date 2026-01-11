@@ -9582,8 +9582,7 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  position: relative;
+  justify-content: space-between;
   margin-bottom: 25px;
   padding: 16px 20px;
   background: linear-gradient(145deg, rgba(0, 30, 50, 0.9), rgba(0, 20, 35, 0.95));
@@ -9597,17 +9596,19 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  flex: 0 0 auto;
+  flex: 1;
   min-width: 0;
 }
 
 .live-details-team-home {
   align-items: flex-start;
+  justify-content: flex-start;
   margin-right: 20px;
 }
 
 .live-details-team-away {
   align-items: flex-end;
+  justify-content: flex-start;
   margin-left: 20px;
 }
 
@@ -9616,13 +9617,10 @@ body {
   font-weight: 800;
   color: #00eaff;
   line-height: 1;
-  padding: 0 12px;
+  padding: 0 20px;
   text-align: center;
   white-space: nowrap;
   flex-shrink: 0;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .live-details-logo {
