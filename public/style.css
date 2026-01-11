@@ -9979,7 +9979,8 @@ body {
    =============================== */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  /* Zväčšená minimálna šírka */
   gap: 25px;
   /* Väčšia medzera medzi boxami */
   width: 100%;
@@ -10085,6 +10086,10 @@ body {
   justify-content: center;
   align-items: flex-start;
   gap: 4px;
+  flex: 1;
+  /* Nech zaberie zvyšok miesta */
+  min-width: 0;
+  /* Nutné pre flex ellipsis */
 }
 
 .stat-box-name {
@@ -10095,7 +10100,8 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 180px;
+  width: 100%;
+  /* Plná šírka v rámci parenta */
 }
 
 .stat-box-value {
