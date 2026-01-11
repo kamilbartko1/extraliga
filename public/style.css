@@ -9593,7 +9593,7 @@ body {
 
 .live-details-team {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 8px;
   flex: 1;
@@ -9601,13 +9601,12 @@ body {
 }
 
 .live-details-team-home {
-  align-items: flex-start;
   justify-content: flex-start;
   margin-right: 20px;
 }
 
 .live-details-team-away {
-  align-items: flex-end;
+  flex-direction: row-reverse;
   justify-content: flex-start;
   margin-left: 20px;
 }
