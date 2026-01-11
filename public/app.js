@@ -1942,24 +1942,54 @@ function updateLiveGameRow(row, game) {
       const awayScoreEl = scoreContainer.querySelector('.live-score:last-of-type');
       const sepEl = scoreContainer.querySelector('.live-sep');
 
+      // Ulož staré skóre pre detekciu zmien
+      const oldHomeScore = homeScoreEl ? homeScoreEl.textContent : null;
+      const oldAwayScore = awayScoreEl ? awayScoreEl.textContent : null;
+      const newHomeScore = String(game.scores.home);
+      const newAwayScore = String(game.scores.away);
+
+      // Detekuj zmenu skóre PRED aktualizáciou
       let scoreChanged = false;
-      if (homeScoreEl && homeScoreEl.textContent !== String(game.scores.home)) {
-        homeScoreEl.textContent = game.scores.home;
+      if (homeScoreEl && oldHomeScore !== newHomeScore) {
         scoreChanged = true;
       }
-      if (awayScoreEl && awayScoreEl.textContent !== String(game.scores.away)) {
-        awayScoreEl.textContent = game.scores.away;
+      if (awayScoreEl && oldAwayScore !== newAwayScore) {
         scoreChanged = true;
       }
 
-      // Pridaj efekt pri zmene skóre
-      if (scoreChanged) {
-        const scoreBox = row.querySelector('.live-game-score');
-        if (scoreBox) {
-          scoreBox.classList.add('score-changed');
-          setTimeout(() => {
-            scoreBox.classList.remove('score-changed');
-          }, 5000);
+      // Ak sa zmenilo skóre, spusti animáciu a počkaj 5 sekúnd pred aktualizáciou
+      if (scoreChanged && !row.classList.contains('score-updating')) {
+        // Spusti animáciu na celom boxu
+        row.classList.add('score-updating');
+
+        // Počkaj 5 sekúnd a potom aktualizuj skóre
+        setTimeout(() => {
+          if (homeScoreEl && oldHomeScore !== newHomeScore) {
+            homeScoreEl.textContent = newHomeScore;
+          }
+          if (awayScoreEl && oldAwayScore !== newAwayScore) {
+            awayScoreEl.textContent = newAwayScore;
+          }
+
+          // Zastav animáciu
+          row.classList.remove('score-updating');
+
+          // Pridaj efekt na skóre
+          const scoreBox = row.querySelector('.live-game-score');
+          if (scoreBox) {
+            scoreBox.classList.add('score-changed');
+            setTimeout(() => {
+              scoreBox.classList.remove('score-changed');
+            }, 5000);
+          }
+        }, 5000);
+      } else if (!scoreChanged) {
+        // Ak sa skóre nezmenilo, aktualizuj normálne (pre ostatné zmeny)
+        if (homeScoreEl && oldHomeScore !== newHomeScore) {
+          homeScoreEl.textContent = newHomeScore;
+        }
+        if (awayScoreEl && oldAwayScore !== newAwayScore) {
+          awayScoreEl.textContent = newAwayScore;
         }
       }
 

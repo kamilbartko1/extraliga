@@ -9430,6 +9430,50 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
   transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.live-game-row.score-updating {
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.8), 
+              0 0 20px rgba(255, 68, 68, 0.6),
+              inset 0 0 20px rgba(255, 68, 68, 0.2);
+  animation: borderGlowRotate 5s linear;
+}
+
+@keyframes borderGlowRotate {
+  0% {
+    border-image: conic-gradient(from 0deg, transparent 0deg, transparent 90deg, rgba(255, 68, 68, 1) 180deg, transparent 270deg, transparent 360deg) 1;
+    box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.8), 
+                0 0 20px rgba(255, 68, 68, 0.6),
+                inset 0 0 20px rgba(255, 68, 68, 0.2);
+  }
+  25% {
+    border-image: conic-gradient(from 90deg, transparent 0deg, transparent 90deg, rgba(255, 68, 68, 1) 180deg, transparent 270deg, transparent 360deg) 1;
+    box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.8), 
+                0 0 25px rgba(255, 68, 68, 0.7),
+                inset 0 0 25px rgba(255, 68, 68, 0.3);
+  }
+  50% {
+    border-image: conic-gradient(from 180deg, transparent 0deg, transparent 90deg, rgba(255, 68, 68, 1) 180deg, transparent 270deg, transparent 360deg) 1;
+    box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.8), 
+                0 0 20px rgba(255, 68, 68, 0.6),
+                inset 0 0 20px rgba(255, 68, 68, 0.2);
+  }
+  75% {
+    border-image: conic-gradient(from 270deg, transparent 0deg, transparent 90deg, rgba(255, 68, 68, 1) 180deg, transparent 270deg, transparent 360deg) 1;
+    box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.8), 
+                0 0 25px rgba(255, 68, 68, 0.7),
+                inset 0 0 25px rgba(255, 68, 68, 0.3);
+  }
+  100% {
+    border-image: conic-gradient(from 360deg, transparent 0deg, transparent 90deg, rgba(255, 68, 68, 1) 180deg, transparent 270deg, transparent 360deg) 1;
+    box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.8), 
+                0 0 20px rgba(255, 68, 68, 0.6),
+                inset 0 0 20px rgba(255, 68, 68, 0.2);
+  }
 }
 
 .live-game-row:hover {
