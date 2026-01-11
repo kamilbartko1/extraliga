@@ -278,9 +278,9 @@ function displayMantingal() {
         </thead>
         <tbody>
             ${currentTop3.map(([name]) => {
-                const s = state[name] || { stake: BASE_STAKE, lastResult: "—", log: [] };
-                const logHtml = (s.log.length
-                    ? s.log.map(e => `
+        const s = state[name] || { stake: BASE_STAKE, lastResult: "—", log: [] };
+        const logHtml = (s.log.length
+            ? s.log.map(e => `
                         <div>
                             <b>${e.date}</b> – stake: ${e.stake_before} €,
                             góly: ${e.goals},
@@ -289,9 +289,9 @@ function displayMantingal() {
                             nový stake: ${e.new_stake} €
                         </div>
                     `).join("")
-                    : "<div>Denník je prázdny</div>"
-                );
-                return `
+            : "<div>Denník je prázdny</div>"
+        );
+        return `
                     <tr class="mant-row" data-player="${encodeURIComponent(name)}">
                         <td>${name}</td>
                         <td>${ODDS}</td>
@@ -305,7 +305,7 @@ function displayMantingal() {
                         </td>
                     </tr>
                 `;
-            }).join("")}
+    }).join("")}
         </tbody>
     `;
 
@@ -340,20 +340,6 @@ function displayMantingal() {
     });
 }
 
-// Zdieľanie AI Tipu
-window.shareAiTip = function(playerName, team, prob, match) {
-    const text = `🔥 AI Scorer Tip: ${playerName} (${team}) skóruje! 🎯\n📊 Pravdepodobnosť: ${prob}%\n🏒 Zápas: ${match}\n\n👉 Získaj viac tipov na: https://www.nhlpro.sk`;
-    
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => {
-            alert("Tip skopírovaný! Môžeš ho zdieľať.");
-        }).catch(err => {
-            console.error("Chyba pri kopírovaní:", err);
-            prompt("Skopíruj si tip:", text);
-        });
-    } else {
-        prompt("Skopíruj si tip:", text);
-    }
-};
+
 
 window.addEventListener("DOMContentLoaded", fetchMatches);
