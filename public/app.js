@@ -1286,7 +1286,7 @@ async function displayHome() {
     <div class="nhl-card">
       <div class="nhl-card-head">
         <h3>
-          <img src="https://cdn-icons-png.flaticon.com/512/3079/3079335.png" alt="Hockey" class="hockey-icon" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;">
+          <img src="https://www.flaticon.com/svg/static/icons/svg/3079/3079335.svg" alt="Hockey" class="hockey-icon" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;">
           ${t("home.todaysGames")}
         </h3>
         <span class="nhl-card-hint">${gamesCountText}</span>
