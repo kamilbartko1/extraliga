@@ -24,6 +24,7 @@ const VIP_USERS_KEY = "VIP_USERS";
 const vipPlayersKey = (userId) => `VIP_MTG:${userId}`;
 const vipHistoryKey = (userId, player) =>
   `VIP_MTG_HISTORY:${userId}:${player}`;
+const vipTotalProfitKey = (userId) => `VIP_TOTAL_PROFIT:${userId}`;
 
 // ===============================
 // Skratky timov
@@ -216,13 +217,20 @@ export default async function handler(req, res) {
       const playersRaw = (await redis.hgetall(key)) || {};
 
       const players = {};
-      let totalProfit = 0;
+      let currentPlayersProfit = 0;
 
       for (const [name, raw] of Object.entries(playersRaw)) {
         const obj = normalizePlayer(safeParse(raw));
         players[name] = obj;
-        totalProfit += obj.balance;
+        currentPlayersProfit += obj.balance;
       }
+
+      // Načítaj uložený profit z vymazaných hráčov
+      const archivedProfitRaw = await redis.get(vipTotalProfitKey(userId));
+      const archivedProfit = archivedProfitRaw ? Number(archivedProfitRaw) : 0;
+
+      // Celkový profit = profit vymazaných hráčov + profit aktuálnych hráčov
+      const totalProfit = archivedProfit + currentPlayersProfit;
 
       return res.json({
         ok: true,
@@ -305,6 +313,27 @@ if (task === "delete_player") {
   }
 
   const key = vipPlayersKey(userId);
+  const totalProfitKey = vipTotalProfitKey(userId);
+
+  // Pred vymazaním: načítaj balance hráča a ulož ho do total profit
+  const playerRaw = await redis.hget(key, player);
+  if (playerRaw) {
+    try {
+      const playerObj = normalizePlayer(safeParse(playerRaw));
+      const playerBalance = playerObj.balance || 0;
+
+      // Načítaj aktuálny total profit (profit z vymazaných hráčov)
+      const currentTotalProfitRaw = await redis.get(totalProfitKey);
+      const currentTotalProfit = currentTotalProfitRaw ? Number(currentTotalProfitRaw) : 0;
+
+      // Pridaj balance vymazaného hráča do total profit
+      const newTotalProfit = currentTotalProfit + playerBalance;
+      await redis.set(totalProfitKey, newTotalProfit.toString());
+    } catch (e) {
+      console.error("❌ Error saving player balance to total profit:", e.message);
+      // Pokračuj aj keď sa to nepodarí - hráč sa vymaže, ale total profit zostane nezmenený
+    }
+  }
 
   // zmaž hráča z VIP zoznamu
   await redis.hdel(key, player);
