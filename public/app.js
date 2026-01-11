@@ -73,7 +73,7 @@ const I18N = {
     "home.featureRealTime": "Aktuálne dáta",
     "home.featureRealTimeDesc": "Vždy najnovšie výsledky, tabuľky a štatistiky",
     "home.featureCTA": "Vyskúšať Premium",
-    "home.todaysGames": "Dnešné zápasy NHL",
+    "home.todaysGames": "🏒 Dnešné zápasy NHL",
     "home.gamesCount": "{count} zápasov",
     "home.noGamesToday": "Dnes nie sú žiadne zápasy.",
     "home.viewAll": "Zobraziť všetky →",
@@ -349,7 +349,7 @@ const I18N = {
     "home.featureRealTime": "Real-time Data",
     "home.featureRealTimeDesc": "Always the latest results, standings and statistics",
     "home.featureCTA": "Try Premium",
-    "home.todaysGames": "Today's NHL games",
+    "home.todaysGames": "🏒 Today's NHL games",
     "home.gamesCount": "{count} games",
     "home.noGamesToday": "No games today.",
     "home.viewAll": "View all →",
@@ -700,7 +700,7 @@ function renderPlayerRatingModalContent() {
 
 function renderPrivacy() {
   if (CURRENT_LANG === "en") {
-    return `
+  return `
       <h2>🔒 Privacy Policy - NHLPRO.sk</h2>
       <p><strong>Last updated:</strong> ${new Date().toLocaleDateString('en-GB')}</p>
 
@@ -1285,10 +1285,7 @@ async function displayHome() {
     <!-- DNESNE ZAPASY -->
     <div class="nhl-card">
       <div class="nhl-card-head">
-        <h3>
-          <img src="https://www.flaticon.com/svg/static/icons/svg/3079/3079335.svg" alt="Hockey" class="hockey-icon" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;">
-          ${t("home.todaysGames")}
-        </h3>
+        <h3>${t("home.todaysGames")}</h3>
         <span class="nhl-card-hint">${gamesCountText}</span>
       </div>
 
@@ -1435,7 +1432,7 @@ async function displayHome() {
         ${t("home.featureCTA")}
       </button>
     </div>
-  </div>
+</div>
 
 </section>
 `;
@@ -3225,7 +3222,7 @@ async function loadMantingal() {
     // V mobile: Hráč | Balance | Vklad | Streak | ROI | Detail
     // V desktop: Hráč | Vklad | Streak | Balance | ROI | Detail
     if (isMobile) {
-      tr.innerHTML = `
+    tr.innerHTML = `
         <td class="player-cell">${playerDisplay}</td>
         <td class="balance balance-mobile-first">${p.balance.toFixed(2)}</td>
         <td>${p.stake}</td>
@@ -3236,12 +3233,12 @@ async function loadMantingal() {
     } else {
       tr.innerHTML = `
         <td class="player-cell">${playerDisplay}</td>
-        <td>${p.stake}</td>
-        <td>${p.streak}</td>
-        <td class="balance">${p.balance.toFixed(2)}</td>
+      <td>${p.stake}</td>
+      <td>${p.streak}</td>
+      <td class="balance">${p.balance.toFixed(2)}</td>
         <td class="roi roi-desktop" data-player="${name}">-</td>
-        <td><button class="mtg-detail-btn" data-player="${name}">Detail</button></td>
-      `;
+      <td><button class="mtg-detail-btn" data-player="${name}">Detail</button></td>
+    `;
     }
 
     tbody.appendChild(tr);
@@ -4034,57 +4031,57 @@ document.getElementById("premium-signup-btn")
 // REGISTRÁCIA – SUPABASE SIGNUP funkcia
 // ===============================
 async function handleRegister() {
-  const email = document.getElementById("reg-email")?.value.trim();
-  const pass = document.getElementById("reg-pass")?.value;
-  const pass2 = document.getElementById("reg-pass2")?.value;
-  const msg = document.getElementById("premium-register-msg");
+    const email = document.getElementById("reg-email")?.value.trim();
+    const pass = document.getElementById("reg-pass")?.value;
+    const pass2 = document.getElementById("reg-pass2")?.value;
+    const msg = document.getElementById("premium-register-msg");
 
-  if (!email || !pass || !pass2) {
-    msg.textContent = t("premium.fillAll");
-    return;
-  }
-
-  if (pass.length < 8) {
-    msg.textContent = t("premium.passMin");
-    return;
-  }
-
-  if (pass !== pass2) {
-    msg.textContent = t("premium.passMismatch");
-    return;
-  }
-
-  msg.textContent = t("premium.creatingAccount");
-
-  try {
-    const r = await fetch(
-      `${SUPABASE_URL}/auth/v1/signup`,
-      {
-        method: "POST",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password: pass }),
-      }
-    );
-
-    const data = await r.json();
-
-    if (!r.ok) {
-      msg.textContent = data?.error_description || data?.error || t("premium.signupFailed");
+    if (!email || !pass || !pass2) {
+      msg.textContent = t("premium.fillAll");
       return;
     }
+
+    if (pass.length < 8) {
+      msg.textContent = t("premium.passMin");
+      return;
+    }
+
+    if (pass !== pass2) {
+      msg.textContent = t("premium.passMismatch");
+      return;
+    }
+
+    msg.textContent = t("premium.creatingAccount");
+
+    try {
+      const r = await fetch(
+        `${SUPABASE_URL}/auth/v1/signup`,
+        {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password: pass }),
+        }
+      );
+
+      const data = await r.json();
+
+      if (!r.ok) {
+        msg.textContent = data?.error_description || data?.error || t("premium.signupFailed");
+        return;
+      }
 
     // Úspešná registrácia - zobraziť správu a refreshnúť stránku
     msg.textContent = t("premium.emailConfirmMessage");
     msg.className = "premium-msg premium-msg-success";
     setTimeout(() => window.location.reload(), 3000);
 
-  } catch (err) {
-    console.error(err);
-    msg.textContent = t("premium.registerError");
-  }
+    } catch (err) {
+      console.error(err);
+      msg.textContent = t("premium.registerError");
+    }
 }
 
 // Register button
@@ -4973,7 +4970,7 @@ async function renderVipTips() {
 
   // Store statsByName globally so it's accessible in showVipTipAnalysis
   window.VIP_STATS_BY_NAME = statsByName;
-  
+
   const scorerRows = topGamePicks.map(({ game, pick }, idx) => {
     const metaTop = `${game.homeCode} ${t("vipTips.vs")} ${game.awayCode}${game.startTime ? ` • ${game.startTime}` : ""}`;
     const metaStats = `TOI ${pick.toiMin || "-"} | S/G ${pick.shotsPerGame || "-"} | PPG/G ${pick.ppGoalsPerGame || "-"}`;
@@ -5924,8 +5921,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("premium-logout-from-locked-btn")
     ?.addEventListener("click", () => {
       premiumLogout();
-      checkPremiumStatus();
-    });
+    checkPremiumStatus();
+  });
 
   // ===============================
   // PREMIUM – Logout (delegácia)
