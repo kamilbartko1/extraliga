@@ -9980,69 +9980,76 @@ body {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+  gap: 25px;
+  /* Väčšia medzera medzi boxami */
   width: 100%;
-  margin-top: 20px;
+  margin-top: 25px;
 }
 
 .stat-box {
   background: rgba(16, 22, 29, 0.85);
-  /* Tmavšie pozadie */
   border: 1px solid rgba(0, 234, 255, 0.15);
-  border-radius: 16px;
-  padding: 20px;
-  min-height: 140px;
-  /* Zväčšený box */
+  border-radius: 18px;
+  /* Jemnejšie rohy */
+  padding: 30px 25px;
+  /* Výrazne viac miesta ("dýchanie") */
+  height: auto;
+  /* Nech sa prispôsobí obsahu */
+  min-height: 180px;
+  /* Zvýšené minimum */
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  /* Vertikálne centrovanie */
+  justify-content: space-between;
+  /* Roztiahnutie obsahu */
   align-items: center;
-  /* Horizontálne centrovanie */
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  overflow: hidden;
-  /* Zabráni pretekaniu */
+  overflow: visible;
+  /* Aby nič nebolo odrezané */
   position: relative;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .stat-box:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
   border-color: #00eaff;
-  box-shadow: 0 8px 25px rgba(0, 234, 255, 0.15);
+  box-shadow: 0 12px 30px rgba(0, 234, 255, 0.2);
   background: rgba(16, 22, 29, 0.95);
 }
 
 .stat-box h4 {
-  margin: 0;
+  margin: 0 0 15px 0;
+  /* Odstup od preview */
   width: 100%;
   text-align: center;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .stat-box .top {
   display: block;
   font-family: "Orbitron", sans-serif;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
+  /* Zväčšené */
   color: #fff;
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 8px;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
 }
 
 .stat-box .divider {
   height: 2px;
-  width: 40px;
+  width: 50px;
   background: linear-gradient(90deg, transparent, #00eaff, transparent);
   margin: 8px auto;
 }
 
 .stat-box .bottom {
   display: block;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
   text-transform: uppercase;
   font-weight: 500;
   letter-spacing: 1px;
@@ -10052,27 +10059,24 @@ body {
 .stat-box-preview {
   display: flex;
   align-items: center;
-  gap: 15px;
-  /* Väčšia medzera */
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  /* Jemnejšia čiara */
+  gap: 18px;
+  margin-top: auto;
+  /* Tlačí sa naspodok ak je miesto */
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
   width: 100%;
   justify-content: flex-start;
-  /* Zarovnanie vľavo */
 }
 
 .stat-box-preview img {
-  width: 48px;
-  /* O niečo väčšia */
-  height: 48px;
+  width: 54px;
+  /* Ešte trochu väčšia fotka */
+  height: 54px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #00eaff;
-  box-shadow: 0 0 12px rgba(0, 234, 255, 0.3);
+  box-shadow: 0 0 15px rgba(0, 234, 255, 0.3);
   flex-shrink: 0;
-  /* Nech sa nezmenšuje */
 }
 
 .stat-box-info {
@@ -10080,27 +10084,27 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  min-width: 0;
-  /* Pre správne fungovanie ellipsis */
+  gap: 4px;
 }
 
 .stat-box-name {
-  font-size: 0.95rem;
-  /* Väčší font */
+  font-size: 1.05rem;
   font-weight: 600;
   color: #fff;
-  line-height: 1.3;
+  line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 160px;
-  /* Limit šírky mena */
+  max-width: 180px;
 }
 
 .stat-box-value {
-  font-size: 1rem;
-  /* Zvýraznená hodnota */
+  font-size: 1.1rem;
   color: #00eaff;
+  background: rgba(0, 234, 255, 0.1);
+  /* Jemné podfarbenie hodnoty */
+  padding: 2px 8px;
+  border-radius: 4px;
   font-family: "Orbitron", sans-serif;
   letter-spacing: 0.5px;
   font-weight: 700;
@@ -10111,25 +10115,19 @@ body {
 .stat-box:hover .stat-box-preview img {
   transform: scale(1.1);
   transition: transform 0.3s ease;
-  box-shadow: 0 0 15px rgba(0, 234, 255, 0.6);
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.7);
 }
 
 /* Responsivita */
 @media (max-width: 768px) {
   .stats-grid {
     grid-template-columns: 1fr;
-    /* Na mobile 1 stĺpec */
-    padding: 0 10px;
+    gap: 20px;
   }
 
   .stat-box {
+    padding: 25px 20px;
+    /* Trochu menej na mobile, ale stále dosť */
     min-height: auto;
-    /* Flexibilná výška */
-    padding: 18px;
-  }
-
-  .stat-box-name {
-    max-width: 200px;
-    /* Viac miesta na mobile */
   }
 }
