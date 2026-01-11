@@ -10026,57 +10026,67 @@ body {
   z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  /* Menšia medzera */
 }
 
 .stat-box .top {
   display: block;
-  font-family: "Orbitron", sans-serif;
-  font-size: 1.25rem;
-  /* Zväčšené */
+  font-family: "Poppins", sans-serif;
+  /* Zmena na Poppins */
+  font-size: 1.1rem;
+  /* Menší font */
+  font-weight: 500;
+  /* Tenšie */
   color: #fff;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
+  /* Menej rozťahané */
   text-transform: uppercase;
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 .stat-box .divider {
-  height: 2px;
-  width: 50px;
+  height: 1px;
+  /* Tenšia čiara */
+  width: 40px;
   background: linear-gradient(90deg, transparent, #00eaff, transparent);
-  margin: 8px auto;
+  margin: 6px auto;
 }
 
 .stat-box .bottom {
   display: block;
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-family: "Poppins", sans-serif;
+  font-size: 0.85rem;
+  /* Menšie */
+  color: rgba(255, 255, 255, 0.7);
   text-transform: uppercase;
-  font-weight: 500;
-  letter-spacing: 1px;
+  font-weight: 300;
+  /* Tenšie */
+  letter-spacing: 0.5px;
 }
 
 /* Náhľad hráča (preview) */
 .stat-box-preview {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 15px;
   margin-top: auto;
   /* Tlačí sa naspodok ak je miesto */
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   width: 100%;
   justify-content: flex-start;
 }
 
 .stat-box-preview img {
-  width: 54px;
+  width: 48px;
   /* Ešte trochu väčšia fotka */
-  height: 54px;
+  height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #00eaff;
-  box-shadow: 0 0 15px rgba(0, 234, 255, 0.3);
+  border: 1px solid #00eaff;
+  /* Tenší rámik */
+  box-shadow: 0 0 10px rgba(0, 234, 255, 0.25);
   flex-shrink: 0;
 }
 
@@ -10085,7 +10095,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  gap: 4px;
+  gap: 2px;
   flex: 1;
   /* Nech zaberie zvyšok miesta */
   min-width: 0;
@@ -10093,8 +10103,11 @@ body {
 }
 
 .stat-box-name {
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  /* Menšie */
+  font-weight: 500;
+  /* Stredná hrúbka - čitateľné */
   color: #fff;
   line-height: 1.2;
   white-space: nowrap;
@@ -10105,16 +10118,19 @@ body {
 }
 
 .stat-box-value {
-  font-size: 1.1rem;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.95rem;
+  /* Menšie */
   color: #00eaff;
-  background: rgba(0, 234, 255, 0.1);
+  background: rgba(0, 234, 255, 0.08);
   /* Jemné podfarbenie hodnoty */
-  padding: 2px 8px;
+  padding: 1px 6px;
   border-radius: 4px;
-  font-family: "Orbitron", sans-serif;
-  letter-spacing: 0.5px;
-  font-weight: 700;
-  text-shadow: 0 0 5px rgba(0, 234, 255, 0.4);
+  letter-spacing: 0.3px;
+  font-weight: 600;
+  /* Tučné pre číslo */
+  text-shadow: none;
+  /* Čistejší vzhľad */
 }
 
 /* Hover efekt */
