@@ -4256,7 +4256,16 @@ async function loadPremiumPlayers() {
     }
 
     const entries = Object.entries(data.players || {});
-    totalEl.textContent = Number(data.totalProfit || 0).toFixed(2);
+    const totalProfitValue = Number(data.totalProfit || 0);
+    totalEl.textContent = totalProfitValue.toFixed(2);
+
+    // 🎨 Zafarbenie total profit
+    totalEl.classList.remove("balance-plus", "balance-minus");
+    if (totalProfitValue > 0) {
+      totalEl.classList.add("balance-plus");
+    } else if (totalProfitValue < 0) {
+      totalEl.classList.add("balance-minus");
+    }
 
     if (!entries.length) {
       if (msg) msg.textContent = t("premium.noPlayers");
