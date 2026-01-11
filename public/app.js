@@ -73,7 +73,7 @@ const I18N = {
     "home.featureRealTime": "Aktuálne dáta",
     "home.featureRealTimeDesc": "Vždy najnovšie výsledky, tabuľky a štatistiky",
     "home.featureCTA": "Vyskúšať Premium",
-    "home.todaysGames": "🏒 Dnešné zápasy NHL",
+    "home.todaysGames": "Dnešné zápasy NHL",
     "home.gamesCount": "{count} zápasov",
     "home.noGamesToday": "Dnes nie sú žiadne zápasy.",
     "home.viewAll": "Zobraziť všetky →",
@@ -349,7 +349,7 @@ const I18N = {
     "home.featureRealTime": "Real-time Data",
     "home.featureRealTimeDesc": "Always the latest results, standings and statistics",
     "home.featureCTA": "Try Premium",
-    "home.todaysGames": "🏒 Today's NHL games",
+    "home.todaysGames": "Today's NHL games",
     "home.gamesCount": "{count} games",
     "home.noGamesToday": "No games today.",
     "home.viewAll": "View all →",
@@ -1285,7 +1285,10 @@ async function displayHome() {
     <!-- DNESNE ZAPASY -->
     <div class="nhl-card">
       <div class="nhl-card-head">
-        <h3>${t("home.todaysGames")}</h3>
+        <h3>
+          <img src="https://cdn-icons-png.flaticon.com/512/3079/3079335.png" alt="Hockey" class="hockey-icon" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;">
+          ${t("home.todaysGames")}
+        </h3>
         <span class="nhl-card-hint">${gamesCountText}</span>
       </div>
 
