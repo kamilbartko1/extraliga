@@ -39,3 +39,10 @@
 ### 7. AUTO-COMMIT & PUSH
 - Po každej úprave kódu automaticky vykonať `git commit` a `git push`
 - Používať pravidlá pre správy z bodu 1
+
+### 8. KONTROLA VÝSLEDKOV
+- **VŽDY po zmene kódu MUSÍM skontrolovať správny výsledok na live stránke www.nhlpro.sk**
+- Stránka je dostupná online, takže výsledok sa dá overiť
+- Ak výsledok nie je správny, VŽDY to prerobiť a opraviť
+- NIKDY nenechávať nefunkčný alebo nesprávne zobrazujúci sa kód
+- Ak nie je možné výsledok skontrolovať priamo, musím sa pokúsiť logicky overiť správnosť zmien v kóde
