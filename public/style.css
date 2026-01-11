@@ -12,7 +12,19 @@
 
 /* 🌍 pridany riadok */
 /* 🌍 Globálny font a farby */
-body, select, input, button, table, th, td, h1, h2, h3, p, div, span {
+body,
+select,
+input,
+button,
+table,
+th,
+td,
+h1,
+h2,
+h3,
+p,
+div,
+span {
   font-family: "Poppins", "Segoe UI", sans-serif;
   color: #eaf9ff;
   letter-spacing: 0.3px;
@@ -35,7 +47,7 @@ h1 {
   text-align: center;
   color: #00b7ff;
   margin-bottom: 1.5rem;
-  text-shadow: 0 0 10px rgba(0,183,255,0.6);
+  text-shadow: 0 0 10px rgba(0, 183, 255, 0.6);
 }
 
 header h1 {
@@ -44,8 +56,8 @@ header h1 {
   color: #ffffff;
   font-weight: 800;
   text-shadow: 0 0 10px rgba(0, 234, 255, 0.7),
-               0 0 20px rgba(0, 234, 255, 0.5),
-               0 0 30px rgba(0, 234, 255, 0.3);
+    0 0 20px rgba(0, 234, 255, 0.5),
+    0 0 30px rgba(0, 234, 255, 0.3);
   letter-spacing: 1px;
   margin-bottom: 0.8rem;
   font-family: "Poppins", "Segoe UI", sans-serif;
@@ -65,7 +77,7 @@ header h1 {
 .section {
   background: #161b22;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   padding: 1rem;
   margin-bottom: 1.5rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -73,7 +85,7 @@ header h1 {
 
 .section:hover {
   transform: translateY(-3px);
-  box-shadow: 0 0 15px rgba(0,183,255,0.3);
+  box-shadow: 0 0 15px rgba(0, 183, 255, 0.3);
 }
 
 
@@ -213,6 +225,7 @@ header h1 {
 
 /* Skrytie na desktop */
 @media (min-width: 769px) {
+
   .mobile-menu-toggle,
   .mobile-menu-overlay,
   .mobile-menu-panel {
@@ -230,9 +243,10 @@ table {
   font-size: 0.95rem;
 }
 
-th, td {
+th,
+td {
   padding: 0.6rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   text-align: left;
 }
 
@@ -245,7 +259,7 @@ th {
 }
 
 tr:hover td {
-  background: rgba(0,183,255,0.05);
+  background: rgba(0, 183, 255, 0.05);
   cursor: pointer;
 }
 
@@ -290,16 +304,16 @@ button:hover {
   color: #00eaff;
 }
 
-#mantingal-summary-pc, 
+#mantingal-summary-pc,
 #mantingal-summary-mobile {
   background: #10161d;
-  border: 1px solid rgba(0,183,255,0.3);
+  border: 1px solid rgba(0, 183, 255, 0.3);
   border-radius: 8px;
   padding: 0.8rem;
   margin-top: 1rem;
 }
 
-#mantingal-summary-pc p, 
+#mantingal-summary-pc p,
 #mantingal-summary-mobile p {
   margin: 0.3rem 0;
 }
@@ -345,7 +359,7 @@ button:hover {
 /* Nadpis kola v tabuľke zápasov */
 #matches tbody tr td[colspan="4"] {
   text-align: center;
-  background: linear-gradient(90deg, rgba(0,183,255,0.15), rgba(0,234,255,0.15));
+  background: linear-gradient(90deg, rgba(0, 183, 255, 0.15), rgba(0, 234, 255, 0.15));
   color: #00eaff;
   font-weight: 400;
   letter-spacing: 0.5px;
@@ -356,7 +370,7 @@ button:hover {
 /* Vycentrovanie nadpisu kola (napr. 9. kolo (2025-10-05)) */
 #matches tbody tr td[colspan="4"] {
   text-align: center !important;
-  background: linear-gradient(90deg, rgba(0,183,255,0.15), rgba(0,234,255,0.15));
+  background: linear-gradient(90deg, rgba(0, 183, 255, 0.15), rgba(0, 234, 255, 0.15));
   color: #00eaff;
   font-weight: 400;
   letter-spacing: 0.5px;
@@ -391,7 +405,7 @@ button:hover {
   color: #e6faff;
   background: linear-gradient(135deg, rgba(6, 14, 22, 0.95) 0%, rgba(12, 24, 38, 0.95) 100%);
   border-radius: 16px;
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(0, 234, 255, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -513,6 +527,7 @@ button:hover {
 
 /* Responzivne upravy */
 @media (max-width: 768px) {
+
   #teamRatings,
   #playerRatings {
     width: 100%;
@@ -537,7 +552,7 @@ button:hover {
     white-space: nowrap;
     overflow: visible;
   }
-  
+
   #teamRatings tbody td:first-child span {
     white-space: nowrap;
     overflow: visible;
@@ -566,6 +581,7 @@ button:hover {
 }
 
 @media (max-width: 480px) {
+
   #teamRatings,
   #playerRatings {
     font-size: 0.85rem;
@@ -590,7 +606,7 @@ button:hover {
     overflow: visible;
     min-width: max-content;
   }
-  
+
   #teamRatings tbody td:first-child span {
     white-space: nowrap;
     overflow: visible;
@@ -627,7 +643,7 @@ button:hover {
   font-family: "Permanent Marker", cursive !important;
   font-size: clamp(20px, 2.5vw, 32px);
   color: #ffd400;
-  text-shadow: 0 2px 3px rgba(0,0,0,0.5), 0 0 15px rgba(255, 208, 0, 0.4);
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 208, 0, 0.4);
   transform: rotate(-1deg);
 }
 
@@ -648,7 +664,8 @@ button:hover {
 /* 🏒 Logo vľavo s podnadpisom */
 .logo-container {
   position: fixed;
-  top: 50px;      /* posunuté nižšie pod žltý text */
+  top: 50px;
+  /* posunuté nižšie pod žltý text */
   left: 20px;
   text-align: center;
   z-index: 900;
@@ -678,9 +695,9 @@ button:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(180deg, rgba(0,15,30,0.9), rgba(0,10,25,0.95));
+  background: linear-gradient(180deg, rgba(0, 15, 30, 0.9), rgba(0, 10, 25, 0.95));
   padding: 1rem 2rem;
-  border-bottom: 2px solid rgba(0,234,255,0.2);
+  border-bottom: 2px solid rgba(0, 234, 255, 0.2);
   box-shadow: 0 4px 20px rgba(0, 234, 255, 0.15);
 }
 
@@ -693,14 +710,14 @@ button:hover {
 
 .nhl-logo {
   width: 80px;
-  filter: drop-shadow(0 0 8px rgba(0,234,255,0.5));
+  filter: drop-shadow(0 0 8px rgba(0, 234, 255, 0.5));
 }
 
 .season-text {
   color: #00eaff;
   font-weight: 600;
   font-size: 1rem;
-  text-shadow: 0 0 8px rgba(0,234,255,0.4);
+  text-shadow: 0 0 8px rgba(0, 234, 255, 0.4);
 }
 
 .header-center {
@@ -712,7 +729,7 @@ button:hover {
   font-family: "Permanent Marker", cursive;
   color: #ffd400;
   font-size: clamp(22px, 3vw, 34px);
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5), 0 0 20px rgba(255,212,0,0.6);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 212, 0, 0.6);
   margin: 0;
   transform: rotate(-2deg);
 }
@@ -723,9 +740,9 @@ button:hover {
 .desktop-nav {
   display: none;
   justify-content: center;
-  background: rgba(0,20,40,0.8);
-  border-top: 1px solid rgba(0,234,255,0.25);
-  border-bottom: 1px solid rgba(0,234,255,0.25);
+  background: rgba(0, 20, 40, 0.8);
+  border-top: 1px solid rgba(0, 234, 255, 0.25);
+  border-bottom: 1px solid rgba(0, 234, 255, 0.25);
   backdrop-filter: blur(8px);
   padding: 0.8rem 1rem;
   margin-bottom: 1.5rem;
@@ -749,7 +766,7 @@ button:hover {
 
 .desktop-nav li:hover {
   color: #ffd400;
-  text-shadow: 0 0 8px rgba(255,212,0,0.8);
+  text-shadow: 0 0 8px rgba(255, 212, 0, 0.8);
   transform: translateY(-2px);
 }
 
@@ -819,39 +836,43 @@ button:hover {
   }
 
   /* header s pozadím loga */
-header {
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  z-index: 1000 !important;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 40px;
-  background: linear-gradient(90deg, rgba(0, 40, 70, 0.8), rgba(0, 10, 25, 0.9));
-  border-bottom: 1px solid rgba(0, 183, 255, 0.3);
-  height: 100px;
-}
+  header {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 1000 !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 40px;
+    background: linear-gradient(90deg, rgba(0, 40, 70, 0.8), rgba(0, 10, 25, 0.9));
+    border-bottom: 1px solid rgba(0, 183, 255, 0.3);
+    height: 100px;
+  }
 
-.header-left img {
-  width: 80px;
-  height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 0 10px rgba(0, 183, 255, 0.6));
-}
+  .header-left img {
+    width: 80px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(0, 183, 255, 0.6));
+  }
 
   /* žltý nápis – vždy zobraz a vycentruj */
   .header-center {
     position: absolute;
-    top: 50%; /* Posunuté vyššie */
-    left: 55%; /* Posunuté viac doprava, aby sa neprekryvalo s hamburger menu */
-    transform: translate(-50%, -50%); /* Bez rotácie - vertikálne zarovnané */
+    top: 50%;
+    /* Posunuté vyššie */
+    left: 55%;
+    /* Posunuté viac doprava, aby sa neprekryvalo s hamburger menu */
+    transform: translate(-50%, -50%);
+    /* Bez rotácie - vertikálne zarovnané */
     display: block !important;
     z-index: 2;
     font-family: "Permanent Marker", cursive;
     color: #ffd400;
-    font-size: clamp(12px, 3.5vw, 18px); /* Zmenšené, aby sa neprekryvalo */
-    text-shadow: 0 3px 8px rgba(0,0,0,.7), 0 0 15px rgba(255,215,0,.5);
+    font-size: clamp(12px, 3.5vw, 18px);
+    /* Zmenšené, aby sa neprekryvalo */
+    text-shadow: 0 3px 8px rgba(0, 0, 0, .7), 0 0 15px rgba(255, 215, 0, .5);
     white-space: nowrap;
     text-align: center;
   }
@@ -860,14 +881,17 @@ header {
 /* 📱 Mobilné zobrazenie – zobraz iba rolovacie menu */
 @media (max-width: 768px) {
   nav {
-    display: none !important; /* skry horizontálne menu */
+    display: none !important;
+    /* skry horizontálne menu */
   }
 }
+
 /* 💻 Desktop zobrazenie – zobraz horizontálne menu, skry rolovacie */
 @media (min-width: 769px) {
   nav {
     display: flex !important;
   }
+
   .mobile-menu {
     display: none !important;
   }
@@ -887,8 +911,10 @@ header {
   background: linear-gradient(90deg, rgba(0, 40, 70, 0.8), rgba(0, 10, 25, 0.9));
   border-bottom: 1px solid rgba(0, 183, 255, 0.3);
   padding: 1rem 2rem;
-  overflow: hidden; /* 🔒 ZABRÁŇ PREKRYTIU MIMO HEADERA */
-  contain: layout style; /* 🔒 IZOLUJ HEADER OD ZVYŠKU STRÁNKY */
+  overflow: hidden;
+  /* 🔒 ZABRÁŇ PREKRYTIU MIMO HEADERA */
+  contain: layout style;
+  /* 🔒 IZOLUJ HEADER OD ZVYŠKU STRÁNKY */
 }
 
 .header-left {
@@ -921,7 +947,7 @@ header {
   font-family: "Permanent Marker", cursive;
   font-size: clamp(22px, 2.5vw, 32px);
   color: #ffd400;
-  text-shadow: 0 2px 3px rgba(0,0,0,0.5), 0 0 15px rgba(255, 208, 0, 0.4);
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 208, 0, 0.4);
   z-index: 2;
   pointer-events: none;
 }
@@ -933,7 +959,8 @@ header::before {
   background: none;
   opacity: 0;
   z-index: 1;
-  pointer-events: none; /* 🔒 NEBLOKUJ KLIKY */
+  pointer-events: none;
+  /* 🔒 NEBLOKUJ KLIKY */
 }
 
 /* -------------------------------
@@ -960,11 +987,14 @@ nav button {
   padding: 8px 18px;
   border-radius: 8px;
   cursor: pointer;
-  font-family:  'Poppins', sans-serif; /* 🔹 tenšie a elegantné */
-  font-weight: 150; /* výrazne tenšie písmo */
+  font-family: 'Poppins', sans-serif;
+  /* 🔹 tenšie a elegantné */
+  font-weight: 150;
+  /* výrazne tenšie písmo */
   font-size: 2rem;
   letter-spacing: 0.4px;
-  text-shadow: 0 0 4px rgba(0, 255, 255, 0.4); /* jemný svietiaci tieň */
+  text-shadow: 0 0 4px rgba(0, 255, 255, 0.4);
+  /* jemný svietiaci tieň */
   transition: all 0.3s ease;
   backdrop-filter: blur(2px);
 }
@@ -1022,7 +1052,8 @@ nav button.nav-premium:hover::before {
   header::before {
     background: url("public/nhl_logo.png") center/contain no-repeat;
     opacity: 0.08;
-    pointer-events: none; /* 🔒 NEBLOKUJ KLIKY */
+    pointer-events: none;
+    /* 🔒 NEBLOKUJ KLIKY */
   }
 
   .header-left img,
@@ -1031,11 +1062,15 @@ nav button.nav-premium:hover::before {
   }
 
   .header-center {
-    top: 50%; /* Posunuté vyššie */
-    left: 55%; /* Posunuté viac doprava, aby sa neprekryvalo s hamburger menu */
-    transform: translate(-50%, -50%); /* Bez rotácie - vertikálne zarovnané */
+    top: 50%;
+    /* Posunuté vyššie */
+    left: 55%;
+    /* Posunuté viac doprava, aby sa neprekryvalo s hamburger menu */
+    transform: translate(-50%, -50%);
+    /* Bez rotácie - vertikálne zarovnané */
     text-align: center;
-    font-size: clamp(12px, 3.5vw, 18px); /* Zmenšené, aby sa neprekryvalo */
+    font-size: clamp(12px, 3.5vw, 18px);
+    /* Zmenšené, aby sa neprekryvalo */
   }
 }
 
@@ -1216,7 +1251,7 @@ nav button:hover::after {
 
 .odds-item:hover {
   transform: scale(1.02);
-  box-shadow: 0 0 10px rgba(0,183,255,0.4);
+  box-shadow: 0 0 10px rgba(0, 183, 255, 0.4);
 }
 
 .match-info {
@@ -1232,8 +1267,9 @@ nav button:hover::after {
   width: 32px;
   height: 32px;
   object-fit: contain;
-  filter: drop-shadow(0 0 5px rgba(0,183,255,0.5));
+  filter: drop-shadow(0 0 5px rgba(0, 183, 255, 0.5));
 }
+
 /* ====== PREDICTIONS TABUĽKA ====== */
 .odds-table {
   width: 100%;
@@ -1245,7 +1281,8 @@ nav button:hover::after {
   overflow: hidden;
 }
 
-.odds-table th, .odds-table td {
+.odds-table th,
+.odds-table td {
   padding: 10px;
   text-align: center;
   border-bottom: 1px solid rgba(0, 234, 255, 0.1);
@@ -1335,7 +1372,8 @@ nav button:hover::after {
 /* --- Jednotný štýl nadpisov pre všetky sekcie --- */
 .section h2 {
   text-align: center;
-  color: #00ffff; /* tyrkysová */
+  color: #00ffff;
+  /* tyrkysová */
   font-size: 0.85rem;
   font-weight: normal;
   margin: 10px 0 20px;
@@ -1412,11 +1450,14 @@ nav button:hover::after {
   table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed; /* 👈 dôležité – všetky stĺpce sa zmenšia rovnomerne */
+    table-layout: fixed;
+    /* 👈 dôležité – všetky stĺpce sa zmenšia rovnomerne */
   }
 
-  th, td {
-    font-size: 0.75rem; /* 👈 menšie písmo */
+  th,
+  td {
+    font-size: 0.75rem;
+    /* 👈 menšie písmo */
     padding: 4px 6px;
     text-align: center;
     word-wrap: break-word;
@@ -1447,11 +1488,14 @@ nav button:hover::after {
   table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed; /* 👈 dôležité – všetky stĺpce sa zmenšia rovnomerne */
+    table-layout: fixed;
+    /* 👈 dôležité – všetky stĺpce sa zmenšia rovnomerne */
   }
 
-  th, td {
-    font-size: 0.75rem; /* 👈 menšie písmo */
+  th,
+  td {
+    font-size: 0.75rem;
+    /* 👈 menšie písmo */
     padding: 4px 6px;
     text-align: center;
     word-wrap: break-word;
@@ -1479,6 +1523,7 @@ nav button:hover::after {
 
 /* === Optimalizácia pre mobily – kompaktný vzhľad === */
 @media (max-width: 768px) {
+
   /* Všetky sekcie */
   body {
     font-size: 0.7rem;
@@ -1501,7 +1546,8 @@ nav button:hover::after {
     table-layout: fixed;
   }
 
-  th, td {
+  th,
+  td {
     font-size: 0.7rem;
     padding: 3px 4px;
     text-align: center;
@@ -1547,25 +1593,32 @@ nav button:hover::after {
 
 /* --- Mobilné zlepšenia čitateľnosti --- */
 @media (max-width: 768px) {
+
   /* menšie a čitateľnejšie názvy tímov */
   table td {
-    font-size: 13px;           /* zmenšené písmo */
-    white-space: nowrap;       /* zabráni zalomeniu názvu */
-    text-overflow: ellipsis;   /* ak by sa nezmestil, zobrazí „…“ */
-    overflow: hidden;          /* skryje pretečený text */
+    font-size: 13px;
+    /* zmenšené písmo */
+    white-space: nowrap;
+    /* zabráni zalomeniu názvu */
+    text-overflow: ellipsis;
+    /* ak by sa nezmestil, zobrazí „…“ */
+    overflow: hidden;
+    /* skryje pretečený text */
   }
 
   /* menej žiarivé nadpisy (DOMÁCI, HOSTIA, SKÓRE...) */
   table th {
     font-size: 12px;
-    text-shadow: 0 0 4px rgba(0,255,255,0.5); /* jemnejší tieň */
+    text-shadow: 0 0 4px rgba(0, 255, 255, 0.5);
+    /* jemnejší tieň */
     letter-spacing: 1px;
   }
 
   /* hlavičky sekcií ako “VÝSLEDKY”, “TIPOVACIE STRATÉGIE” */
   h2 {
     font-size: 18px;
-    text-shadow: 0 0 6px rgba(0,255,255,0.4); /* menej kontrastný */
+    text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
+    /* menej kontrastný */
   }
 
   /* prispôsobenie tabuľky - menšie okraje */
@@ -1582,14 +1635,21 @@ nav button:hover::after {
 
 /* === Mobilné zobrazenie – oprava tabuliek tímov === */
 @media (max-width: 768px) {
+
   /* bunky v tabuľkách */
   table td {
-    font-size: 13px;       /* menšie písmo */
-    font-weight: 400;      /* nie tučné */
-    white-space: normal;   /* umožní zalomenie, ale celé slovo */
-    text-overflow: clip;   /* žiadne skratky */
-    overflow: visible;     /* zobrazí celý text */
-    text-shadow: none;     /* odstráni svietiaci tieň */
+    font-size: 13px;
+    /* menšie písmo */
+    font-weight: 400;
+    /* nie tučné */
+    white-space: normal;
+    /* umožní zalomenie, ale celé slovo */
+    text-overflow: clip;
+    /* žiadne skratky */
+    overflow: visible;
+    /* zobrazí celý text */
+    text-shadow: none;
+    /* odstráni svietiaci tieň */
     line-height: 1.4;
   }
 
@@ -1597,13 +1657,14 @@ nav button:hover::after {
   table th {
     font-size: 12px;
     font-weight: 600;
-    text-shadow: 0 0 3px rgba(0,255,255,0.3); /* jemný efekt, nie oslepujúci */
+    text-shadow: 0 0 3px rgba(0, 255, 255, 0.3);
+    /* jemný efekt, nie oslepujúci */
   }
 
   /* zmenšený a čitateľný názov sekcie (napr. VÝSLEDKY, TIPOVACIE STRATÉGIE) */
   h2 {
     font-size: 18px;
-    text-shadow: 0 0 4px rgba(0,255,255,0.4);
+    text-shadow: 0 0 4px rgba(0, 255, 255, 0.4);
     margin-bottom: 10px;
   }
 
@@ -1623,24 +1684,32 @@ nav button:hover::after {
 @media (max-width: 768px) {
   table {
     width: 100%;
-    table-layout: auto; /* prispôsobí šírku obsahu */
+    table-layout: auto;
+    /* prispôsobí šírku obsahu */
     border-spacing: 0;
   }
 
-  table th, table td {
-    font-size: 12px;          /* menšie písmo */
-    font-weight: 400;         /* tenké písmo */
-    white-space: nowrap;      /* nezalomí text na viac riadkov */
+  table th,
+  table td {
+    font-size: 12px;
+    /* menšie písmo */
+    font-weight: 400;
+    /* tenké písmo */
+    white-space: nowrap;
+    /* nezalomí text na viac riadkov */
     overflow: hidden;
-    text-overflow: ellipsis;  /* ak by bolo extrémne dlhé slovo, skráti ho tromi bodkami */
-    text-shadow: none;        /* odstránený tieň */
+    text-overflow: ellipsis;
+    /* ak by bolo extrémne dlhé slovo, skráti ho tromi bodkami */
+    text-shadow: none;
+    /* odstránený tieň */
     padding: 6px 4px;
   }
 
   table th {
     font-size: 11px;
     font-weight: 400;
-    text-shadow: 0 0 2px rgba(0, 255, 255, 0.3); /* jemné svetlo, čitateľné */
+    text-shadow: 0 0 2px rgba(0, 255, 255, 0.3);
+    /* jemné svetlo, čitateľné */
   }
 
   /* dátumový riadok (21. 10. 2025) – nech má priestor */
@@ -1669,14 +1738,17 @@ nav button:hover::after {
   table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed; /* pevné rozdelenie stĺpcov */
+    table-layout: fixed;
+    /* pevné rozdelenie stĺpcov */
   }
 
-  table th, table td {
+  table th,
+  table td {
     font-size: 12px;
     font-weight: 400;
     padding: 5px 3px;
-    white-space: nowrap; /* nezalomí text */
+    white-space: nowrap;
+    /* nezalomí text */
     overflow: hidden;
     text-overflow: ellipsis;
     text-shadow: none;
@@ -1688,9 +1760,11 @@ nav button:hover::after {
   table td:nth-child(2) {
     width: 36%;
   }
+
   table td:nth-child(3) {
     width: 18%;
   }
+
   table td:nth-child(4) {
     width: 10%;
     text-align: center;
@@ -1708,7 +1782,7 @@ nav button:hover::after {
     font-size: 13px;
     font-weight: 500;
     text-align: center;
-    background: linear-gradient(90deg, rgba(0,255,255,0.1), rgba(0,255,255,0.05));
+    background: linear-gradient(90deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 255, 0.05));
     color: #44eaff;
     border-radius: 4px;
     padding: 8px 0;
@@ -1722,7 +1796,8 @@ nav button:hover::after {
   }
 
   /* zabráni horizontálnemu posúvaniu */
-  body, .section {
+  body,
+  .section {
     overflow-x: hidden;
   }
 }
@@ -1735,13 +1810,16 @@ nav button:hover::after {
     table-layout: fixed;
   }
 
-  table th, table td {
+  table th,
+  table td {
     font-size: 12px;
     font-weight: 400;
     padding: 5px 3px;
     white-space: nowrap;
-    overflow: visible !important; /* ← zobrazí celý text */
-    text-overflow: unset !important; /* ← žiadne „…“ */
+    overflow: visible !important;
+    /* ← zobrazí celý text */
+    text-overflow: unset !important;
+    /* ← žiadne „…“ */
     text-shadow: none;
     vertical-align: middle;
   }
@@ -1778,7 +1856,8 @@ nav button:hover::after {
     text-shadow: 0 0 3px rgba(0, 255, 255, 0.3);
   }
 
-  body, .section {
+  body,
+  .section {
     overflow-x: hidden;
   }
 }
@@ -1791,14 +1870,18 @@ nav button:hover::after {
     table-layout: fixed;
   }
 
-  table th, table td {
-    font-size: 12px; /* menšie, ale stále čitateľné */
+  table th,
+  table td {
+    font-size: 12px;
+    /* menšie, ale stále čitateľné */
     font-weight: 400;
     padding: 5px 4px;
     text-shadow: none;
     line-height: 1.2;
-    word-break: keep-all;      /* nezlomí jednoslovné */
-    white-space: normal;       /* ale dovolí viacslovné pod seba */
+    word-break: keep-all;
+    /* nezlomí jednoslovné */
+    white-space: normal;
+    /* ale dovolí viacslovné pod seba */
     text-align: left;
     vertical-align: middle;
   }
@@ -1812,10 +1895,28 @@ nav button:hover::after {
   }
 
   /* Stĺpce rozložené rozumne */
-  table td:nth-child(1) { width: 38%; } /* domáci */
-  table td:nth-child(2) { width: 38%; } /* hostia */
-  table td:nth-child(3) { width: 14%; text-align: center; } /* skóre */
-  table td:nth-child(4) { width: 10%; text-align: center; } /* status */
+  table td:nth-child(1) {
+    width: 38%;
+  }
+
+  /* domáci */
+  table td:nth-child(2) {
+    width: 38%;
+  }
+
+  /* hostia */
+  table td:nth-child(3) {
+    width: 14%;
+    text-align: center;
+  }
+
+  /* skóre */
+  table td:nth-child(4) {
+    width: 10%;
+    text-align: center;
+  }
+
+  /* status */
 
   /* Nadpis (napr. VÝSLEDKY) */
   h2 {
@@ -1823,13 +1924,15 @@ nav button:hover::after {
     text-shadow: 0 0 3px rgba(0, 255, 255, 0.3);
   }
 
-  body, .section {
+  body,
+  .section {
     overflow-x: hidden;
   }
 }
 
 /* === Fix tabuliek pre mobily (VÝSLEDKY aj STRATÉGIE) === */
 @media (max-width: 768px) {
+
   /* pevné rozloženie stĺpcov a žiadny horizontálny scroll */
   #matches table,
   #strategiesTable,
@@ -1847,7 +1950,7 @@ nav button:hover::after {
     font-weight: 400;
     white-space: nowrap;
     letter-spacing: 0.5px;
-    text-shadow: 0 0 2px rgba(0,255,255,.25);
+    text-shadow: 0 0 2px rgba(0, 255, 255, .25);
   }
 
   /* bunky – menšie písmo, žiadne agresívne tieňe */
@@ -1863,40 +1966,90 @@ nav button:hover::after {
   }
 
   /* rozdelenie stĺpcov v “VÝSLEDKY”: domáci / hostia / skóre / status */
-  #matches tbody td:nth-child(1) { width: 42%; } /* domáci */
-  #matches tbody td:nth-child(2) { width: 38%; } /* hostia */
-  #matches tbody td:nth-child(3) { width: 12%; text-align:center; } /* skóre */
-  #matches tbody td:nth-child(4) { width: 8%;  text-align:center; } /* status */
+  #matches tbody td:nth-child(1) {
+    width: 42%;
+  }
+
+  /* domáci */
+  #matches tbody td:nth-child(2) {
+    width: 38%;
+  }
+
+  /* hostia */
+  #matches tbody td:nth-child(3) {
+    width: 12%;
+    text-align: center;
+  }
+
+  /* skóre */
+  #matches tbody td:nth-child(4) {
+    width: 8%;
+    text-align: center;
+  }
+
+  /* status */
 
   /* rozdelenie stĺpcov v tabuľke stratégií (ak používaš 5 stĺpcov) */
-  #strategiesTable tbody td:nth-child(1) { width: 22%; } /* dátum */
-  #strategiesTable tbody td:nth-child(2) { width: 44%; } /* zápas */
-  #strategiesTable tbody td:nth-child(3) { width: 12%; text-align:center; } /* 2+ góly */
-  #strategiesTable tbody td:nth-child(4) { width: 12%; text-align:center; } /* výsledok */
-  #strategiesTable tbody td:nth-child(5) { width: 10%; text-align:right;  } /* zisk */
+  #strategiesTable tbody td:nth-child(1) {
+    width: 22%;
+  }
+
+  /* dátum */
+  #strategiesTable tbody td:nth-child(2) {
+    width: 44%;
+  }
+
+  /* zápas */
+  #strategiesTable tbody td:nth-child(3) {
+    width: 12%;
+    text-align: center;
+  }
+
+  /* 2+ góly */
+  #strategiesTable tbody td:nth-child(4) {
+    width: 12%;
+    text-align: center;
+  }
+
+  /* výsledok */
+  #strategiesTable tbody td:nth-child(5) {
+    width: 10%;
+    text-align: right;
+  }
+
+  /* zisk */
 
   /* ====== KĽÚČOVÉ: správanie názvov tímov ====== */
   /* jednoslovné nikdy nelám – viacslovné môžu na MEDZERE */
   #matches tbody td:nth-child(1),
   #matches tbody td:nth-child(2),
   #strategiesTable tbody td:nth-child(2) {
-    white-space: normal;         /* umožní zalomenie na medzere */
-    overflow-wrap: normal;       /* neláma uprostred slova */
-    word-break: keep-all;        /* drž spolu jednoslovné názvy */
+    white-space: normal;
+    /* umožní zalomenie na medzere */
+    overflow-wrap: normal;
+    /* neláma uprostred slova */
+    word-break: keep-all;
+    /* drž spolu jednoslovné názvy */
   }
 
   /* dátumový pás – nech sa text nezalamuje do dvoch riadkov */
-  .day-row, .round-row, .date-row {
+  .day-row,
+  .round-row,
+  .date-row {
     white-space: nowrap;
     font-size: 13px !important;
   }
 
   /* pre istotu – žiadny horizontálny scroll tela */
-  html, body { overflow-x: hidden; }
+  html,
+  body {
+    overflow-x: hidden;
+  }
 }
 
 /* === Final mobilný layout tabuliek (vysledky, strategie) === */
 @media (max-width: 768px) {
+
   #matches table,
   #strategiesTable {
     width: 100%;
@@ -1909,7 +2062,7 @@ nav button:hover::after {
     font-size: 0.85rem;
     font-weight: 400;
     white-space: nowrap;
-    text-shadow: 0 0 2px rgba(0,255,255,0.25);
+    text-shadow: 0 0 2px rgba(0, 255, 255, 0.25);
     letter-spacing: 0.5px;
   }
 
@@ -1923,29 +2076,37 @@ nav button:hover::after {
   }
 
   /* ===== Rozloženie stĺpcov pre výsledky ===== */
-  #matches tbody td:nth-child(1) { 
-    width: 40%; 
-    text-align: right; 
+  #matches tbody td:nth-child(1) {
+    width: 40%;
+    text-align: right;
     padding-right: 6px;
-  } /* domáci */
+  }
 
-  #matches tbody td:nth-child(2) { 
-    width: 40%; 
-    text-align: left; 
+  /* domáci */
+
+  #matches tbody td:nth-child(2) {
+    width: 40%;
+    text-align: left;
     padding-left: 6px;
-  } /* hostia */
+  }
 
-  #matches tbody td:nth-child(3) { 
-    width: 12%; 
-    text-align: right; 
+  /* hostia */
+
+  #matches tbody td:nth-child(3) {
+    width: 12%;
+    text-align: right;
     padding-right: 4px;
-  } /* skóre */
+  }
 
-  #matches tbody td:nth-child(4) { 
-    width: 8%; 
+  /* skóre */
+
+  #matches tbody td:nth-child(4) {
+    width: 8%;
     text-align: right;
     padding-right: 2px;
-  } /* status */
+  }
+
+  /* status */
 
   /* === aby názvy tímov sedeli vedľa seba a nelámali sa uprostred === */
   #matches tbody td:nth-child(1),
@@ -1956,13 +2117,15 @@ nav button:hover::after {
   }
 
   /* Dátumový riadok */
-  .day-row, .round-row {
+  .day-row,
+  .round-row {
     font-size: 13px !important;
     white-space: nowrap;
     text-align: center;
   }
 
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
   }
 }
@@ -1980,7 +2143,7 @@ nav button:hover::after {
     font-size: 12px;
     font-weight: 400;
     white-space: nowrap;
-    text-shadow: 0 0 2px rgba(0,255,255,0.25);
+    text-shadow: 0 0 2px rgba(0, 255, 255, 0.25);
     letter-spacing: 0.5px;
     padding: 8px 4px;
     text-align: center;
@@ -1993,7 +2156,7 @@ nav button:hover::after {
     padding: 10px 4px;
     line-height: 1.3;
     text-shadow: none;
-    border-bottom: 1px solid rgba(0,255,255,0.05);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.05);
     vertical-align: middle;
   }
 
@@ -2002,23 +2165,31 @@ nav button:hover::after {
     width: 37%;
     text-align: right;
     padding-right: 8px;
-  } /* DOMÁCI */
+  }
+
+  /* DOMÁCI */
 
   #matches tbody td:nth-child(2) {
     width: 37%;
     text-align: left;
     padding-left: 8px;
-  } /* HOSTIA */
+  }
+
+  /* HOSTIA */
 
   #matches tbody td:nth-child(3) {
     width: 16%;
     text-align: center;
-  } /* SKÓRE */
+  }
+
+  /* SKÓRE */
 
   #matches tbody td:nth-child(4) {
     width: 10%;
     text-align: center;
-  } /* STATUS */
+  }
+
+  /* STATUS */
 
   /* Zákaz zalamovania názvov tímov */
   #matches tbody td:nth-child(1),
@@ -2041,7 +2212,8 @@ nav button:hover::after {
     padding: 6px 0 !important;
   }
 
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
   }
 }
@@ -2061,7 +2233,7 @@ nav button:hover::after {
     letter-spacing: 0.3px;
     padding: 6px 2px;
     white-space: nowrap;
-    text-shadow: 0 0 2px rgba(0,255,255,0.3);
+    text-shadow: 0 0 2px rgba(0, 255, 255, 0.3);
   }
 
   #matches tbody td {
@@ -2109,7 +2281,7 @@ nav button:hover::after {
 
   /* Väčšie vertikálne rozostupy medzi zápasmi */
   #matches tbody tr:not(.day-row) {
-    border-bottom: 1px solid rgba(0,255,255,0.08);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.08);
   }
 
   /* Riadok s dátumom */
@@ -2120,7 +2292,8 @@ nav button:hover::after {
     white-space: nowrap;
   }
 
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
   }
 }
@@ -2129,7 +2302,8 @@ nav button:hover::after {
   #matches table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: auto; /* ✅ nech sa šírka prispôsobí obsahu */
+    table-layout: auto;
+    /* ✅ nech sa šírka prispôsobí obsahu */
   }
 
   #matches thead th {
@@ -2144,14 +2318,17 @@ nav button:hover::after {
     font-size: 13px;
     padding: 6px 4px;
     line-height: 1.3;
-    white-space: normal; /* ✅ povolí dvojslovné zalomenie */
-    word-break: keep-all; /* ✅ nerozdelí jednoslovné názvy */
+    white-space: normal;
+    /* ✅ povolí dvojslovné zalomenie */
+    word-break: keep-all;
+    /* ✅ nerozdelí jednoslovné názvy */
     overflow: visible;
   }
 
   #matches tbody td:nth-child(1),
   #matches tbody td:nth-child(2) {
-    width: 38%; /* viac miesta pre názvy tímov */
+    width: 38%;
+    /* viac miesta pre názvy tímov */
   }
 
   #matches tbody td:nth-child(3) {
@@ -2177,7 +2354,7 @@ nav button:hover::after {
 
   /* Väčšie medzery medzi riadkami */
   #matches tbody tr:not(.day-row) {
-    border-bottom: 1px solid rgba(0,255,255,0.1);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
   }
 
   .day-row td {
@@ -2186,7 +2363,8 @@ nav button:hover::after {
     padding: 8px 0;
   }
 
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
   }
 }
@@ -2258,7 +2436,7 @@ nav button:hover::after {
 
   /* menšie medzery medzi riadkami */
   #matches tbody tr:not(.day-row) {
-    border-bottom: 1px solid rgba(0,255,255,0.15);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.15);
   }
 
   .day-row td {
@@ -2268,7 +2446,8 @@ nav button:hover::after {
   }
 
   /* zabráni horizontálnemu posunu */
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
   }
 }
@@ -2328,7 +2507,7 @@ nav button:hover::after {
 
   /* vizuálne oddelenie riadkov */
   #matches tbody tr {
-    border-bottom: 1px solid rgba(0,255,255,0.1);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
   }
 
   /* väčšie medzery medzi zápasmi */
@@ -2349,7 +2528,8 @@ nav button:hover::after {
   }
 
   /* zabráni zlievaniu písmen */
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
     word-spacing: 1px;
     letter-spacing: 0.2px;
@@ -2358,12 +2538,13 @@ nav button:hover::after {
 
 /* === Mobilná úprava vzhľadu výsledkov === */
 @media (max-width: 768px) {
+
   /* Dátumové bloky – tenšie a kompaktnejšie */
   .day-row td {
     font-size: 13px;
     text-align: center;
     padding: 5px 0;
-    background: linear-gradient(90deg, rgba(0,255,255,0.05), rgba(0,255,255,0.1));
+    background: linear-gradient(90deg, rgba(0, 255, 255, 0.05), rgba(0, 255, 255, 0.1));
     border-radius: 4px;
     color: #32e0ff;
     font-weight: 400;
@@ -2372,18 +2553,19 @@ nav button:hover::after {
 
   /* Riadky zápasov – o niečo vyššie a čitateľnejšie */
   #matches tbody tr {
-    border-bottom: 1px solid rgba(0,255,255,0.05);
-    background: linear-gradient(90deg, rgba(0,255,255,0.02), rgba(0,255,255,0.03));
+    border-bottom: 1px solid rgba(0, 255, 255, 0.05);
+    background: linear-gradient(90deg, rgba(0, 255, 255, 0.02), rgba(0, 255, 255, 0.03));
     transition: background 0.2s ease;
   }
 
   #matches tbody tr:hover {
-    background: linear-gradient(90deg, rgba(0,255,255,0.08), rgba(0,255,255,0.1));
+    background: linear-gradient(90deg, rgba(0, 255, 255, 0.08), rgba(0, 255, 255, 0.1));
   }
 
   #matches tbody td {
     font-size: 13px;
-    padding: 10px 6px; /* vyšší riadok */
+    padding: 10px 6px;
+    /* vyšší riadok */
     line-height: 1.3;
     white-space: nowrap;
     text-align: center;
@@ -2410,8 +2592,8 @@ nav button:hover::after {
   }
 
   /* jemné oddelenie medzi zápasmi */
-  #matches tbody tr + tr td {
-    border-top: 1px solid rgba(0,255,255,0.07);
+  #matches tbody tr+tr td {
+    border-top: 1px solid rgba(0, 255, 255, 0.07);
   }
 
   /* väčší kontrast pre prehľadnosť */
@@ -2433,7 +2615,8 @@ nav button:hover::after {
   overflow: hidden;
 }
 
-.players-table th, .players-table td {
+.players-table th,
+.players-table td {
   padding: 10px 8px;
   text-align: left;
   border-bottom: 1px solid rgba(0, 255, 255, 0.2);
@@ -2458,7 +2641,7 @@ nav button:hover::after {
   vertical-align: middle;
   margin-right: 5px;
   border-radius: 3px;
-  box-shadow: 0 0 2px rgba(0,0,0,0.3);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
 }
 
 /* 🔹 Mobilná verzia – tabuľka sa nezväčší mimo obrazovku */
@@ -2466,18 +2649,22 @@ nav button:hover::after {
   .players-table {
     font-size: 13px;
   }
+
   .players-table th:nth-child(1),
   .players-table td:nth-child(1) {
     width: 30px;
   }
+
   .players-table th:nth-child(3),
   .players-table td:nth-child(3) {
     width: 120px;
   }
+
   .players-table th:nth-child(4),
   .players-table td:nth-child(4) {
     width: 100px;
   }
+
   .players-table th:nth-child(2),
   .players-table td:nth-child(2) {
     white-space: normal;
@@ -2487,7 +2674,8 @@ nav button:hover::after {
 /* === DÁTUM NAD ZÁPASMI – jemné, elegantné === */
 .date-header {
   font-family: "Poppins", "Segoe UI", sans-serif !important;
-  font-weight: 400; /* jemnejšie písmo */
+  font-weight: 400;
+  /* jemnejšie písmo */
   font-size: clamp(16px, 1.8vw, 20px);
   color: #ffd400 !important;
   text-align: center;
@@ -2504,7 +2692,8 @@ nav button:hover::after {
   position: absolute;
   left: 0;
   right: 0;
-  height: 1px; /* tenká ako vlas */
+  height: 1px;
+  /* tenká ako vlas */
   background: rgba(255, 212, 0, 0.6);
   box-shadow: 0 0 3px rgba(255, 212, 0, 0.3);
 }
@@ -2523,6 +2712,7 @@ nav button:hover::after {
     font-size: 17px;
     padding: 6px 0;
   }
+
   .date-header::before,
   .date-header::after {
     height: 0.8px;
@@ -2535,15 +2725,29 @@ nav button:hover::after {
   border-collapse: collapse;
   margin-top: .5rem;
 }
-#mantingal-history th, #mantingal-history td {
+
+#mantingal-history th,
+#mantingal-history td {
   padding: .4rem .6rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   text-align: left;
 }
-#mantingal-history tr.win { background: rgba(0,255,0,0.05); }
-#mantingal-history tr.loss { background: rgba(255,0,0,0.05); }
-#mantingal-history tr.skip { background: rgba(255,255,0,0.05); }
-#mantingal-history h2 { margin-bottom: .3rem; }
+
+#mantingal-history tr.win {
+  background: rgba(0, 255, 0, 0.05);
+}
+
+#mantingal-history tr.loss {
+  background: rgba(255, 0, 0, 0.05);
+}
+
+#mantingal-history tr.skip {
+  background: rgba(255, 255, 0, 0.05);
+}
+
+#mantingal-history h2 {
+  margin-bottom: .3rem;
+}
 
 
 /* Pozadie headeru - LEN V HEADERI */
@@ -2559,7 +2763,8 @@ header::before {
   background-position: center;
   opacity: 0.27;
   z-index: 0;
-  pointer-events: none; /* 🔒 NEBLOKUJ KLIKY */
+  pointer-events: none;
+  /* 🔒 NEBLOKUJ KLIKY */
 }
 
 
@@ -2577,7 +2782,8 @@ header::before {
 .shooting-table td {
   padding: 8px 10px;
   text-align: left;
-  white-space: nowrap; /* nezalamuj text */
+  white-space: nowrap;
+  /* nezalamuj text */
 }
 
 .shooting-table td img.player-headshot {
@@ -2607,11 +2813,13 @@ header::before {
 }
 
 #shooting-section table {
-  min-width: 700px; /* širšia tabuľka pre mobilný posuvník */
+  min-width: 700px;
+  /* širšia tabuľka pre mobilný posuvník */
 }
 
 /* Na menších displejoch */
 @media (max-width: 768px) {
+
   .shooting-table th,
   .shooting-table td {
     font-size: 13px;
@@ -2636,9 +2844,11 @@ header::before {
 
 /* --- Mobile tweak: posun hráča bližšie k poradovému číslu --- */
 @media (max-width: 768px) {
+
   /* celková posuvná tabuľka */
   .shooting-table {
-    width: 760px; /* umožní horizontálny scroll bez zalamovania mien */
+    width: 760px;
+    /* umožní horizontálny scroll bez zalamovania mien */
     border-collapse: collapse;
   }
 
@@ -2658,8 +2868,10 @@ header::before {
     align-items: center;
     justify-content: flex-start;
     gap: 10px;
-    padding-left: 4px !important;      /* menej vnútorného odsadenia */
-    transform: translateX(-6px);       /* posunie celé meno + foto mierne doľava */
+    padding-left: 4px !important;
+    /* menej vnútorného odsadenia */
+    transform: translateX(-6px);
+    /* posunie celé meno + foto mierne doľava */
   }
 
   /* fotka hráča */
@@ -2670,7 +2882,7 @@ header::before {
     flex-shrink: 0;
     margin-right: 8px;
     object-fit: cover;
-    box-shadow: 0 0 6px rgba(0,255,255,0.25);
+    box-shadow: 0 0 6px rgba(0, 255, 255, 0.25);
   }
 
   /* tím - nech má svoj priestor, aby sa neprekrýval s menom */
@@ -2728,7 +2940,7 @@ header::before {
   width: 34px;
   height: 34px;
   object-fit: contain;
-  background: rgba(255,255,255,0.02);
+  background: rgba(255, 255, 255, 0.02);
   border-radius: 4px;
 }
 
@@ -2745,14 +2957,20 @@ header::before {
   font-weight: 800;
 }
 
-.game-result.win { color: #3cff92; }
-.game-result.loss { color: #ff5757; }
+.game-result.win {
+  color: #3cff92;
+}
+
+.game-result.loss {
+  color: #ff5757;
+}
 
 @media (max-width: 768px) {
   .recent-box {
     width: 80px;
     padding: 6px;
   }
+
   .recent-box img {
     width: 28px;
     height: 28px;
@@ -2818,6 +3036,7 @@ header::before {
 .game-result.win {
   color: limegreen;
 }
+
 .game-result.loss {
   color: red;
 }
@@ -2830,10 +3049,10 @@ header::before {
 }
 
 .stats-table {
-  background: rgba(0,0,0,0.25);
+  background: rgba(0, 0, 0, 0.25);
   border-radius: 12px;
   padding: 12px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.4);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
 }
 
 .stats-table h3 {
@@ -2855,7 +3074,7 @@ header::before {
 }
 
 .stats-table tr:nth-child(even) {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .player-headshot {
@@ -3289,6 +3508,7 @@ body {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -3300,6 +3520,7 @@ body {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -3324,12 +3545,29 @@ body {
 }
 
 /* Staggered animácie - postupne sa zobrazujú (pre boxy) */
-.animate-on-scroll.stagger-1 { transition-delay: 0.15s; }
-.animate-on-scroll.stagger-2 { transition-delay: 0.3s; }
-.animate-on-scroll.stagger-3 { transition-delay: 0.45s; }
-.animate-on-scroll.stagger-4 { transition-delay: 0.6s; }
-.animate-on-scroll.stagger-5 { transition-delay: 0.75s; }
-.animate-on-scroll.stagger-6 { transition-delay: 0.9s; }
+.animate-on-scroll.stagger-1 {
+  transition-delay: 0.15s;
+}
+
+.animate-on-scroll.stagger-2 {
+  transition-delay: 0.3s;
+}
+
+.animate-on-scroll.stagger-3 {
+  transition-delay: 0.45s;
+}
+
+.animate-on-scroll.stagger-4 {
+  transition-delay: 0.6s;
+}
+
+.animate-on-scroll.stagger-5 {
+  transition-delay: 0.75s;
+}
+
+.animate-on-scroll.stagger-6 {
+  transition-delay: 0.9s;
+}
 
 /* Fade in + slide up animácia pre načítanie */
 @keyframes fadeInSlideUp {
@@ -3337,6 +3575,7 @@ body {
     opacity: 0;
     transform: translateY(50px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -3349,6 +3588,7 @@ body {
     opacity: 0;
     transform: scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -3361,6 +3601,7 @@ body {
     opacity: 0;
     transform: translateX(-50px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -3373,6 +3614,7 @@ body {
     opacity: 0;
     transform: translateX(50px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -3396,9 +3638,20 @@ body {
 }
 
 /* Pre domovskú stránku - staggered efekt */
-.home-panel:nth-child(1) { animation-delay: 0.1s; animation-fill-mode: both; }
-.home-panel:nth-child(2) { animation-delay: 0.3s; animation-fill-mode: both; }
-.home-panel:nth-child(3) { animation-delay: 0.5s; animation-fill-mode: both; }
+.home-panel:nth-child(1) {
+  animation-delay: 0.1s;
+  animation-fill-mode: both;
+}
+
+.home-panel:nth-child(2) {
+  animation-delay: 0.3s;
+  animation-fill-mode: both;
+}
+
+.home-panel:nth-child(3) {
+  animation-delay: 0.5s;
+  animation-fill-mode: both;
+}
 
 /* === 📱 RESPONSIVE === */
 @media (max-width: 900px) {
@@ -3419,13 +3672,16 @@ body {
   right: 15px;
   top: 50%;
   transform: translateY(-50%);
-  font-family: "Pacifico", cursive; /* alebo môžeš použiť napr. 'Satisfy' */
+  font-family: "Pacifico", cursive;
+  /* alebo môžeš použiť napr. 'Satisfy' */
   font-size: 1.1rem;
-  color: #eeff00; /* jemne žltá ako v slogane */
+  color: #eeff00;
+  /* jemne žltá ako v slogane */
   text-shadow: 0 2px 2px rgba(244, 255, 193, 0.5);
   pointer-events: none;
   opacity: 0.6;
 }
+
 .top-player {
   position: relative;
 }
@@ -3450,7 +3706,8 @@ body {
 .matches-panel {
   display: flex;
   flex-direction: column;
-  gap: 10px; /* medzera medzi zápasmi */
+  gap: 10px;
+  /* medzera medzi zápasmi */
 }
 
 .match-row {
@@ -3517,7 +3774,8 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 80px; /* nech sa dlhé názvy nepretlačia */
+    max-width: 80px;
+    /* nech sa dlhé názvy nepretlačia */
   }
 
   .match-row img.team-logo {
@@ -3563,46 +3821,56 @@ body {
 .score-value {
   font-weight: 600;
   letter-spacing: 1px;
-  min-width: 52px; /* drží pekné zarovnanie */
+  min-width: 52px;
+  /* drží pekné zarovnanie */
 }
 
 .score-suffix {
   font-size: 0.8rem;
   color: #aaa;
   text-transform: lowercase;
-  margin-left: -2px; /* odstráni vizuálnu medzeru */
+  margin-left: -2px;
+  /* odstráni vizuálnu medzeru */
 }
 
 /* ===== MOBILNÉ TABUĽKY – NHLPRO.SK ===== */
 .shooting-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;         /* 💥 kľúčové – stĺpce majú fixnú šírku a prispôsobia sa */
+  table-layout: fixed;
+  /* 💥 kľúčové – stĺpce majú fixnú šírku a prispôsobia sa */
   font-size: 14px;
 }
 
 .shooting-table th,
 .shooting-table td {
-  padding: 6px 4px;            /* malé odsadenie podobne ako profi appky */
-  white-space: nowrap;         /* údaje sa nezalomia */
-  overflow: hidden;            /* ak je niečo príliš dlhé… */
-  text-overflow: ellipsis;     /* …urobí sa „…“ presne ako v profi tabuľkách */
+  padding: 6px 4px;
+  /* malé odsadenie podobne ako profi appky */
+  white-space: nowrap;
+  /* údaje sa nezalomia */
+  overflow: hidden;
+  /* ak je niečo príliš dlhé… */
+  text-overflow: ellipsis;
+  /* …urobí sa „…“ presne ako v profi tabuľkách */
 }
 
 .shooting-table th:nth-child(1),
 .shooting-table td:nth-child(1) {
-  width: 28px;                 /* # */
+  width: 28px;
+  /* # */
   text-align: center;
 }
 
 .shooting-table th:nth-child(2),
 .shooting-table td:nth-child(2) {
-  width: 130px;                /* hráč – zmestí sa aj meno + ikona */
+  width: 130px;
+  /* hráč – zmestí sa aj meno + ikona */
 }
 
 .shooting-table th:nth-child(3),
 .shooting-table td:nth-child(3) {
-  width: 80px;                 /* tím */
+  width: 80px;
+  /* tím */
   text-align: left;
 }
 
@@ -3632,6 +3900,7 @@ body {
   .shooting-table {
     font-size: 12px;
   }
+
   .shooting-table img {
     width: 18px;
     height: 18px;
@@ -3646,7 +3915,7 @@ body {
 
 
 .ai-today-box {
-  border-bottom: 1px solid rgba(255,255,255,0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   padding-bottom: 12px;
 }
 
@@ -3657,7 +3926,8 @@ body {
   padding-right: 6px;
 }
 
-.ai-scorer-box, .ai-history-list {
+.ai-scorer-box,
+.ai-history-list {
   width: 100%;
   overflow: hidden;
 }
@@ -3666,7 +3936,7 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 6px 2px;
-  border-bottom: 1px dashed rgba(255,255,255,0.1);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
   font-size: 0.9rem;
 }
 
@@ -3695,7 +3965,7 @@ body {
   width: 100%;
   padding: 6px 10px;
   box-sizing: border-box;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .ai-history-row:last-child {
@@ -3751,7 +4021,8 @@ body {
   padding-right: 6px;
 }
 
-.ai-scorer-box, .ai-history-box {
+.ai-scorer-box,
+.ai-history-box {
   width: 100%;
   overflow: hidden;
 }
@@ -3777,14 +4048,14 @@ body {
 
   /* história tipov musí mať vlastný scroll */
   @media (max-width: 768px) {
-  
-  .ai-history-list {
-    max-height: 180px;
-    overflow-y: auto;
-    margin-bottom: 12px;
-    padding-bottom: 4px;
+
+    .ai-history-list {
+      max-height: 180px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+      padding-bottom: 4px;
+    }
   }
-}
 }
 
 @media (max-width: 768px) {
@@ -3827,9 +4098,15 @@ body {
 /* Modal CSS presunuté na koniec súboru - pozri koniec style.css */
 
 @keyframes fadeIn {
-  from { background: rgba(0,0,0,0.30); }
-  to   { background: rgba(0,0,0,0.80); }
+  from {
+    background: rgba(0, 0, 0, 0.30);
+  }
+
+  to {
+    background: rgba(0, 0, 0, 0.80);
+  }
 }
+
 #mantingale-section {
   padding: 40px 24px;
   margin-top: 40px;
@@ -3933,8 +4210,10 @@ body {
 
 #premium-section input[type="email"],
 #premium-section input[type="password"] {
-  background: #ffffff;   /* biele pole */
-  color: #000000;        /* 🔥 ČIERNY TEXT */
+  background: #ffffff;
+  /* biele pole */
+  color: #000000;
+  /* 🔥 ČIERNY TEXT */
   border: 1px solid #ccc;
 }
 
@@ -3953,7 +4232,8 @@ body {
    =========================== */
 #premium-section input {
   background: #ffffff;
-  color: #000000;          /* 🔥 viditeľný text */
+  color: #000000;
+  /* 🔥 viditeľný text */
   border: 1px solid #ccc;
 }
 
@@ -4014,7 +4294,7 @@ body {
   padding: 20px;
   background: #0b1f2a;
   border-radius: 12px;
-  box-shadow: 0 0 25px rgba(0,255,255,0.15);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.15);
   text-align: center;
 }
 
@@ -4049,11 +4329,15 @@ body {
    =============================== */
 
 .premium-section {
-  background: radial-gradient(circle at top, #001f33 0%, #000814 100%) !important; /* 🔒 ROVNAKÉ AKO BODY */
+  background: radial-gradient(circle at top, #001f33 0%, #000814 100%) !important;
+  /* 🔒 ROVNAKÉ AKO BODY */
   padding: 60px 16px;
-  position: relative; /* 🔒 PRE Z-INDEX */
-  z-index: 1; /* 🔒 NAD HEADER::BEFORE */
-  min-height: 100vh; /* 🔒 ZABEZPEČ PLNÚ VÝŠKU */
+  position: relative;
+  /* 🔒 PRE Z-INDEX */
+  z-index: 1;
+  /* 🔒 NAD HEADER::BEFORE */
+  min-height: 100vh;
+  /* 🔒 ZABEZPEČ PLNÚ VÝŠKU */
 }
 
 /* ===============================
@@ -4064,15 +4348,13 @@ body {
   max-width: 1150px;
   margin: 0 auto;
   padding: 36px 32px 42px;
-  background: linear-gradient(
-    180deg,
-    rgba(12, 24, 38, 0.96),
-    rgba(6, 12, 20, 0.98)
-  );
+  background: linear-gradient(180deg,
+      rgba(12, 24, 38, 0.96),
+      rgba(6, 12, 20, 0.98));
   border-radius: 20px;
   box-shadow:
-    0 30px 80px rgba(0,0,0,0.75),
-    inset 0 0 0 1px rgba(0,234,255,0.08);
+    0 30px 80px rgba(0, 0, 0, 0.75),
+    inset 0 0 0 1px rgba(0, 234, 255, 0.08);
 }
 
 /* ===============================
@@ -4118,7 +4400,7 @@ body {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 20px;
-  text-shadow: 0 2px 3px rgba(0,0,0,0.5), 0 0 15px rgba(255, 208, 0, 0.4);
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 208, 0, 0.4);
 }
 
 .premium-info-text {
@@ -4256,7 +4538,7 @@ body {
   background: rgba(6, 14, 22, 0.85);
   padding: 22px;
   border-radius: 14px;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   max-width: 400px;
   margin: 0 auto;
 }
@@ -4279,7 +4561,7 @@ body {
 .premium-toolbar select:focus {
   outline: none;
   border-color: #00eaff;
-  box-shadow: 0 0 0 2px rgba(0,234,255,0.15);
+  box-shadow: 0 0 0 2px rgba(0, 234, 255, 0.15);
 }
 
 /* ===============================
@@ -4305,7 +4587,7 @@ body {
 #premium-add-player-btn:hover,
 .premium-upgrade-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,234,255,0.2);
+  box-shadow: 0 4px 12px rgba(0, 234, 255, 0.2);
   opacity: 0.95;
 }
 
@@ -4340,31 +4622,39 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 26px;
-  position: relative; /* Pre absolútne pozicionovanie */
+  position: relative;
+  /* Pre absolútne pozicionovanie */
 }
 
 .premium-welcome {
   color: #bfeaff;
   font-size: 0.95rem;
-  text-align: center; /* Centrovanie textu */
-  position: absolute; /* Absolútne pozicionovanie */
-  left: 50%; /* Presun na stred */
-  transform: translateX(-50%); /* Centrovanie */
-  width: auto; /* Automatická šírka */
+  text-align: center;
+  /* Centrovanie textu */
+  position: absolute;
+  /* Absolútne pozicionovanie */
+  left: 50%;
+  /* Presun na stred */
+  transform: translateX(-50%);
+  /* Centrovanie */
+  width: auto;
+  /* Automatická šírka */
 }
 
 .premium-logout-wrapper {
   display: flex;
-  justify-content: center; /* Centrovanie tlačidla */
+  justify-content: center;
+  /* Centrovanie tlačidla */
   align-items: center;
-  margin-top: 48px; /* Priestor od tabuliek */
+  margin-top: 48px;
+  /* Priestor od tabuliek */
   margin-bottom: 24px;
   width: 100%;
 }
 
 .premium-logout-btn {
   background: none;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: #9bbbd6;
   padding: 10px 24px;
   border-radius: 8px;
@@ -4374,8 +4664,8 @@ body {
 }
 
 .premium-logout-btn:hover {
-  background: rgba(255,255,255,0.05);
-  border-color: rgba(255,255,255,0.3);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
 }
 
@@ -4483,18 +4773,18 @@ body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #8fb6d6;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .premium-table td {
   padding: 14px 12px;
   font-size: 0.9rem;
   color: #e6f1ff;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .premium-table tr:hover {
-  background: rgba(0,234,255,0.06);
+  background: rgba(0, 234, 255, 0.06);
 }
 
 /* ===============================
@@ -4509,9 +4799,12 @@ body {
 }
 
 .premium-msg-success {
-  color: #00ff9c !important; /* Zelená farba pre úspech */
-  background: rgba(0, 255, 156, 0.1) !important; /* Jemné zelené pozadie */
-  border: 1px solid rgba(0, 255, 156, 0.3) !important; /* Zelený okraj */
+  color: #00ff9c !important;
+  /* Zelená farba pre úspech */
+  background: rgba(0, 255, 156, 0.1) !important;
+  /* Jemné zelené pozadie */
+  border: 1px solid rgba(0, 255, 156, 0.3) !important;
+  /* Zelený okraj */
   border-radius: 8px !important;
   padding: 12px 16px !important;
   font-weight: 500 !important;
@@ -4544,7 +4837,7 @@ body {
   margin-bottom: 24px;
   text-align: center;
   font-weight: 600;
-  text-shadow: 0 2px 3px rgba(0,0,0,0.5), 0 0 15px rgba(255, 208, 0, 0.4);
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 208, 0, 0.4);
 }
 
 .premium-features-grid {
@@ -4619,7 +4912,7 @@ body {
   font-size: 1.5rem;
   margin-bottom: 8px;
   font-weight: 600;
-  text-shadow: 0 2px 3px rgba(0,0,0,0.5), 0 0 15px rgba(255, 208, 0, 0.4);
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 208, 0, 0.4);
 }
 
 .section-card-subtitle {
@@ -4664,8 +4957,10 @@ body {
    =============================== */
 
 @media (max-width: 768px) {
+
   /* Zabráni overflow na celú stránku */
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
     max-width: 100vw;
   }
@@ -4721,7 +5016,7 @@ body {
     min-height: 50px;
     padding-top: 10px;
   }
-  
+
   .premium-welcome {
     top: 0 !important;
     position: relative !important;
@@ -4767,7 +5062,8 @@ body {
 
   .premium-table {
     font-size: 0.75rem;
-    min-width: 600px; /* minimálna šírka pre správne zobrazenie */
+    min-width: 600px;
+    /* minimálna šírka pre správne zobrazenie */
     width: 100%;
     table-layout: auto;
   }
@@ -4804,16 +5100,19 @@ body {
     padding: 16px;
     flex-direction: column;
     text-align: center;
-    align-items: center !important; /* Centrovanie obsahu */
+    align-items: center !important;
+    /* Centrovanie obsahu */
   }
 
   .feature-icon {
     font-size: 1.8rem;
     margin-bottom: 8px;
     display: flex !important;
-    justify-content: center !important; /* Centrovanie ikonky horizontálne */
+    justify-content: center !important;
+    /* Centrovanie ikonky horizontálne */
     align-items: center !important;
-    width: 100% !important; /* Plná šírka pre centrovanie */
+    width: 100% !important;
+    /* Plná šírka pre centrovanie */
   }
 
   .feature-text strong {
@@ -5021,9 +5320,11 @@ body {
    =============================== */
 
 .premium-table td:first-child {
-  white-space: nowrap;        /* 🔑 nikdy nezalomí */
+  white-space: nowrap;
+  /* 🔑 nikdy nezalomí */
   overflow: hidden;
-  text-overflow: ellipsis;    /* … ak by bolo fakt dlhé */
+  text-overflow: ellipsis;
+  /* … ak by bolo fakt dlhé */
   max-width: 120px;
   font-weight: 500;
   color: #eaf6ff;
@@ -5078,7 +5379,7 @@ body {
   font-size: 0.7rem;
   border-radius: 6px;
   background: none;
-  border: 1px solid rgba(255,90,90,0.5);
+  border: 1px solid rgba(255, 90, 90, 0.5);
   color: #ff6b6b;
 }
 
@@ -5088,8 +5389,10 @@ body {
 
 @media (max-width: 768px) {
   .premium-actions {
-    max-width: 70px;          /* zmestí Detail */
-    overflow-x: auto;         /* 🔑 */
+    max-width: 70px;
+    /* zmestí Detail */
+    overflow-x: auto;
+    /* 🔑 */
   }
 
   .premium-actions::-webkit-scrollbar {
@@ -5100,7 +5403,11 @@ body {
 /* =========================
    HOME (modern template look)
    ========================= */
-.nhl-home { padding: 18px 10px 24px; max-width: 1180px; margin: 0 auto; }
+.nhl-home {
+  padding: 18px 10px 24px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
 
 /* ================================
    HERO BANNER
@@ -5112,12 +5419,11 @@ body {
    display: none;
 */
 .hero-banner {
-  display: none !important; /* 🔒 DOČASNE SKRYTÉ - pre zobrazenie odstráňte túto riadku */
-  background: radial-gradient(
-    120% 120% at 50% 0%,
-    rgba(0, 234, 255, 0.08),
-    rgba(0, 0, 0, 0.85)
-  );
+  display: none !important;
+  /* 🔒 DOČASNE SKRYTÉ - pre zobrazenie odstráňte túto riadku */
+  background: radial-gradient(120% 120% at 50% 0%,
+      rgba(0, 234, 255, 0.08),
+      rgba(0, 0, 0, 0.85));
   border-radius: 24px;
   padding: 48px 36px;
   margin-bottom: 32px;
@@ -5226,16 +5532,16 @@ body {
   .hero-banner {
     padding: 32px 24px;
   }
-  
+
   .hero-stats {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  
+
   .hero-cta {
     flex-direction: column;
   }
-  
+
   .hero-btn-primary,
   .hero-btn-secondary {
     width: 100%;
@@ -5270,11 +5576,9 @@ body {
 }
 
 .feature-card {
-  background: radial-gradient(
-    120% 120% at 50% 0%,
-    rgba(0, 234, 255, 0.06),
-    rgba(0, 0, 0, 0.85)
-  );
+  background: radial-gradient(120% 120% at 50% 0%,
+      rgba(0, 234, 255, 0.06),
+      rgba(0, 0, 0, 0.85));
   border-radius: 20px;
   padding: 32px 24px;
   border: 1px solid rgba(0, 234, 255, 0.18);
@@ -5338,12 +5642,12 @@ body {
     padding: 32px 16px;
     margin-top: 48px;
   }
-  
+
   .features-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  
+
   .feature-card {
     padding: 24px 20px;
   }
@@ -5357,31 +5661,66 @@ body {
   margin-bottom: 18px;
 }
 
-.nhl-card, .nhl-game-card, .nhl-stat-card {
+.nhl-card,
+.nhl-game-card,
+.nhl-stat-card {
   background: rgba(10, 20, 35, 0.55);
   border: 1px solid rgba(0, 234, 255, 0.18);
   border-radius: 18px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(10px);
 }
 
-.nhl-hero-left { padding: 14px 10px; }
-.nhl-hero-title { font-size: 42px; line-height: 1.05; margin: 10px 0 10px; color: #eaf7ff; }
-.nhl-hero-title-accent { display:block; font-size: 18px; margin-top: 8px; color: rgba(255,255,255,0.7); }
-.nhl-hero-sub { color: rgba(255,255,255,0.75); margin: 0 0 12px; max-width: 54ch; }
+.nhl-hero-left {
+  padding: 14px 10px;
+}
 
-.nhl-badge-row { display:flex; flex-wrap:wrap; gap:8px; }
+.nhl-hero-title {
+  font-size: 42px;
+  line-height: 1.05;
+  margin: 10px 0 10px;
+  color: #eaf7ff;
+}
+
+.nhl-hero-title-accent {
+  display: block;
+  font-size: 18px;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.nhl-hero-sub {
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0 0 12px;
+  max-width: 54ch;
+}
+
+.nhl-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .nhl-badge {
   padding: 7px 10px;
   border-radius: 999px;
   font-size: 12px;
-  color: rgba(255,255,255,0.86);
+  color: rgba(255, 255, 255, 0.86);
   background: rgba(0, 234, 255, 0.10);
   border: 1px solid rgba(0, 234, 255, 0.18);
 }
-.nhl-badge-soft { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.10); }
 
-.nhl-hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin: 12px 0 14px; }
+.nhl-badge-soft {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.10);
+}
+
+.nhl-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0 14px;
+}
 
 .nhl-btn {
   border: 0;
@@ -5396,126 +5735,330 @@ body {
   color: #031018;
   background: linear-gradient(135deg, #00eaff, #2b7bff);
 }
+
 .nhl-btn-ghost {
-  color: rgba(255,255,255,0.9);
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.14);
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }
+
 .nhl-btn-link {
   width: 100%;
   margin-top: 10px;
   background: transparent;
-  color: rgba(0,234,255,0.95);
-  border: 1px solid rgba(0,234,255,0.22);
+  color: rgba(0, 234, 255, 0.95);
+  border: 1px solid rgba(0, 234, 255, 0.22);
 }
 
 .nhl-metrics {
-  display:grid;
+  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   margin-top: 10px;
 }
+
 .nhl-metric {
   padding: 10px 12px;
   border-radius: 14px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.10);
 }
-.nhl-metric-label { font-size: 12px; color: rgba(255,255,255,0.65); }
-.nhl-metric-value { font-size: 18px; color: #eaf7ff; margin-top: 2px; }
 
-.nhl-hero-right { display:flex; }
-.nhl-card-hero { padding: 12px; width: 100%; }
+.nhl-metric-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+}
 
-.nhl-card-head { display:flex; justify-content:space-between; gap:10px; align-items:baseline; }
-.nhl-card-head h3 { margin: 0; color:#eaf7ff; font-size: 16px; }
-.nhl-card-hint { font-size: 11px; color: rgba(255,255,255,0.55); }
+.nhl-metric-value {
+  font-size: 18px;
+  color: #eaf7ff;
+  margin-top: 2px;
+}
 
-.nhl-divider { height: 1px; background: rgba(255,255,255,0.12); margin: 12px 0; }
-.nhl-muted { color: rgba(255,255,255,0.62); margin: 8px 0 0; font-size: 13px; }
+.nhl-hero-right {
+  display: flex;
+}
 
-.nhl-ai-today { padding: 8px 6px; }
-.player-headshot { width: 90px; height: 90px; border-radius: 999px; object-fit: cover; border:1px solid rgba(255,255,255,0.18); }
-.ai-scorer-info p { margin: 4px 0; }
+.nhl-card-hero {
+  padding: 12px;
+  width: 100%;
+}
 
-.nhl-skeleton { display:flex; gap:10px; align-items:center; }
-.nhl-skel-avatar { width: 54px; height: 54px; border-radius: 999px; background: rgba(255,255,255,0.08); }
-.nhl-skel-lines { flex: 1; display:grid; gap:6px; }
-.nhl-skel-lines div { height: 10px; border-radius: 999px; background: rgba(255,255,255,0.08); }
+.nhl-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+}
 
-.nhl-ai-history-head { display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
-.nhl-ai-history-head h4 { margin: 0; color:#eaf7ff; font-size: 14px; }
-.nhl-ai-rate b { color:#ffcc00; }
+.nhl-card-head h3 {
+  margin: 0;
+  color: #eaf7ff;
+  font-size: 16px;
+}
 
-.nhl-ai-history { margin-top: 10px; display:grid; gap:8px; }
+.nhl-card-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.nhl-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 12px 0;
+}
+
+.nhl-muted {
+  color: rgba(255, 255, 255, 0.62);
+  margin: 8px 0 0;
+  font-size: 13px;
+}
+
+.nhl-ai-today {
+  padding: 8px 6px;
+}
+
+.player-headshot {
+  width: 90px;
+  height: 90px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.ai-scorer-info p {
+  margin: 4px 0;
+}
+
+.nhl-skeleton {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.nhl-skel-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.nhl-skel-lines {
+  flex: 1;
+  display: grid;
+  gap: 6px;
+}
+
+.nhl-skel-lines div {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.nhl-ai-history-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.nhl-ai-history-head h4 {
+  margin: 0;
+  color: #eaf7ff;
+  font-size: 14px;
+}
+
+.nhl-ai-rate b {
+  color: #ffcc00;
+}
+
+.nhl-ai-history {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
 .nhl-ai-row {
-  display:grid;
+  display: grid;
   grid-template-columns: 92px 1fr 24px;
   gap: 10px;
-  align-items:center;
+  align-items: center;
   padding: 8px 10px;
   border-radius: 12px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
-.nhl-ai-date { color: rgba(255,255,255,0.7); font-size: 12px; }
-.nhl-ai-player { color: rgba(255,255,255,0.9); font-weight: 600; font-size: 13px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
-.nhl-ai-result { font-weight: 900; text-align:center; }
-.nhl-ai-result.is-hit { color: #00ff77; }
-.nhl-ai-result.is-miss { color: #ff4444; }
+
+.nhl-ai-date {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+}
+
+.nhl-ai-player {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nhl-ai-result {
+  font-weight: 900;
+  text-align: center;
+}
+
+.nhl-ai-result.is-hit {
+  color: #00ff77;
+}
+
+.nhl-ai-result.is-miss {
+  color: #ff4444;
+}
 
 .nhl-section-head {
-  display:flex; justify-content:space-between; align-items:center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: 10px;
   margin: 18px 2px 10px;
 }
-.nhl-section-head h2 { margin:0; font-size: 16px; color:#eaf7ff; }
+
+.nhl-section-head h2 {
+  margin: 0;
+  font-size: 16px;
+  color: #eaf7ff;
+}
 
 .nhl-games-strip {
-  display:flex;
+  display: flex;
   gap: 12px;
   overflow-x: auto;
   padding: 4px 2px 10px;
   scroll-snap-type: x mandatory;
 }
+
 .nhl-game-card {
   min-width: 260px;
   padding: 12px;
   scroll-snap-align: start;
   cursor: pointer;
 }
-.nhl-game-top { display:flex; justify-content:flex-end; }
-.nhl-game-time { font-size: 12px; color: rgba(255,255,255,0.7); }
 
-.nhl-game-teams { display:grid; gap: 10px; margin-top: 8px; }
-.nhl-team { display:flex; align-items:center; gap: 10px; }
-.nhl-team-logo { width: 24px; height: 24px; object-fit: contain; }
-.nhl-team-name { color: rgba(255,255,255,0.92); font-weight: 650; font-size: 14px; }
-.nhl-vs { text-align:center; font-weight: 900; letter-spacing: 2px; color: rgba(0,234,255,0.9); }
+.nhl-game-top {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.nhl-game-time {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.nhl-game-teams {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.nhl-team {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nhl-team-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.nhl-team-name {
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 650;
+  font-size: 14px;
+}
+
+.nhl-vs {
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: rgba(0, 234, 255, 0.9);
+}
 
 .nhl-stats-grid {
-  display:grid;
+  display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
 }
-.nhl-stat-card { padding: 12px; cursor:pointer; }
-.nhl-stat-meta { color: rgba(255,255,255,0.65); font-size: 12px; margin-bottom: 10px; }
-.nhl-stat-main { display:flex; align-items:center; gap: 10px; }
-.nhl-avatar { width: 36px; height: 36px; border-radius: 999px; object-fit: cover; border:1px solid rgba(255,255,255,0.18); }
-.nhl-stat-name { color: rgba(255,255,255,0.92); font-weight: 700; font-size: 13px; }
-.nhl-stat-value { color: rgba(0,234,255,0.95); font-weight: 800; margin-top: 2px; }
 
-.nhl-home-footer { text-align:center; margin-top: 18px; color: rgba(255,255,255,0.55); font-size: 12px; }
+.nhl-stat-card {
+  padding: 12px;
+  cursor: pointer;
+}
+
+.nhl-stat-meta {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.nhl-stat-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nhl-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.nhl-stat-name {
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.nhl-stat-value {
+  color: rgba(0, 234, 255, 0.95);
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.nhl-home-footer {
+  text-align: center;
+  margin-top: 18px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+}
 
 /* Responsive */
 @media (max-width: 980px) {
-  .nhl-hero { grid-template-columns: 1fr; }
-  .nhl-hero-title { font-size: 34px; }
-  .nhl-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nhl-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .nhl-hero-title {
+    font-size: 34px;
+  }
+
+  .nhl-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
+
 @media (max-width: 420px) {
-  .nhl-hero-title { font-size: 28px; }
-  .nhl-metrics { grid-template-columns: 1fr; }
+  .nhl-hero-title {
+    font-size: 28px;
+  }
+
+  .nhl-metrics {
+    grid-template-columns: 1fr;
+  }
 }
 
 .nhl-games-vertical {
@@ -5530,13 +6073,13 @@ body {
   align-items: center;
   padding: 10px 12px;
   border-radius: 12px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
 }
 
 .nhl-game-row:hover {
-  background: rgba(0,234,255,0.08);
+  background: rgba(0, 234, 255, 0.08);
 }
 
 .nhl-game-teams {
@@ -5548,7 +6091,7 @@ body {
 
 .nhl-game-time {
   font-size: 12px;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* ===== AI STRELEC – MOBILE FIX ===== */
@@ -5566,7 +6109,7 @@ body {
   height: 72px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(0,234,255,0.4);
+  border: 2px solid rgba(0, 234, 255, 0.4);
 }
 
 .nhl-ai-today p {
@@ -5633,7 +6176,8 @@ body {
 
   text-align: center;
 
-  padding: 48px 22px 26px; /* ⬅️ EXTRA priestor hore pre TOP nadpis */
+  padding: 48px 22px 26px;
+  /* ⬅️ EXTRA priestor hore pre TOP nadpis */
   min-height: 220px;
 
   border-radius: 14px;
@@ -5710,10 +6254,14 @@ body {
 /* ===== VIP AKCIE – ZAROVNANIE ===== */
 .premium-actions {
   display: flex;
-  flex-direction: column;   /* tlačidlá pod sebou */
-  align-items: center;      /* horizontálne na stred */
-  justify-content: center;  /* vertikálne na stred */
-  gap: 6px;                 /* medzera medzi tlačidlami */
+  flex-direction: column;
+  /* tlačidlá pod sebou */
+  align-items: center;
+  /* horizontálne na stred */
+  justify-content: center;
+  /* vertikálne na stred */
+  gap: 6px;
+  /* medzera medzi tlačidlami */
 }
 
 /* Voliteľne – jednotná šírka tlačidiel */
@@ -5728,11 +6276,9 @@ body {
 
 /* ZÁKLAD BOXU */
 .nhl-card {
-  background: radial-gradient(
-      120% 120% at 50% 0%,
+  background: radial-gradient(120% 120% at 50% 0%,
       rgba(0, 234, 255, 0.06),
-      rgba(0, 0, 0, 0.85)
-  );
+      rgba(0, 0, 0, 0.85));
   border-radius: 18px;
   padding: 26px 26px 28px;
   position: relative;
@@ -5757,7 +6303,8 @@ body {
 
 .nhl-card-head {
   display: flex;
-  justify-content: center;   /* ⬅️ centrovanie */
+  justify-content: center;
+  /* ⬅️ centrovanie */
   align-items: center;
 
   margin-bottom: 22px;
@@ -5786,12 +6333,10 @@ body {
   height: 3px;
   border-radius: 3px;
 
-  background: linear-gradient(
-    90deg,
-    transparent,
-    #ffcc00,
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      #ffcc00,
+      transparent);
 }
 
 /* ================================
@@ -5802,7 +6347,8 @@ body {
 .nhl-ai-history {
   display: flex;
   flex-direction: column;
-  gap: 14px; /* ⬅️ viac dýchania */
+  gap: 14px;
+  /* ⬅️ viac dýchania */
 }
 
 .nhl-game-row,
@@ -5940,8 +6486,10 @@ body {
   max-width: 900px;
   margin: 40px auto 24px;
   padding: 16px 20px;
-  background: rgba(220, 53, 69, 0.1); /* Jemné červené pozadie */
-  border: 1px solid rgba(220, 53, 69, 0.3); /* Jemný červený okraj */
+  background: rgba(220, 53, 69, 0.1);
+  /* Jemné červené pozadie */
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  /* Jemný červený okraj */
   border-radius: 12px;
   text-align: center;
 }
@@ -5950,12 +6498,14 @@ body {
   margin: 0;
   font-size: 0.85rem;
   line-height: 1.6;
-  color: #ff6b6b; /* Červená farba textu */
+  color: #ff6b6b;
+  /* Červená farba textu */
   font-weight: 400;
 }
 
 .abs-disclaimer-text strong {
-  color: #ff4757; /* Tmavšia červená pre zvýraznenie */
+  color: #ff4757;
+  /* Tmavšia červená pre zvýraznenie */
   font-weight: 600;
 }
 
@@ -5996,7 +6546,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.5px;
   color: #ffffff;
-  text-shadow: 
+  text-shadow:
     0 0 20px rgba(255, 212, 0, 0.6),
     0 0 40px rgba(255, 212, 0, 0.3),
     0 2px 8px rgba(0, 0, 0, 0.8);
@@ -6013,12 +6563,10 @@ body {
   transform: translateX(-50%);
   width: 80px;
   height: 4px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    #ffd700,
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      #ffd700,
+      transparent);
   border-radius: 2px;
 }
 
@@ -6044,14 +6592,12 @@ body {
 
 .abs-content-box {
   padding: 24px 28px;
-  background: radial-gradient(
-    120% 120% at 50% 0%,
-    rgba(0, 234, 255, 0.06),
-    rgba(0, 0, 0, 0.85)
-  );
+  background: radial-gradient(120% 120% at 50% 0%,
+      rgba(0, 234, 255, 0.06),
+      rgba(0, 0, 0, 0.85));
   border-radius: 16px;
   border: 1px solid rgba(0, 234, 255, 0.18);
-  box-shadow: 
+  box-shadow:
     0 10px 40px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
   transition: all 0.3s ease;
@@ -6066,12 +6612,10 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(0, 234, 255, 0.1),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(0, 234, 255, 0.1),
+      transparent);
   transition: left 0.5s ease;
 }
 
@@ -6081,7 +6625,7 @@ body {
 
 .abs-content-box:hover {
   transform: translateY(-3px);
-  box-shadow: 
+  box-shadow:
     0 18px 40px rgba(0, 0, 0, 0.65),
     0 26px 60px rgba(0, 234, 255, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
@@ -6105,14 +6649,12 @@ body {
 .abs-warning {
   margin: 0;
   padding: 20px 24px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 204, 0, 0.15) 0%,
-    rgba(255, 180, 0, 0.12) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 204, 0, 0.15) 0%,
+      rgba(255, 180, 0, 0.12) 100%);
   border: 2px solid rgba(255, 212, 0, 0.4);
   border-radius: 16px;
-  box-shadow: 
+  box-shadow:
     0 4px 20px rgba(255, 204, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
   position: relative;
@@ -6127,11 +6669,9 @@ body {
   left: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(
-    180deg,
-    #ffd700,
-    #ffcc00
-  );
+  background: linear-gradient(180deg,
+      #ffd700,
+      #ffcc00);
   border-radius: 2px 0 0 2px;
 }
 
@@ -6255,8 +6795,10 @@ body {
   /* V mobile: zobraziť Balance hneď po hráčovi */
   .mantingale-table .th-balance-mobile {
     display: table-cell;
-    padding-left: 20px !important; /* Posun balance header doprava */
-    text-align: right; /* Zarovnanie doprava */
+    padding-left: 20px !important;
+    /* Posun balance header doprava */
+    text-align: right;
+    /* Zarovnanie doprava */
   }
 
   /* V mobile: zobraziť ROI stĺpec */
@@ -6276,8 +6818,10 @@ body {
   .mantingale-table .balance-mobile-first {
     white-space: nowrap;
     font-weight: 600;
-    padding-left: 20px !important; /* Posun balance doprava - viac priestoru od hráča */
-    text-align: right; /* Zarovnanie doprava */
+    padding-left: 20px !important;
+    /* Posun balance doprava - viac priestoru od hráča */
+    text-align: right;
+    /* Zarovnanie doprava */
   }
 
   .mantingale-table th,
@@ -6391,7 +6935,7 @@ body {
   .mantingale-table-header h3 {
     font-size: 1rem;
   }
-  
+
   .abs-table-info-btn {
     width: 26px;
     height: 26px;
@@ -6481,12 +7025,10 @@ body {
 
 .abs-explanation-divider {
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 221, 85, 0.4),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 221, 85, 0.4),
+      transparent);
   margin: 30px 0;
 }
 
@@ -6587,38 +7129,38 @@ body {
     padding: 25px 20px !important;
     max-width: 95% !important;
   }
-  
+
   .abs-explanation-header h2 {
     font-size: 1.4rem !important;
   }
-  
+
   .abs-explanation-close {
     width: 32px;
     height: 32px;
     font-size: 1.5rem;
   }
-  
+
   .abs-explanation-section h3 {
     font-size: 1.15rem !important;
   }
-  
+
   .abs-explanation-item {
     padding: 14px 16px;
   }
-  
+
   .abs-explanation-item strong {
     font-size: 1rem;
   }
-  
+
   .abs-explanation-item p {
     font-size: 0.85rem;
   }
-  
+
   .abs-explanation-list li {
     font-size: 0.9rem;
     padding-left: 22px;
   }
-  
+
   .abs-explanation-note,
   .abs-explanation-warning {
     padding: 12px 14px;
@@ -6754,12 +7296,10 @@ body {
   max-width: 480px;
   text-align: center;
   border-radius: 20px;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 40, 70, 0.9) 0%,
-    rgba(0, 20, 40, 0.95) 50%,
-    rgba(0, 30, 60, 0.9) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(0, 40, 70, 0.9) 0%,
+      rgba(0, 20, 40, 0.95) 50%,
+      rgba(0, 30, 60, 0.9) 100%);
   box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.5),
     0 4px 16px rgba(0, 234, 255, 0.2),
@@ -6777,14 +7317,12 @@ body {
   left: -100%;
   width: 100%;
   height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(0, 234, 255, 0.8),
-    rgba(255, 212, 0, 0.8),
-    rgba(0, 234, 255, 0.8),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(0, 234, 255, 0.8),
+      rgba(255, 212, 0, 0.8),
+      rgba(0, 234, 255, 0.8),
+      transparent);
   transition: left 0.6s ease;
 }
 
@@ -6827,7 +7365,7 @@ body {
   font-size: 2rem;
   font-weight: 700;
   color: #00ff88;
-  text-shadow: 
+  text-shadow:
     0 0 12px rgba(0, 255, 136, 0.6),
     0 0 24px rgba(0, 255, 136, 0.3);
 }
@@ -6885,7 +7423,7 @@ body {
 .match-day-header {
   font-size: 0.85rem;
   color: #9fdfff;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   padding-bottom: 3px;
   margin-bottom: 4px;
 }
@@ -6937,20 +7475,19 @@ body {
 /* === BOXES === */
 .matches-box,
 .standings-box {
-  background: linear-gradient(
-    180deg,
-    rgba(0,234,255,0.08),
-    rgba(8,14,30,0.95)
-  );
+  background: linear-gradient(180deg,
+      rgba(0, 234, 255, 0.08),
+      rgba(8, 14, 30, 0.95));
   border-radius: 18px;
   padding: 18px 20px;
   box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.04),
-    0 16px 40px rgba(0,0,0,0.55);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 16px 40px rgba(0, 0, 0, 0.55);
 }
 
 /* === MOBILE - SKRYTIE BOXOV MIMO SEKCII VÝSLEDKY === */
 @media (max-width: 768px) {
+
   /* Skryj boxy s výsledkami a tabuľkou ak nie sú v sekcii Výsledky */
   .section:not(#matches-section) .matches-box,
   .section:not(#matches-section) .standings-box,
@@ -6959,7 +7496,7 @@ body {
   .section:not(#matches-section) .matches-right {
     display: none !important;
   }
-  
+
   /* Zobraz boxy len v sekcii Výsledky */
   #matches-section .matches-box,
   #matches-section .standings-box,
@@ -6968,7 +7505,7 @@ body {
   #matches-section .matches-right {
     display: block !important;
   }
-  
+
   #matches-section .matches-layout {
     display: flex !important;
     flex-direction: column !important;
@@ -6997,13 +7534,13 @@ body {
   color: #7ddcff;
   font-weight: 400;
   padding: 8px 6px;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   text-align: center;
 }
 
 .standings-table td {
   padding: 7px 6px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   text-align: center;
   color: #fff;
   background: rgba(6, 14, 22, 0.5);
@@ -7014,7 +7551,7 @@ body {
 }
 
 .standings-table tr:hover {
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 /* TEAM CELL */
@@ -7070,7 +7607,7 @@ body {
     padding: 8px 6px;
     font-size: 0.8rem;
     white-space: nowrap;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     background: rgba(6, 14, 22, 0.5);
   }
 
@@ -7079,7 +7616,7 @@ body {
   }
 
   .standings-table tbody tr:hover {
-    background: rgba(255,255,255,0.03);
+    background: rgba(255, 255, 255, 0.03);
   }
 
   .team-cell {
@@ -7147,20 +7684,18 @@ body {
   padding: 10px 14px;
   margin-bottom: 8px;
   border-radius: 14px;
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,0.04),
-    rgba(0,0,0,0.35)
-  );
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(0, 0, 0, 0.35));
   box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.05),
-    0 6px 18px rgba(0,0,0,0.45);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 6px 18px rgba(0, 0, 0, 0.45);
   transition: transform 0.15s ease, background 0.15s ease;
 }
 
 .match-row:hover {
   transform: translateY(-1px);
-  background: rgba(0,234,255,0.12);
+  background: rgba(0, 234, 255, 0.12);
 }
 
 /* === ĽAVÁ STRANA – TÍMY === */
@@ -7211,8 +7746,8 @@ body {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.4);
-  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.5);
   font-size: 0.75rem;
   text-decoration: none;
   color: #ffcc66;
@@ -7220,155 +7755,160 @@ body {
 }
 
 .match-highlight a:hover {
-  background: rgba(255,204,102,0.25);
+  background: rgba(255, 204, 102, 0.25);
   transform: scale(1.05);
 }
 
 /* ===== SCOREBOARD CARDS ===== */
 
-.score-card{
-  display:grid;
+.score-card {
+  display: grid;
   grid-template-columns: 1fr auto 1fr;
-  align-items:center;
-  gap:18px;
-  padding:16px 20px;
-  margin:12px 0;
-  border-radius:20px;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 20px;
+  margin: 12px 0;
+  border-radius: 20px;
   background: linear-gradient(180deg, #0f1c26, #0a141d);
-  box-shadow: 0 18px 40px rgba(0,0,0,.45);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .45);
 }
 
-.score-team{
-  display:flex;
-  align-items:center;
-}
-.score-team.right{
-  justify-content:flex-end;
-  text-align:right;
+.score-team {
+  display: flex;
+  align-items: center;
 }
 
-.score-name{
-  font-size:1rem;
-  font-weight:600;
-  color:#fff;
-  white-space:nowrap;
+.score-team.right {
+  justify-content: flex-end;
+  text-align: right;
 }
 
-.score-center{
-  text-align:center;
-  min-width:120px;
+.score-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
 }
 
-.score-status{
-  font-size:.65rem;
-  letter-spacing:1px;
-  opacity:.55;
-  margin-bottom:4px;
+.score-center {
+  text-align: center;
+  min-width: 120px;
 }
 
-.score-main{
-  font-size:1.9rem;
-  font-weight:800;
-  line-height:1;
+.score-status {
+  font-size: .65rem;
+  letter-spacing: 1px;
+  opacity: .55;
+  margin-bottom: 4px;
 }
 
-.score-sep{
-  opacity:.4;
-  padding:0 6px;
+.score-main {
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
-.score-extra{
-  font-size:.7rem;
-  opacity:.6;
-  margin-top:2px;
+.score-sep {
+  opacity: .4;
+  padding: 0 6px;
 }
 
-.score-highlight{
-  margin-top:6px;
+.score-extra {
+  font-size: .7rem;
+  opacity: .6;
+  margin-top: 2px;
 }
 
-.highlight-link{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:28px;
-  height:28px;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,.35);
-  background: rgba(0,0,0,.35);
-  color:#ffcc66;
-  text-decoration:none;
+.score-highlight {
+  margin-top: 6px;
 }
-.highlight-link:hover{
-  background: rgba(255,204,102,.18);
-  border-color:#ffcc66;
+
+.highlight-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .35);
+  background: rgba(0, 0, 0, .35);
+  color: #ffcc66;
+  text-decoration: none;
+}
+
+.highlight-link:hover {
+  background: rgba(255, 204, 102, .18);
+  border-color: #ffcc66;
 }
 
 /* ===== COMPACT SCORE ROW ===== */
 
-.score-row{
-  display:grid;
+.score-row {
+  display: grid;
   grid-template-columns: 1fr auto 1fr;
-  align-items:center;
-  padding:6px 12px;
-  margin:3px 0;
-  border-radius:12px;
+  align-items: center;
+  padding: 6px 12px;
+  margin: 3px 0;
+  border-radius: 12px;
   background: linear-gradient(180deg, #0f1b24, #0b141c);
-  box-shadow: 0 8px 20px rgba(0,0,0,.35);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
 }
 
-.team{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.team.right{
-  justify-content:flex-end;
-  text-align:right;
+.team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.team-logo{
-  width:20px;
-  height:20px;
+.team.right {
+  justify-content: flex-end;
+  text-align: right;
 }
 
-.team-name{
-  font-size:.85rem;
-  font-weight:600;
-  color:#fff;
-  white-space:nowrap;
+.team-logo {
+  width: 20px;
+  height: 20px;
 }
 
-.score-center{
-  display:flex;
-  align-items:center;
-  gap:5px;
-  font-size:1.1rem;
-  font-weight:800;
+.team-name {
+  font-size: .85rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
 }
 
-.sep{
-  opacity:.5;
+.score-center {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 1.1rem;
+  font-weight: 800;
 }
 
-.score{
-  color:#e6e6e6;
-}
-.score.win{
-  color:#00ff9c;
+.sep {
+  opacity: .5;
 }
 
-.highlight-slot{
-  margin-left:8px;
+.score {
+  color: #e6e6e6;
 }
 
-.highlight-link{
-  font-size:.9rem;
-  text-decoration:none;
-  opacity:.85;
+.score.win {
+  color: #00ff9c;
 }
-.highlight-link:hover{
-  opacity:1;
+
+.highlight-slot {
+  margin-left: 8px;
+}
+
+.highlight-link {
+  font-size: .9rem;
+  text-decoration: none;
+  opacity: .85;
+}
+
+.highlight-link:hover {
+  opacity: 1;
 }
 
 /* ===============================
@@ -7423,11 +7963,9 @@ body {
   padding: 6px 10px;
   margin-bottom: 4px;
   border-radius: 12px;
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,0.04),
-    rgba(0,0,0,0.25)
-  );
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(0, 0, 0, 0.25));
 }
 
 /* === TEAM SIDES === */
@@ -7556,11 +8094,9 @@ body {
   position: relative;
   margin-bottom: 6px;
   border-radius: 14px;
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,0.04),
-    rgba(0,0,0,0.25)
-  );
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(0, 0, 0, 0.25));
 }
 
 .team-left {
@@ -7612,7 +8148,8 @@ body {
 
 .matches-layout {
   display: grid;
-  grid-template-columns: 0.85fr 1.15fr; /* výsledky užšie, tabuľka širšia */
+  grid-template-columns: 0.85fr 1.15fr;
+  /* výsledky užšie, tabuľka širšia */
   gap: 20px;
 }
 
@@ -7626,7 +8163,8 @@ body {
 /* BODY (PTS) – zvýraznenie */
 .standings-table td.pts,
 .standings-table th.pts {
-  color: #2ecc71;          /* NHL zelená */
+  color: #2ecc71;
+  /* NHL zelená */
   font-weight: 800;
   letter-spacing: 0.5px;
 }
@@ -7644,7 +8182,7 @@ body {
 .premium-analytics {
   margin-top: 40px;
   padding-top: 30px;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .analytics-header {
@@ -7668,8 +8206,8 @@ body {
 }
 
 .analytics-box {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 10px;
   padding: 14px;
   min-height: 180px;
@@ -7717,8 +8255,10 @@ body {
 
 .analytics-table th:nth-child(2) {
   width: 45%;
-  text-align: center; /* Zarovnanie hlavičky na stred */
-  padding-left: 0; /* Bez paddingu vľavo */
+  text-align: center;
+  /* Zarovnanie hlavičky na stred */
+  padding-left: 0;
+  /* Bez paddingu vľavo */
   padding-right: 0;
 }
 
@@ -7745,12 +8285,15 @@ body {
 }
 
 .analytics-table td.team-cell {
-  text-align: center; /* Zarovnanie obsahu na stred */
-  padding-left: 0; /* Bez paddingu vľavo */
+  text-align: center;
+  /* Zarovnanie obsahu na stred */
+  padding-left: 0;
+  /* Bez paddingu vľavo */
   padding-right: 0;
   display: flex;
   align-items: center;
-  justify-content: center; /* Centrovanie flex obsahu */
+  justify-content: center;
+  /* Centrovanie flex obsahu */
   gap: 6px;
 }
 
@@ -7811,11 +8354,14 @@ body {
   }
 
   .analytics-table td.team-cell {
-    padding-left: 0; /* Bez paddingu vľavo */
+    padding-left: 0;
+    /* Bez paddingu vľavo */
     padding-right: 0;
     gap: 4px;
-    min-width: 80px; /* Zabezpečí dostatočnú šírku pre team abbrev */
-    justify-content: center; /* Centrovanie na mobile */
+    min-width: 80px;
+    /* Zabezpečí dostatočnú šírku pre team abbrev */
+    justify-content: center;
+    /* Centrovanie na mobile */
   }
 
   /* Zarovnanie hlavičky "Tím" na mobile */
@@ -7826,9 +8372,12 @@ body {
   }
 
   .analytics-table td.team-cell span {
-    white-space: nowrap !important; /* Zobraz celé team abbrev */
-    overflow: visible !important; /* Nech sa nezobrazuje ellipsis */
-    text-overflow: clip !important; /* Bez skracovania */
+    white-space: nowrap !important;
+    /* Zobraz celé team abbrev */
+    overflow: visible !important;
+    /* Nech sa nezobrazuje ellipsis */
+    text-overflow: clip !important;
+    /* Bez skracovania */
   }
 
   .analytics-table td.team-cell img {
@@ -7848,7 +8397,8 @@ body {
   .analytics-table th:nth-child(2),
   .analytics-table td:nth-child(2) {
     width: auto !important;
-    min-width: 90px !important; /* Dostatočná šírka pre 3-4 písmená */
+    min-width: 90px !important;
+    /* Dostatočná šírka pre 3-4 písmená */
   }
 
   /* Zmenši ostatné stĺpce, aby sa zmestil team abbrev */
@@ -7874,7 +8424,7 @@ body {
 
 .nhl-btn-ghost {
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.25);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   color: #cfefff;
   font-size: 13px;
   padding: 8px 12px;
@@ -7884,7 +8434,7 @@ body {
 }
 
 .nhl-btn-ghost:hover {
-  background: rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.06);
   border-color: #9fe8ff;
 }
 
@@ -7893,6 +8443,7 @@ body {
   nav {
     display: none !important;
   }
+
   .mobile-menu-toggle {
     display: block !important;
   }
@@ -7902,14 +8453,14 @@ body {
    Language switch (SK/EN flags)
    =============================== */
 
-.header-right{
+.header-right {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
 /* override old absolute watermark to avoid overlap */
-.header-right .ai-watermark{
+.header-right .ai-watermark {
   position: static !important;
   top: auto !important;
   right: auto !important;
@@ -7917,16 +8468,16 @@ body {
   opacity: 0.75;
 }
 
-.lang-switch{
+.lang-switch {
   display: inline-flex;
   gap: 6px;
   align-items: center;
 }
 
-.lang-btn{
+.lang-btn {
   appearance: none;
-  border: 1px solid rgba(255,255,255,0.25);
-  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.25);
   color: #eaf9ff;
   border-radius: 10px;
   padding: 6px 8px;
@@ -7937,54 +8488,59 @@ body {
   user-select: none;
 }
 
-.lang-btn:hover{
-  border-color: rgba(0,255,255,0.6);
-  background: rgba(0,255,255,0.08);
+.lang-btn:hover {
+  border-color: rgba(0, 255, 255, 0.6);
+  background: rgba(0, 255, 255, 0.08);
 }
 
-.lang-btn.is-active{
-  border-color: rgba(0,255,255,0.8);
-  box-shadow: 0 0 0 2px rgba(0,255,255,0.15);
+.lang-btn.is-active {
+  border-color: rgba(0, 255, 255, 0.8);
+  box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.15);
 }
 
-.lang-flag{
+.lang-flag {
   font-size: 16px;
   line-height: 1;
 }
 
-.lang-flag-img{
+.lang-flag-img {
   display: inline-block;
   width: 18px;
   height: 14px;
   border-radius: 3px;
   object-fit: cover;
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.15);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15);
 }
 
-.lang-code{
+.lang-code {
   font-weight: 700;
   font-size: 12px;
   letter-spacing: 0.6px;
 }
 
-@media (max-width: 768px){
-  .header-right{
+@media (max-width: 768px) {
+  .header-right {
     gap: 8px;
     position: absolute;
     top: 10px;
     left: auto;
-    right: 10px; /* Zmenené z left na right */
-    z-index: 3; /* above centered title */
-  }
-  .header-right .ai-watermark{
-    display: none; /* to keep header compact on mobile */
+    right: 10px;
+    /* Zmenené z left na right */
+    z-index: 3;
+    /* above centered title */
   }
 
-  .lang-btn{
+  .header-right .ai-watermark {
+    display: none;
+    /* to keep header compact on mobile */
+  }
+
+  .lang-btn {
     padding: 5px 7px;
     border-radius: 10px;
   }
-  .lang-code{
+
+  .lang-code {
     font-size: 11px;
   }
 }
@@ -7992,20 +8548,20 @@ body {
 /* ===============================
    VIP tips cards (Premium)
    =============================== */
-.vip-tips{
+.vip-tips {
   margin: 18px 0 10px;
   padding: 14px 14px 10px;
-  border: 1px solid rgba(0,255,255,0.18);
+  border: 1px solid rgba(0, 255, 255, 0.18);
   border-radius: 14px;
-  background: rgba(0,0,0,0.22);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  background: rgba(0, 0, 0, 0.22);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
-.vip-tips-head{
+.vip-tips-head {
   margin-bottom: 10px;
 }
 
-.vip-tips-head h2{
+.vip-tips-head h2 {
   margin: 0 0 6px;
   font-size: 16px;
   color: #00eaff;
@@ -8013,49 +8569,49 @@ body {
   text-transform: none;
 }
 
-.vip-tips-sub{
+.vip-tips-sub {
   margin: 0;
   font-size: 13px;
-  color: rgba(255,255,255,0.68);
+  color: rgba(255, 255, 255, 0.68);
   text-align: center;
 }
 
-.vip-tips-grid{
+.vip-tips-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
-.vip-tip-card{
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.03);
+.vip-tip-card {
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 12px;
   padding: 12px;
 }
 
-.vip-tip-card-title{
+.vip-tip-card-title {
   margin: 0 0 10px;
   font-size: 14px;
   color: #eaf9ff;
   letter-spacing: 0.2px;
 }
 
-.vip-tip-row{
+.vip-tip-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   padding: 10px 10px;
   border-radius: 10px;
-  background: rgba(0,0,0,0.20);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(0, 0, 0, 0.20);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   margin-bottom: 8px;
   box-sizing: border-box;
   width: 100%;
   overflow: hidden;
 }
 
-.vip-tip-left{
+.vip-tip-left {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -8064,7 +8620,7 @@ body {
   overflow: hidden;
 }
 
-.vip-tip-rank{
+.vip-tip-rank {
   width: 24px;
   height: 24px;
   border-radius: 8px;
@@ -8073,17 +8629,17 @@ body {
   font-weight: 800;
   font-size: 12px;
   color: #06131c;
-  background: rgba(0,255,255,0.85);
+  background: rgba(0, 255, 255, 0.85);
   flex: 0 0 auto;
 }
 
-.vip-tip-text{
+.vip-tip-text {
   min-width: 0;
   flex: 1;
   overflow: hidden;
 }
 
-.vip-tip-title{
+.vip-tip-title {
   font-size: 13px;
   color: #ffffff;
   white-space: nowrap;
@@ -8092,9 +8648,9 @@ body {
   max-width: 100%;
 }
 
-.vip-tip-meta{
+.vip-tip-meta {
   font-size: 12px;
-  color: rgba(255,255,255,0.65);
+  color: rgba(255, 255, 255, 0.65);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -8103,7 +8659,8 @@ body {
 
 /* Jemné zvýraznenie odporúčania over/under */
 .vip-reco-over {
-  color: #00ff9c !important; /* Zelená pre OVER */
+  color: #00ff9c !important;
+  /* Zelená pre OVER */
   text-shadow: 0 0 8px rgba(0, 255, 156, 0.4);
   padding: 2px 6px;
   border-radius: 4px;
@@ -8112,7 +8669,8 @@ body {
 }
 
 .vip-reco-under {
-  color: #ff6b6b !important; /* Červená pre UNDER */
+  color: #ff6b6b !important;
+  /* Červená pre UNDER */
   text-shadow: 0 0 8px rgba(255, 107, 107, 0.4);
   padding: 2px 6px;
   border-radius: 4px;
@@ -8120,26 +8678,26 @@ body {
   display: inline-block;
 }
 
-.vip-tip-right{
+.vip-tip-right {
   text-align: right;
   flex: 0 0 auto;
 }
 
-.vip-tip-badge{
+.vip-tip-badge {
   display: inline-block;
   padding: 4px 8px;
   border-radius: 999px;
-  background: rgba(0,255,255,0.12);
-  border: 1px solid rgba(0,255,255,0.35);
+  background: rgba(0, 255, 255, 0.12);
+  border: 1px solid rgba(0, 255, 255, 0.35);
   color: #9ff6ff;
   font-weight: 800;
   font-size: 12px;
 }
 
-.vip-tip-label{
+.vip-tip-label {
   margin-top: 4px;
   font-size: 11px;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .vip-tip-analysis-btn {
@@ -8167,8 +8725,8 @@ body {
 /* VIP Analysis Modal - Overlay */
 /* VIP Analysis Modal - používa rovnaký systém ako rating modal (.modal-overlay a .modal-content) */
 
-@media (max-width: 768px){
-  .vip-tips-grid{
+@media (max-width: 768px) {
+  .vip-tips-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -8179,13 +8737,13 @@ body {
 /* ===============================
    ABS CTA - Modern 3D Design
    =============================== */
-.abs-cta{
+.abs-cta {
   margin: 0 auto 32px;
   max-width: 1200px;
   padding: 0 24px;
 }
 
-.abs-cta-inner{
+.abs-cta-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -8193,12 +8751,10 @@ body {
   padding: 36px 48px;
   border-radius: 24px;
   border: 1px solid rgba(0, 234, 255, 0.18);
-  background: radial-gradient(
-    120% 120% at 50% 0%,
-    rgba(0, 234, 255, 0.06),
-    rgba(0, 0, 0, 0.85)
-  );
-  box-shadow: 
+  background: radial-gradient(120% 120% at 50% 0%,
+      rgba(0, 234, 255, 0.06),
+      rgba(0, 0, 0, 0.85));
+  box-shadow:
     0 10px 40px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
   position: relative;
@@ -8213,14 +8769,12 @@ body {
   left: -100%;
   width: 100%;
   height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(0, 234, 255, 0.8),
-    rgba(255, 212, 0, 0.8),
-    rgba(0, 234, 255, 0.8),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(0, 234, 255, 0.8),
+      rgba(255, 212, 0, 0.8),
+      rgba(0, 234, 255, 0.8),
+      transparent);
   transition: left 0.6s ease;
 }
 
@@ -8230,7 +8784,7 @@ body {
 
 .abs-cta-inner:hover {
   transform: translateY(-4px);
-  box-shadow: 
+  box-shadow:
     0 18px 40px rgba(0, 0, 0, 0.65),
     0 26px 60px rgba(0, 234, 255, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
@@ -8242,20 +8796,20 @@ body {
   z-index: 1;
 }
 
-.abs-cta-text h3{
+.abs-cta-text h3 {
   margin: 0 0 16px;
   font-family: "Poppins", sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
   color: #ffffff;
-  text-shadow: 
+  text-shadow:
     0 0 15px rgba(0, 234, 255, 0.6),
     0 2px 8px rgba(0, 0, 0, 0.5);
   letter-spacing: 0.3px;
   line-height: 1.4;
 }
 
-.abs-cta-text p{
+.abs-cta-text p {
   margin: 0;
   font-family: "Poppins", sans-serif;
   font-size: 1.05rem;
@@ -8271,14 +8825,12 @@ body {
   text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
 }
 
-.abs-cta-btn{
+.abs-cta-btn {
   flex: 0 0 auto;
   border: 2px solid rgba(255, 212, 0, 0.6);
-  background: linear-gradient(
-    135deg,
-    rgba(255, 212, 0, 0.2) 0%,
-    rgba(255, 200, 0, 0.15) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 212, 0, 0.2) 0%,
+      rgba(255, 200, 0, 0.15) 100%);
   color: #ffd700;
   font-family: "Poppins", sans-serif;
   font-weight: 700;
@@ -8289,7 +8841,7 @@ body {
   transition: all 0.3s ease;
   white-space: nowrap;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  box-shadow: 
+  box-shadow:
     0 6px 20px rgba(255, 212, 0, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.25);
   position: relative;
@@ -8297,31 +8849,30 @@ body {
   letter-spacing: 0.3px;
 }
 
-.abs-cta-btn:hover{
-  background: linear-gradient(
-    135deg,
-    rgba(255, 212, 0, 0.35) 0%,
-    rgba(255, 200, 0, 0.3) 100%
-  );
+.abs-cta-btn:hover {
+  background: linear-gradient(135deg,
+      rgba(255, 212, 0, 0.35) 0%,
+      rgba(255, 200, 0, 0.3) 100%);
   border-color: rgba(255, 212, 0, 0.9);
   transform: translateY(-3px) scale(1.03);
-  box-shadow: 
+  box-shadow:
     0 8px 28px rgba(255, 212, 0, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.35);
   color: #fff9c4;
 }
 
-.abs-cta-btn:active{
+.abs-cta-btn:active {
   transform: translateY(-1px) scale(1.01);
 }
 
-@media (max-width: 768px){
-  .abs-cta-inner{
+@media (max-width: 768px) {
+  .abs-cta-inner {
     flex-direction: column;
     align-items: stretch;
     text-align: center;
   }
-  .abs-cta-btn{
+
+  .abs-cta-btn {
     width: 100%;
   }
 }
@@ -8342,7 +8893,7 @@ body {
   height: 100vh !important;
   margin: 0 !important;
   padding: 0 !important;
-  background: rgba(0,0,0,0.80) !important;
+  background: rgba(0, 0, 0, 0.80) !important;
   backdrop-filter: blur(5px) !important;
   z-index: 99999 !important;
   align-items: center !important;
@@ -8365,7 +8916,7 @@ body {
   box-shadow: 0 0 25px rgba(0, 234, 255, 0.25) !important;
   overflow-y: auto !important;
   line-height: 1.55 !important;
-  border: 1px solid rgba(0,255,255,0.15) !important;
+  border: 1px solid rgba(0, 255, 255, 0.15) !important;
   font-family: "Poppins", "Segoe UI", sans-serif !important;
   font-weight: 400 !important;
 }
@@ -8377,7 +8928,7 @@ body {
     justify-content: center !important;
     padding: 20px !important;
   }
-  
+
   .modal-content {
     margin: auto !important;
     max-height: 85vh !important;
@@ -8390,7 +8941,7 @@ body {
   .modal-overlay {
     padding: 10px !important;
   }
-  
+
   .modal-content {
     width: 98% !important;
     padding: 16px !important;
@@ -8496,14 +9047,12 @@ body {
   width: min(400px, 70%) !important;
   height: 3px !important;
   border-radius: 999px !important;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 221, 85, 0),
-    rgba(255, 221, 85, 0.7) 30%,
-    rgba(255, 221, 85, 1) 50%,
-    rgba(255, 221, 85, 0.7) 70%,
-    rgba(255, 221, 85, 0)
-  ) !important;
+  background: linear-gradient(90deg,
+      rgba(255, 221, 85, 0),
+      rgba(255, 221, 85, 0.7) 30%,
+      rgba(255, 221, 85, 1) 50%,
+      rgba(255, 221, 85, 0.7) 70%,
+      rgba(255, 221, 85, 0)) !important;
   box-shadow: 0 0 15px rgba(255, 221, 85, 0.5) !important;
 }
 
@@ -8519,13 +9068,13 @@ body {
   cursor: pointer !important;
   font-weight: 600 !important;
   transition: 0.25s !important;
-  box-shadow: 0 0 10px rgba(0,255,255,0.4) !important;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.4) !important;
   width: 100% !important;
 }
 
 .close-modal-btn:hover {
   background: #39ffff !important;
-  box-shadow: 0 0 14px rgba(0,255,255,0.6) !important;
+  box-shadow: 0 0 14px rgba(0, 255, 255, 0.6) !important;
   transform: translateY(-2px) !important;
 }
 
@@ -8536,6 +9085,7 @@ body {
     opacity: 0;
     scale: 0.96;
   }
+
   to {
     opacity: 1;
     scale: 1;
@@ -8635,6 +9185,7 @@ body {
     opacity: 0;
     transform: scale(0.9) translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -8646,11 +9197,11 @@ body {
     grid-template-columns: 1fr;
     gap: 12px;
   }
-  
+
   .player-stats-item {
     padding: 12px;
   }
-  
+
   .stats-value {
     font-size: 1.3rem;
   }
@@ -8660,7 +9211,7 @@ body {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.65);
+  background: rgba(0, 0, 0, 0.65);
   z-index: 99998;
   align-items: center;
   justify-content: center;
@@ -8678,7 +9229,7 @@ body {
   padding: 26px;
   color: #d9f3ff;
 
-  box-shadow: 0 0 20px rgba(0,234,255,0.25);
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.25);
 }
 
 /* ===============================
@@ -8687,19 +9238,23 @@ body {
 
 /* Hamburger tlačidlo - 3D štvorček */
 .mobile-menu-toggle {
-  display: none !important; /* skryté na desktop */
+  display: none !important;
+  /* skryté na desktop */
   position: absolute !important;
   top: 50% !important;
   left: 12px !important;
   transform: translateY(-50%) !important;
   z-index: 1001 !important;
-  background: rgba(0, 183, 255, 0.15) !important; /* Priesvitný s jemnou modrou */
-  border: 2px solid rgba(0, 183, 255, 0.5) !important; /* Hrubsie a viditelnejsie oramovanie */
+  background: rgba(0, 183, 255, 0.15) !important;
+  /* Priesvitný s jemnou modrou */
+  border: 2px solid rgba(0, 183, 255, 0.5) !important;
+  /* Hrubsie a viditelnejsie oramovanie */
   border-radius: 10px !important;
   padding: 0.7rem !important;
   cursor: pointer !important;
   transition: all 0.25s ease !important;
-  box-shadow: 0 2px 8px rgba(0, 183, 255, 0.2) !important; /* Jemný tieň */
+  box-shadow: 0 2px 8px rgba(0, 183, 255, 0.2) !important;
+  /* Jemný tieň */
   width: 48px !important;
   height: 48px !important;
   align-items: center !important;
@@ -8707,10 +9262,13 @@ body {
 }
 
 .mobile-menu-toggle:hover {
-  background: rgba(0, 183, 255, 0.25) !important; /* Jemne svetlejšia pri hover */
-  border-color: rgba(0, 183, 255, 0.7) !important; /* Viditelnejsie oramovanie pri hover */
+  background: rgba(0, 183, 255, 0.25) !important;
+  /* Jemne svetlejšia pri hover */
+  border-color: rgba(0, 183, 255, 0.7) !important;
+  /* Viditelnejsie oramovanie pri hover */
   box-shadow: 0 3px 10px rgba(0, 183, 255, 0.3) !important;
-  transform: translateY(-50%) scale(1.05) !important; /* Jemné zväčšenie */
+  transform: translateY(-50%) scale(1.05) !important;
+  /* Jemné zväčšenie */
 }
 
 .mobile-menu-toggle:focus {
@@ -8722,20 +9280,25 @@ body {
 .hamburger-icon {
   display: flex !important;
   flex-direction: column !important;
-  justify-content: space-between !important; /* Rovnomerný priestor medzi čiarkami */
+  justify-content: space-between !important;
+  /* Rovnomerný priestor medzi čiarkami */
   align-items: flex-start !important;
   width: 24px !important;
-  height: 22px !important; /* Väčšia výška pre viac priestoru */
+  height: 22px !important;
+  /* Väčšia výška pre viac priestoru */
   position: relative !important;
-  gap: 6px !important; /* Dodatočný priestor medzi čiarkami */
+  gap: 6px !important;
+  /* Dodatočný priestor medzi čiarkami */
 }
 
 .hamburger-icon span {
   display: block !important;
-  background: #ffffff !important; /* Jednoduchá biela farba */
+  background: #ffffff !important;
+  /* Jednoduchá biela farba */
   border-radius: 2px !important;
   transition: all 0.3s ease !important;
-  box-shadow: none !important; /* Bez tieňov */
+  box-shadow: none !important;
+  /* Bez tieňov */
   position: relative !important;
 }
 
@@ -8752,8 +9315,10 @@ body {
 .mobile-menu-toggle[aria-expanded="true"] .hamburger-icon span:nth-child(1) {
   transform: rotate(45deg) translate(7px, 7px) !important;
   width: 100% !important;
-  height: 2px !important; /* TENŠIA */
-  box-shadow: none !important; /* Bez tieňov */
+  height: 2px !important;
+  /* TENŠIA */
+  box-shadow: none !important;
+  /* Bez tieňov */
 }
 
 .mobile-menu-toggle[aria-expanded="true"] .hamburger-icon span:nth-child(2) {
@@ -8764,8 +9329,10 @@ body {
 .mobile-menu-toggle[aria-expanded="true"] .hamburger-icon span:nth-child(3) {
   transform: rotate(-45deg) translate(6px, -6px) !important;
   width: 100% !important;
-  height: 2px !important; /* TENŠIA */
-  box-shadow: none !important; /* Bez tieňov */
+  height: 2px !important;
+  /* TENŠIA */
+  box-shadow: none !important;
+  /* Bez tieňov */
 }
 
 /* Mobile zobrazenie */
@@ -8783,8 +9350,9 @@ body {
 }
 
 /* HEADER FIX */
-.site-header{
-  position: relative;     /* ⬅️ kľúčové */
+.site-header {
+  position: relative;
+  /* ⬅️ kľúčové */
   width: 100%;
   z-index: 10;
   display: flex;
@@ -8793,14 +9361,16 @@ body {
 }
 
 /* aby obsah nešiel pod header */
-body{
-  padding-top: 100px; /* nastav podľa reálnej výšky headera */
+body {
+  padding-top: 100px;
+  /* nastav podľa reálnej výšky headera */
 }
 
 /* Hamburger je ukotvený v headeri */
-.mobile-menu-toggle{
+.mobile-menu-toggle {
   display: none;
-  position: absolute;   /* viaže sa na header */
+  position: absolute;
+  /* viaže sa na header */
   top: 50%;
   left: 12px;
   transform: translateY(-50%);
@@ -8808,17 +9378,27 @@ body{
 }
 
 /* LEN mobile */
-@media (max-width: 768px){
-  .mobile-menu-toggle{ display: flex !important; }
-  .header-left{ margin-left: 64px; } /* nech sa logo netlačí do hamburgera */
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
+    display: flex !important;
+  }
+
+  .header-left {
+    margin-left: 64px;
+  }
+
+  /* nech sa logo netlačí do hamburgera */
 }
 
 /* Desktop */
-@media (min-width: 769px){
-  .mobile-menu-toggle{ display: none !important; }
+@media (min-width: 769px) {
+  .mobile-menu-toggle {
+    display: none !important;
+  }
 }
 
-html, body {
+html,
+body {
   margin: 0 !important;
   padding: 0 !important;
 }
@@ -8846,14 +9426,14 @@ html, body {
   padding: 12px;
   margin-bottom: 8px;
   border-radius: 12px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.25));
-  border: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.25));
+  border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .live-game-row:hover {
-  background: linear-gradient(180deg, rgba(0,234,255,0.08), rgba(0,0,0,0.3));
+  background: linear-gradient(180deg, rgba(0, 234, 255, 0.08), rgba(0, 0, 0, 0.3));
   border-color: rgba(0, 234, 255, 0.3);
   transform: translateY(-1px);
 }
@@ -8914,7 +9494,7 @@ html, body {
 
 .live-time {
   font-size: 0.9rem;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
   transition: color 0.2s ease;
 }
 
@@ -9077,22 +9657,27 @@ html, body {
     border-color: rgba(255, 68, 68, 1);
     box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7), 0 0 20px rgba(255, 68, 68, 0.5);
   }
+
   20% {
     border-color: rgba(255, 68, 68, 0.8);
     box-shadow: 0 0 0 4px rgba(255, 68, 68, 0.4), 0 0 30px rgba(255, 68, 68, 0.3);
   }
+
   40% {
     border-color: rgba(255, 68, 68, 0.6);
     box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.3), 0 0 20px rgba(255, 68, 68, 0.2);
   }
+
   60% {
     border-color: rgba(255, 68, 68, 0.4);
     box-shadow: 0 0 0 1px rgba(255, 68, 68, 0.2), 0 0 15px rgba(255, 68, 68, 0.15);
   }
+
   80% {
     border-color: rgba(255, 68, 68, 0.2);
     box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.1), 0 0 10px rgba(255, 68, 68, 0.1);
   }
+
   100% {
     border-color: rgba(0, 234, 255, 0.3);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
@@ -9157,7 +9742,7 @@ html, body {
 
 .live-stat-label {
   font-size: 0.85rem;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
   flex: 1;
   text-align: center;
 }
@@ -9165,7 +9750,7 @@ html, body {
 .live-stat-bar {
   display: flex;
   height: 8px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   overflow: hidden;
   position: relative;
@@ -9213,14 +9798,14 @@ html, body {
   gap: 4px;
   padding: 10px;
   margin-bottom: 8px;
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
   border-left: 3px solid #00eaff;
   border-radius: 6px;
 }
 
 .live-goal-period {
   font-size: 0.8rem;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .live-goal-time {
@@ -9242,7 +9827,7 @@ html, body {
 
 .live-goal-assists {
   font-size: 0.85rem;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
   margin-left: 8px;
 }
 
@@ -9265,8 +9850,8 @@ html, body {
 
 .live-team-stat-box {
   padding: 15px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
 }
 
@@ -9279,7 +9864,7 @@ html, body {
 
 .live-team-stat-box p {
   font-size: 0.9rem;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.8);
   margin: 6px 0;
 }
 
@@ -9288,7 +9873,7 @@ html, body {
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .player-stat-item:last-child {
@@ -9297,7 +9882,7 @@ html, body {
 
 .player-stat-item .player-name {
   font-size: 0.9rem;
-  color: rgba(255,255,255,0.9);
+  color: rgba(255, 255, 255, 0.9);
   flex: 1;
 }
 
@@ -9389,8 +9974,53 @@ html, body {
   }
 }
 
+/* ===============================
+   STAT BOX PREVIEW (Feature Player)
+   =============================== */
+.stat-box-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 234, 255, 0.2);
+  width: 100%;
+}
 
+.stat-box-preview img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #00eaff;
+  box-shadow: 0 0 8px rgba(0, 234, 255, 0.4);
+}
 
+.stat-box-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
 
+.stat-box-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+  text-align: left;
+}
 
+.stat-box-value {
+  font-size: 0.85rem;
+  color: #00eaff;
+  font-family: "Orbitron", sans-serif;
+  letter-spacing: 0.5px;
+  text-align: left;
+}
 
+/* Hover efekt */
+.stat-box:hover .stat-box-preview img {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
