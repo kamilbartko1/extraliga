@@ -9452,7 +9452,7 @@ body {
 }
 
 .live-game-team:first-child {
-  justify-content: flex-end;
+  justify-content: unset;
   flex-direction: row-reverse;
 }
 
