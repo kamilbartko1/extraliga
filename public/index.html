@@ -1,25 +1,46 @@
 <!DOCTYPE html>
 <html lang="sk">
+
 <head>
   <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Orbitron:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Orbitron:wght@500;600&display=swap"
+    rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@100;300;400&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@100;300;400&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NHL 2025 - 2026</title>
+  <meta name="description"
+    content="Získaj náskok v tipovaní NHL s AI predikciami. Autonómne tipy na strelcov, analýza formy a Advanced Simulation stratégia.">
+  <meta name="keywords"
+    content="NHL, tipy, predikcie, AI, umelá inteligencia, stávkovanie, hokej, analýza, strelci, mantingal">
+  <meta name="author" content="NHLPRO.sk">
+
+  <!-- Open Graph / Facebook / WhatsApp -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.nhlpro.sk/">
+  <meta property="og:title" content="AI Predikcie NHL Zápasov - Získaj náskok">
+  <meta property="og:description"
+    content="Autonómne tipy na strelcov, analýza formy a Advanced Simulation stratégia. Vyskúšaj zadarmo!">
+  <meta property="og:image" content="https://www.nhlpro.sk/hokejista.jpg">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://www.nhlpro.sk/">
+  <meta property="twitter:title" content="AI Predikcie NHL Zápasov - Získaj náskok">
+  <meta property="twitter:description" content="Autonómne tipy na strelcov a Advanced Simulation.">
+  <meta property="twitter:image" content="https://www.nhlpro.sk/hokejista.jpg">
+
+  <title>NHLPRO.sk - AI Predikcie pre NHL</title>
   <link rel="icon" type="image/png" href="/nhl_logo.png">
   <link rel="shortcut icon" type="image/png" href="/nhl_logo.png">
   <link rel="apple-touch-icon" href="/nhl_logo.png">
   <link rel="stylesheet" href="style.css">
-  
+
   <!-- Google Analytics 4 (GA4) - Bezplatne -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-R66FB9EZV3"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-R66FB9EZV3');
   </script>
@@ -28,76 +49,60 @@
 <body>
 
   <!-- 🔹 HLAVIČKA -->
-<header class="site-header">
+  <header class="site-header">
 
-  <!-- 📱 MOBILNÉ MENU – HAMBURGER (LEN MOBILE) -->
-  <button
-    class="mobile-menu-toggle"
-    id="mobileMenuToggle"
-    aria-label="Otvoriť menu"
-    aria-expanded="false"
-    aria-controls="mobileMenuPanel"
-  >
-    <span class="hamburger-icon">
-      <span></span>
-      <span></span>
-      <span></span>
-    </span>
-  </button>
+    <!-- 📱 MOBILNÉ MENU – HAMBURGER (LEN MOBILE) -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Otvoriť menu" aria-expanded="false"
+      aria-controls="mobileMenuPanel">
+      <span class="hamburger-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
 
-  <!-- 🔹 ĽAVÁ ČASŤ -->
-  <div class="header-left">
-    <img src="/nhl_logo.png" alt="NHL logo">
-    <span>NHL 2025 – 2026</span>
-  </div>
-
-  <!-- 🔹 STRED -->
-  <div class="header-center" data-i18n="header.tagline">
-    National Hockey League 2025-2026
-  </div>
-
-  <!-- 🔹 PRAVÁ ČASŤ -->
-  <div class="header-right">
-    <div class="ai-watermark" data-i18n-html="header.powered">
-      Powered by <span>AI-Logic</span>
+    <!-- 🔹 ĽAVÁ ČASŤ -->
+    <div class="header-left">
+      <img src="/nhl_logo.png" alt="NHL logo">
+      <span>NHL 2025 – 2026</span>
     </div>
 
-    <!-- 🌍 Jazyk (SK/EN) -->
-    <div class="lang-switch" role="group" aria-label="Language">
-      <button type="button" class="lang-btn" data-lang="sk" id="langBtnSk">
-        <img src="https://flagcdn.com/24x18/sk.png" width="24" height="18" alt="">
-        <span class="lang-code">SK</span>
-      </button>
-      <button type="button" class="lang-btn" data-lang="en" id="langBtnEn">
-        <img src="https://flagcdn.com/24x18/gb.png" width="24" height="18" alt="">
-        <span class="lang-code">EN</span>
-      </button>
+    <!-- 🔹 STRED - HERO section pre vyššiu konverziu -->
+    <div class="header-center hero-mini-content">
+      <h1 class="hero-title">AI PREDICITION <span class="highlight">SOFTWARE</span></h1>
+      <p class="hero-subtitle">Získaj náskok vďaka umelej inteligencii</p>
+      <button onclick="showSection('premium-section')" class="hero-cta-btn pulsate">🚀 Vyskúšať PREMIUM</button>
     </div>
-  </div>
 
-</header>
+    <!-- 🔹 PRAVÁ ČASŤ -->
+    <div class="header-right">
+      <div class="ai-watermark" data-i18n-html="header.powered">
+        Powered by <span>AI-Logic</span>
+      </div>
+
+      <!-- 🌍 Jazyk (SK/EN) -->
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" class="lang-btn" data-lang="sk" id="langBtnSk">
+          <img src="https://flagcdn.com/24x18/sk.png" width="24" height="18" alt="">
+          <span class="lang-code">SK</span>
+        </button>
+        <button type="button" class="lang-btn" data-lang="en" id="langBtnEn">
+          <img src="https://flagcdn.com/24x18/gb.png" width="24" height="18" alt="">
+          <span class="lang-code">EN</span>
+        </button>
+      </div>
+    </div>
+
+  </header>
 
   <!-- 📱 OVERLAY PRE MOBILNÉ MENU (MIMO HEADERA) -->
-  <div
-    class="mobile-menu-overlay"
-    id="mobileMenuOverlay"
-    aria-hidden="true"
-  ></div>
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay" aria-hidden="true"></div>
 
   <!-- 📱 SLIDE-IN MOBILNÉ MENU (MIMO HEADERA) -->
-  <nav
-    class="mobile-menu-panel"
-    id="mobileMenuPanel"
-    aria-label="Hlavná navigácia"
-    aria-hidden="true"
-  >
+  <nav class="mobile-menu-panel" id="mobileMenuPanel" aria-label="Hlavná navigácia" aria-hidden="true">
     <div class="mobile-menu-header">
       <h3>Menu</h3>
-      <button
-        class="mobile-menu-close"
-        id="mobileMenuClose"
-        aria-label="Zatvoriť menu"
-      >
+      <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Zatvoriť menu">
         ✕
       </button>
     </div>
@@ -108,8 +113,10 @@
       <li><button onclick="closeMobileMenu(); showSection('teams-section')">Rating tímov</button></li>
       <li><button onclick="closeMobileMenu(); showSection('players-section')">Rating hráčov</button></li>
       <li><button onclick="closeMobileMenu(); showSection('stats-section')">Štatistiky</button></li>
-      <li><button onclick="closeMobileMenu(); showSection('mantingale-section')" data-i18n="nav.abs">Advanced Simulation</button></li>
-      <li><button class="nav-premium" onclick="closeMobileMenu(); showSection('premium-section')">NHLPRO PREMIUM</button></li>
+      <li><button onclick="closeMobileMenu(); showSection('mantingale-section')" data-i18n="nav.abs">Advanced
+          Simulation</button></li>
+      <li><button class="nav-premium" onclick="closeMobileMenu(); showSection('premium-section')">NHLPRO
+          PREMIUM</button></li>
     </ul>
   </nav>
 
@@ -124,484 +131,230 @@
     <button class="nav-premium" onclick="showSection('premium-section')" data-i18n="nav.premium">NHLPRO PREMIUM</button>
   </nav>
 
-    <!-- Domovska stranka -->
-    <div class="container">
-      <div id="home-section" class="section" style="display:none;">
+  <!-- Domovska stranka -->
+  <div class="container">
+    <div id="home-section" class="section" style="display:none;">
       <h2 data-i18n="sections.home">Domov</h2>
       <div id="home-content"></div>
     </div>
 
-<!-- 🏒 Výsledky + Standings -->
-<div class="section" id="matches-section">
+    <!-- 🏒 Výsledky + Standings -->
+    <div class="section" id="matches-section">
 
-  <h2 class="section-title" data-i18n="sections.resultsTitle">Výsledky & tabuľka NHL</h2>
+      <h2 class="section-title" data-i18n="sections.resultsTitle">Výsledky & tabuľka NHL</h2>
 
-  <div class="matches-layout">
+      <div class="matches-layout">
 
-    <!-- ================= LEFT: LIVE ZÁPASY + VÝSLEDKY ================= -->
-    <div class="matches-left">
+        <!-- ================= LEFT: LIVE ZÁPASY + VÝSLEDKY ================= -->
+        <div class="matches-left">
 
-      <!-- LIVE ZÁPASY -->
-      <div class="matches-box" id="live-games-box">
-        <h3 class="box-title">🔴 Live zápasy</h3>
-        <div id="live-games-list" class="matches-list">
-          <p class="nhl-muted">Načítavam live zápasy…</p>
+          <!-- LIVE ZÁPASY -->
+          <div class="matches-box" id="live-games-box">
+            <h3 class="box-title">🔴 Live zápasy</h3>
+            <div id="live-games-list" class="matches-list">
+              <p class="nhl-muted">Načítavam live zápasy…</p>
+            </div>
+          </div>
+
+          <div class="matches-box">
+            <h3 class="box-title" data-i18n="matches.resultsBox">Výsledky</h3>
+
+            <!-- POSLEDNÉ ZÁPASY -->
+            <div id="matches-recent" class="matches-list"></div>
+
+            <!-- BUTTON -->
+            <div class="matches-actions">
+              <button id="matches-more-btn" class="nhl-btn nhl-btn-ghost" onclick="toggleMoreMatches()">
+                <span data-i18n="matches.more">Zobraziť viac ↓</span>
+              </button>
+            </div>
+
+            <!-- STARŠIE ZÁPASY -->
+            <div id="matches-older" class="matches-list hidden"></div>
+          </div>
+
         </div>
-      </div>
 
-      <div class="matches-box">
-        <h3 class="box-title" data-i18n="matches.resultsBox">Výsledky</h3>
+        <!-- ================= RIGHT: TABUĽKA ================= -->
+        <div class="matches-right">
 
-        <!-- POSLEDNÉ ZÁPASY -->
-        <div id="matches-recent" class="matches-list"></div>
+          <div class="standings-box">
+            <h3 class="box-title" data-i18n="matches.standingsBox">Tabuľka NHL</h3>
 
-        <!-- BUTTON -->
-        <div class="matches-actions">
-          <button
-            id="matches-more-btn"
-            class="nhl-btn nhl-btn-ghost"
-            onclick="toggleMoreMatches()"
-          >
-            <span data-i18n="matches.more">Zobraziť viac ↓</span>
-          </button>
+            <div id="standings-table" class="standings-wrapper">
+              <p class="nhl-muted" data-i18n="matches.loadingStandings">Načítavam tabuľku…</p>
+            </div>
+          </div>
+
         </div>
 
-        <!-- STARŠIE ZÁPASY -->
-        <div id="matches-older" class="matches-list hidden"></div>
       </div>
-
     </div>
 
-    <!-- ================= RIGHT: TABUĽKA ================= -->
-    <div class="matches-right">
-
-      <div class="standings-box">
-        <h3 class="box-title" data-i18n="matches.standingsBox">Tabuľka NHL</h3>
-
-        <div id="standings-table" class="standings-wrapper">
-          <p class="nhl-muted" data-i18n="matches.loadingStandings">Načítavam tabuľku…</p>
-        </div>
-      </div>
-
+    <div id="load-status" style="color:#aaa;font-size:14px;margin:10px 0;text-align:center;">
     </div>
 
-  </div>
-</div>
+    <!-- 📊 Rating tímov -->
+    <div class="section" id="teams-section">
+      <h2>
+        <span data-i18n="sections.teamRating">Rating tímov</span>
+        <span class="rating-info-btn" onclick="openTeamRatingModal()">ℹ️</span>
+      </h2>
 
-<div id="load-status"
-     style="color:#aaa;font-size:14px;margin:10px 0;text-align:center;">
-</div>
-
-<!-- 📊 Rating tímov -->
-<div class="section" id="teams-section">
-  <h2>
-    <span data-i18n="sections.teamRating">Rating tímov</span>
-    <span class="rating-info-btn" onclick="openTeamRatingModal()">ℹ️</span>
-  </h2>
-
-  <table id="teamRatings">
-    <thead>
-      <tr>
-        <th data-i18n="table.team">Tím</th>
-        <th data-i18n="table.rating">Rating</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</div>
-
-<div id="teamRatingModal" class="rating-modal-overlay" onclick="closeTeamRatingModal(event)">
-  <div class="rating-modal-content" id="teamRatingModalContent"></div>
-</div>
-
-   <!-- 🧑‍🚀 Rating hráčov -->
-<div class="section" id="players-section">
-  <h2>
-    <span data-i18n="sections.playerRating">Rating hráčov</span>
-    <span class="rating-info-btn" onclick="openRatingModal()">ℹ️</span>
-  </h2>
-
-  <table id="playerRatings">
-    <thead>
-      <tr>
-        <th data-i18n="table.player">Hráč</th>
-        <th data-i18n="table.rating">Rating</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</div>
-
-<div id="ratingModal" class="rating-modal-overlay" onclick="closeRatingModal(event)">
-  <div class="rating-modal-content" id="playerRatingModalContent"></div>
-</div>
-
-<!-- Modal pre štatistiky hráča -->
-<div id="playerStatsModal" class="rating-modal-overlay" onclick="closePlayerStatsModal(event)">
-  <div class="rating-modal-content player-stats-modal-content" id="playerStatsContent" onclick="event.stopPropagation();">
-    <!-- Obsah sa načíta dynamicky -->
-  </div>
-</div>
-
-<!-- VIP Tip Analysis Modal - mimo premium sekcie pre správne position: fixed -->
-<div id="vip-tip-analysis-overlay" class="modal-overlay" onclick="closeVipTipAnalysis(event)" style="display: none;">
-  <div class="modal-content" id="vip-tip-analysis-modal" onclick="event.stopPropagation();"></div>
-</div>
-
-<!-- AS Table Explanation Modal -->
-<div id="abs-table-explanation-overlay" class="modal-overlay" onclick="closeAbsTableExplanation(event)" style="display: none;">
-  <div class="modal-content abs-explanation-modal-content" id="abs-table-explanation-modal" onclick="event.stopPropagation();"></div>
-</div>
-
-<!-- Live Game Details Modal -->
-<div id="live-game-details-overlay" class="modal-overlay" onclick="closeLiveGameDetails(event)" style="display: none;">
-  <div class="modal-content live-game-details-content" id="live-game-details-modal" onclick="event.stopPropagation();"></div>
-</div>
-
-<!-- Modal pre odohrané zápasy -->
-<div id="finished-game-details-overlay" class="modal-overlay" onclick="closeFinishedGameDetails(event)" style="display: none;">
-  <div class="modal-content live-game-details-content" id="finished-game-details-modal" onclick="event.stopPropagation();"></div>
-</div>
-
-<div id="mantingal-container-pc"></div>
-</div>
-
-<!-- AS - Advanced Simulation -->
-<section id="mantingale-section" class="section">
-  <!-- ===============================
-       ✨ CTA – registrácia pre vlastných hráčov v AS
-       =============================== -->
-  <div class="abs-cta">
-    <div class="abs-cta-inner">
-      <div class="abs-cta-text">
-        <h3 data-i18n="absCta.title">Chceš si vybrať vlastných hráčov do AS?</h3>
-        <p data-i18n-html="absCta.subtitle">
-          Zaregistruj sa a odomkni možnosť pridávať vlastných hráčov a sledovať ich AS sériu.
-        </p>
-      </div>
-      <button class="abs-cta-btn" type="button" onclick="openAbsRegisterCta()" data-i18n="absCta.button">
-        Registrovať sa
-      </button>
-    </div>
-  </div>
-
-  <!-- ===============================
-     🧠 AS – INFO BOX
-     =============================== -->
-<div class="abs-info-box" id="absInfoBox"></div>
-  
-  <div id="mantingale-summary">
-      <div class="abs-profit-box">
-    <div class="abs-profit-label" data-i18n="mantingale.totalProfit">CELKOVÝ PROFIT</div>
-
-    <div class="abs-profit-value">
-      <span id="mtg-total-profit">0.00</span>
-      <span class="abs-profit-euro">€</span>
-    </div>
-  </div>
-
-  </div>
-
-  <div class="mantingale-table-header">
-    <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
-      <span data-i18n="abs.tableTitle">🧠 Ako funguje AS</span>
-      <span class="abs-table-info-btn" onclick="openAbsTableExplanation()" title="Klikni pre podrobné vysvetlenie AS">ℹ️</span>
-    </h3>
-  </div>
-  
-  <div class="mantingale-table-wrapper">
-    <table class="mantingale-table">
-      <thead>
-        <tr>
-          <th class="th-player" data-i18n="table.player">Hráč</th>
-          <th class="th-balance-mobile" data-i18n="mantingale.balance">Balance (€)</th>
-          <th class="th-stake" data-i18n="mantingale.stake">Stávka /EUR/</th>
-          <th class="th-streak" data-i18n="mantingale.streak">Streak</th>
-          <th class="th-roi-mobile" data-i18n="mantingale.roi">ROI (%)</th>
-          <th class="th-balance-desktop" data-i18n="mantingale.balance">Balance (€)</th>
-          <th class="th-roi-desktop" data-i18n="mantingale.roi">ROI (%)</th>
-          <th class="th-detail" data-i18n="mantingale.detail">Detail</th>
-        </tr>
-      </thead>
-      <tbody id="mantingale-table-body"></tbody>
-    </table>
-  </div>
-
-  <!-- ===============================
-       ⚠️ UPOZORNENIE – EDUKATÍVNA SIMULÁCIA
-       =============================== -->
-  <div class="abs-disclaimer">
-    <p class="abs-disclaimer-text" data-i18n-html="abs.disclaimer">
-      ⚠️ <strong>UPOZORNENIE:</strong> Táto sekcia je len <strong>informatívna edukatívna simulácia</strong>. 
-      <strong>Nejde o skutočnú predikciu</strong> a nenabádame klientov, aby podľa týchto informácií konali.
-    </p>
-  </div>
-
-  <div id="mantingale-detail" class="hidden">
-    <h3 id="mtg-player-name" class="mtg-player-header">
-      <span id="mtg-player-name-text"></span>
-      <span id="mtg-player-team" class="mtg-player-team"></span>
-    </h3>
-
-    <!-- ❌ CANVAS GRAF BOL ODSTRÁNENÝ -->
-
-    <div class="mantingale-table-wrapper">
-      <table class="mantingale-history">
+      <table id="teamRatings">
         <thead>
           <tr>
-            <th data-i18n="mantingale.date">Dátum</th>
-            <th data-i18n="mantingale.game">Zápas</th>
-            <th data-i18n="mantingale.goals">Góly</th>
-            <th data-i18n="mantingale.result">Výsledok</th>
-            <th data-i18n="mantingale.change">Zmena (€)</th>
-            <th data-i18n="mantingale.balance">Balance (€)</th>
+            <th data-i18n="table.team">Tím</th>
+            <th data-i18n="table.rating">Rating</th>
           </tr>
         </thead>
-        <tbody id="mtg-history-body"></tbody>
+        <tbody></tbody>
       </table>
     </div>
 
-    <button id="mtg-back-btn" data-i18n="common.back">← Späť</button>
+    <div id="teamRatingModal" class="rating-modal-overlay" onclick="closeTeamRatingModal(event)">
+      <div class="rating-modal-content" id="teamRatingModalContent"></div>
+    </div>
+
+    <!-- 🧑‍🚀 Rating hráčov -->
+    <div class="section" id="players-section">
+      <h2>
+        <span data-i18n="sections.playerRating">Rating hráčov</span>
+        <span class="rating-info-btn" onclick="openRatingModal()">ℹ️</span>
+      </h2>
+
+      <table id="playerRatings">
+        <thead>
+          <tr>
+            <th data-i18n="table.player">Hráč</th>
+            <th data-i18n="table.rating">Rating</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div id="ratingModal" class="rating-modal-overlay" onclick="closeRatingModal(event)">
+      <div class="rating-modal-content" id="playerRatingModalContent"></div>
+    </div>
+
+    <!-- Modal pre štatistiky hráča -->
+    <div id="playerStatsModal" class="rating-modal-overlay" onclick="closePlayerStatsModal(event)">
+      <div class="rating-modal-content player-stats-modal-content" id="playerStatsContent"
+        onclick="event.stopPropagation();">
+        <!-- Obsah sa načíta dynamicky -->
+      </div>
+    </div>
+
+    <!-- VIP Tip Analysis Modal - mimo premium sekcie pre správne position: fixed -->
+    <div id="vip-tip-analysis-overlay" class="modal-overlay" onclick="closeVipTipAnalysis(event)"
+      style="display: none;">
+      <div class="modal-content" id="vip-tip-analysis-modal" onclick="event.stopPropagation();"></div>
+    </div>
+
+    <!-- AS Table Explanation Modal -->
+    <div id="abs-table-explanation-overlay" class="modal-overlay" onclick="closeAbsTableExplanation(event)"
+      style="display: none;">
+      <div class="modal-content abs-explanation-modal-content" id="abs-table-explanation-modal"
+        onclick="event.stopPropagation();"></div>
+    </div>
+
+    <!-- Live Game Details Modal -->
+    <div id="live-game-details-overlay" class="modal-overlay" onclick="closeLiveGameDetails(event)"
+      style="display: none;">
+      <div class="modal-content live-game-details-content" id="live-game-details-modal"
+        onclick="event.stopPropagation();"></div>
+    </div>
+
+    <!-- Modal pre odohrané zápasy -->
+    <div id="finished-game-details-overlay" class="modal-overlay" onclick="closeFinishedGameDetails(event)"
+      style="display: none;">
+      <div class="modal-content live-game-details-content" id="finished-game-details-modal"
+        onclick="event.stopPropagation();"></div>
+    </div>
+
+    <div id="mantingal-container-pc"></div>
   </div>
-</section>
 
-<!-- ===============================
-     👑 NHLPRO PREMIUM SECTION
+  <!-- AS - Advanced Simulation -->
+  <section id="mantingale-section" class="section">
+    <!-- ===============================
+       ✨ CTA – registrácia pre vlastných hráčov v AS
+       =============================== -->
+    <div class="abs-cta">
+      <div class="abs-cta-inner">
+        <div class="abs-cta-text">
+          <h3 data-i18n="absCta.title">Chceš si vybrať vlastných hráčov do AS?</h3>
+          <p data-i18n-html="absCta.subtitle">
+            Zaregistruj sa a odomkni možnosť pridávať vlastných hráčov a sledovať ich AS sériu.
+          </p>
+        </div>
+        <button class="abs-cta-btn" type="button" onclick="openAbsRegisterCta()" data-i18n="absCta.button">
+          Registrovať sa
+        </button>
+      </div>
+    </div>
+
+    <!-- ===============================
+     🧠 AS – INFO BOX
      =============================== -->
-<section id="premium-section" class="section premium-section" style="display:none;">
+    <div class="abs-info-box" id="absInfoBox"></div>
 
-  <!-- 🔹 CENTERED CONTAINER -->
-  <div class="premium-container">
+    <div id="mantingale-summary">
+      <div class="abs-profit-box">
+        <div class="abs-profit-label" data-i18n="mantingale.totalProfit">CELKOVÝ PROFIT</div>
 
-    <!-- ===== HEADER ===== -->
-    <header class="premium-header">
-      <h1 data-i18n="premium.title">👑 NHLPRO PREMIUM</h1>
-      <p data-i18n="premium.subtitle">Advanced prediction simulation</p>
-    </header>
+        <div class="abs-profit-value">
+          <span id="mtg-total-profit">0.00</span>
+          <span class="abs-profit-euro">€</span>
+        </div>
+      </div>
 
-    <!-- 🔐 NOT LOGGED -->
-    <div id="premium-not-logged" class="premium-state" style="display:none;">
-      <p class="premium-info-text" data-i18n="premium.loginHint">
-        Najprv sa prihlás, aby si mohol používať NHLPRO PREMIUM.
+    </div>
+
+    <div class="mantingale-table-header">
+      <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+        <span data-i18n="abs.tableTitle">🧠 Ako funguje AS</span>
+        <span class="abs-table-info-btn" onclick="openAbsTableExplanation()"
+          title="Klikni pre podrobné vysvetlenie AS">ℹ️</span>
+      </h3>
+    </div>
+
+    <div class="mantingale-table-wrapper">
+      <table class="mantingale-table">
+        <thead>
+          <tr>
+            <th class="th-player" data-i18n="table.player">Hráč</th>
+            <th class="th-balance-mobile" data-i18n="mantingale.balance">Balance (€)</th>
+            <th class="th-stake" data-i18n="mantingale.stake">Stávka /EUR/</th>
+            <th class="th-streak" data-i18n="mantingale.streak">Streak</th>
+            <th class="th-roi-mobile" data-i18n="mantingale.roi">ROI (%)</th>
+            <th class="th-balance-desktop" data-i18n="mantingale.balance">Balance (€)</th>
+            <th class="th-roi-desktop" data-i18n="mantingale.roi">ROI (%)</th>
+            <th class="th-detail" data-i18n="mantingale.detail">Detail</th>
+          </tr>
+        </thead>
+        <tbody id="mantingale-table-body"></tbody>
+      </table>
+    </div>
+
+    <!-- ===============================
+       ⚠️ UPOZORNENIE – EDUKATÍVNA SIMULÁCIA
+       =============================== -->
+    <div class="abs-disclaimer">
+      <p class="abs-disclaimer-text" data-i18n-html="abs.disclaimer">
+        ⚠️ <strong>UPOZORNENIE:</strong> Táto sekcia je len <strong>informatívna edukatívna simulácia</strong>.
+        <strong>Nejde o skutočnú predikciu</strong> a nenabádame klientov, aby podľa týchto informácií konali.
       </p>
-
-      <div class="premium-auth-box">
-        <input id="premium-email" type="email" placeholder="Email" data-i18n-placeholder="premium.email" />
-        <input id="premium-pass" type="password" placeholder="Heslo" data-i18n-placeholder="premium.password" />
-        <button id="premium-login-btn" data-i18n="premium.login">Prihlásiť</button>
-      </div>
-
-      <button id="premium-signup-btn" class="premium-link-btn" data-i18n="premium.register">
-        Registrovať sa
-      </button>
-
-      <p id="premium-auth-msg" class="premium-msg"></p>
-      <div class="form-footer">
-        <a href="/" class="back-link" data-i18n="premium.backHome">← Späť na hlavnú stránku</a>
-      </div>
-
     </div>
 
-    <!-- 📝 REGISTRATION -->
-    <div
-      id="premium-register-box"
-      class="premium-register-box premium-state"
-      style="display:none;"
-    >
-      <h3 data-i18n="premium.registerTitle">Registrácia do NHLPRO</h3>
+    <div id="mantingale-detail" class="hidden">
+      <h3 id="mtg-player-name" class="mtg-player-header">
+        <span id="mtg-player-name-text"></span>
+        <span id="mtg-player-team" class="mtg-player-team"></span>
+      </h3>
 
-      <input id="reg-email" type="email" placeholder="Email" data-i18n-placeholder="premium.email" />
-      <input id="reg-pass" type="password" placeholder="Heslo" data-i18n-placeholder="premium.password" />
-      <input id="reg-pass2" type="password" placeholder="Zopakuj heslo" data-i18n-placeholder="premium.passwordRepeat" />
-
-      <button id="premium-register-confirm" data-i18n="premium.registerConfirm">
-        Zaregistrovať sa
-      </button>
-
-      <p id="premium-register-msg" class="premium-msg"></p>
-
-      <div class="form-footer">
-        <a href="/" class="back-link" data-i18n="premium.backHome">← Späť na hlavnú stránku</a>
-      </div>
-    </div>
-
-    <!-- 🔒 LOGGED BUT NOT VIP -->
-    <div id="premium-locked" class="premium-state" style="display:none;">
-      <div class="premium-locked-content">
-        <h3 data-i18n="premium.lockedTitle">Aktivuj NHLPRO PREMIUM</h3>
-        <p class="premium-info-text" data-i18n-html="premium.lockedHint">
-          Táto sekcia je dostupná len pre členov <strong>NHLPRO PREMIUM</strong>.
-        </p>
-        
-        <p class="premium-locked-price" data-i18n="premium.lockedPrice">
-          Mesačné predplatné: <strong>4,99 €</strong>
-        </p>
-
-        <!-- Čo získaš -->
-        <div class="premium-locked-features">
-          <h4 data-i18n="premium.lockedFeaturesTitle">Čo získavaš ako VIP klient?</h4>
-          <div class="premium-locked-features-list">
-            <div class="premium-locked-feature-item">
-              <span class="feature-icon">🔥</span>
-              <div class="feature-text">
-                <strong data-i18n="premium.featureVipTips">VIP AI Tipy</strong>
-                <p data-i18n="premium.featureVipTipsDesc">Autonómne tipy na strelcov a góly založené na ratingoch a štatistikách z posledných 10 zápasov</p>
-              </div>
-            </div>
-            <div class="premium-locked-feature-item">
-              <span class="feature-icon">📊</span>
-              <div class="feature-text">
-                <strong data-i18n="premium.featureAbs">AS Stratégia</strong>
-                <p data-i18n="premium.featureAbsDesc">Pridávaj vlastných hráčov do Advanced Simulation a sleduj ich sériu a profit</p>
-              </div>
-            </div>
-            <div class="premium-locked-feature-item">
-              <span class="feature-icon">📈</span>
-              <div class="feature-text">
-                <strong data-i18n="premium.featureAnalytics">Detailná Analytika</strong>
-                <p data-i18n="premium.featureAnalyticsDesc">Štatistiky z posledných 10 zápasov: forma, ofenzíva, obrana a trendy tímov</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <button id="premium-upgrade-btn" class="premium-upgrade-btn" data-i18n="premium.upgrade">
-          Staň sa NHLPRO PREMIUM
-        </button>
-
-        <button id="premium-logout-from-locked-btn" class="premium-logout-btn" data-i18n="premium.logout">
-          Odhlásiť sa
-        </button>
-      </div>
-    </div>
-
-    <!-- 👑 PREMIUM CONTENT -->
-    <div id="premium-content" class="premium-content" style="display:none;">
-
-      <!-- ===== TOP BAR ===== -->
-      <div class="premium-topbar">
-        <span class="premium-welcome">
-          <span data-i18n="premium.welcome">Vitaj v NHLPRO PREMIUM 👑</span>
-        </span>
-      </div>
-
-      <!-- ===============================
-           📋 INFORMÁCIE O VIP PREMIUM
-           =============================== -->
-      <section class="premium-info-banner">
-        <div class="premium-info-content">
-          <h2 data-i18n="premium.infoTitle">Čo získavaš ako VIP klient?</h2>
-          <div class="premium-features-grid">
-            <div class="premium-feature-item">
-              <span class="feature-icon">🔥</span>
-              <div class="feature-text">
-                <strong data-i18n="premium.featureVipTips">VIP AI Tipy</strong>
-                <p data-i18n="premium.featureVipTipsDesc">Autonómne tipy na strelcov a góly založené na ratingoch a štatistikách z posledných 10 zápasov</p>
-              </div>
-            </div>
-            <div class="premium-feature-item">
-              <span class="feature-icon">📊</span>
-              <div class="feature-text">
-                <strong data-i18n="premium.featureAbs">AS Stratégia</strong>
-                <p data-i18n="premium.featureAbsDesc">Pridávaj vlastných hráčov do Advanced Simulation a sleduj ich sériu a profit</p>
-              </div>
-            </div>
-            <div class="premium-feature-item">
-              <span class="feature-icon">📈</span>
-              <div class="feature-text">
-                <strong data-i18n="premium.featureAnalytics">Detailná Analytika</strong>
-                <p data-i18n="premium.featureAnalyticsDesc">Štatistiky z posledných 10 zápasov: forma, ofenzíva, obrana a trendy tímov</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===============================
-           🔥 VIP TIPY NA DNES
-           =============================== -->
-      <section id="vip-tips" class="premium-section-card">
-        <div class="section-card-header">
-          <h2 data-i18n="vipTips.title">🔥 VIP tipy na dnes</h2>
-          <p class="section-card-subtitle" data-i18n="vipTips.subtitle">
-            Autonómne tipy na strelcov a góly podľa ratingov a štatistík z posledných 10 zápasov.
-          </p>
-          <p class="vip-tips-date" id="vip-tips-date" style="text-align: center; margin-top: 12px; color: #00eaff; font-size: 0.9rem; font-weight: 500;"></p>
-        </div>
-        <div id="vip-tips-body" class="vip-tips-grid">
-          <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
-        </div>
-      </section>
-
-      <!-- ===============================
-           🎯 MOJA AS STRATÉGIA
-           =============================== -->
-      <section class="premium-section-card">
-        <div class="section-card-header">
-          <h2 data-i18n="premium.absStrategyTitle">🎯 Moja AS Stratégia</h2>
-          <p class="section-card-subtitle" data-i18n="premium.absStrategyDesc">
-            Pridaj hráčov do svojej Advanced Simulation a sleduj ich výkonnosť a profit.
-          </p>
-        </div>
-
-        <!-- ===== TOOLBAR (TEAM + PLAYER) ===== -->
-        <div class="premium-toolbar">
-          <div class="premium-field">
-            <label for="premium-team-select" data-i18n="premium.pickTeam">Vyber klub</label>
-            <select id="premium-team-select">
-              <option value="" data-i18n="premium.selectTeamPlaceholder">-- vyber klub --</option>
-            </select>
-          </div>
-
-          <div class="premium-field">
-            <label for="premium-player-select" data-i18n="premium.pickPlayer">Vyber hráča</label>
-            <select id="premium-player-select" disabled>
-              <option value="" data-i18n="premium.selectTeamFirst">-- najprv vyber klub --</option>
-            </select>
-          </div>
-
-          <div class="premium-field premium-field-action">
-            <button id="premium-add-player-btn" data-i18n="premium.addPlayer">
-              Pridať hráča
-            </button>
-          </div>
-        </div>
-
-        <!-- ===== SUMMARY ===== -->
-        <div class="premium-summary">
-          <span data-i18n="premium.totalProfit">Celkový profit</span>
-          <strong>
-            <span id="premium-total-profit">0.00</span> €
-          </strong>
-        </div>
-
-        <!-- ===== TABLE ===== -->
-        <div class="premium-table-wrapper">
-          <table class="mantingale-table premium-table">
-            <thead>
-              <tr>
-                <th data-i18n="table.player">Hráč</th>
-                <th data-i18n="premium.tableStake">Stávka</th>
-                <th data-i18n="premium.tableStreak">Streak</th>
-                <th data-i18n="premium.tableBalance">Balance</th>
-                <th data-i18n="premium.tableOdds">Kurzy</th>
-                <th data-i18n="premium.tableActions">Akcie</th>
-              </tr>
-            </thead>
-            <tbody id="premium-players-body"></tbody>
-          </table>
-        </div>
-
-        <!-- ===== MESSAGE ===== -->
-        <div id="premium-msg" class="premium-msg"></div>
-      </section>
-
-      <!-- ===============================
-     👑 VIP MANTINGAL DETAIL
-     =============================== -->
-    <div id="vip-mantingale-detail" class="hidden">
-
-      <h3 id="vip-mtg-player-name"></h3>
+      <!-- ❌ CANVAS GRAF BOL ODSTRÁNENÝ -->
 
       <div class="mantingale-table-wrapper">
         <table class="mantingale-history">
@@ -615,195 +368,457 @@
               <th data-i18n="mantingale.balance">Balance (€)</th>
             </tr>
           </thead>
-          <tbody id="vip-mtg-history-body"></tbody>
+          <tbody id="mtg-history-body"></tbody>
         </table>
       </div>
 
-      <button id="vip-mtg-back-btn" data-i18n="common.back">← Späť</button>
+      <button id="mtg-back-btn" data-i18n="common.back">← Späť</button>
     </div>
+  </section>
 
-      <!-- ===============================
+  <!-- ===============================
+     👑 NHLPRO PREMIUM SECTION
+     =============================== -->
+  <section id="premium-section" class="section premium-section" style="display:none;">
+
+    <!-- 🔹 CENTERED CONTAINER -->
+    <div class="premium-container">
+
+      <!-- ===== HEADER ===== -->
+      <header class="premium-header">
+        <h1 data-i18n="premium.title">👑 NHLPRO PREMIUM</h1>
+        <p data-i18n="premium.subtitle">Advanced prediction simulation</p>
+      </header>
+
+      <!-- 🔐 NOT LOGGED -->
+      <div id="premium-not-logged" class="premium-state" style="display:none;">
+        <p class="premium-info-text" data-i18n="premium.loginHint">
+          Najprv sa prihlás, aby si mohol používať NHLPRO PREMIUM.
+        </p>
+
+        <div class="premium-auth-box">
+          <input id="premium-email" type="email" placeholder="Email" data-i18n-placeholder="premium.email" />
+          <input id="premium-pass" type="password" placeholder="Heslo" data-i18n-placeholder="premium.password" />
+          <button id="premium-login-btn" data-i18n="premium.login">Prihlásiť</button>
+        </div>
+
+        <button id="premium-signup-btn" class="premium-link-btn" data-i18n="premium.register">
+          Registrovať sa
+        </button>
+
+        <p id="premium-auth-msg" class="premium-msg"></p>
+        <div class="form-footer">
+          <a href="/" class="back-link" data-i18n="premium.backHome">← Späť na hlavnú stránku</a>
+        </div>
+
+      </div>
+
+      <!-- 📝 REGISTRATION -->
+      <div id="premium-register-box" class="premium-register-box premium-state" style="display:none;">
+        <h3 data-i18n="premium.registerTitle">Registrácia do NHLPRO</h3>
+
+        <input id="reg-email" type="email" placeholder="Email" data-i18n-placeholder="premium.email" />
+        <input id="reg-pass" type="password" placeholder="Heslo" data-i18n-placeholder="premium.password" />
+        <input id="reg-pass2" type="password" placeholder="Zopakuj heslo"
+          data-i18n-placeholder="premium.passwordRepeat" />
+
+        <button id="premium-register-confirm" data-i18n="premium.registerConfirm">
+          Zaregistrovať sa
+        </button>
+
+        <p id="premium-register-msg" class="premium-msg"></p>
+
+        <div class="form-footer">
+          <a href="/" class="back-link" data-i18n="premium.backHome">← Späť na hlavnú stránku</a>
+        </div>
+      </div>
+
+      <!-- 🔒 LOGGED BUT NOT VIP -->
+      <div id="premium-locked" class="premium-state" style="display:none;">
+        <div class="premium-locked-content">
+          <h3 data-i18n="premium.lockedTitle">Aktivuj NHLPRO PREMIUM</h3>
+          <p class="premium-info-text" data-i18n-html="premium.lockedHint">
+            Táto sekcia je dostupná len pre členov <strong>NHLPRO PREMIUM</strong>.
+          </p>
+
+          <p class="premium-locked-price" data-i18n="premium.lockedPrice">
+            Mesačné predplatné: <strong>4,99 €</strong>
+          </p>
+
+          <!-- Čo získaš -->
+          <div class="premium-locked-features">
+            <h4 data-i18n="premium.lockedFeaturesTitle">Čo získavaš ako VIP klient?</h4>
+            <div class="premium-locked-features-list">
+              <div class="premium-locked-feature-item">
+                <span class="feature-icon">🔥</span>
+                <div class="feature-text">
+                  <strong data-i18n="premium.featureVipTips">VIP AI Tipy</strong>
+                  <p data-i18n="premium.featureVipTipsDesc">Autonómne tipy na strelcov a góly založené na ratingoch a
+                    štatistikách z posledných 10 zápasov</p>
+                </div>
+              </div>
+              <div class="premium-locked-feature-item">
+                <span class="feature-icon">📊</span>
+                <div class="feature-text">
+                  <strong data-i18n="premium.featureAbs">AS Stratégia</strong>
+                  <p data-i18n="premium.featureAbsDesc">Pridávaj vlastných hráčov do Advanced Simulation a sleduj ich
+                    sériu a profit</p>
+                </div>
+              </div>
+              <div class="premium-locked-feature-item">
+                <span class="feature-icon">📈</span>
+                <div class="feature-text">
+                  <strong data-i18n="premium.featureAnalytics">Detailná Analytika</strong>
+                  <p data-i18n="premium.featureAnalyticsDesc">Štatistiky z posledných 10 zápasov: forma, ofenzíva,
+                    obrana a trendy tímov</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button id="premium-upgrade-btn" class="premium-upgrade-btn" data-i18n="premium.upgrade">
+            Staň sa NHLPRO PREMIUM
+          </button>
+
+          <button id="premium-logout-from-locked-btn" class="premium-logout-btn" data-i18n="premium.logout">
+            Odhlásiť sa
+          </button>
+        </div>
+      </div>
+
+      <!-- 👑 PREMIUM CONTENT -->
+      <div id="premium-content" class="premium-content" style="display:none;">
+
+        <!-- ===== TOP BAR ===== -->
+        <div class="premium-topbar">
+          <span class="premium-welcome">
+            <span data-i18n="premium.welcome">Vitaj v NHLPRO PREMIUM 👑</span>
+          </span>
+        </div>
+
+        <!-- ===============================
+           📋 INFORMÁCIE O VIP PREMIUM
+           =============================== -->
+        <section class="premium-info-banner">
+          <div class="premium-info-content">
+            <h2 data-i18n="premium.infoTitle">Čo získavaš ako VIP klient?</h2>
+            <div class="premium-features-grid">
+              <div class="premium-feature-item">
+                <span class="feature-icon">🔥</span>
+                <div class="feature-text">
+                  <strong data-i18n="premium.featureVipTips">VIP AI Tipy</strong>
+                  <p data-i18n="premium.featureVipTipsDesc">Autonómne tipy na strelcov a góly založené na ratingoch a
+                    štatistikách z posledných 10 zápasov</p>
+                </div>
+              </div>
+              <div class="premium-feature-item">
+                <span class="feature-icon">📊</span>
+                <div class="feature-text">
+                  <strong data-i18n="premium.featureAbs">AS Stratégia</strong>
+                  <p data-i18n="premium.featureAbsDesc">Pridávaj vlastných hráčov do Advanced Simulation a sleduj ich
+                    sériu a profit</p>
+                </div>
+              </div>
+              <div class="premium-feature-item">
+                <span class="feature-icon">📈</span>
+                <div class="feature-text">
+                  <strong data-i18n="premium.featureAnalytics">Detailná Analytika</strong>
+                  <p data-i18n="premium.featureAnalyticsDesc">Štatistiky z posledných 10 zápasov: forma, ofenzíva,
+                    obrana a trendy tímov</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===============================
+           🔥 VIP TIPY NA DNES
+           =============================== -->
+        <section id="vip-tips" class="premium-section-card">
+          <div class="section-card-header">
+            <h2 data-i18n="vipTips.title">🔥 VIP tipy na dnes</h2>
+            <p class="section-card-subtitle" data-i18n="vipTips.subtitle">
+              Autonómne tipy na strelcov a góly podľa ratingov a štatistík z posledných 10 zápasov.
+            </p>
+            <p class="vip-tips-date" id="vip-tips-date"
+              style="text-align: center; margin-top: 12px; color: #00eaff; font-size: 0.9rem; font-weight: 500;"></p>
+          </div>
+          <div id="vip-tips-body" class="vip-tips-grid">
+            <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
+          </div>
+        </section>
+
+        <!-- ===============================
+           🎯 MOJA AS STRATÉGIA
+           =============================== -->
+        <section class="premium-section-card">
+          <div class="section-card-header">
+            <h2 data-i18n="premium.absStrategyTitle">🎯 Moja AS Stratégia</h2>
+            <p class="section-card-subtitle" data-i18n="premium.absStrategyDesc">
+              Pridaj hráčov do svojej Advanced Simulation a sleduj ich výkonnosť a profit.
+            </p>
+          </div>
+
+          <!-- ===== TOOLBAR (TEAM + PLAYER) ===== -->
+          <div class="premium-toolbar">
+            <div class="premium-field">
+              <label for="premium-team-select" data-i18n="premium.pickTeam">Vyber klub</label>
+              <select id="premium-team-select">
+                <option value="" data-i18n="premium.selectTeamPlaceholder">-- vyber klub --</option>
+              </select>
+            </div>
+
+            <div class="premium-field">
+              <label for="premium-player-select" data-i18n="premium.pickPlayer">Vyber hráča</label>
+              <select id="premium-player-select" disabled>
+                <option value="" data-i18n="premium.selectTeamFirst">-- najprv vyber klub --</option>
+              </select>
+            </div>
+
+            <div class="premium-field premium-field-action">
+              <button id="premium-add-player-btn" data-i18n="premium.addPlayer">
+                Pridať hráča
+              </button>
+            </div>
+          </div>
+
+          <!-- ===== SUMMARY ===== -->
+          <div class="premium-summary">
+            <span data-i18n="premium.totalProfit">Celkový profit</span>
+            <strong>
+              <span id="premium-total-profit">0.00</span> €
+            </strong>
+          </div>
+
+          <!-- ===== TABLE ===== -->
+          <div class="premium-table-wrapper">
+            <table class="mantingale-table premium-table">
+              <thead>
+                <tr>
+                  <th data-i18n="table.player">Hráč</th>
+                  <th data-i18n="premium.tableStake">Stávka</th>
+                  <th data-i18n="premium.tableStreak">Streak</th>
+                  <th data-i18n="premium.tableBalance">Balance</th>
+                  <th data-i18n="premium.tableOdds">Kurzy</th>
+                  <th data-i18n="premium.tableActions">Akcie</th>
+                </tr>
+              </thead>
+              <tbody id="premium-players-body"></tbody>
+            </table>
+          </div>
+
+          <!-- ===== MESSAGE ===== -->
+          <div id="premium-msg" class="premium-msg"></div>
+        </section>
+
+        <!-- ===============================
+     👑 VIP MANTINGAL DETAIL
+     =============================== -->
+        <div id="vip-mantingale-detail" class="hidden">
+
+          <h3 id="vip-mtg-player-name"></h3>
+
+          <div class="mantingale-table-wrapper">
+            <table class="mantingale-history">
+              <thead>
+                <tr>
+                  <th data-i18n="mantingale.date">Dátum</th>
+                  <th data-i18n="mantingale.game">Zápas</th>
+                  <th data-i18n="mantingale.goals">Góly</th>
+                  <th data-i18n="mantingale.result">Výsledok</th>
+                  <th data-i18n="mantingale.change">Zmena (€)</th>
+                  <th data-i18n="mantingale.balance">Balance (€)</th>
+                </tr>
+              </thead>
+              <tbody id="vip-mtg-history-body"></tbody>
+            </table>
+          </div>
+
+          <button id="vip-mtg-back-btn" data-i18n="common.back">← Späť</button>
+        </div>
+
+        <!-- ===============================
      📊 PREMIUM ANALYTICS
      =============================== -->
-<section id="premium-analytics" class="premium-section-card premium-analytics">
+        <section id="premium-analytics" class="premium-section-card premium-analytics">
 
-  <div class="section-card-header">
-    <h2 data-i18n="premium.analyticsTitle">📊 Detailné štatistiky (posledných 10 zápasov)</h2>
-    <p class="section-card-subtitle" data-i18n="premium.analyticsSubtitle">Pokročilá forma, ofenzíva a defenzíva tímov NHL</p>
-  </div>
+          <div class="section-card-header">
+            <h2 data-i18n="premium.analyticsTitle">📊 Detailné štatistiky (posledných 10 zápasov)</h2>
+            <p class="section-card-subtitle" data-i18n="premium.analyticsSubtitle">Pokročilá forma, ofenzíva a defenzíva
+              tímov NHL</p>
+          </div>
 
-  <div class="analytics-grid">
+          <div class="analytics-grid">
 
-    <!-- BOX 1 -->
-    <div class="analytics-box">
-      <h3 data-i18n="premium.boxForm">🔥 TOP forma (L10)</h3>
-      <div id="box-form-l10" class="analytics-content">
-        <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
+            <!-- BOX 1 -->
+            <div class="analytics-box">
+              <h3 data-i18n="premium.boxForm">🔥 TOP forma (L10)</h3>
+              <div id="box-form-l10" class="analytics-content">
+                <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
+              </div>
+            </div>
+
+            <!-- BOX 2 -->
+            <div class="analytics-box">
+              <h3 data-i18n="premium.boxOffense">🥅 TOP ofenzíva (L10)</h3>
+              <div id="box-offense-l10" class="analytics-content">
+                <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
+              </div>
+            </div>
+
+            <!-- BOX 3 -->
+            <div class="analytics-box">
+              <h3 data-i18n="premium.boxDefense">🚨 Najslabšia obrana (L10)</h3>
+              <div id="box-defense-l10" class="analytics-content">
+                <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
+              </div>
+            </div>
+
+            <!-- BOX 4 -->
+            <div class="analytics-box">
+              <h3 data-i18n="premium.boxTrend">📈 Zmena formy (trend)</h3>
+              <div id="box-trend-l10" class="analytics-content">
+                <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ===== LOGOUT BUTTON ===== -->
+        <div class="premium-logout-wrapper">
+          <button id="premium-logout-btn" class="premium-logout-btn">
+            <span data-i18n="premium.logout">Odhlásiť sa</span>
+          </button>
+        </div>
+
       </div>
     </div>
-
-    <!-- BOX 2 -->
-    <div class="analytics-box">
-      <h3 data-i18n="premium.boxOffense">🥅 TOP ofenzíva (L10)</h3>
-      <div id="box-offense-l10" class="analytics-content">
-        <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
-      </div>
-    </div>
-
-    <!-- BOX 3 -->
-    <div class="analytics-box">
-      <h3 data-i18n="premium.boxDefense">🚨 Najslabšia obrana (L10)</h3>
-      <div id="box-defense-l10" class="analytics-content">
-        <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
-      </div>
-    </div>
-
-    <!-- BOX 4 -->
-    <div class="analytics-box">
-      <h3 data-i18n="premium.boxTrend">📈 Zmena formy (trend)</h3>
-      <div id="box-trend-l10" class="analytics-content">
-        <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-      <!-- ===== LOGOUT BUTTON ===== -->
-      <div class="premium-logout-wrapper">
-        <button
-          id="premium-logout-btn"
-          class="premium-logout-btn"
-        >
-          <span data-i18n="premium.logout">Odhlásiť sa</span>
-        </button>
-      </div>
-
-    </div>
-  </div>
-</section>
+  </section>
 
   <section id="stats-section" class="content-section" style="display:none;">
-  <div class="stat-players"><h4 data-i18n="sections.statsTitle">📊 ŠTATISTIKY HRÁČOV NHL</h4></div>
-
-  <div id="stats-grid" class="stats-grid">
-    <div class="stat-box" data-type="goals">
-      <h4>
-        <span class="top">Top 50</span>
-        <div class="divider"></div>
-        <span class="bottom" data-i18n="stats.goals">Góly</span>
-      </h4>
+    <div class="stat-players">
+      <h4 data-i18n="sections.statsTitle">📊 ŠTATISTIKY HRÁČOV NHL</h4>
     </div>
 
-    <div class="stat-box" data-type="assists">
-      <h4>
-        <span class="top">Top 50</span>
-        <div class="divider"></div>
-        <span class="bottom" data-i18n="stats.assists">Asistencie</span>
-      </h4>
+    <div id="stats-grid" class="stats-grid">
+      <div class="stat-box" data-type="goals">
+        <h4>
+          <span class="top">Top 50</span>
+          <div class="divider"></div>
+          <span class="bottom" data-i18n="stats.goals">Góly</span>
+        </h4>
+      </div>
+
+      <div class="stat-box" data-type="assists">
+        <h4>
+          <span class="top">Top 50</span>
+          <div class="divider"></div>
+          <span class="bottom" data-i18n="stats.assists">Asistencie</span>
+        </h4>
+      </div>
+
+      <div class="stat-box" data-type="points">
+        <h4>
+          <span class="top">Top 50</span>
+          <div class="divider"></div>
+          <span class="bottom" data-i18n="stats.points">Kanadské body</span>
+        </h4>
+      </div>
+
+      <div class="stat-box" data-type="shots">
+        <h4>
+          <span class="top">Top 50</span>
+          <div class="divider"></div>
+          <span class="bottom" data-i18n="stats.shots">Strely</span>
+        </h4>
+      </div>
+
+      <div class="stat-box" data-type="accuracy">
+        <h4>
+          <span class="top">Top 50</span>
+          <div class="divider"></div>
+          <span class="bottom" data-i18n="stats.accuracy">Percentá streľby</span>
+        </h4>
+      </div>
+
+      <div class="stat-box" data-type="plusminus">
+        <h4>
+          <span class="top">Top 50</span>
+          <div class="divider"></div>
+          <span class="bottom" data-i18n="stats.plusminus">Plus / mínus</span>
+        </h4>
+      </div>
+
+      <div class="stat-box" data-type="powerPlayGoals">
+        <h4>
+          <span class="top">Top 50</span>
+          <div class="divider"></div>
+          <span class="bottom" data-i18n="stats.ppg">Góly v presilovkách</span>
+        </h4>
+      </div>
+
+      <div class="stat-box" data-type="toi">
+        <h4>
+          <span class="top">Top 50</span>
+          <div class="divider"></div>
+          <span class="bottom" data-i18n="stats.toi">Odohrané minúty</span>
+        </h4>
+      </div>
+
+      <div class="stat-box" data-type="pim">
+        <h4>
+          <span class="top">Top 50</span>
+          <div class="divider"></div>
+          <span class="bottom" data-i18n="stats.pim">Vylúčenia</span>
+        </h4>
+      </div>
     </div>
 
-    <div class="stat-box" data-type="points">
-      <h4>
-        <span class="top">Top 50</span>
-        <div class="divider"></div>
-        <span class="bottom" data-i18n="stats.points">Kanadské body</span>
-      </h4>
-    </div>
-
-    <div class="stat-box" data-type="shots">
-      <h4>
-        <span class="top">Top 50</span>
-        <div class="divider"></div>
-        <span class="bottom" data-i18n="stats.shots">Strely</span>
-      </h4>
-    </div>
-
-    <div class="stat-box" data-type="accuracy">
-      <h4>
-        <span class="top">Top 50</span>
-        <div class="divider"></div>
-        <span class="bottom" data-i18n="stats.accuracy">Percentá streľby</span>
-      </h4>
-    </div>
-
-    <div class="stat-box" data-type="plusminus">
-      <h4>
-        <span class="top">Top 50</span>
-        <div class="divider"></div>
-        <span class="bottom" data-i18n="stats.plusminus">Plus / mínus</span>
-      </h4>
-    </div>
-
-    <div class="stat-box" data-type="powerPlayGoals">
-      <h4>
-        <span class="top">Top 50</span>
-        <div class="divider"></div>
-        <span class="bottom" data-i18n="stats.ppg">Góly v presilovkách</span>
-      </h4>
-    </div>
-
-    <div class="stat-box" data-type="toi">
-      <h4>
-        <span class="top">Top 50</span>
-        <div class="divider"></div>
-        <span class="bottom" data-i18n="stats.toi">Odohrané minúty</span>
-      </h4>
-    </div>
-
-    <div class="stat-box" data-type="pim">
-      <h4>
-        <span class="top">Top 50</span>
-        <div class="divider"></div>
-        <span class="bottom" data-i18n="stats.pim">Vylúčenia</span>
-      </h4>
-    </div>
-  </div>
-
-  <div id="stats-detail" class="stat-detail"></div>
-</section>
+    <div id="stats-detail" class="stat-detail"></div>
+  </section>
 
   <footer class="site-footer">
-  <div class="footer-content">
-    <span>© 2025 NHLPRO.sk</span>
+    <div class="footer-content">
+      <span>© 2025 NHLPRO.sk</span>
 
-    <div class="footer-links">
-      <button id="open-disclaimer" class="footer-link">
-        <span data-i18n="footer.disclaimer">⚖️ Právny disclaimer</span>
-      </button>
-      <button id="open-privacy" class="footer-link">
-        <span data-i18n="footer.privacy">🔒 Ochrana osobných údajov</span>
-      </button>
-      <button id="open-terms" class="footer-link">
-        <span data-i18n="footer.terms">📋 Podmienky používania</span>
-      </button>
+      <div class="footer-links">
+        <button id="open-disclaimer" class="footer-link">
+          <span data-i18n="footer.disclaimer">⚖️ Právny disclaimer</span>
+        </button>
+        <button id="open-privacy" class="footer-link">
+          <span data-i18n="footer.privacy">🔒 Ochrana osobných údajov</span>
+        </button>
+        <button id="open-terms" class="footer-link">
+          <span data-i18n="footer.terms">📋 Podmienky používania</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- DISCLAIMER MODAL -->
+  <div id="disclaimer-modal" class="disclaimer-modal hidden">
+    <div class="disclaimer-box">
+      <button id="close-disclaimer" class="disclaimer-close">✕</button>
+      <div id="disclaimerContent"></div>
     </div>
   </div>
-</footer>
 
-<!-- DISCLAIMER MODAL -->
-<div id="disclaimer-modal" class="disclaimer-modal hidden">
-  <div class="disclaimer-box">
-    <button id="close-disclaimer" class="disclaimer-close">✕</button>
-    <div id="disclaimerContent"></div>
+  <!-- PRIVACY POLICY MODAL -->
+  <div id="privacy-modal" class="disclaimer-modal hidden">
+    <div class="disclaimer-box">
+      <button id="close-privacy" class="disclaimer-close">✕</button>
+      <div id="privacyContent"></div>
+    </div>
   </div>
-</div>
 
-<!-- PRIVACY POLICY MODAL -->
-<div id="privacy-modal" class="disclaimer-modal hidden">
-  <div class="disclaimer-box">
-    <button id="close-privacy" class="disclaimer-close">✕</button>
-    <div id="privacyContent"></div>
+  <!-- TERMS OF SERVICE MODAL -->
+  <div id="terms-modal" class="disclaimer-modal hidden">
+    <div class="disclaimer-box">
+      <button id="close-terms" class="disclaimer-close">✕</button>
+      <div id="termsContent"></div>
+    </div>
   </div>
-</div>
-
-<!-- TERMS OF SERVICE MODAL -->
-<div id="terms-modal" class="disclaimer-modal hidden">
-  <div class="disclaimer-box">
-    <button id="close-terms" class="disclaimer-close">✕</button>
-    <div id="termsContent"></div>
-  </div>
-</div>
 
   </div>
   <script src="app.js"></script>
@@ -844,7 +859,7 @@
         case "matches-section":
           fetchMatches();
           break;
-          case "mantingale-section":
+        case "mantingale-section":
           loadMantingal();
           break;
       }
@@ -855,9 +870,9 @@
       const panel = document.getElementById("mobileMenuPanel");
       const overlay = document.getElementById("mobileMenuOverlay");
       const toggle = document.getElementById("mobileMenuToggle");
-      
+
       console.log("openMobileMenu called", { panel, overlay, toggle });
-      
+
       if (panel && overlay && toggle) {
         console.log("Adding active classes");
         panel.classList.add("active");
@@ -866,12 +881,12 @@
         panel.setAttribute("aria-hidden", "false");
         overlay.setAttribute("aria-hidden", "false");
         document.body.style.overflow = "hidden"; // zabráni scrollovaniu pozadia
-        
+
         // 🔒 EXPLICITNE NASTAV TRANSFORM (pre istotu, že CSS funguje)
         requestAnimationFrame(() => {
           panel.style.transform = "translateX(0)";
         });
-        
+
         // Debug - skontroluj, či sa triedy pridali
         console.log("Panel classes:", panel.className);
         console.log("Overlay classes:", overlay.className);
@@ -886,25 +901,25 @@
       const overlay = document.getElementById("mobileMenuOverlay");
       const toggle = document.getElementById("mobileMenuToggle");
       const closeBtn = document.getElementById("mobileMenuClose");
-      
+
       if (panel && overlay && toggle) {
         // 🔒 ODSTRÁŇ FOCUS Z CLOSE BUTTONU PRED NASTAVENÍM aria-hidden (accessibility fix)
         if (closeBtn && document.activeElement === closeBtn) {
           closeBtn.blur();
         }
-        
+
         panel.classList.remove("active");
         overlay.classList.remove("active");
         toggle.setAttribute("aria-expanded", "false");
         panel.setAttribute("aria-hidden", "true");
         overlay.setAttribute("aria-hidden", "true");
         document.body.style.overflow = ""; // obnov scrollovanie
-        
+
         // 🔒 EXPLICITNE NASTAV TRANSFORM SPÄŤ (pre istotu, že CSS funguje)
         requestAnimationFrame(() => {
           panel.style.transform = "translateX(-100%)";
         });
-        
+
         // Vráť focus na toggle button (hamburger)
         if (toggle) {
           toggle.focus();
@@ -917,7 +932,7 @@
       const toggle = document.getElementById("mobileMenuToggle");
       const close = document.getElementById("mobileMenuClose");
       const overlay = document.getElementById("mobileMenuOverlay");
-      
+
       if (toggle) {
         toggle.addEventListener("click", (e) => {
           e.preventDefault();
@@ -925,7 +940,7 @@
           openMobileMenu();
         });
       }
-      
+
       if (close) {
         close.addEventListener("click", (e) => {
           e.preventDefault();
@@ -933,7 +948,7 @@
           closeMobileMenu();
         });
       }
-      
+
       if (overlay) {
         overlay.addEventListener("click", (e) => {
           e.preventDefault();
@@ -942,7 +957,7 @@
         });
       }
     }
-    
+
     // Inicializácia menu po načítaní DOM
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initMobileMenu);
@@ -976,4 +991,5 @@
   </script>
 
 </body>
+
 </html>

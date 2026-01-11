@@ -1471,6 +1471,11 @@ home.innerHTML = html;
             <p>🧠 Pravdepodobnosť: 
               <b style="color:#ffcc00;">${ai.probability}%</b>
             </p>
+            <button class="share-btn" onclick="shareAiTip(`${ai.player}`, `${ai.team}`, `${ai.probability}`, `${ai.match}`)">
+                đź“¤ ZdieÄľaĹĄ tip
+            </button>
+            <p style="display:none">
+            </p>
           </div>
         `;
       } catch (err) {
@@ -6110,3 +6115,20 @@ function animateNewElements(container) {
     });
   });
 }
+
+// Zdie�anie AI Tipu
+window.shareAiTip = function(playerName, team, prob, match) {
+    const text = `?? AI Scorer Tip: ${playerName} (${team}) sk�ruje! ??\n?? Pravdepodobnos�: ${prob}%\n?? Z�pas: ${match}\n\n?? Z�skaj viac tipov na: https://www.nhlpro.sk`;
+    
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Tip skop�rovan�! M�e� ho zdie�a�.");
+        }).catch(err => {
+            console.error("Chyba pri kop�rovan�:", err);
+            prompt("Skop�ruj si tip:", text);
+        });
+    } else {
+        prompt("Skop�ruj si tip:", text);
+    }
+};
+

@@ -340,4 +340,20 @@ function displayMantingal() {
     });
 }
 
+// Zdieľanie AI Tipu
+window.shareAiTip = function(playerName, team, prob, match) {
+    const text = `🔥 AI Scorer Tip: ${playerName} (${team}) skóruje! 🎯\n📊 Pravdepodobnosť: ${prob}%\n🏒 Zápas: ${match}\n\n👉 Získaj viac tipov na: https://www.nhlpro.sk`;
+    
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Tip skopírovaný! Môžeš ho zdieľať.");
+        }).catch(err => {
+            console.error("Chyba pri kopírovaní:", err);
+            prompt("Skopíruj si tip:", text);
+        });
+    } else {
+        prompt("Skopíruj si tip:", text);
+    }
+};
+
 window.addEventListener("DOMContentLoaded", fetchMatches);
