@@ -6089,6 +6089,16 @@ body {
   font-weight: 600;
 }
 
+.nhl-game-odd {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #00eaff;
+  background: rgba(0, 234, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin: 0 2px;
+}
+
 .nhl-game-time {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.7);
