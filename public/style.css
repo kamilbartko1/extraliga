@@ -9917,7 +9917,6 @@ body {
   max-width: 520px;
   max-height: 80vh;
   overflow-y: auto;
-  text-align: center;
 
   background: linear-gradient(165deg, #0c1b29, #061018);
   border-radius: 18px;
@@ -9971,7 +9970,7 @@ body {
   list-style: none;
   padding: 0;
   margin: 0 0 24px 0;
-  text-align: center;
+  text-align: left;
 }
 
 .rating-modal-content li {
@@ -9979,20 +9978,16 @@ body {
   font-weight: 300;
   font-size: 0.9rem;
   color: rgba(217, 243, 255, 0.85);
-  padding: 8px 0;
+  padding: 8px 0 8px 24px;
   position: relative;
   line-height: 1.6;
-  text-align: center;
-  display: inline-block;
-  width: 100%;
+  text-align: left;
 }
 
 .rating-modal-content li::before {
   content: "•";
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-left: -60px;
+  left: 8px;
   color: rgba(255, 204, 0, 0.6);
   font-weight: 600;
   font-size: 1.2rem;
