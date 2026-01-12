@@ -1244,21 +1244,7 @@ async function displayHome() {
     const topPoints = statsData?.topPoints?.[0] || {};
     const topShots = statsData?.topShots?.[0] || {};
 
-    // 🔥 KURZY – načítaj cez náš backend API (obíde CORS)
-    let oddsMap = {};
-    try {
-      const oddsResp = await fetch("/api/odds", { cache: "no-store" });
-      if (oddsResp.ok) {
-        const oddsData = await oddsResp.json();
-        if (oddsData.ok && oddsData.oddsMap) {
-          oddsMap = oddsData.oddsMap;
-          console.log("✅ Kurzy načítané:", Object.keys(oddsMap).length, "zápasov");
-        }
-      }
-    } catch (err) {
-      console.warn("⚠️ Kurzy sa nepodarilo načítať (nie je to kritické):", err.message);
-      // Kurzy nie sú kritické, pokračujeme bez nich
-    }
+    // 🔥 KURZY – už sú v homeData z /api/home
 
     // 🔥 2️⃣ VŠETKO OKREM AI TIPU SA RENDERUJE HNEĎ
     const gamesCountText = t("home.gamesCount", { count: homeData.matchesToday.length });
@@ -1310,9 +1296,8 @@ async function displayHome() {
         ${homeData.matchesToday.length === 0
         ? `<p class="nhl-muted">${t("home.noGamesToday")}</p>`
         : homeData.matchesToday.map(m => {
-            const gameOdds = oddsMap[m.id] || {};
-            const homeOdd = gameOdds.home ? Number(gameOdds.home).toFixed(2) : null;
-            const awayOdd = gameOdds.away ? Number(gameOdds.away).toFixed(2) : null;
+            const homeOdd = m.home3Way ? Number(m.home3Way).toFixed(2) : null;
+            const awayOdd = m.away3Way ? Number(m.away3Way).toFixed(2) : null;
             
             return `
               <div class="nhl-game-row" onclick="showSection('matches-section')">

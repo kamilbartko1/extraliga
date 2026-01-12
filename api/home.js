@@ -75,9 +75,49 @@ export default async function handler(req, res) {
     const data = resp.data || {};
     const gamesRaw = Array.isArray(data.games) ? data.games : [];
 
+    // 🔥 Načítaj kurzy z partner-game API
+    let oddsMap = {};
+    try {
+      const oddsUrl = "https://api-web.nhle.com/v1/partner-game/SK/now";
+      const oddsResp = await axios.get(oddsUrl, { timeout: 10000 });
+      const oddsData = oddsResp.data || {};
+      
+      if (oddsData.games && Array.isArray(oddsData.games)) {
+        oddsData.games.forEach(game => {
+          const gameId = game.gameId;
+          const homeOdds = game.homeTeam?.odds || [];
+          const awayOdds = game.awayTeam?.odds || [];
+          
+          // Nájdi 3-way kurz (MONEY_LINE_3_WAY s prázdnym alebo bez qualifier, ale nie "Draw")
+          const home3Way = homeOdds.find(o => {
+            return o.description === "MONEY_LINE_3_WAY" && 
+                   o.qualifier !== "Draw" && 
+                   (o.qualifier === "" || !o.qualifier);
+          });
+          const away3Way = awayOdds.find(o => {
+            return o.description === "MONEY_LINE_3_WAY" && 
+                   o.qualifier !== "Draw" && 
+                   (o.qualifier === "" || !o.qualifier);
+          });
+          
+          if (home3Way || away3Way) {
+            oddsMap[gameId] = {
+              home: home3Way ? Number(home3Way.value) : null,
+              away: away3Way ? Number(away3Way.value) : null
+            };
+          }
+        });
+      }
+    } catch (err) {
+      console.warn("⚠️ Kurzy sa nepodarilo načítať:", err.message);
+    }
+
     const games = gamesRaw.map((g) => {
       const homeOdds = pickBestDecimalOdd(g.homeTeam?.odds || []);
       const awayOdds = pickBestDecimalOdd(g.awayTeam?.odds || []);
+      
+      // Pridaj 3-way kurzy z oddsMap
+      const gameOdds = oddsMap[g.id] || {};
 
       return {
         id: g.id,
@@ -99,6 +139,8 @@ export default async function handler(req, res) {
         status: g.gameState || "FUT",
         homeOdds,
         awayOdds,
+        home3Way: gameOdds.home || null,
+        away3Way: gameOdds.away || null,
       };
     });
 
