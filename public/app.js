@@ -3282,37 +3282,31 @@ async function loadMantingal() {
 
       // Vypočítaj celkovú investovanú sumu (súčet všetkých stávok)
       // Pri "miss" (prehre): stake = -profitChange (pretože profitChange je záporný)
-      // Pri "hit" (výhre): nemáme priamo stake, ale vieme že profitChange = stake * (odds - 1)
-      // Pre jednoduchosť použijeme len miss predikcie pre výpočet totalStaked
-      // a aproximáciu: totalStaked ≈ súčet abs(profitChange) z miss + počet hit predikcií * priemerná stake
+      // Pri "hit" (výhre): profitChange = stake * (odds - 1), takže stake = profitChange / (odds - 1)
       let totalStaked = 0;
-      let missCount = 0;
-      let hitCount = 0;
+      const odds = Number(histData.odds || 2.2); // Odds z aktuálneho state hráča
 
       histData.history.forEach(h => {
-        if (h.result === "miss" && h.profitChange) {
+        if (h.result === "miss" && h.profitChange !== undefined && h.profitChange !== null) {
           // Pri prehre: stake (vklad) = -profitChange (profitChange je záporný)
           totalStaked += Math.abs(Number(h.profitChange));
-          missCount++;
-        } else if (h.result === "hit" || h.result === "win") {
-          hitCount++;
+        } else if ((h.result === "hit" || h.result === "win") && h.profitChange !== undefined && h.profitChange !== null) {
+          // Pri výhre: profitChange = stake * (odds - 1)
+          // Takže: stake = profitChange / (odds - 1)
+          const profitChange = Number(h.profitChange);
+          if (profitChange > 0 && odds > 1) {
+            const stake = profitChange / (odds - 1);
+            totalStaked += stake;
+          }
         }
       });
 
-      // Ak máme aj hit predikcie, aproximujeme ich stake ako priemer miss predikcií
-      // Alebo použijeme base stake 1€ (ak nemáme žiadne miss)
-      if (missCount === 0 && hitCount > 0) {
-        totalStaked = hitCount * 1; // base stake
-      } else if (missCount > 0 && hitCount > 0) {
-        const avgMissStake = totalStaked / missCount;
-        totalStaked += hitCount * avgMissStake;
-      }
-
-      // Vypočítaj ROI: (Balance / Total Staked) * 100
+      // Vypočítaj ROI: ((Balance - Total Staked) / Total Staked) * 100
+      // Alebo ekvivalentne: (Balance / Total Staked - 1) * 100
       const balance = Number(p.balance || 0);
       let roi = 0;
       if (totalStaked > 0) {
-        roi = (balance / totalStaked) * 100;
+        roi = ((balance - totalStaked) / totalStaked) * 100;
       }
 
       // Aktualizuj ROI v tabuľke
