@@ -1252,22 +1252,6 @@ async function displayHome() {
     let html = `
 <section class="home-modern">
 
-  <!-- ================= STATISTIKY HORE ================= -->
-  <div class="home-stats-bar">
-    <div class="home-stat">
-      <div class="home-stat-value">${absTotalProfit.toFixed(2)} €</div>
-      <div class="home-stat-label">${t("home.statTotalProfit")}</div>
-    </div>
-    <div class="home-stat">
-      <div class="home-stat-value">${absPlayerCount}</div>
-      <div class="home-stat-label">${t("home.statTotalPlayers")}</div>
-    </div>
-    <div class="home-stat">
-      <div class="home-stat-value">AS</div>
-      <div class="home-stat-label">${t("home.statStrategy")}</div>
-    </div>
-  </div>
-
   <!-- ================= DNESNE ZAPASY ================= -->
   <div class="home-section">
     <div class="home-section-header">
@@ -1383,7 +1367,9 @@ async function displayHome() {
 
   <!-- ================= FEATURES ================= -->
   <div class="home-section">
-    <h2 class="home-section-title">${t("home.featuresTitle")}</h2>
+    <div class="home-section-header">
+      <h2 class="home-section-title">${t("home.featuresTitle")}</h2>
+    </div>
     <div class="home-features-grid">
       <div class="home-feature">
         <div class="home-feature-icon">🤖</div>
