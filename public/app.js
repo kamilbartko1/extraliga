@@ -676,6 +676,7 @@ function renderPlayerRatingModalContent() {
     : "Systém započítava celú sezónu, aby hodnotenie nekolísalo len podľa jedného zápasu.";
 
   return `
+    <button class="rating-modal-close" onclick="closeRatingModal(event)">×</button>
     <h2>${t("modal.player.title")}</h2>
     <p>${intro}</p>
 
