@@ -1275,9 +1275,9 @@ async function displayHome() {
                       <span class="home-team-name">${m.homeName}</span>
                     </div>
                     <span class="home-vs">vs</span>
-                    <div class="home-game-team">
-                      <img src="${m.awayLogo}" class="home-team-logo">
+                    <div class="home-game-team home-game-team-away">
                       <span class="home-team-name">${m.awayName}</span>
+                      <img src="${m.awayLogo}" class="home-team-logo">
                     </div>
                   </div>
                   <div class="home-game-time">${m.startTime}</div>
