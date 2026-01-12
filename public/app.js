@@ -3283,6 +3283,7 @@ async function loadMantingal() {
       // Vypočítaj celkovú investovanú sumu (súčet všetkých stávok)
       // Pri "miss" (prehre): stake = -profitChange (pretože profitChange je záporný)
       // Pri "hit" (výhre): profitChange = stake * (odds - 1), takže stake = profitChange / (odds - 1)
+      // Balance je čistý zisk (začína od 0), takže ROI = (balance / totalStaked) * 100
       let totalStaked = 0;
       const odds = Number(histData.odds || 2.2); // Odds z aktuálneho state hráča
 
@@ -3301,12 +3302,13 @@ async function loadMantingal() {
         }
       });
 
-      // Vypočítaj ROI: ((Balance - Total Staked) / Total Staked) * 100
-      // Alebo ekvivalentne: (Balance / Total Staked - 1) * 100
+      // Vypočítaj ROI: (Balance / Total Staked) * 100
+      // Balance je čistý zisk (začína od 0), takže toto je správny ROI vzorec
+      // Príklad: investoval 32€, balance = 18.20€ → ROI = (18.20 / 32) * 100 = 56.875%
       const balance = Number(p.balance || 0);
       let roi = 0;
       if (totalStaked > 0) {
-        roi = ((balance - totalStaked) / totalStaked) * 100;
+        roi = (balance / totalStaked) * 100;
       }
 
       // Aktualizuj ROI v tabuľke
