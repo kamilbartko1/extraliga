@@ -5532,16 +5532,18 @@ body {
 
 .home-game-main {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
   margin-bottom: 8px;
+  gap: 8px;
 }
 
 .home-game-teams {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 16px;
-  flex: 1;
+  width: 100%;
 }
 
 .home-game-team {
@@ -5885,30 +5887,156 @@ body {
     padding: 20px 0;
   }
 
+  .home-stat-value {
+    font-size: 1.5rem;
+  }
+
   .home-section-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
 
+  .home-section-title {
+    font-size: 1.3rem;
+  }
+
+  .home-game-item {
+    padding: 12px;
+  }
+
   .home-game-teams {
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .home-game-team {
     flex-direction: column;
-    gap: 8px;
-    align-items: flex-start;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .home-team-logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .home-team-name {
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  .home-vs {
+    font-size: 0.8rem;
+  }
+
+  .home-game-time {
+    font-size: 0.8rem;
   }
 
   .home-game-odds {
     flex-direction: column;
     gap: 8px;
     text-align: center;
+    font-size: 0.85rem;
+  }
+
+  .home-ai-section {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .home-ai-scorer,
+  .home-ai-history {
+    padding: 20px;
+  }
+
+  .home-ai-player-img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .home-ai-player-name {
+    font-size: 1rem;
+  }
+
+  .home-ai-player-stats {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .home-history-item {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .home-history-date {
+    min-width: auto;
+    width: 100%;
   }
 
   .home-stats-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .home-stat-card {
+    padding: 16px;
+    padding-top: 36px;
+  }
+
+  .home-stat-card-img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .home-stat-card-name {
+    font-size: 0.85rem;
+  }
+
+  .home-stat-card-value {
+    font-size: 0.8rem;
   }
 
   .home-features-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .home-feature {
+    padding: 20px;
+  }
+
+  .home-feature-icon {
+    font-size: 2rem;
+  }
+
+  .home-feature-title {
+    font-size: 1rem;
+  }
+
+  .home-feature-text {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-game-teams {
+    gap: 8px;
+  }
+
+  .home-team-logo {
+    width: 24px;
+    height: 24px;
+  }
+
+  .home-team-name {
+    font-size: 0.8rem;
   }
 }
 
