@@ -3056,11 +3056,13 @@ async function openPlayerStatsModal(playerName, teamName) {
     if (!playerStats) {
       console.warn("Hráč nenájdený:", playerName, "Dostupní hráči:", Object.keys(uniquePlayers).slice(0, 10));
       content.innerHTML = `
+        <button class="player-stats-modal-close" onclick="closePlayerStatsModal(event)">×</button>
         <div style="padding:40px;text-align:center;">
           <p style="color:#ff6b6b;margin-bottom:20px;">❌ ${CURRENT_LANG === "en" ? "Player statistics not found" : "Štatistiky hráča sa nenašli"}</p>
           <p style="color:#9bbbd6;font-size:0.9rem;">${playerName}${teamName ? ` (${teamName})` : ""}</p>
           <p style="color:#6b8ca3;font-size:0.8rem;margin-top:16px;">${CURRENT_LANG === "en" ? "Player may not be in top 50 rankings" : "Hráč nemusí byť v top 50 rebríčkoch"}</p>
         </div>
+        <button class="close-modal-btn" onclick="closePlayerStatsModal()" style="margin-top: 20px;">${t("common.close")}</button>
       `;
       return;
     }
@@ -3076,6 +3078,7 @@ async function openPlayerStatsModal(playerName, teamName) {
     }
 
     content.innerHTML = `
+      <button class="player-stats-modal-close" onclick="closePlayerStatsModal(event)">×</button>
       <div class="player-stats-header">
         <h3>${stats.name || playerName}</h3>
         ${teamName ? `<p class="player-stats-team">${teamName}</p>` : ""}
@@ -3123,6 +3126,7 @@ async function openPlayerStatsModal(playerName, teamName) {
           <span class="stats-value">${stats.powerPlayGoals || 0}</span>
         </div>
       </div>
+      <button class="close-modal-btn" onclick="closePlayerStatsModal()" style="margin-top: 20px;">${t("common.close")}</button>
     `;
 
     // Trigger animáciu
@@ -3139,10 +3143,12 @@ async function openPlayerStatsModal(playerName, teamName) {
   } catch (err) {
     console.error("Chyba pri načítaní štatistík:", err);
     content.innerHTML = `
+      <button class="player-stats-modal-close" onclick="closePlayerStatsModal(event)">×</button>
       <div style="padding:40px;text-align:center;">
         <p style="color:#ff6b6b;margin-bottom:20px;">❌ ${CURRENT_LANG === "en" ? "Error loading statistics" : "Chyba pri načítaní štatistík"}</p>
         <p style="color:#9bbbd6;font-size:0.9rem;">${err.message}</p>
       </div>
+      <button class="close-modal-btn" onclick="closePlayerStatsModal()" style="margin-top: 20px;">${t("common.close")}</button>
     `;
   }
 }
