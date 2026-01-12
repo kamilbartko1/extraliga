@@ -5717,20 +5717,17 @@ async function displayShootingLeaders() {
       const type = box.dataset.type;
       detail.innerHTML = `<p style="text-align:center;color:#00eaff;">${t("common.loading")}</p>`;
       
-      // Scroll na detail s offsetom, aby bol zoznam vyššie
+      // Scroll na detail (zoznam hráčov) s offsetom, aby bol zoznam vyššie v okne
       setTimeout(() => {
-        const statPlayers = document.querySelector('.stat-players');
-        if (statPlayers) {
-          const offset = 100; // Offset v pixeloch
-          const elementPosition = statPlayers.getBoundingClientRect().top;
+        if (detail) {
+          const offset = 150; // Offset v pixeloch - posunie sa nižšie, aby bol zoznam vyššie
+          const elementPosition = detail.getBoundingClientRect().top;
           const offsetPosition = elementPosition + window.pageYOffset - offset;
           
           window.scrollTo({
             top: offsetPosition,
             behavior: "smooth"
           });
-        } else {
-          detail.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }, 100);
 
