@@ -5926,15 +5926,15 @@ body {
   }
 
   .home-game-teams {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 12px;
     justify-content: center;
   }
 
   .home-game-team {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
   }
 
   .home-team-logo {
