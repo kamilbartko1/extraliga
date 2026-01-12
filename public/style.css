@@ -5899,7 +5899,7 @@ body {
 
   .home-section-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
   }
 
