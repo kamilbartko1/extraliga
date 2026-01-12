@@ -9917,6 +9917,7 @@ body {
   max-width: 520px;
   max-height: 80vh;
   overflow-y: auto;
+  text-align: center;
 
   background: linear-gradient(165deg, #0c1b29, #061018);
   border-radius: 18px;
@@ -9935,6 +9936,7 @@ body {
   margin: 0 0 24px 0;
   padding-bottom: 16px;
   border-bottom: 2px solid rgba(255, 204, 0, 0.3);
+  text-align: center;
 }
 
 .rating-modal-content h3 {
@@ -9946,6 +9948,7 @@ body {
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(255, 204, 0, 0.25);
   position: relative;
+  text-align: center;
 }
 
 .rating-modal-content h3:first-of-type {
@@ -9959,6 +9962,7 @@ body {
   color: rgba(217, 243, 255, 0.9);
   margin: 0 0 20px 0;
   line-height: 1.8;
+  text-align: center;
 }
 
 .rating-modal-content ul {
@@ -9967,6 +9971,7 @@ body {
   list-style: none;
   padding: 0;
   margin: 0 0 24px 0;
+  text-align: center;
 }
 
 .rating-modal-content li {
@@ -9974,15 +9979,20 @@ body {
   font-weight: 300;
   font-size: 0.9rem;
   color: rgba(217, 243, 255, 0.85);
-  padding: 8px 0 8px 24px;
+  padding: 8px 0;
   position: relative;
   line-height: 1.6;
+  text-align: center;
+  display: inline-block;
+  width: 100%;
 }
 
 .rating-modal-content li::before {
   content: "•";
   position: absolute;
-  left: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-left: -60px;
   color: rgba(255, 204, 0, 0.6);
   font-weight: 600;
   font-size: 1.2rem;
