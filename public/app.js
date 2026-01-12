@@ -3160,6 +3160,13 @@ function closePlayerStatsModal(e) {
     return;
   }
 
+  // Zatvor modal ak sa kliklo na krížik
+  if (e && (e.target.classList.contains("player-stats-modal-close") || e.target.closest(".player-stats-modal-close"))) {
+    const modal = document.getElementById("playerStatsModal");
+    if (modal) modal.style.display = "none";
+    return;
+  }
+
   const modal = document.getElementById("playerStatsModal");
   if (!modal) return;
 
