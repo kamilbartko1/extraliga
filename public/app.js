@@ -1216,12 +1216,13 @@ async function displayHome() {
   `;
 
   try {
-    // 🔥 1️⃣ RÝCHLE API – len zápasy, štatistiky, AI história a ABS zisk
-    const [homeResp, statsResp, aiGetResp, absResp] = await Promise.all([
+    // 🔥 1️⃣ RÝCHLE API – len zápasy, štatistiky, AI história, ABS zisk a KURZY
+    const [homeResp, statsResp, aiGetResp, absResp, oddsResp] = await Promise.all([
       fetch("/api/home", { cache: "no-store" }),
       fetch("/api/statistics", { cache: "no-store" }),
       fetch("/api/ai?task=get", { cache: "no-store" }),
-      fetch("/api/mantingal?task=all", { cache: "no-store" })
+      fetch("/api/mantingal?task=all", { cache: "no-store" }),
+      fetch("https://api-web.nhle.com/v1/partner-game/SK/now", { cache: "no-store" })
     ]);
 
     const homeData = await homeResp.json();
@@ -1293,18 +1294,26 @@ async function displayHome() {
       <div class="nhl-games-list">
         ${homeData.matchesToday.length === 0
         ? `<p class="nhl-muted">${t("home.noGamesToday")}</p>`
-        : homeData.matchesToday.map(m => `
+        : homeData.matchesToday.map(m => {
+            const gameOdds = oddsMap[m.id] || {};
+            const homeOdd = gameOdds.home ? gameOdds.home.toFixed(2) : null;
+            const awayOdd = gameOdds.away ? gameOdds.away.toFixed(2) : null;
+            
+            return `
               <div class="nhl-game-row" onclick="showSection('matches-section')">
                 <div class="nhl-game-teams">
                   <img src="${m.homeLogo}" class="nhl-team-logo">
                   <span>${m.homeName}</span>
+                  ${homeOdd ? `<span class="nhl-game-odd">${homeOdd}</span>` : ""}
                   <span class="nhl-vs">vs</span>
+                  ${awayOdd ? `<span class="nhl-game-odd">${awayOdd}</span>` : ""}
                   <span>${m.awayName}</span>
                   <img src="${m.awayLogo}" class="nhl-team-logo">
                 </div>
                 <div class="nhl-game-time">${m.startTime}</div>
               </div>
-            `).join("")
+            `;
+          }).join("")
       }
       </div>
     </div>
