@@ -1216,13 +1216,12 @@ async function displayHome() {
   `;
 
   try {
-    // 🔥 1️⃣ RÝCHLE API – len zápasy, štatistiky, AI história, ABS zisk a KURZY
-    const [homeResp, statsResp, aiGetResp, absResp, oddsResp] = await Promise.all([
+    // 🔥 1️⃣ RÝCHLE API – len zápasy, štatistiky, AI história, ABS zisk
+    const [homeResp, statsResp, aiGetResp, absResp] = await Promise.all([
       fetch("/api/home", { cache: "no-store" }),
       fetch("/api/statistics", { cache: "no-store" }),
       fetch("/api/ai?task=get", { cache: "no-store" }),
-      fetch("/api/mantingal?task=all", { cache: "no-store" }),
-      fetch("https://api-web.nhle.com/v1/partner-game/SK/now", { cache: "no-store" })
+      fetch("/api/mantingal?task=all", { cache: "no-store" })
     ]);
 
     const homeData = await homeResp.json();
@@ -1244,6 +1243,38 @@ async function displayHome() {
     const topGoal = statsData?.topGoals?.[0] || {};
     const topPoints = statsData?.topPoints?.[0] || {};
     const topShots = statsData?.topShots?.[0] || {};
+
+    // 🔥 KURZY – načítaj samostatne, aby nezablokovali stránku pri chybe
+    let oddsMap = {};
+    try {
+      const oddsResp = await fetch("https://api-web.nhle.com/v1/partner-game/SK/now", { cache: "no-store" });
+      if (oddsResp.ok) {
+        const oddsData = await oddsResp.json();
+        if (oddsData.games && Array.isArray(oddsData.games)) {
+          oddsData.games.forEach(game => {
+            const gameId = game.gameId;
+            const homeOdds = game.homeTeam?.odds || [];
+            const awayOdds = game.awayTeam?.odds || [];
+            
+            // Nájdi 3-way kurz (MONEY_LINE_3_WAY bez "Draw")
+            const home3Way = homeOdds.find(o => 
+              o.description === "MONEY_LINE_3_WAY" && o.qualifier !== "Draw" && !o.qualifier
+            );
+            const away3Way = awayOdds.find(o => 
+              o.description === "MONEY_LINE_3_WAY" && o.qualifier !== "Draw" && !o.qualifier
+            );
+            
+            oddsMap[gameId] = {
+              home: home3Way ? home3Way.value : null,
+              away: away3Way ? away3Way.value : null
+            };
+          });
+        }
+      }
+    } catch (err) {
+      console.warn("⚠️ Kurzy sa nepodarilo načítať (nie je to kritické):", err.message);
+      // Kurzy nie sú kritické, pokračujeme bez nich
+    }
 
     // 🔥 2️⃣ VŠETKO OKREM AI TIPU SA RENDERUJE HNEĎ
     const gamesCountText = t("home.gamesCount", { count: homeData.matchesToday.length });
