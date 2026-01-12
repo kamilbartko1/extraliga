@@ -87,25 +87,45 @@ export default async function handler(req, res) {
           const gameId = game.gameId;
           const homeOdds = game.homeTeam?.odds || [];
           const awayOdds = game.awayTeam?.odds || [];
+          const allOdds = [...homeOdds, ...awayOdds];
           
-          // Nájdi 3-way kurz (MONEY_LINE_3_WAY s prázdnym alebo bez qualifier, ale nie "Draw")
-          const home3Way = homeOdds.find(o => {
+          // Nájdi 3-way kurzy (MONEY_LINE_3_WAY - domáci, remíza, hostia)
+          const home3Way = allOdds.find(o => {
             return o.description === "MONEY_LINE_3_WAY" && 
                    o.qualifier !== "Draw" && 
                    (o.qualifier === "" || !o.qualifier);
           });
-          const away3Way = awayOdds.find(o => {
+          const draw3Way = allOdds.find(o => {
+            return o.description === "MONEY_LINE_3_WAY" && 
+                   o.qualifier === "Draw";
+          });
+          const away3Way = allOdds.find(o => {
             return o.description === "MONEY_LINE_3_WAY" && 
                    o.qualifier !== "Draw" && 
                    (o.qualifier === "" || !o.qualifier);
           });
           
-          if (home3Way || away3Way) {
-            oddsMap[gameId] = {
-              home: home3Way ? Number(home3Way.value) : null,
-              away: away3Way ? Number(away3Way.value) : null
-            };
-          }
+          // Home kurz je v homeTeam, away kurz je v awayTeam
+          const home3WayFromHome = homeOdds.find(o => {
+            return o.description === "MONEY_LINE_3_WAY" && 
+                   o.qualifier !== "Draw" && 
+                   (o.qualifier === "" || !o.qualifier);
+          });
+          const away3WayFromAway = awayOdds.find(o => {
+            return o.description === "MONEY_LINE_3_WAY" && 
+                   o.qualifier !== "Draw" && 
+                   (o.qualifier === "" || !o.qualifier);
+          });
+          const drawFromAny = allOdds.find(o => {
+            return o.description === "MONEY_LINE_3_WAY" && 
+                   o.qualifier === "Draw";
+          });
+          
+          oddsMap[gameId] = {
+            home: home3WayFromHome ? Number(home3WayFromHome.value) : null,
+            draw: drawFromAny ? Number(drawFromAny.value) : null,
+            away: away3WayFromAway ? Number(away3WayFromAway.value) : null
+          };
         });
       }
     } catch (err) {
@@ -140,6 +160,7 @@ export default async function handler(req, res) {
         homeOdds,
         awayOdds,
         home3Way: gameOdds.home || null,
+        draw3Way: gameOdds.draw || null,
         away3Way: gameOdds.away || null,
       };
     });

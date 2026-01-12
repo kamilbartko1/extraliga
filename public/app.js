@@ -1297,6 +1297,7 @@ async function displayHome() {
         ? `<p class="nhl-muted">${t("home.noGamesToday")}</p>`
         : homeData.matchesToday.map(m => {
             const homeOdd = m.home3Way ? Number(m.home3Way).toFixed(2) : null;
+            const drawOdd = m.draw3Way ? Number(m.draw3Way).toFixed(2) : null;
             const awayOdd = m.away3Way ? Number(m.away3Way).toFixed(2) : null;
             
             return `
@@ -1304,12 +1305,17 @@ async function displayHome() {
                 <div class="nhl-game-teams">
                   <img src="${m.homeLogo}" class="nhl-team-logo">
                   <span>${m.homeName}</span>
-                  ${homeOdd ? `<span class="nhl-game-odd">${homeOdd}</span>` : ""}
                   <span class="nhl-vs">vs</span>
-                  ${awayOdd ? `<span class="nhl-game-odd">${awayOdd}</span>` : ""}
                   <span>${m.awayName}</span>
                   <img src="${m.awayLogo}" class="nhl-team-logo">
                 </div>
+                ${(homeOdd || drawOdd || awayOdd) ? `
+                <div class="nhl-game-odds">
+                  <span class="nhl-odd-item">${m.homeName}: ${homeOdd || "-"}</span>
+                  <span class="nhl-odd-item">Remíza: ${drawOdd || "-"}</span>
+                  <span class="nhl-odd-item">${m.awayName}: ${awayOdd || "-"}</span>
+                </div>
+                ` : ""}
                 <div class="nhl-game-time">${m.startTime}</div>
               </div>
             `;

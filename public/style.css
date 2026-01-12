@@ -6089,14 +6089,19 @@ body {
   font-weight: 600;
 }
 
-.nhl-game-odd {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #00eaff;
-  background: rgba(0, 234, 255, 0.1);
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin: 0 2px;
+.nhl-game-odds {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #ffffff;
+  font-weight: 400;
+}
+
+.nhl-odd-item {
+  white-space: nowrap;
 }
 
 .nhl-game-time {
