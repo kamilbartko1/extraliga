@@ -3181,7 +3181,7 @@ function openRatingModal() {
 }
 
 function closeRatingModal(e) {
-  if (!e || e.target.id === "ratingModal") {
+  if (!e || e.target.id === "ratingModal" || e.target.classList.contains("rating-modal-close") || e.target.closest(".rating-modal-close")) {
     document.getElementById("ratingModal").style.display = "none";
   }
 }
