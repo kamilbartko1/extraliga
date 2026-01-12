@@ -5716,7 +5716,23 @@ async function displayShootingLeaders() {
     box.onclick = async () => {
       const type = box.dataset.type;
       detail.innerHTML = `<p style="text-align:center;color:#00eaff;">${t("common.loading")}</p>`;
-      detail.scrollIntoView({ behavior: "smooth", block: "start" });
+      
+      // Scroll na detail s offsetom, aby bol zoznam vyššie
+      setTimeout(() => {
+        const statPlayers = document.querySelector('.stat-players');
+        if (statPlayers) {
+          const offset = 100; // Offset v pixeloch
+          const elementPosition = statPlayers.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - offset;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+        } else {
+          detail.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100);
 
       try {
         if (window.lastStatsCache) {
