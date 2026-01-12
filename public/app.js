@@ -1302,12 +1302,15 @@ async function displayHome() {
             
             return `
               <div class="nhl-game-row" onclick="showSection('matches-section')">
-                <div class="nhl-game-teams">
-                  <img src="${m.homeLogo}" class="nhl-team-logo">
-                  <span>${m.homeName}</span>
-                  <span class="nhl-vs">vs</span>
-                  <span>${m.awayName}</span>
-                  <img src="${m.awayLogo}" class="nhl-team-logo">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div class="nhl-game-teams">
+                    <img src="${m.homeLogo}" class="nhl-team-logo">
+                    <span>${m.homeName}</span>
+                    <span class="nhl-vs">vs</span>
+                    <span>${m.awayName}</span>
+                    <img src="${m.awayLogo}" class="nhl-team-logo">
+                  </div>
+                  <div class="nhl-game-time">${m.startTime}</div>
                 </div>
                 ${(homeOdd || drawOdd || awayOdd) ? `
                 <div class="nhl-game-odds">
@@ -1316,7 +1319,6 @@ async function displayHome() {
                   <span class="nhl-odd-item">${m.awayName}: ${awayOdd || "-"}</span>
                 </div>
                 ` : ""}
-                <div class="nhl-game-time">${m.startTime}</div>
               </div>
             `;
           }).join("")

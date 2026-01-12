@@ -6069,13 +6069,13 @@ body {
 
 .nhl-game-row {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   padding: 10px 12px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
+  gap: 8px;
 }
 
 .nhl-game-row:hover {
@@ -6094,10 +6094,10 @@ body {
   align-items: center;
   justify-content: center;
   gap: 16px;
-  margin-top: 8px;
   font-size: 0.9rem;
   color: #ffffff;
   font-weight: 400;
+  padding-top: 4px;
 }
 
 .nhl-odd-item {
