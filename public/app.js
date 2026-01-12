@@ -1250,205 +1250,168 @@ async function displayHome() {
     const gamesCountText = t("home.gamesCount", { count: homeData.matchesToday.length });
 
     let html = `
-<section class="nhl-home">
+<section class="home-modern">
 
-  <!-- ================= HERO BANNER ================= -->
-  <div class="hero-banner">
-    <div class="hero-content">
-      <h1 class="hero-title">${t("home.heroTitle")}</h1>
-      <p class="hero-subtitle">${t("home.heroSubtitle")}</p>
-      <div class="hero-cta">
-        <button class="hero-btn-primary" onclick="showSection('premium-section')">
-          ${t("home.ctaStart")}
-        </button>
-        <button class="hero-btn-secondary" onclick="showSection('mantingale-section')">
-          ${t("home.ctaLearn")}
-        </button>
-      </div>
+  <!-- ================= STATISTIKY HORE ================= -->
+  <div class="home-stats-bar">
+    <div class="home-stat">
+      <div class="home-stat-value">${absTotalProfit.toFixed(2)} €</div>
+      <div class="home-stat-label">${t("home.statTotalProfit")}</div>
     </div>
-    <div class="hero-stats">
-      <div class="hero-stat-item">
-        <div class="hero-stat-value">${absTotalProfit.toFixed(2)} €</div>
-        <div class="hero-stat-label">${t("home.statTotalProfit")}</div>
-      </div>
-      <div class="hero-stat-item">
-        <div class="hero-stat-value">${absPlayerCount}</div>
-        <div class="hero-stat-label">${t("home.statTotalPlayers")}</div>
-      </div>
-      <div class="hero-stat-item">
-        <div class="hero-stat-value">AS</div>
-        <div class="hero-stat-label">${t("home.statStrategy")}</div>
-      </div>
+    <div class="home-stat">
+      <div class="home-stat-value">${absPlayerCount}</div>
+      <div class="home-stat-label">${t("home.statTotalPlayers")}</div>
+    </div>
+    <div class="home-stat">
+      <div class="home-stat-value">AS</div>
+      <div class="home-stat-label">${t("home.statStrategy")}</div>
     </div>
   </div>
 
-  <!-- ================= HERO GRID ================= -->
-  <div class="nhl-hero-grid">
-
-    <!-- DNESNE ZAPASY -->
-    <div class="nhl-card">
-      <div class="nhl-card-head">
-        <h3>${t("home.todaysGames")}</h3>
-        <span class="nhl-card-hint">${gamesCountText}</span>
-      </div>
-
-      <div class="nhl-games-list">
-        ${homeData.matchesToday.length === 0
-        ? `<p class="nhl-muted">${t("home.noGamesToday")}</p>`
+  <!-- ================= DNESNE ZAPASY ================= -->
+  <div class="home-section">
+    <div class="home-section-header">
+      <h2 class="home-section-title">${t("home.todaysGames")}</h2>
+      <span class="home-section-subtitle">${gamesCountText}</span>
+    </div>
+    <div class="home-games-list">
+      ${homeData.matchesToday.length === 0
+        ? `<p class="home-empty">${t("home.noGamesToday")}</p>`
         : homeData.matchesToday.map(m => {
             const homeOdd = m.home3Way ? Number(m.home3Way).toFixed(2) : null;
             const drawOdd = m.draw3Way ? Number(m.draw3Way).toFixed(2) : null;
             const awayOdd = m.away3Way ? Number(m.away3Way).toFixed(2) : null;
             
             return `
-              <div class="nhl-game-row" onclick="showSection('matches-section')">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <div class="nhl-game-teams">
-                    <img src="${m.homeLogo}" class="nhl-team-logo">
-                    <span>${m.homeName}</span>
-                    <span class="nhl-vs">vs</span>
-                    <span>${m.awayName}</span>
-                    <img src="${m.awayLogo}" class="nhl-team-logo">
+              <div class="home-game-item" onclick="showSection('matches-section')">
+                <div class="home-game-main">
+                  <div class="home-game-teams">
+                    <div class="home-game-team">
+                      <img src="${m.homeLogo}" class="home-team-logo">
+                      <span class="home-team-name">${m.homeName}</span>
+                    </div>
+                    <span class="home-vs">vs</span>
+                    <div class="home-game-team">
+                      <img src="${m.awayLogo}" class="home-team-logo">
+                      <span class="home-team-name">${m.awayName}</span>
+                    </div>
                   </div>
-                  <div class="nhl-game-time">${m.startTime}</div>
+                  <div class="home-game-time">${m.startTime}</div>
                 </div>
                 ${(homeOdd || drawOdd || awayOdd) ? `
-                <div class="nhl-game-odds">
-                  <span class="nhl-odd-item">${m.homeName}: ${homeOdd || "-"}</span>
-                  <span class="nhl-odd-item">Remíza: ${drawOdd || "-"}</span>
-                  <span class="nhl-odd-item">${m.awayName}: ${awayOdd || "-"}</span>
+                <div class="home-game-odds">
+                  <div class="home-odd">${m.homeName}: <strong>${homeOdd || "-"}</strong></div>
+                  <div class="home-odd">Remíza: <strong>${drawOdd || "-"}</strong></div>
+                  <div class="home-odd">${m.awayName}: <strong>${awayOdd || "-"}</strong></div>
                 </div>
                 ` : ""}
               </div>
             `;
           }).join("")
       }
+    </div>
+  </div>
+
+  <!-- ================= AI + HISTORIA ================= -->
+  <div class="home-ai-section">
+    <div class="home-ai-scorer">
+      <h3 class="home-subsection-title">${t("home.aiScorer")}</h3>
+      <div id="ai-today-loading" class="home-ai-content">
+        <p class="home-loading">${t("home.aiLoading")}</p>
       </div>
     </div>
-
-    <!-- AI STRELEC DNA -->
-    <div class="nhl-card nhl-ai-card">
-      <div class="nhl-card-head">
-        <h3>${t("home.aiScorer")}</h3>
-      </div>
-
-      <div id="ai-today-loading" class="nhl-ai-center">
-        <p class="nhl-muted">${t("home.aiLoading")}</p>
-      </div>
-    </div>
-
-    <!-- HISTORIA AI -->
-    <div class="nhl-card">
-      <div class="nhl-card-head">
-        <h3>${t("home.aiHistory")}</h3>
-      </div>
-
-      <div class="nhl-ai-history">
+    <div class="home-ai-history">
+      <h3 class="home-subsection-title">${t("home.aiHistory")}</h3>
+      <div class="home-history-list">
         ${history.length === 0
-        ? `<p class="nhl-muted">${t("home.noTips")}</p>`
+        ? `<p class="home-empty">${t("home.noTips")}</p>`
         : history.slice(0, 6).map(h => `
-              <div class="nhl-ai-row">
-                <span>${h.date}</span>
-                <span>${h.player}</span>
-                <span class="${h.result === "hit" ? "hit" : "miss"}">
+              <div class="home-history-item">
+                <span class="home-history-date">${h.date}</span>
+                <span class="home-history-player">${h.player}</span>
+                <span class="home-history-result ${h.result === "hit" ? "hit" : "miss"}">
                   ${h.result === "hit" ? "✔" : "✘"}
                 </span>
               </div>
             `).join("")
-      }
+        }
       </div>
     </div>
-
   </div>
 
   <!-- ================= TOP STATISTIKY ================= -->
-  <div class="nhl-section-head">
-    <h2>${t("home.topStats")}</h2>
-    <button class="nhl-btn nhl-btn-ghost" onclick="showSection('stats-section')">
-      ${t("home.viewAllStats")}
-    </button>
-  </div>
-
-  <div class="nhl-stats-grid">
-
-  <div class="top-player">
-    <img src="${topGoal.headshot || "/icons/nhl_placeholder.svg"}">
-    <div>
-      <b>${topGoal.name || "-"}</b><br>
-      🥅 ${t("home.statGoals", { n: (topGoal.goals || 0) })}
+  <div class="home-section">
+    <div class="home-section-header">
+      <h2 class="home-section-title">${t("home.topStats")}</h2>
+      <button class="home-view-all-btn" onclick="showSection('stats-section')">
+        ${t("home.viewAllStats")}
+      </button>
     </div>
-    <span class="stat-label">${t("home.topGoals")}</span>
-  </div>
-
-  <div class="top-player">
-    <img src="${statsData?.topAssists?.[0]?.headshot || "/icons/nhl_placeholder.svg"}">
-    <div>
-      <b>${statsData?.topAssists?.[0]?.name || "-"}</b><br>
-      🅰️ ${t("home.statAssists", { n: (statsData?.topAssists?.[0]?.assists || 0) })}
-    </div>
-    <span class="stat-label">${t("home.topAssists")}</span>
-  </div>
-
-  <div class="top-player">
-    <img src="${topPoints.headshot || "/icons/nhl_placeholder.svg"}">
-    <div>
-      <b>${topPoints.name || "-"}</b><br>
-      ⚡ ${t("home.statPoints", { n: (topPoints.points || 0) })}
-    </div>
-    <span class="stat-label">${t("home.topPoints")}</span>
-  </div>
-
-  <div class="top-player">
-    <img src="${statsData?.topPowerPlayGoals?.[0]?.headshot || "/icons/nhl_placeholder.svg"}">
-    <div>
-      <b>${statsData?.topPowerPlayGoals?.[0]?.name || "-"}</b><br>
-      🔌 ${statsData?.topPowerPlayGoals?.[0]?.powerPlayGoals || 0} ${CURRENT_LANG === "en" ? "PP goals" : "PP gólov"}
-    </div>
-    <span class="stat-label">${t("home.topPP")}</span>
-  </div>
-
-  <div class="top-player">
-    <img src="${topShots.headshot || "/icons/nhl_placeholder.svg"}">
-    <div>
-      <b>${topShots.name || "-"}</b><br>
-      🎯 ${t("home.statShots", { n: (topShots.shots || 0) })}
-    </div>
-    <span class="stat-label">${t("home.topShots")}</span>
-  </div>
-
-</div>
-
-  <!-- ================= FEATURES SECTION ================= -->
-  <div class="features-section">
-    <h2 class="features-title">${t("home.featuresTitle")}</h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">🤖</div>
-        <h3 class="feature-heading">${t("home.featureAI")}</h3>
-        <p class="feature-text">${t("home.featureAIDesc")}</p>
+    <div class="home-stats-grid">
+      <div class="home-stat-card">
+        <div class="home-stat-card-label">${t("home.topGoals")}</div>
+        <img src="${topGoal.headshot || "/icons/nhl_placeholder.svg"}" class="home-stat-card-img">
+        <div class="home-stat-card-name">${topGoal.name || "-"}</div>
+        <div class="home-stat-card-value">🥅 ${t("home.statGoals", { n: (topGoal.goals || 0) })}</div>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">📊</div>
-        <h3 class="feature-heading">${t("home.featureStats")}</h3>
-        <p class="feature-text">${t("home.featureStatsDesc")}</p>
+      <div class="home-stat-card">
+        <div class="home-stat-card-label">${t("home.topAssists")}</div>
+        <img src="${statsData?.topAssists?.[0]?.headshot || "/icons/nhl_placeholder.svg"}" class="home-stat-card-img">
+        <div class="home-stat-card-name">${statsData?.topAssists?.[0]?.name || "-"}</div>
+        <div class="home-stat-card-value">🅰️ ${t("home.statAssists", { n: (statsData?.topAssists?.[0]?.assists || 0) })}</div>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">⚡</div>
-        <h3 class="feature-heading">${t("home.featureStrategy")}</h3>
-        <p class="feature-text">${t("home.featureStrategyDesc")}</p>
+      <div class="home-stat-card">
+        <div class="home-stat-card-label">${t("home.topPoints")}</div>
+        <img src="${topPoints.headshot || "/icons/nhl_placeholder.svg"}" class="home-stat-card-img">
+        <div class="home-stat-card-name">${topPoints.name || "-"}</div>
+        <div class="home-stat-card-value">⚡ ${t("home.statPoints", { n: (topPoints.points || 0) })}</div>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">🎯</div>
-        <h3 class="feature-heading">${t("home.featureRealTime")}</h3>
-        <p class="feature-text">${t("home.featureRealTimeDesc")}</p>
+      <div class="home-stat-card">
+        <div class="home-stat-card-label">${t("home.topPP")}</div>
+        <img src="${statsData?.topPowerPlayGoals?.[0]?.headshot || "/icons/nhl_placeholder.svg"}" class="home-stat-card-img">
+        <div class="home-stat-card-name">${statsData?.topPowerPlayGoals?.[0]?.name || "-"}</div>
+        <div class="home-stat-card-value">🔌 ${statsData?.topPowerPlayGoals?.[0]?.powerPlayGoals || 0} ${CURRENT_LANG === "en" ? "PP goals" : "PP gólov"}</div>
+      </div>
+      <div class="home-stat-card">
+        <div class="home-stat-card-label">${t("home.topShots")}</div>
+        <img src="${topShots.headshot || "/icons/nhl_placeholder.svg"}" class="home-stat-card-img">
+        <div class="home-stat-card-name">${topShots.name || "-"}</div>
+        <div class="home-stat-card-value">🎯 ${t("home.statShots", { n: (topShots.shots || 0) })}</div>
       </div>
     </div>
-    <div class="features-cta">
-      <button class="feature-cta-btn" onclick="showSection('premium-section')">
+  </div>
+
+  <!-- ================= FEATURES ================= -->
+  <div class="home-section">
+    <h2 class="home-section-title">${t("home.featuresTitle")}</h2>
+    <div class="home-features-grid">
+      <div class="home-feature">
+        <div class="home-feature-icon">🤖</div>
+        <h3 class="home-feature-title">${t("home.featureAI")}</h3>
+        <p class="home-feature-text">${t("home.featureAIDesc")}</p>
+      </div>
+      <div class="home-feature">
+        <div class="home-feature-icon">📊</div>
+        <h3 class="home-feature-title">${t("home.featureStats")}</h3>
+        <p class="home-feature-text">${t("home.featureStatsDesc")}</p>
+      </div>
+      <div class="home-feature">
+        <div class="home-feature-icon">⚡</div>
+        <h3 class="home-feature-title">${t("home.featureStrategy")}</h3>
+        <p class="home-feature-text">${t("home.featureStrategyDesc")}</p>
+      </div>
+      <div class="home-feature">
+        <div class="home-feature-icon">🎯</div>
+        <h3 class="home-feature-title">${t("home.featureRealTime")}</h3>
+        <p class="home-feature-text">${t("home.featureRealTimeDesc")}</p>
+      </div>
+    </div>
+    <div class="home-features-cta">
+      <button class="home-cta-button" onclick="showSection('premium-section')">
         ${t("home.featureCTA")}
       </button>
     </div>
-</div>
+  </div>
 
 </section>
 `;
