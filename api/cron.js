@@ -286,6 +286,8 @@ async function updateMantingaleForKey(playersKey, historyPrefix) {
         result: "hit",
         profitChange: profit,       // ✅ čistý zisk
         balanceAfter: state.balance,
+        stake: state.stake,         // ✅ uložíme stake pre správny výpočet ROI
+        odds: state.odds,            // ✅ uložíme odds pre správny výpočet ROI
       };
 
       if (isGlobal) {
@@ -319,6 +321,8 @@ async function updateMantingaleForKey(playersKey, historyPrefix) {
       result: "miss",
       profitChange: loss,
       balanceAfter: state.balance,
+      stake: state.stake,         // ✅ uložíme stake pre správny výpočet ROI
+      odds: state.odds,            // ✅ uložíme odds pre správny výpočet ROI
     };
 
     if (isGlobal) {

@@ -3281,20 +3281,22 @@ async function loadMantingal() {
       if (!histData.ok || !histData.history) return;
 
       // Vypočítaj celkovú investovanú sumu (súčet všetkých stávok)
-      // Pri "miss" (prehre): stake = -profitChange (pretože profitChange je záporný)
-      // Pri "hit" (výhre): profitChange = stake * (odds - 1), takže stake = profitChange / (odds - 1)
+      // Použijeme stake z histórie, ak je dostupný, inak vypočítame z profitChange a odds
       // Balance je čistý zisk (začína od 0), takže ROI = (balance / totalStaked) * 100
       let totalStaked = 0;
-      const odds = Number(histData.odds || 2.2); // Odds z aktuálneho state hráča
 
       histData.history.forEach(h => {
-        if (h.result === "miss" && h.profitChange !== undefined && h.profitChange !== null) {
+        // Ak máme stake priamo v histórii, použijeme ho (najpresnejšie)
+        if (h.stake !== undefined && h.stake !== null) {
+          totalStaked += Number(h.stake);
+        } else if (h.result === "miss" && h.profitChange !== undefined && h.profitChange !== null) {
           // Pri prehre: stake (vklad) = -profitChange (profitChange je záporný)
           totalStaked += Math.abs(Number(h.profitChange));
         } else if ((h.result === "hit" || h.result === "win") && h.profitChange !== undefined && h.profitChange !== null) {
           // Pri výhre: profitChange = stake * (odds - 1)
           // Takže: stake = profitChange / (odds - 1)
           const profitChange = Number(h.profitChange);
+          const odds = Number(h.odds || histData.odds || 2.2);
           if (profitChange > 0 && odds > 1) {
             const stake = profitChange / (odds - 1);
             totalStaked += stake;
