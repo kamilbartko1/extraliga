@@ -1244,43 +1244,16 @@ async function displayHome() {
     const topPoints = statsData?.topPoints?.[0] || {};
     const topShots = statsData?.topShots?.[0] || {};
 
-    // 🔥 KURZY – načítaj samostatne, aby nezablokovali stránku pri chybe
+    // 🔥 KURZY – načítaj cez náš backend API (obíde CORS)
     let oddsMap = {};
     try {
-      const oddsResp = await fetch("https://api-web.nhle.com/v1/partner-game/SK/now", { cache: "no-store" });
+      const oddsResp = await fetch("/api/odds", { cache: "no-store" });
       if (oddsResp.ok) {
         const oddsData = await oddsResp.json();
-        console.log("📊 Kurzy API odpoveď:", oddsData);
-        if (oddsData.games && Array.isArray(oddsData.games)) {
-          oddsData.games.forEach(game => {
-            const gameId = game.gameId;
-            const homeOdds = game.homeTeam?.odds || [];
-            const awayOdds = game.awayTeam?.odds || [];
-            
-            // Nájdi 3-way kurz (MONEY_LINE_3_WAY s prázdnym alebo bez qualifier, ale nie "Draw")
-            const home3Way = homeOdds.find(o => {
-              return o.description === "MONEY_LINE_3_WAY" && 
-                     o.qualifier !== "Draw" && 
-                     (o.qualifier === "" || !o.qualifier);
-            });
-            const away3Way = awayOdds.find(o => {
-              return o.description === "MONEY_LINE_3_WAY" && 
-                     o.qualifier !== "Draw" && 
-                     (o.qualifier === "" || !o.qualifier);
-            });
-            
-            if (home3Way || away3Way) {
-              oddsMap[gameId] = {
-                home: home3Way ? Number(home3Way.value) : null,
-                away: away3Way ? Number(away3Way.value) : null
-              };
-              console.log(`✅ Kurzy pre gameId ${gameId}:`, oddsMap[gameId]);
-            }
-          });
-          console.log("📊 Celková mapa kurzov:", oddsMap);
+        if (oddsData.ok && oddsData.oddsMap) {
+          oddsMap = oddsData.oddsMap;
+          console.log("✅ Kurzy načítané:", Object.keys(oddsMap).length, "zápasov");
         }
-      } else {
-        console.warn("⚠️ Kurzy API nevrátilo OK:", oddsResp.status);
       }
     } catch (err) {
       console.warn("⚠️ Kurzy sa nepodarilo načítať (nie je to kritické):", err.message);
@@ -1340,8 +1313,6 @@ async function displayHome() {
             const gameOdds = oddsMap[m.id] || {};
             const homeOdd = gameOdds.home ? Number(gameOdds.home).toFixed(2) : null;
             const awayOdd = gameOdds.away ? Number(gameOdds.away).toFixed(2) : null;
-            
-            console.log(`🎮 Zápas ${m.id} (${m.homeName} vs ${m.awayName}):`, { homeOdd, awayOdd, gameOdds });
             
             return `
               <div class="nhl-game-row" onclick="showSection('matches-section')">
