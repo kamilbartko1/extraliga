@@ -1427,16 +1427,18 @@ async function displayHome() {
         }
 
         box.innerHTML = `
-          <img src="${ai.headshot}" class="player-headshot">
-          <div class="ai-scorer-info">
-            <p><b>${ai.player}</b> (${ai.team})</p>
-            <p style="color:#00eaff;">${ai.match}</p>
-            <p>Góly: <b>${ai.goals}</b> |  PP Góly: ${ai.powerPlayGoals}</p>
-            <p>Strely: <b>${ai.shots}</b></p>
-            <p>🧠 Pravdepodobnosť: 
-              <b style="color:#ffcc00;">${ai.probability}%</b>
-            </p>
-            
+          <img src="${ai.headshot}" class="home-ai-player-img">
+          <div class="home-ai-player-info">
+            <div class="home-ai-player-name">${ai.player} <span class="home-ai-player-team">(${ai.team})</span></div>
+            <div class="home-ai-player-match">${ai.match}</div>
+            <div class="home-ai-player-stats">
+              <span>Góly: <strong>${ai.goals}</strong></span>
+              <span>PP Góly: <strong>${ai.powerPlayGoals}</strong></span>
+              <span>Strely: <strong>${ai.shots}</strong></span>
+            </div>
+            <div class="home-ai-player-prob">
+              🧠 Pravdepodobnosť: <strong>${ai.probability}%</strong>
+            </div>
           </div>
         `;
       } catch (err) {
