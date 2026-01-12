@@ -5558,10 +5558,6 @@ body {
   gap: 8px;
 }
 
-.home-game-team-away {
-  flex-direction: row-reverse;
-}
-
 .home-team-logo {
   width: 32px;
   height: 32px;
