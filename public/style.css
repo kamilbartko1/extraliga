@@ -3886,6 +3886,12 @@ body {
   text-align: center;
 }
 
+.shooting-table th:nth-child(6),
+.shooting-table td:nth-child(6) {
+  width: 50px;
+  text-align: center;
+}
+
 /* ikona hráča */
 .shooting-table img {
   width: 20px;
