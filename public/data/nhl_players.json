@@ -1434,7 +1434,8 @@
     "birthDate": "1997-07-26",
     "birthCity": "Rauma",
     "country": "FIN",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8482809,
@@ -1448,7 +1449,8 @@
     "birthDate": "2003-08-03",
     "birthCity": "Fargo",
     "country": "USA",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8477478,
@@ -1462,7 +1464,8 @@
     "birthDate": "1994-12-20",
     "birthCity": "LaSalle",
     "country": "CAN",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8477940,
@@ -1476,7 +1479,8 @@
     "birthDate": "1996-02-14",
     "birthCity": "Aalborg",
     "country": "DNK",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.90"
   },
   {
     "id": 8475791,
@@ -1490,7 +1494,8 @@
     "birthDate": "1991-11-14",
     "birthCity": "Calgary",
     "country": "CAN",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "3.50"
   },
   {
     "id": 8476873,
@@ -1504,7 +1509,8 @@
     "birthDate": "1994-09-13",
     "birthCity": "Hamilton",
     "country": "CAN",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8482093,
@@ -1533,7 +1539,8 @@
     "birthDate": "2000-07-06",
     "birthCity": "Pori",
     "country": "FIN",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8476921,
@@ -1547,7 +1554,8 @@
     "birthDate": "1992-07-25",
     "birthCity": "Brandon",
     "country": "CAN",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8484203,
@@ -1561,7 +1569,8 @@
     "birthDate": "2005-05-05",
     "birthCity": "St-Francois de Madaw",
     "country": "CAN",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8480762,
@@ -1575,7 +1584,8 @@
     "birthDate": "1995-06-14",
     "birthCity": "Bellmawr",
     "country": "USA",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8473533,
@@ -1589,7 +1599,8 @@
     "birthDate": "1988-09-10",
     "birthCity": "Thunder Bay",
     "country": "CAN",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "3.50"
   },
   {
     "id": 8482702,
@@ -1603,7 +1614,8 @@
     "birthDate": "2003-02-26",
     "birthCity": "Kamloops",
     "country": "CAN",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8480830,
@@ -1617,7 +1629,8 @@
     "birthDate": "2000-03-26",
     "birthCity": "Barnaul",
     "country": "RUS",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.70"
   },
   {
     "id": 8478970,
@@ -1631,7 +1644,8 @@
     "birthDate": "1996-05-15",
     "birthCity": "Ypsilanti",
     "country": "USA",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8481562,
@@ -1645,7 +1659,8 @@
     "birthDate": "2001-09-07",
     "birthCity": "Thornwood",
     "country": "USA",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8476906,
@@ -1659,7 +1674,8 @@
     "birthDate": "1993-04-20",
     "birthCity": "Pembroke Pines",
     "country": "USA",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8484428,
@@ -1673,7 +1689,8 @@
     "birthDate": "2003-09-05",
     "birthCity": "MontrĂ©al",
     "country": "CAN",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8480817,
@@ -1687,7 +1704,8 @@
     "birthDate": "2000-01-21",
     "birthCity": "St. Paul",
     "country": "USA",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8482100,
@@ -1701,7 +1719,8 @@
     "birthDate": "2001-10-02",
     "birthCity": "Orel",
     "country": "RUS",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8482911,
@@ -1715,7 +1734,8 @@
     "birthDate": "2002-05-14",
     "birthCity": "Karlstad",
     "country": "SWE",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8476422,
@@ -1729,7 +1749,8 @@
     "birthDate": "1993-07-13",
     "birthCity": "Glenview",
     "country": "USA",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8476958,
@@ -1743,7 +1764,8 @@
     "birthDate": "1994-05-01",
     "birthCity": "Denver",
     "country": "USA",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8480336,
@@ -1757,7 +1779,8 @@
     "birthDate": "1994-11-13",
     "birthCity": "Keswick",
     "country": "CAN",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8475883,
@@ -1771,7 +1794,8 @@
     "birthDate": "1989-10-02",
     "birthCity": "Herning",
     "country": "DNK",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8483548,
@@ -1785,7 +1809,8 @@
     "birthDate": "1998-06-25",
     "birthCity": "Sound Beach",
     "country": "USA",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8481611,
@@ -1799,7 +1824,8 @@
     "birthDate": "1999-06-25",
     "birthCity": "Penza",
     "country": "RUS",
-    "team": "Carolina Hurricanes"
+    "team": "Carolina Hurricanes",
+    "odds": "2.50"
   },
   {
     "id": 8484144,
@@ -1813,7 +1839,8 @@
     "birthDate": "2005-07-17",
     "birthCity": "North Vancouver",
     "country": "CAN",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8477479,
@@ -1827,7 +1854,8 @@
     "birthDate": "1995-02-24",
     "birthCity": "Sudbury",
     "country": "CAN",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8477444,
@@ -1841,7 +1869,8 @@
     "birthDate": "1995-02-09",
     "birthCity": "Klagenfurt",
     "country": "AUT",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8482703,
@@ -1855,7 +1884,8 @@
     "birthDate": "2003-01-04",
     "birthCity": "St. Albert",
     "country": "CAN",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8477450,
@@ -1869,7 +1899,8 @@
     "birthDate": "1995-07-04",
     "birthCity": "Georgetown",
     "country": "CAN",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8477987,
@@ -1883,7 +1914,8 @@
     "birthDate": "1996-04-09",
     "birthCity": "Boston",
     "country": "USA",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8473422,
@@ -1897,7 +1929,8 @@
     "birthDate": "1987-10-31",
     "birthCity": "Buffalo",
     "country": "USA",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8483450,
@@ -1911,7 +1944,8 @@
     "birthDate": "2003-10-21",
     "birthCity": "St. John's",
     "country": "CAN",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8478043,
@@ -1925,7 +1959,8 @@
     "birthDate": "1995-03-06",
     "birthCity": "Hollidaysburg",
     "country": "USA",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8481624,
@@ -1939,7 +1974,8 @@
     "birthDate": "1994-10-10",
     "birthCity": "Omsk",
     "country": "RUS",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8483493,
@@ -1953,7 +1989,8 @@
     "birthDate": "2004-01-14",
     "birthCity": "Detroit",
     "country": "USA",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8482172,
@@ -1967,7 +2004,8 @@
     "birthDate": "2002-06-25",
     "birthCity": "South Bend",
     "country": "USA",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8476882,
@@ -1981,7 +2019,8 @@
     "birthDate": "1994-09-11",
     "birthCity": "Helsinki",
     "country": "FIN",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8481806,
@@ -1995,7 +2034,8 @@
     "birthDate": "2001-05-04",
     "birthCity": "Quebec City",
     "country": "CAN",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8476891,
@@ -2009,7 +2049,8 @@
     "birthDate": "1994-01-05",
     "birthCity": "Charlestown",
     "country": "USA",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8482176,
@@ -2023,7 +2064,8 @@
     "birthDate": "2002-07-31",
     "birthCity": "Andover",
     "country": "USA",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8484783,
@@ -2037,7 +2079,8 @@
     "birthDate": "2005-10-28",
     "birthCity": "Zhlobin",
     "country": "BLR",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8476473,
@@ -2051,7 +2094,8 @@
     "birthDate": "1993-03-26",
     "birthCity": "Dublin",
     "country": "USA",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8483506,
@@ -2065,7 +2109,8 @@
     "birthDate": "2004-06-25",
     "birthCity": "Chanhassen",
     "country": "USA",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8481568,
@@ -2079,7 +2124,8 @@
     "birthDate": "2001-06-05",
     "birthCity": "Wilmette",
     "country": "USA",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8481519,
@@ -2093,7 +2139,8 @@
     "birthDate": "2001-04-19",
     "birthCity": "Darien",
     "country": "USA",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8482821,
@@ -2107,7 +2154,8 @@
     "birthDate": "1999-08-19",
     "birthCity": "Goteborg",
     "country": "SWE",
-    "team": "Chicago Blackhawks"
+    "team": "Chicago Blackhawks",
+    "odds": "2.50"
   },
   {
     "id": 8482947,
@@ -2121,7 +2169,8 @@
     "birthDate": "2001-02-24",
     "birthCity": "Berdsk",
     "country": "RUS",
-    "team": "Colorado Avalanche"
+    "team": "Colorado Avalanche",
+    "odds": "2.50"
   },
   {
     "id": 8484149,
