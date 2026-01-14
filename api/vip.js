@@ -500,6 +500,99 @@ if (task === "delete_player") {
       });
     }
 
+   // =====================================================
+    // 6) DASHBOARD – Osobný dashboard s profit trackingom
+    // =====================================================
+    if (task === "dashboard") {
+      // AS Stratégia dáta
+      const playersKey = vipPlayersKey(userId);
+      const playersRaw = (await redis.hgetall(playersKey)) || {};
+      
+      const players = {};
+      let currentPlayersProfit = 0;
+      
+      for (const [name, raw] of Object.entries(playersRaw)) {
+        const obj = normalizePlayer(safeParse(raw));
+        players[name] = obj;
+        currentPlayersProfit += obj.balance;
+      }
+      
+      // Načítaj uložený profit z vymazaných hráčov
+      const archivedProfitRaw = await redis.get(vipTotalProfitKey(userId));
+      const archivedProfit = archivedProfitRaw ? Number(archivedProfitRaw) : 0;
+      
+      // Celkový profit = profit vymazaných hráčov + profit aktuálnych hráčov
+      const totalProfit = archivedProfit + currentPlayersProfit;
+      
+      // VIP tipy úspešnosť (z AI histórie - pre teraz základné dáta)
+      // TODO: V budúcnosti pridať tracking VIP tipov úspešnosti
+      const vipTipsStats = {
+        total: 0,
+        hits: 0,
+        misses: 0,
+        successRate: 0
+      };
+      
+      // Dátum registrácie (z VIP_EXPIRES - odpočítame 31 dní)
+      const expiresRaw = await redis.get(`VIP_EXPIRES:${userId}`);
+      let memberSince = null;
+      if (expiresRaw) {
+        try {
+          const expiresTimestamp = Number(expiresRaw);
+          // Odpočítame 31 dní (mesačné predplatné)
+          const memberSinceTimestamp = expiresTimestamp - (31 * 24 * 60 * 60 * 1000);
+          memberSince = new Date(memberSinceTimestamp).toISOString().split('T')[0];
+        } catch (e) {
+          console.warn("Could not parse VIP_EXPIRES:", e.message);
+        }
+      }
+      
+      // ROI výpočet - prejdeme všetkých hráčov a ich históriu
+      let totalStaked = 0;
+      for (const [name, player] of Object.entries(players)) {
+        const historyKey = vipHistoryKey(userId, name);
+        const rawHist = await redis.get(historyKey);
+        let hist = [];
+        
+        if (rawHist) {
+          try {
+            hist = typeof rawHist === "string" ? JSON.parse(rawHist) : safeParse(rawHist);
+            if (!Array.isArray(hist)) hist = [];
+          } catch {
+            hist = [];
+          }
+        }
+        
+        // Prejdeme históriu a spočítame všetky stake
+        hist.forEach(h => {
+          if (h.stake !== undefined && h.stake !== null) {
+            totalStaked += Number(h.stake);
+          }
+        });
+      }
+      
+      // ROI = (celkový profit / celkový vklad) * 100
+      const roi = totalStaked > 0 ? (totalProfit / totalStaked) * 100 : 0;
+      
+      return res.json({
+        ok: true,
+        userId,
+        dashboard: {
+          asStrategy: {
+            totalProfit: Number(totalProfit.toFixed(2)),
+            activePlayers: Object.keys(players).length,
+            roi: Number(roi.toFixed(2)),
+            totalStaked: Number(totalStaked.toFixed(2))
+          },
+          vipTips: vipTipsStats,
+          memberSince,
+          summary: {
+            totalValue: Number(totalProfit.toFixed(2))
+          }
+        }
+      });
+    }
+
     // =====================================================
     // DEFAULT
     // =====================================================
