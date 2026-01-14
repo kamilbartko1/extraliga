@@ -672,27 +672,6 @@ export default async function handler(req, res) {
     // 7) LEADERBOARD & COMPARISON
     // =====================================================
     if (task === "leaderboard") {
-      // ⚠️ EMERGENCY OPTIMIZATION: 
-      // On-the-fly calculation is too heavy for Vercel Free Tier (CPU Limit Exceeded).
-      // We must disable the loop until we implement Redis Caching (Cron job).
-
-      const vipUsersCount = await redis.scard(VIP_USERS_KEY); // Just get count (cheap)
-      const myStats = await calculateUserStats(userId); // Get only MY stats (cheap)
-
-      return res.json({
-        ok: true,
-        leaderboard: [], // Empty for now to save CPU
-        userStats: {
-          rank: 0, // Placeholder
-          profit: myStats.totalProfit,
-          averageProfit: 0,
-          diffPercent: 0,
-          totalVips: vipUsersCount
-        },
-        message: "Leaderboard is updating (Optimization in progress)"
-      });
-
-      /* HEAVY LOGIC DISABLED
       // 1. Get all VIP users
       const vipUsers = await redis.smembers(VIP_USERS_KEY);
 
@@ -700,8 +679,6 @@ export default async function handler(req, res) {
       let totalVipProfit = 0;
 
       // 2. Calculate stats for each user (Parallel for speed)
-      // Note: In production with thousands of users, this should be cached/cron-jobbed.
-      // For MVP it is fine.
       const statsPromises = vipUsers.map(uid => calculateUserStats(uid));
       const results = await Promise.all(statsPromises);
 
@@ -726,12 +703,10 @@ export default async function handler(req, res) {
         rank: index + 1,
         profit: s.totalProfit,
         isCurrentUser: s.userId === userId,
-        // Anonymous name based on rank or "You"
         name: s.userId === userId ? "TY (You)" : `Member #${s.userId.substring(0, 4)}...`
       }));
 
       // 7. Calculate Diff from Average (Percentage)
-      // Avoid division by zero. If average is 0, split cases.
       let diffPercent = 0;
       if (averageProfit === 0) {
         diffPercent = myStats.totalProfit > 0 ? 100 : 0;
@@ -750,7 +725,6 @@ export default async function handler(req, res) {
           totalVips: vipUsers.length
         }
       });
-      */
     }
 
     // =====================================================
