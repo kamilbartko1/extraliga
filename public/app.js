@@ -4598,7 +4598,7 @@ async function loadLeaderboard() {
   if (!leaderboardSection || !leaderboardList) return;
 
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("sb-access-token");
     if (!token) return;
 
     const res = await fetch("/api/vip?task=leaderboard", {
