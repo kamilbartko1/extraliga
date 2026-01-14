@@ -336,6 +336,7 @@ const I18N = {
     "common.detail": "Detail",
     "common.delete": "Delete",
 
+    "footer.contact": "✉️ Contact us",
     "footer.disclaimer": "⚖️ Legal disclaimer",
 
     "home.loading": "⏳ Loading home…",
