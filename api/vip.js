@@ -158,6 +158,53 @@ export default async function handler(req, res) {
             `VIP_EXPIRES:${userId}`,
             Date.now() + 31 * 24 * 60 * 60 * 1000
           );
+          
+          // Ulož subscription ID ak je dostupné
+          if (session.subscription) {
+            await redis.set(`VIP_SUBSCRIPTION:${userId}`, session.subscription);
+          }
+        }
+      }
+
+      // Zachyť subscription.created event pre uloženie subscription ID
+      if (event.type === "customer.subscription.created" || event.type === "customer.subscription.updated") {
+        const subscription = event.data.object;
+        const customerId = subscription.customer;
+        
+        // Nájdeme userId podľa customer ID (musíme uložiť customer ID pri checkout)
+        // Alebo použijeme metadata z checkout session
+        // Pre jednoduchosť použijeme customer email alebo metadata
+        if (subscription.metadata?.userId) {
+          const userId = subscription.metadata.userId;
+          await redis.set(`VIP_SUBSCRIPTION:${userId}`, subscription.id);
+        } else {
+          // Skús nájsť userId podľa customer ID
+          try {
+            const customer = await stripe.customers.retrieve(customerId);
+            if (customer.metadata?.userId) {
+              await redis.set(`VIP_SUBSCRIPTION:${customer.metadata.userId}`, subscription.id);
+            }
+          } catch (e) {
+            console.warn("Could not retrieve customer:", e.message);
+          }
+        }
+      }
+
+      // Zachyť subscription.deleted alebo canceled
+      if (event.type === "customer.subscription.deleted") {
+        const subscription = event.data.object;
+        const customerId = subscription.customer;
+        
+        try {
+          const customer = await stripe.customers.retrieve(customerId);
+          if (customer.metadata?.userId) {
+            const userId = customer.metadata.userId;
+            await redis.srem(VIP_USERS_KEY, userId);
+            await redis.del(`VIP_SUBSCRIPTION:${userId}`);
+            await redis.del(`VIP_EXPIRES:${userId}`);
+          }
+        } catch (e) {
+          console.warn("Could not process subscription deletion:", e.message);
         }
       }
 
@@ -201,12 +248,88 @@ export default async function handler(req, res) {
         metadata: {
           userId,
         },
+        subscription_data: {
+          metadata: {
+            userId,
+          },
+        },
       });
 
       return res.json({
         ok: true,
         url: session.url,
       });
+    }
+
+    // =====================================================
+    // 2.5) CANCEL SUBSCRIPTION
+    // =====================================================
+    if (task === "cancel_subscription") {
+      // Nájdeme subscription ID pre používateľa
+      const subscriptionId = await redis.get(`VIP_SUBSCRIPTION:${userId}`);
+      
+      if (!subscriptionId) {
+        // Skús nájsť subscription cez Stripe API
+        try {
+          const subscriptions = await stripe.subscriptions.list({
+            limit: 100,
+          });
+          
+          // Nájdeme subscription s userId v metadata
+          const userSubscription = subscriptions.data.find(sub => 
+            sub.metadata?.userId === userId
+          );
+          
+          if (!userSubscription) {
+            return res.status(404).json({
+              ok: false,
+              error: "Subscription not found",
+            });
+          }
+          
+          // Zruš subscription
+          const canceled = await stripe.subscriptions.cancel(userSubscription.id);
+          
+          // Odstráň z Redis
+          await redis.srem(VIP_USERS_KEY, userId);
+          await redis.del(`VIP_SUBSCRIPTION:${userId}`);
+          await redis.del(`VIP_EXPIRES:${userId}`);
+          
+          return res.json({
+            ok: true,
+            message: "Subscription canceled successfully",
+            canceled_at: canceled.canceled_at,
+          });
+        } catch (err) {
+          console.error("Error canceling subscription:", err);
+          return res.status(500).json({
+            ok: false,
+            error: err.message,
+          });
+        }
+      }
+      
+      // Zruš subscription
+      try {
+        const canceled = await stripe.subscriptions.cancel(subscriptionId);
+        
+        // Odstráň z Redis
+        await redis.srem(VIP_USERS_KEY, userId);
+        await redis.del(`VIP_SUBSCRIPTION:${userId}`);
+        await redis.del(`VIP_EXPIRES:${userId}`);
+        
+        return res.json({
+          ok: true,
+          message: "Subscription canceled successfully",
+          canceled_at: canceled.canceled_at,
+        });
+      } catch (err) {
+        console.error("Error canceling subscription:", err);
+        return res.status(500).json({
+          ok: false,
+          error: err.message,
+        });
+      }
     }
 
     // =====================================================

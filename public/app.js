@@ -298,6 +298,12 @@ const I18N = {
     "premium.signupSuccess": "✅ Registrácia prebehla úspešne.",
     "premium.checkEmailConfirm": " Skontroluj email pre potvrdenie.",
     "premium.signupFailed": "Registrácia zlyhala.",
+    "premium.cancelSubscription": "Zrušiť predplatné",
+    "premium.cancelConfirm": "Naozaj chceš zrušiť svoje predplatné? Stratíš prístup k všetkým premium funkciám.",
+    "premium.cancelSuccess": "✅ Predplatné bolo úspešne zrušené.",
+    "premium.cancelError": "❌ Chyba pri zrušení predplatného.",
+    "premium.cancelButton": "Áno, zrušiť",
+    "premium.cancelCancel": "Nie, ponechať",
   },
   en: {
     "header.tagline": "National Hockey League 2025-2026",
@@ -6027,6 +6033,50 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
+  // ===============================
+  // PREMIUM – Cancel Subscription
+  // ===============================
+  document.getElementById("premium-cancel-subscription-btn")
+    ?.addEventListener("click", async () => {
+      const confirmed = confirm(t("premium.cancelConfirm"));
+      
+      if (!confirmed) return;
+      
+      const btn = document.getElementById("premium-cancel-subscription-btn");
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = t("common.loading") || "Načítavam...";
+      }
+      
+      try {
+        const res = await fetch("/api/vip?task=cancel_subscription", {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("sb-access-token")}`,
+          },
+        });
+        
+        const data = await res.json();
+        
+        if (data.ok) {
+          alert(t("premium.cancelSuccess"));
+          // Obnov stránku, aby sa zobrazil locked box
+          location.reload();
+        } else {
+          alert(t("premium.cancelError") + ": " + (data.error || "Unknown error"));
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = t("premium.cancelSubscription");
+          }
+        }
+      } catch (err) {
+        console.error("Cancel subscription error:", err);
+        alert(t("premium.cancelError") + ": " + err.message);
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = t("premium.cancelSubscription");
+        }
+      }
+    });
 
   // ===============================
   // PREMIUM – Pridať hráča (PRIAMY listener)

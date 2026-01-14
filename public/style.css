@@ -4634,6 +4634,31 @@ body {
 
 .premium-welcome {
   color: #bfeaff;
+}
+
+.premium-cancel-btn {
+  background: rgba(255, 68, 68, 0.15);
+  border: 1px solid rgba(255, 68, 68, 0.4);
+  color: #ff6b6b;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.premium-cancel-btn:hover {
+  background: rgba(255, 68, 68, 0.25);
+  border-color: rgba(255, 68, 68, 0.6);
+  color: #ff4444;
+  transform: translateY(-1px);
+}
+
+.premium-cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
   font-size: 0.95rem;
   text-align: center;
   /* Centrovanie textu */
@@ -5021,6 +5046,12 @@ body {
     margin-top: 20px;
     min-height: 50px;
     padding-top: 10px;
+  }
+
+  .premium-cancel-btn {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
   }
 
   .premium-welcome {
