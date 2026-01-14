@@ -25,6 +25,7 @@ const vipPlayersKey = (userId) => `VIP_MTG:${userId}`;
 const vipHistoryKey = (userId, player) =>
   `VIP_MTG_HISTORY:${userId}:${player}`;
 const vipTotalProfitKey = (userId) => `VIP_TOTAL_PROFIT:${userId}`;
+const vipTotalStakedKey = (userId) => `VIP_TOTAL_STAKED:${userId}`;
 
 // ===============================
 // Skratky timov
@@ -158,7 +159,7 @@ export default async function handler(req, res) {
             `VIP_EXPIRES:${userId}`,
             Date.now() + 31 * 24 * 60 * 60 * 1000
           );
-          
+
           // Ulož subscription ID ak je dostupné
           if (session.subscription) {
             await redis.set(`VIP_SUBSCRIPTION:${userId}`, session.subscription);
@@ -170,7 +171,7 @@ export default async function handler(req, res) {
       if (event.type === "customer.subscription.created" || event.type === "customer.subscription.updated") {
         const subscription = event.data.object;
         const customerId = subscription.customer;
-        
+
         // Nájdeme userId podľa customer ID (musíme uložiť customer ID pri checkout)
         // Alebo použijeme metadata z checkout session
         // Pre jednoduchosť použijeme customer email alebo metadata
@@ -194,7 +195,7 @@ export default async function handler(req, res) {
       if (event.type === "customer.subscription.deleted") {
         const subscription = event.data.object;
         const customerId = subscription.customer;
-        
+
         try {
           const customer = await stripe.customers.retrieve(customerId);
           if (customer.metadata?.userId) {
@@ -267,34 +268,34 @@ export default async function handler(req, res) {
     if (task === "cancel_subscription") {
       // Nájdeme subscription ID pre používateľa
       const subscriptionId = await redis.get(`VIP_SUBSCRIPTION:${userId}`);
-      
+
       if (!subscriptionId) {
         // Skús nájsť subscription cez Stripe API
         try {
           const subscriptions = await stripe.subscriptions.list({
             limit: 100,
           });
-          
+
           // Nájdeme subscription s userId v metadata
-          const userSubscription = subscriptions.data.find(sub => 
+          const userSubscription = subscriptions.data.find(sub =>
             sub.metadata?.userId === userId
           );
-          
+
           if (!userSubscription) {
             return res.status(404).json({
               ok: false,
               error: "Subscription not found",
             });
           }
-          
+
           // Zruš subscription
           const canceled = await stripe.subscriptions.cancel(userSubscription.id);
-          
+
           // Odstráň z Redis
           await redis.srem(VIP_USERS_KEY, userId);
           await redis.del(`VIP_SUBSCRIPTION:${userId}`);
           await redis.del(`VIP_EXPIRES:${userId}`);
-          
+
           return res.json({
             ok: true,
             message: "Subscription canceled successfully",
@@ -308,16 +309,16 @@ export default async function handler(req, res) {
           });
         }
       }
-      
+
       // Zruš subscription
       try {
         const canceled = await stripe.subscriptions.cancel(subscriptionId);
-        
+
         // Odstráň z Redis
         await redis.srem(VIP_USERS_KEY, userId);
         await redis.del(`VIP_SUBSCRIPTION:${userId}`);
         await redis.del(`VIP_EXPIRES:${userId}`);
-        
+
         return res.json({
           ok: true,
           message: "Subscription canceled successfully",
@@ -363,113 +364,142 @@ export default async function handler(req, res) {
       });
     }
 
-// =====================================================
-// 4) ADD_PLAYER  (VIP – vytvorí aj prázdnu HISTÓRIU)
-// =====================================================
-if (task === "add_player") {
-  const fullName = req.query.name || null;
-  const teamName = req.query.team || null;
-  const oddsRaw = req.query.odds || null;
+    // =====================================================
+    // 4) ADD_PLAYER  (VIP – vytvorí aj prázdnu HISTÓRIU)
+    // =====================================================
+    if (task === "add_player") {
+      const fullName = req.query.name || null;
+      const teamName = req.query.team || null;
+      const oddsRaw = req.query.odds || null;
 
-  if (!fullName || !teamName) {
-    return res.status(400).json({
-      ok: false,
-      error: "Missing name or team",
-    });
-  }
+      if (!fullName || !teamName) {
+        return res.status(400).json({
+          ok: false,
+          error: "Missing name or team",
+        });
+      }
 
-  const odds = Number(oddsRaw);
-  if (!odds || odds <= 1) {
-    return res.status(400).json({
-      ok: false,
-      error: "Invalid or missing odds",
-    });
-  }
+      const odds = Number(oddsRaw);
+      if (!odds || odds <= 1) {
+        return res.status(400).json({
+          ok: false,
+          error: "Invalid or missing odds",
+        });
+      }
 
-  const teamAbbrev = TEAM_NAME_TO_ABBREV[teamName];
-  if (!teamAbbrev) {
-    return res.status(400).json({
-      ok: false,
-      error: `Unknown team name: ${teamName}`,
-    });
-  }
+      const teamAbbrev = TEAM_NAME_TO_ABBREV[teamName];
+      if (!teamAbbrev) {
+        return res.status(400).json({
+          ok: false,
+          error: `Unknown team name: ${teamName}`,
+        });
+      }
 
-  const shortName = formatShortName(fullName);
-  const now = todayISO();
+      const shortName = formatShortName(fullName);
+      const now = todayISO();
 
-  const playersKey = vipPlayersKey(userId);
-  const historyKey = vipHistoryKey(userId, shortName);
+      const playersKey = vipPlayersKey(userId);
+      const historyKey = vipHistoryKey(userId, shortName);
 
-  // ✅ ULOŽÍME AJ ODDS
-  const playerState = {
-    stake: 1,
-    streak: 0,
-    balance: 0,
-    odds: odds,              // 🔥 TU BOL PROBLÉM
-    started: now,
-    lastUpdate: now,
-    teamAbbrev,
-  };
+      // ✅ ULOŽÍME AJ ODDS
+      const playerState = {
+        stake: 1,
+        streak: 0,
+        balance: 0,
+        odds: odds,              // 🔥 TU BOL PROBLÉM
+        started: now,
+        lastUpdate: now,
+        teamAbbrev,
+      };
 
-  await redis.hset(playersKey, {
-    [shortName]: JSON.stringify(playerState),
-  });
+      await redis.hset(playersKey, {
+        [shortName]: JSON.stringify(playerState),
+      });
 
-  return res.json({
-    ok: true,
-    player: shortName,
-    odds,
-  });
-}
+      return res.json({
+        ok: true,
+        player: shortName,
+        odds,
+      });
+    }
 
     // ------------------------------------------
-// 4) DELETE_PLAYER – vymazanie hráča
-// ------------------------------------------
-if (task === "delete_player") {
-  const player = req.query.player || null;
+    // 4) DELETE_PLAYER – vymazanie hráča
+    // ------------------------------------------
+    if (task === "delete_player") {
+      const player = req.query.player || null;
 
-  if (!player) {
-    return res.status(400).json({
-      ok: false,
-      error: "Missing player (use ?player=...)",
-    });
-  }
+      if (!player) {
+        return res.status(400).json({
+          ok: false,
+          error: "Missing player (use ?player=...)",
+        });
+      }
 
-  const key = vipPlayersKey(userId);
-  const totalProfitKey = vipTotalProfitKey(userId);
+      const key = vipPlayersKey(userId);
+      const totalProfitKey = vipTotalProfitKey(userId);
 
-  // Pred vymazaním: načítaj balance hráča a ulož ho do total profit
-  const playerRaw = await redis.hget(key, player);
-  if (playerRaw) {
-    try {
-      const playerObj = normalizePlayer(safeParse(playerRaw));
-      const playerBalance = playerObj.balance || 0;
+      // Pred vymazaním: načítaj balance hráča a ulož ho do total profit
+      const playerRaw = await redis.hget(key, player);
+      if (playerRaw) {
+        try {
+          const playerObj = normalizePlayer(safeParse(playerRaw));
+          const playerBalance = playerObj.balance || 0;
 
-      // Načítaj aktuálny total profit (profit z vymazaných hráčov)
-      const currentTotalProfitRaw = await redis.get(totalProfitKey);
-      const currentTotalProfit = currentTotalProfitRaw ? Number(currentTotalProfitRaw) : 0;
+          // Načítaj aktuálny total profit (profit z vymazaných hráčov)
+          const currentTotalProfitRaw = await redis.get(totalProfitKey);
+          const currentTotalProfit = currentTotalProfitRaw ? Number(currentTotalProfitRaw) : 0;
 
-      // Pridaj balance vymazaného hráča do total profit
-      const newTotalProfit = currentTotalProfit + playerBalance;
-      await redis.set(totalProfitKey, newTotalProfit.toString());
-    } catch (e) {
-      console.error("❌ Error saving player balance to total profit:", e.message);
-      // Pokračuj aj keď sa to nepodarí - hráč sa vymaže, ale total profit zostane nezmenený
+          // Pridaj balance vymazaného hráča do total profit
+          const newTotalProfit = currentTotalProfit + playerBalance;
+          await redis.set(totalProfitKey, newTotalProfit.toString());
+
+          // 4.1) ARCHIVÁCIA STAKED sumy (aby sedelo ROI)
+          // ----------------------------------------------------
+          const histKey = vipHistoryKey(userId, player);
+          const rawHist = await redis.get(histKey);
+          let playerTotalStaked = 0;
+
+          if (rawHist) {
+            let hist = [];
+            try {
+              hist = typeof rawHist === "string" ? JSON.parse(rawHist) : safeParse(rawHist);
+              if (Array.isArray(hist)) {
+                hist.forEach(h => {
+                  if (h.stake) playerTotalStaked += Number(h.stake);
+                });
+              }
+            } catch (e) {
+              console.warn("❌ Error parsing history for staked calc:", e);
+            }
+          }
+
+          if (playerTotalStaked > 0) {
+            const stakedKey = vipTotalStakedKey(userId);
+            const currentTotalStakedRaw = await redis.get(stakedKey);
+            const currentTotalStaked = currentTotalStakedRaw ? Number(currentTotalStakedRaw) : 0;
+            const newTotalStaked = currentTotalStaked + playerTotalStaked;
+            await redis.set(stakedKey, newTotalStaked.toString());
+          }
+          // ----------------------------------------------------
+        } catch (e) {
+          console.error("❌ Error saving player balance to total profit:", e.message);
+          // Pokračuj aj keď sa to nepodarí - hráč sa vymaže, ale total profit zostane nezmenený
+        }
+      }
+
+      // zmaž hráča z VIP zoznamu
+      await redis.hdel(key, player);
+
+      // voliteľne: zmaž aj históriu hráča
+      await redis.del(vipHistoryKey(userId, player));
+
+      return res.json({
+        ok: true,
+        userId,
+        deleted: player,
+      });
     }
-  }
-
-  // zmaž hráča z VIP zoznamu
-  await redis.hdel(key, player);
-
-  // voliteľne: zmaž aj históriu hráča
-  await redis.del(vipHistoryKey(userId, player));
-
-  return res.json({
-    ok: true,
-    userId,
-    deleted: player,
-  });
-}
 
     // =====================================================
     // 5) HISTORY
@@ -500,30 +530,30 @@ if (task === "delete_player") {
       });
     }
 
-   // =====================================================
+    // =====================================================
     // 6) DASHBOARD – Osobný dashboard s profit trackingom
     // =====================================================
     if (task === "dashboard") {
       // AS Stratégia dáta
       const playersKey = vipPlayersKey(userId);
       const playersRaw = (await redis.hgetall(playersKey)) || {};
-      
+
       const players = {};
       let currentPlayersProfit = 0;
-      
+
       for (const [name, raw] of Object.entries(playersRaw)) {
         const obj = normalizePlayer(safeParse(raw));
         players[name] = obj;
         currentPlayersProfit += obj.balance;
       }
-      
+
       // Načítaj uložený profit z vymazaných hráčov
       const archivedProfitRaw = await redis.get(vipTotalProfitKey(userId));
       const archivedProfit = archivedProfitRaw ? Number(archivedProfitRaw) : 0;
-      
+
       // Celkový profit = profit vymazaných hráčov + profit aktuálnych hráčov
       const totalProfit = archivedProfit + currentPlayersProfit;
-      
+
       // VIP tipy úspešnosť (z AI histórie - pre teraz základné dáta)
       // TODO: V budúcnosti pridať tracking VIP tipov úspešnosti
       const vipTipsStats = {
@@ -532,7 +562,7 @@ if (task === "delete_player") {
         misses: 0,
         successRate: 0
       };
-      
+
       // Dátum registrácie (z VIP_EXPIRES - odpočítame 31 dní)
       const expiresRaw = await redis.get(`VIP_EXPIRES:${userId}`);
       let memberSince = null;
@@ -546,14 +576,22 @@ if (task === "delete_player") {
           console.warn("Could not parse VIP_EXPIRES:", e.message);
         }
       }
-      
+
       // ROI výpočet - prejdeme všetkých hráčov a ich históriu
       let totalStaked = 0;
+
+      // 1) Pripočítaj archivované vklady (z vymazaných hráčov)
+      const archivedStakedRaw = await redis.get(vipTotalStakedKey(userId));
+      if (archivedStakedRaw) {
+        totalStaked += Number(archivedStakedRaw);
+      }
+
+      // 2) Pripočítaj vklady aktuálnych hráčov
       for (const [name, player] of Object.entries(players)) {
         const historyKey = vipHistoryKey(userId, name);
         const rawHist = await redis.get(historyKey);
         let hist = [];
-        
+
         if (rawHist) {
           try {
             hist = typeof rawHist === "string" ? JSON.parse(rawHist) : safeParse(rawHist);
@@ -562,7 +600,7 @@ if (task === "delete_player") {
             hist = [];
           }
         }
-        
+
         // Prejdeme históriu a spočítame všetky stake
         hist.forEach(h => {
           if (h.stake !== undefined && h.stake !== null) {
@@ -570,10 +608,10 @@ if (task === "delete_player") {
           }
         });
       }
-      
+
       // ROI = (celkový profit / celkový vklad) * 100
       const roi = totalStaked > 0 ? (totalProfit / totalStaked) * 100 : 0;
-      
+
       return res.json({
         ok: true,
         userId,
