@@ -1779,28 +1779,17 @@ let liveGamesUpdateInterval = null;
 
 // Spustí automatickú aktualizáciu live zápasov (každých 10 sekúnd)
 function startLiveGamesAutoUpdate() {
-  // Ak už interval beží, zastav ho najprv
-  if (liveGamesUpdateInterval) {
-    clearInterval(liveGamesUpdateInterval);
-  }
+  /*
+  // ⚠️ DISABLED TO SAVE VERCEL EDGE REQUESTS
+  // User requested to pause live games to save resources.
+  if (liveGamesUpdateInterval) return;
 
-  // Načítaj hneď
-  loadLiveGames();
-
-  // Potom aktualizuj každých 10 sekúnd
+  console.log("⏱️ Spúšťam auto-update live zápasov (10s)...");
   liveGamesUpdateInterval = setInterval(() => {
-    // Skontroluj, či je sekcia stále otvorená
-    const matchesSection = document.getElementById("matches-section");
-    if (matchesSection && matchesSection.style.display !== "none") {
-      loadLiveGames();
-    } else {
-      // Sekcia nie je otvorená, zastav aktualizáciu
-      stopLiveGamesAutoUpdate();
-    }
-  }, 10000); // 10 sekúnd
-  loadLiveGames();
-}, 10000);
+    loadLiveGames();
+  }, 10000);
   */
+  console.log("⚠️ Live Games Auto-Update is DISABLED to save Edge Requests.");
 }
 
 // Zastaví automatickú aktualizáciu live zápasov
