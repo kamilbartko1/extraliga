@@ -309,6 +309,17 @@ const I18N = {
     "premium.cancelError": "❌ Chyba pri zrušení predplatného.",
     "premium.cancelButton": "Áno, zrušiť",
     "premium.cancelCancel": "Nie, ponechať",
+    "premium.dashboardTitle": "📊 Môj Dashboard",
+    "premium.dashboardSubtitle": "Prehľad tvojho výkonu a profit tracking",
+    "premium.dashboard.totalProfit": "Celkový profit",
+    "premium.dashboard.roi": "ROI",
+    "premium.dashboard.activePlayers": "Aktívni hráči",
+    "premium.dashboard.totalStaked": "Celkový vklad",
+    "premium.dashboard.memberSince": "Člen od",
+    "premium.dashboard.vipTips": "VIP Tipy",
+    "premium.dashboard.noTips": "Zatiaľ žiadne tipy",
+    "premium.dashboard.today": "Dnes",
+    "premium.dashboard.daysAgo": "Pred {days} dňami",
   },
   en: {
     "header.tagline": "National Hockey League 2025-2026",
@@ -590,6 +601,23 @@ const I18N = {
     "premium.signupSuccess": "✅ Registration successful.",
     "premium.checkEmailConfirm": " Check your email to confirm.",
     "premium.signupFailed": "Registration failed.",
+    "premium.cancelSubscription": "Cancel subscription",
+    "premium.cancelConfirm": "Are you sure you want to cancel your subscription? You will lose access to all premium features.",
+    "premium.cancelSuccess": "✅ Subscription cancelled successfully.",
+    "premium.cancelError": "❌ Error cancelling subscription.",
+    "premium.cancelButton": "Yes, cancel",
+    "premium.cancelCancel": "No, keep",
+    "premium.dashboardTitle": "📊 My Dashboard",
+    "premium.dashboardSubtitle": "Overview of your performance and profit tracking",
+    "premium.dashboard.totalProfit": "Total Profit",
+    "premium.dashboard.roi": "ROI",
+    "premium.dashboard.activePlayers": "Active Players",
+    "premium.dashboard.totalStaked": "Total Staked",
+    "premium.dashboard.memberSince": "Member Since",
+    "premium.dashboard.vipTips": "VIP Tips",
+    "premium.dashboard.noTips": "No tips yet",
+    "premium.dashboard.today": "Today",
+    "premium.dashboard.daysAgo": "{days} days ago",
   }
 };
 
@@ -4004,6 +4032,9 @@ async function checkPremiumStatus() {
       // VIP tips (today)
       await renderVipTips();
 
+      // Dashboard
+      await loadPremiumDashboard();
+
       return;
     }
 
@@ -4447,6 +4478,131 @@ async function deletePremiumPlayer(encodedName) {
   });
 
   await loadPremiumPlayers();
+}
+
+// ===============================
+// PREMIUM – Načítanie Dashboard dát
+// ===============================
+async function loadPremiumDashboard() {
+  const dashboardContent = document.getElementById("dashboard-content");
+  const token = localStorage.getItem("sb-access-token");
+
+  if (!dashboardContent || !token) return;
+
+  // Zobraz loading
+  dashboardContent.innerHTML = `<p class="nhl-muted">${t("common.loading")}</p>`;
+
+  try {
+    const res = await fetch("/api/vip?task=dashboard", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await res.json();
+    
+    if (!data.ok) {
+      dashboardContent.innerHTML = `<p class="nhl-muted" style="color:#ff6b6b;">${data.error || t("common.failedToLoad")}</p>`;
+      return;
+    }
+
+    const dash = data.dashboard || {};
+    const as = dash.asStrategy || {};
+    const tips = dash.vipTips || {};
+
+    // Formátovanie dát
+    const totalProfit = Number(as.totalProfit || 0);
+    const roi = Number(as.roi || 0);
+    const activePlayers = Number(as.activePlayers || 0);
+    const totalStaked = Number(as.totalStaked || 0);
+    const memberSince = dash.memberSince || null;
+
+    // Vypočítaj dĺžku členstva
+    let memberSinceText = "-";
+    if (memberSince) {
+      try {
+        const since = new Date(memberSince);
+        const now = new Date();
+        const diffTime = Math.abs(now - since);
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        memberSinceText = diffDays === 0 
+          ? t("premium.dashboard.today")
+          : t("premium.dashboard.daysAgo", { days: diffDays });
+      } catch (e) {
+        console.warn("Error calculating member since:", e);
+      }
+    }
+
+    // Render dashboard
+    dashboardContent.innerHTML = `
+      <div class="dashboard-grid">
+        <!-- Celkový Profit -->
+        <div class="dashboard-card dashboard-card-profit">
+          <div class="dashboard-card-icon">💰</div>
+          <div class="dashboard-card-content">
+            <div class="dashboard-card-label">${t("premium.dashboard.totalProfit")}</div>
+            <div class="dashboard-card-value ${totalProfit >= 0 ? "positive" : "negative"}">
+              ${totalProfit >= 0 ? "+" : ""}${totalProfit.toFixed(2)} €
+            </div>
+          </div>
+        </div>
+
+        <!-- ROI -->
+        <div class="dashboard-card dashboard-card-roi">
+          <div class="dashboard-card-icon">📈</div>
+          <div class="dashboard-card-content">
+            <div class="dashboard-card-label">${t("premium.dashboard.roi")}</div>
+            <div class="dashboard-card-value ${roi >= 0 ? "positive" : "negative"}">
+              ${roi >= 0 ? "+" : ""}${roi.toFixed(2)}%
+            </div>
+          </div>
+        </div>
+
+        <!-- Aktívni hráči -->
+        <div class="dashboard-card dashboard-card-players">
+          <div class="dashboard-card-icon">👥</div>
+          <div class="dashboard-card-content">
+            <div class="dashboard-card-label">${t("premium.dashboard.activePlayers")}</div>
+            <div class="dashboard-card-value">${activePlayers}</div>
+          </div>
+        </div>
+
+        <!-- Celkový vklad -->
+        <div class="dashboard-card dashboard-card-staked">
+          <div class="dashboard-card-icon">💵</div>
+          <div class="dashboard-card-content">
+            <div class="dashboard-card-label">${t("premium.dashboard.totalStaked")}</div>
+            <div class="dashboard-card-value">${totalStaked.toFixed(2)} €</div>
+          </div>
+        </div>
+
+        <!-- Dĺžka členstva -->
+        <div class="dashboard-card dashboard-card-member">
+          <div class="dashboard-card-icon">👑</div>
+          <div class="dashboard-card-content">
+            <div class="dashboard-card-label">${t("premium.dashboard.memberSince")}</div>
+            <div class="dashboard-card-value">${memberSinceText}</div>
+          </div>
+        </div>
+
+        <!-- VIP Tipy úspešnosť (zatiaľ placeholder) -->
+        <div class="dashboard-card dashboard-card-tips">
+          <div class="dashboard-card-icon">🎯</div>
+          <div class="dashboard-card-content">
+            <div class="dashboard-card-label">${t("premium.dashboard.vipTips")}</div>
+            <div class="dashboard-card-value">
+              ${tips.total > 0 
+                ? `${tips.hits}/${tips.total} (${tips.successRate.toFixed(1)}%)`
+                : t("premium.dashboard.noTips")
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+  } catch (err) {
+    console.error("❌ Dashboard load error:", err);
+    dashboardContent.innerHTML = `<p class="nhl-muted" style="color:#ff6b6b;">${t("common.failedToLoad")}: ${err.message}</p>`;
+  }
 }
 
 // ===============================
