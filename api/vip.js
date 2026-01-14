@@ -672,6 +672,27 @@ export default async function handler(req, res) {
     // 7) LEADERBOARD & COMPARISON
     // =====================================================
     if (task === "leaderboard") {
+      // ⚠️ EMERGENCY OPTIMIZATION: 
+      // On-the-fly calculation is too heavy for Vercel Free Tier (CPU Limit Exceeded).
+      // We must disable the loop until we implement Redis Caching (Cron job).
+
+      const vipUsersCount = await redis.scard(VIP_USERS_KEY); // Just get count (cheap)
+      const myStats = await calculateUserStats(userId); // Get only MY stats (cheap)
+
+      return res.json({
+        ok: true,
+        leaderboard: [], // Empty for now to save CPU
+        userStats: {
+          rank: 0, // Placeholder
+          profit: myStats.totalProfit,
+          averageProfit: 0,
+          diffPercent: 0,
+          totalVips: vipUsersCount
+        },
+        message: "Leaderboard is updating (Optimization in progress)"
+      });
+
+      /* HEAVY LOGIC DISABLED
       // 1. Get all VIP users
       const vipUsers = await redis.smembers(VIP_USERS_KEY);
 
@@ -729,6 +750,7 @@ export default async function handler(req, res) {
           totalVips: vipUsers.length
         }
       });
+      */
     }
 
     // =====================================================
