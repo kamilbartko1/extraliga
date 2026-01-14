@@ -7903,6 +7903,18 @@ body {
   cursor: pointer;
   font-size: 0.85rem;
   white-space: nowrap;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: #00ffff;
+  text-decoration: underline;
+}
+
+.footer-email {
+  display: inline-flex;
+  align-items: center;
 }
 
 .footer-link:hover {

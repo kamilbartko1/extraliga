@@ -51,6 +51,7 @@ const I18N = {
     "common.detail": "Detail",
     "common.delete": "Vymazať",
 
+    "footer.contact": "✉️ Napíšte nám",
     "footer.disclaimer": "⚖️ Právny disclaimer",
     "footer.privacy": "🔒 Ochrana osobných údajov",
     "footer.terms": "📋 Podmienky používania",
