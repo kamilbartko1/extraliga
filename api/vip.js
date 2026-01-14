@@ -113,6 +113,34 @@ function todayISO() {
   return `${yyyy}-${mm}-${dd}`;
 }
 
+// ===============================
+// New Helper for Leaderboard
+// ===============================
+async function calculateUserStats(userId) {
+  // 1. Load active players
+  const playersKey = vipPlayersKey(userId);
+  const playersRaw = (await redis.hgetall(playersKey)) || {};
+
+  let currentPlayersProfit = 0;
+  for (const raw of Object.values(playersRaw)) {
+    const obj = normalizePlayer(safeParse(raw));
+    currentPlayersProfit += obj.balance;
+  }
+
+  // 2. Load archived profit
+  const archivedProfitRaw = await redis.get(vipTotalProfitKey(userId));
+  const archivedProfit = archivedProfitRaw ? Number(archivedProfitRaw) : 0;
+
+  // 3. Total Profit
+  const totalProfit = archivedProfit + currentPlayersProfit;
+
+  return {
+    userId,
+    totalProfit: Number(totalProfit.toFixed(2)),
+    activePlayersCount: Object.keys(playersRaw).length
+  };
+} The helper `safeParse` and `normalizePlayer` must be available in scope.
+
 // Stripe potrebuje RAW body
 function getRawBody(req) {
   return new Promise((resolve, reject) => {
@@ -636,6 +664,69 @@ export default async function handler(req, res) {
           summary: {
             totalValue: Number(totalProfit.toFixed(2))
           }
+        }
+      });
+    }
+
+    // =====================================================
+    // 7) LEADERBOARD & COMPARISON
+    // =====================================================
+    if (task === "leaderboard") {
+      // 1. Get all VIP users
+      const vipUsers = await redis.smembers(VIP_USERS_KEY);
+
+      let allStats = [];
+      let totalVipProfit = 0;
+
+      // 2. Calculate stats for each user (Parallel for speed)
+      // Note: In production with thousands of users, this should be cached/cron-jobbed.
+      // For MVP it is fine.
+      const statsPromises = vipUsers.map(uid => calculateUserStats(uid));
+      const results = await Promise.all(statsPromises);
+
+      results.forEach(stat => {
+        allStats.push(stat);
+        totalVipProfit += stat.totalProfit;
+      });
+
+      // 3. Sort by Profit Descending
+      allStats.sort((a, b) => b.totalProfit - a.totalProfit);
+
+      // 4. Calculate Average
+      const averageProfit = vipUsers.length > 0 ? (totalVipProfit / vipUsers.length) : 0;
+
+      // 5. Find Current User Rank and Stats
+      const myIndex = allStats.findIndex(s => s.userId === userId);
+      const myStats = allStats[myIndex] || { totalProfit: 0, activePlayersCount: 0 };
+      const myRank = myIndex + 1;
+
+      // 6. Get Top 10
+      const topList = allStats.slice(0, 10).map((s, index) => ({
+        rank: index + 1,
+        profit: s.totalProfit,
+        isCurrentUser: s.userId === userId,
+        // Anonymous name based on rank or "You"
+        name: s.userId === userId ? "TY (You)" : `Member #${s.userId.substring(0, 4)}...`
+      }));
+
+      // 7. Calculate Diff from Average (Percentage)
+      // Avoid division by zero. If average is 0, split cases.
+      let diffPercent = 0;
+      if (averageProfit === 0) {
+        diffPercent = myStats.totalProfit > 0 ? 100 : 0;
+      } else {
+        diffPercent = ((myStats.totalProfit - averageProfit) / Math.abs(averageProfit)) * 100;
+      }
+
+      return res.json({
+        ok: true,
+        leaderboard: topList,
+        userStats: {
+          rank: myRank,
+          profit: myStats.totalProfit,
+          averageProfit: Number(averageProfit.toFixed(2)),
+          diffPercent: Number(diffPercent.toFixed(1)),
+          totalVips: vipUsers.length
         }
       });
     }

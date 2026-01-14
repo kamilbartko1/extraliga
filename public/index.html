@@ -701,6 +701,63 @@
           </button>
         </div>
 
+        <!-- LEADERBOARD SECTION -->
+        <div id="premium-leaderboard" class="premium-leaderboard-section" style="display: none;">
+
+          <div class="leaderboard-grid">
+            <!-- Left: Top Table -->
+            <div class="leaderboard-card">
+              <h3 class="leaderboard-title">🏆 Top VIP Traders</h3>
+              <div class="leaderboard-table-wrapper">
+                <table class="leaderboard-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Member</th>
+                      <th class="text-right">Profit</th>
+                    </tr>
+                  </thead>
+                  <tbody id="leaderboard-list">
+                    <!-- JS injected -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Right: Comparison -->
+            <div class="leaderboard-card comparison-card">
+              <h3 class="leaderboard-title">📊 Tvoja Pozícia</h3>
+
+              <div class="comparison-content">
+                <div class="comparison-stat">
+                  <span class="comparison-label">Tvoj Rank</span>
+                  <span class="comparison-value highlight-rank" id="user-rank">-</span>
+                </div>
+
+                <div class="comparison-stat">
+                  <span class="comparison-label">Priemer VIP</span>
+                  <span class="comparison-value" id="vip-average">- €</span>
+                </div>
+
+                <div class="comparison-result" id="comparison-result">
+                  <!-- "Si o 20% lepsi ako priemer" -->
+                </div>
+
+                <div class="comparison-chart">
+                  <div class="bar-avg">
+                    <span class="bar-label">Avg</span>
+                  </div>
+                  <div class="bar-user" id="bar-user-fill">
+                    <span class="bar-label">Ty</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+
         <!-- ===== CANCEL SUBSCRIPTION (BOTTOM) ===== -->
         <div class="premium-cancel-wrapper">
           <button id="premium-cancel-subscription-btn" class="premium-cancel-btn"

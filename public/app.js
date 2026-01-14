@@ -4586,6 +4586,97 @@ async function loadPremiumDashboard() {
 }
 
 // ===============================
+// LEADERBOARD
+// ===============================
+async function loadLeaderboard() {
+  const leaderboardSection = document.getElementById("premium-leaderboard");
+  const leaderboardList = document.getElementById("leaderboard-list");
+  const userRankEl = document.getElementById("user-rank");
+  const vipAverageEl = document.getElementById("vip-average");
+  const comparisonResultEl = document.getElementById("comparison-result");
+
+  if (!leaderboardSection || !leaderboardList) return;
+
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const res = await fetch("/api/vip?task=leaderboard", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error);
+
+    // Show section
+    leaderboardSection.style.display = "block";
+
+    // Render Table
+    let tableHtml = "";
+    data.leaderboard.forEach(item => {
+      const rankClass = item.rank <= 3 ? `rank-${item.rank}` : "";
+      const rowClass = item.isCurrentUser ? "current-user-row" : "";
+      const profitClass = item.profit >= 0 ? "profit-positive" : "profit-negative";
+
+      tableHtml += `
+        <tr class="${rowClass} ${rankClass}">
+          <td class="rank-cell">#${item.rank}</td>
+          <td>${item.name}</td>
+          <td class="text-right ${profitClass}">${item.profit >= 0 ? "+" : ""}${item.profit.toFixed(2)} €</td>
+        </tr>
+      `;
+    });
+    leaderboardList.innerHTML = tableHtml;
+
+    // Render Comparison
+    const userStats = data.userStats;
+    userRankEl.textContent = `#${userStats.rank}`;
+    // Farba pre avg
+    const avgClass = userStats.averageProfit >= 0 ? "profit-positive" : "profit-negative";
+    vipAverageEl.innerHTML = `<span class="${avgClass}">${userStats.averageProfit >= 0 ? "+" : ""}${userStats.averageProfit.toFixed(2)} €</span>`;
+
+    // Diff Description
+    const diff = userStats.diffPercent;
+    const absDiff = Math.abs(diff);
+    let diffText = "";
+    let diffClass = "";
+
+    if (diff > 0) {
+      diffText = `Tvoj výkon je o <strong>${absDiff.toFixed(1)}% lepší</strong> ako priemer VIP komunity. 🚀`;
+      diffClass = "better-than-avg";
+    } else if (diff < 0) {
+      diffText = `Tvoj výkon je o <strong>${absDiff.toFixed(1)}% nižší</strong> ako priemer VIP komunity.`;
+      diffClass = "worse-than-avg";
+    } else {
+      diffText = `Tvoj výkon je presne na úrovni priemeru VIP komunity.`;
+      diffClass = "";
+    }
+
+    comparisonResultEl.innerHTML = diffText;
+    comparisonResultEl.className = `comparison-result ${diffClass}`;
+
+    // Bar Chart Animation
+    // Simple visual: if user > avg, bar fills more.
+    // Normalized scale? 
+    // Just simple logic: Width relative to 100%
+    const barUserFill = document.getElementById("bar-user-fill");
+    if (barUserFill) {
+      // logic for bar width based on diff? 
+      // For MVP just standard style
+      barUserFill.style.width = diff > 0 ? "80%" : "40%";
+      if (diff > 0) barUserFill.style.background = "#00ff88";
+      else barUserFill.style.background = "#ff4d4d";
+    }
+
+
+  } catch (err) {
+    console.warn("Leaderboard failed to load:", err);
+    leaderboardSection.style.display = "none";
+  }
+}
+
+
+// ===============================
 // PREMIUM – Načítanie tímov + hráčov z JSON (s odds)
 // ===============================
 async function loadPremiumTeams() {
