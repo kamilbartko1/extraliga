@@ -1318,7 +1318,7 @@ async function displayHome() {
                 </span>
               </div>
             `).join("")
-        }
+      }
       </div>
     </div>
   </div>
@@ -1333,11 +1333,11 @@ async function displayHome() {
       ${homeData.matchesToday.length === 0
         ? `<p class="home-empty">${t("home.noGamesToday")}</p>`
         : homeData.matchesToday.map(m => {
-            const homeOdd = m.home3Way ? Number(m.home3Way).toFixed(2) : null;
-            const drawOdd = m.draw3Way ? Number(m.draw3Way).toFixed(2) : null;
-            const awayOdd = m.away3Way ? Number(m.away3Way).toFixed(2) : null;
-            
-            return `
+          const homeOdd = m.home3Way ? Number(m.home3Way).toFixed(2) : null;
+          const drawOdd = m.draw3Way ? Number(m.draw3Way).toFixed(2) : null;
+          const awayOdd = m.away3Way ? Number(m.away3Way).toFixed(2) : null;
+
+          return `
               <div class="home-game-item" onclick="showSection('matches-section')">
                 <div class="home-game-main">
                   <div class="home-game-teams">
@@ -1362,7 +1362,7 @@ async function displayHome() {
                 ` : ""}
               </div>
             `;
-          }).join("")
+        }).join("")
       }
     </div>
   </div>
@@ -4498,7 +4498,7 @@ async function loadPremiumDashboard() {
     });
 
     const data = await res.json();
-    
+
     if (!data.ok) {
       dashboardContent.innerHTML = `<p class="nhl-muted" style="color:#ff6b6b;">${data.error || t("common.failedToLoad")}</p>`;
       return;
@@ -4523,7 +4523,7 @@ async function loadPremiumDashboard() {
         const now = new Date();
         const diffTime = Math.abs(now - since);
         const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        memberSinceText = diffDays === 0 
+        memberSinceText = diffDays === 0
           ? t("premium.dashboard.today")
           : t("premium.dashboard.daysAgo", { days: diffDays });
       } catch (e) {
@@ -4536,7 +4536,6 @@ async function loadPremiumDashboard() {
       <div class="dashboard-grid">
         <!-- Celkový Profit -->
         <div class="dashboard-card dashboard-card-profit">
-          <div class="dashboard-card-icon">💰</div>
           <div class="dashboard-card-content">
             <div class="dashboard-card-label">${t("premium.dashboard.totalProfit")}</div>
             <div class="dashboard-card-value ${totalProfit >= 0 ? "positive" : "negative"}">
@@ -4547,7 +4546,6 @@ async function loadPremiumDashboard() {
 
         <!-- ROI -->
         <div class="dashboard-card dashboard-card-roi">
-          <div class="dashboard-card-icon">📈</div>
           <div class="dashboard-card-content">
             <div class="dashboard-card-label">${t("premium.dashboard.roi")}</div>
             <div class="dashboard-card-value ${roi >= 0 ? "positive" : "negative"}">
@@ -4558,7 +4556,6 @@ async function loadPremiumDashboard() {
 
         <!-- Aktívni hráči -->
         <div class="dashboard-card dashboard-card-players">
-          <div class="dashboard-card-icon">👥</div>
           <div class="dashboard-card-content">
             <div class="dashboard-card-label">${t("premium.dashboard.activePlayers")}</div>
             <div class="dashboard-card-value">${activePlayers}</div>
@@ -4567,7 +4564,6 @@ async function loadPremiumDashboard() {
 
         <!-- Celkový vklad -->
         <div class="dashboard-card dashboard-card-staked">
-          <div class="dashboard-card-icon">💵</div>
           <div class="dashboard-card-content">
             <div class="dashboard-card-label">${t("premium.dashboard.totalStaked")}</div>
             <div class="dashboard-card-value">${totalStaked.toFixed(2)} €</div>
@@ -4576,7 +4572,6 @@ async function loadPremiumDashboard() {
 
         <!-- Dĺžka členstva -->
         <div class="dashboard-card dashboard-card-member">
-          <div class="dashboard-card-icon">👑</div>
           <div class="dashboard-card-content">
             <div class="dashboard-card-label">${t("premium.dashboard.memberSince")}</div>
             <div class="dashboard-card-value">${memberSinceText}</div>
@@ -4585,14 +4580,13 @@ async function loadPremiumDashboard() {
 
         <!-- VIP Tipy úspešnosť (zatiaľ placeholder) -->
         <div class="dashboard-card dashboard-card-tips">
-          <div class="dashboard-card-icon">🎯</div>
           <div class="dashboard-card-content">
             <div class="dashboard-card-label">${t("premium.dashboard.vipTips")}</div>
             <div class="dashboard-card-value">
-              ${tips.total > 0 
-                ? `${tips.hits}/${tips.total} (${tips.successRate.toFixed(1)}%)`
-                : t("premium.dashboard.noTips")
-              }
+              ${tips.total > 0
+        ? `${tips.hits}/${tips.total} (${tips.successRate.toFixed(1)}%)`
+        : t("premium.dashboard.noTips")
+      }
             </div>
           </div>
         </div>
@@ -5888,14 +5882,14 @@ async function displayShootingLeaders() {
     box.onclick = async () => {
       const type = box.dataset.type;
       detail.innerHTML = `<p style="text-align:center;color:#00eaff;">${t("common.loading")}</p>`;
-      
+
       // Scroll na detail (zoznam hráčov) s offsetom, aby bol zoznam vyššie v okne
       setTimeout(() => {
         if (detail) {
           const offset = 150; // Offset v pixeloch - posunie sa nižšie, aby bol zoznam vyššie
           const elementPosition = detail.getBoundingClientRect().top;
           const offsetPosition = elementPosition + window.pageYOffset - offset;
-          
+
           window.scrollTo({
             top: offsetPosition,
             behavior: "smooth"
@@ -6205,24 +6199,24 @@ window.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("premium-cancel-subscription-btn")
     ?.addEventListener("click", async () => {
       const confirmed = confirm(t("premium.cancelConfirm"));
-      
+
       if (!confirmed) return;
-      
+
       const btn = document.getElementById("premium-cancel-subscription-btn");
       if (btn) {
         btn.disabled = true;
         btn.textContent = t("common.loading") || "Načítavam...";
       }
-      
+
       try {
         const res = await fetch("/api/vip?task=cancel_subscription", {
           headers: {
             "Authorization": `Bearer ${localStorage.getItem("sb-access-token")}`,
           },
         });
-        
+
         const data = await res.json();
-        
+
         if (data.ok) {
           alert(t("premium.cancelSuccess"));
           // Obnov stránku, aby sa zobrazil locked box

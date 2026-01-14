@@ -10173,10 +10173,17 @@ body {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
-  padding: 20px;
+  padding: 24px 20px;
+  /* More vertical padding */
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 15px;
+  /* Center horizontally */
+  justify-content: center;
+  /* Center vertically */
+  text-align: center;
+  /* Center text */
+  gap: 10px;
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s;
   position: relative;
   overflow: hidden;
@@ -10204,21 +10211,14 @@ body {
   /* Gold accent */
 }
 
-.dashboard-card-icon {
-  font-size: 2rem;
-  background: rgba(0, 0, 0, 0.3);
-  width: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
+
+/* Icons removed per user request */
 
 .dashboard-card-content {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .dashboard-card-label {
@@ -10266,11 +10266,9 @@ body {
     padding: 15px;
   }
 
-  .dashboard-card-icon {
-    width: 40px;
-    height: 40px;
-    font-size: 1.5rem;
-  }
+  /* width: 40px; removed */
+  /* height: 40px; removed */
+  /* font-size: 1.5rem; removed */
 
   .dashboard-card-value {
     font-size: 1.25rem;
