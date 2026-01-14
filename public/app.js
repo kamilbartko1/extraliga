@@ -4601,8 +4601,8 @@ async function loadLeaderboard() {
     const data = await res.json();
     if (!data.ok) throw new Error(data.error);
 
-    // Show section
-    leaderboardSection.style.display = "block";
+    // Data loaded successfully but don't show section yet
+    // User will click "View Leaderboard" button to reveal it
 
     // Render Table
     let tableHtml = "";
@@ -4666,12 +4666,42 @@ async function loadLeaderboard() {
     console.warn("Leaderboard failed to load:", err);
     // DEBUG: Zobraz chybu v UI
     if (leaderboardSection) {
-      leaderboardSection.style.display = "block";
       leaderboardList.innerHTML = `<tr><td colspan="3" class="text-center nhl-muted" style="color:#ff6b6b;">${err.message}</td></tr>`;
     }
   }
 }
 
+// ===============================
+// LEADERBOARD TOGGLE FUNCTIONS
+// ===============================
+function showLeaderboard() {
+  const leaderboardSection = document.getElementById("premium-leaderboard");
+  if (!leaderboardSection) return;
+
+  // Show the section
+  leaderboardSection.style.display = "block";
+
+  // Scroll to it smoothly
+  leaderboardSection.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function hideLeaderboard() {
+  const leaderboardSection = document.getElementById("premium-leaderboard");
+  const dashboardSection = document.getElementById("premium-dashboard");
+
+  if (leaderboardSection) {
+    leaderboardSection.style.display = "none";
+  }
+
+  // Scroll back to dashboard
+  if (dashboardSection) {
+    dashboardSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+// Expose globally for onclick handlers
+window.showLeaderboard = showLeaderboard;
+window.hideLeaderboard = hideLeaderboard;
 
 // ===============================
 // PREMIUM – Načítanie tímov + hráčov z JSON (s odds)

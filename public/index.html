@@ -503,6 +503,13 @@
           <div id="dashboard-content" class="dashboard-content">
             <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
           </div>
+
+          <!-- View Leaderboard Button -->
+          <div class="dashboard-leaderboard-cta">
+            <button id="view-leaderboard-btn" class="view-leaderboard-btn" onclick="showLeaderboard()">
+              🏆 <span data-i18n="premium.viewLeaderboard">Zobraziť Leaderboard</span>
+            </button>
+          </div>
         </section>
 
         <!-- ===============================
@@ -754,6 +761,13 @@
 
               </div>
             </div>
+          </div>
+
+          <!-- Back Button -->
+          <div class="leaderboard-back-wrapper">
+            <button id="leaderboard-back-btn" class="leaderboard-back-btn" onclick="hideLeaderboard()">
+              ← <span data-i18n="common.back">Späť</span>
+            </button>
           </div>
 
         </div>
