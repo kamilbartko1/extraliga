@@ -466,7 +466,16 @@ export default async function handler(req, res) {
               hist = typeof rawHist === "string" ? JSON.parse(rawHist) : safeParse(rawHist);
               if (Array.isArray(hist)) {
                 hist.forEach(h => {
-                  if (h.stake) playerTotalStaked += Number(h.stake);
+                  // ROBUSTNÝ VÝPOČET (rovnaký ako v dashboarde)
+                  if (h.result === 'miss' && h.profitChange) {
+                    playerTotalStaked += Math.abs(Number(h.profitChange));
+                  } else if (h.result === 'hit') {
+                    if (h.stake) {
+                      playerTotalStaked += Number(h.stake);
+                    } else if (h.profitChange && h.odds) {
+                      playerTotalStaked += Number(h.profitChange) / (Number(h.odds) - 1);
+                    }
+                  }
                 });
               }
             } catch (e) {
