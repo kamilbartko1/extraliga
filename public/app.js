@@ -4671,7 +4671,11 @@ async function loadLeaderboard() {
 
   } catch (err) {
     console.warn("Leaderboard failed to load:", err);
-    leaderboardSection.style.display = "none";
+    // DEBUG: Zobraz chybu v UI
+    if (leaderboardSection) {
+      leaderboardSection.style.display = "block";
+      leaderboardList.innerHTML = `<tr><td colspan="3" class="text-center nhl-muted" style="color:#ff6b6b;">${err.message}</td></tr>`;
+    }
   }
 }
 
