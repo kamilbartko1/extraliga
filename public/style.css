@@ -1288,6 +1288,14 @@ nav button:hover::after {
   border-bottom: 1px solid rgba(0, 234, 255, 0.1);
 }
 
+.leaderboard-back-wrapper {
+  margin-top: 35px;
+  margin-bottom: 20px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
 .odds-table th {
   color: #00eaff;
   text-transform: uppercase;
@@ -2222,8 +2230,8 @@ nav button:hover::after {
 @media (max-width: 768px) {
   #matches table {
     width: 100%;
-    table-layout: fixed;
     border-collapse: collapse;
+    table-layout: fixed;
   }
 
   #matches thead th {
@@ -4821,6 +4829,14 @@ body {
 /* ===============================
    MESSAGES
    =============================== */
+
+.dashboard-leaderboard-cta {
+  margin-top: 35px;
+  margin-bottom: 10px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
 
 .premium-msg {
   margin-top: 12px;
