@@ -4544,15 +4544,7 @@ async function loadPremiumDashboard() {
           </div>
         </div>
 
-        <!-- ROI -->
-        <div class="dashboard-card dashboard-card-roi">
-          <div class="dashboard-card-content">
-            <div class="dashboard-card-label">${t("premium.dashboard.roi")}</div>
-            <div class="dashboard-card-value ${roi >= 0 ? "positive" : "negative"}">
-              ${roi >= 0 ? "+" : ""}${roi.toFixed(2)}%
-            </div>
-          </div>
-        </div>
+
 
         <!-- Aktívni hráči -->
         <div class="dashboard-card dashboard-card-players">
@@ -4562,13 +4554,7 @@ async function loadPremiumDashboard() {
           </div>
         </div>
 
-        <!-- Celkový vklad -->
-        <div class="dashboard-card dashboard-card-staked">
-          <div class="dashboard-card-content">
-            <div class="dashboard-card-label">${t("premium.dashboard.totalStaked")}</div>
-            <div class="dashboard-card-value">${totalStaked.toFixed(2)} €</div>
-          </div>
-        </div>
+
 
         <!-- Dĺžka členstva -->
         <div class="dashboard-card dashboard-card-member">
