@@ -1260,6 +1260,33 @@ async function displayHome() {
     let html = `
 <section class="home-modern">
 
+  <!-- ================= AI + HISTORIA ================= -->
+  <div class="home-ai-section">
+    <div class="home-ai-scorer">
+      <h3 class="home-subsection-title">${t("home.aiScorer")}</h3>
+      <div id="ai-today-loading" class="home-ai-content">
+        <p class="home-loading">${t("home.aiLoading")}</p>
+      </div>
+    </div>
+    <div class="home-ai-history">
+      <h3 class="home-subsection-title">${t("home.aiHistory")}</h3>
+      <div class="home-history-list">
+        ${history.length === 0
+        ? `<p class="home-empty">${t("home.noTips")}</p>`
+        : history.slice(0, 6).map(h => `
+              <div class="home-history-item">
+                <span class="home-history-date">${h.date}</span>
+                <span class="home-history-player">${h.player}</span>
+                <span class="home-history-result ${h.result === "hit" ? "hit" : "miss"}">
+                  ${h.result === "hit" ? "✔" : "✘"}
+                </span>
+              </div>
+            `).join("")
+        }
+      </div>
+    </div>
+  </div>
+
   <!-- ================= DNESNE ZAPASY ================= -->
   <div class="home-section">
     <div class="home-section-header">
@@ -1301,33 +1328,6 @@ async function displayHome() {
             `;
           }).join("")
       }
-    </div>
-  </div>
-
-  <!-- ================= AI + HISTORIA ================= -->
-  <div class="home-ai-section">
-    <div class="home-ai-scorer">
-      <h3 class="home-subsection-title">${t("home.aiScorer")}</h3>
-      <div id="ai-today-loading" class="home-ai-content">
-        <p class="home-loading">${t("home.aiLoading")}</p>
-      </div>
-    </div>
-    <div class="home-ai-history">
-      <h3 class="home-subsection-title">${t("home.aiHistory")}</h3>
-      <div class="home-history-list">
-        ${history.length === 0
-        ? `<p class="home-empty">${t("home.noTips")}</p>`
-        : history.slice(0, 6).map(h => `
-              <div class="home-history-item">
-                <span class="home-history-date">${h.date}</span>
-                <span class="home-history-player">${h.player}</span>
-                <span class="home-history-result ${h.result === "hit" ? "hit" : "miss"}">
-                  ${h.result === "hit" ? "✔" : "✘"}
-                </span>
-              </div>
-            `).join("")
-        }
-      </div>
     </div>
   </div>
 
