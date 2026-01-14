@@ -9,8 +9,14 @@ const logo = (code) =>
 // SERVERLESS HANDLER – Live zápasy
 // ========================================================
 export default async function handler(req, res) {
+  // CACHE: 5 minút na Edge, 60 sekúnd stale-while-revalidate
+  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=60');
+
   try {
     console.log("🔹 [/api/live] Načítavam live zápasy...");
+
+    // CACHE: 60 sekúnd na Edge, 30 sekúnd stale-while-revalidate
+    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=30');
 
     const liveUrl = "https://nhl-score-api.herokuapp.com/api/scores/latest";
     const resp = await axios.get(liveUrl, { timeout: 15000 });
@@ -33,7 +39,7 @@ export default async function handler(req, res) {
       const formattedGoals = goals.map((goal) => ({
         team: goal.team,
         period: goal.period,
-        time: goal.min !== undefined && goal.sec !== undefined 
+        time: goal.min !== undefined && goal.sec !== undefined
           ? `${String(goal.min).padStart(2, "0")}:${String(goal.sec).padStart(2, "0")}`
           : "",
         scorer: {
@@ -43,10 +49,10 @@ export default async function handler(req, res) {
         },
         assists: Array.isArray(goal.assists)
           ? goal.assists.map((a) => ({
-              name: a.player || "",
-              playerId: a.playerId || null,
-              seasonTotal: a.seasonTotal || 0,
-            }))
+            name: a.player || "",
+            playerId: a.playerId || null,
+            seasonTotal: a.seasonTotal || 0,
+          }))
           : [],
       }));
 
