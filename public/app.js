@@ -1798,8 +1798,9 @@ function startLiveGamesAutoUpdate() {
       stopLiveGamesAutoUpdate();
     }
   }, 10000); // 10 sekúnd
-
-  console.log("🔄 Automatická aktualizácia live zápasov spustená (každých 10s)");
+  loadLiveGames();
+}, 10000);
+  */
 }
 
 // Zastaví automatickú aktualizáciu live zápasov
