@@ -11186,3 +11186,52 @@ body {
     min-height: auto;
   }
 }
+
+/* ===============================
+   PREMIUM TOPBAR & CANCEL BUTTON
+   =============================== */
+.premium-topbar {
+  display: flex;
+  justify-content: center;
+  /* ZAROVNANIE NA STRED */
+  align-items: center;
+  margin-bottom: 25px;
+  position: relative;
+  text-align: center;
+}
+
+.premium-welcome {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+.premium-cancel-wrapper {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.premium-cancel-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  color: rgba(255, 77, 77, 0.8);
+  font-size: 0.9rem;
+  padding: 10px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.premium-cancel-btn:hover {
+  background: rgba(255, 77, 77, 0.1);
+  border-color: rgba(255, 77, 77, 0.6);
+  color: #ff4d4d;
+  transform: translateY(-2px);
+}
