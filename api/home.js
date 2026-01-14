@@ -64,6 +64,9 @@ function pickBestDecimalOdd(oddsArray = []) {
 // SERVERLESS HANDLER – rýchle načítanie HOME
 // ========================================================
 export default async function handler(req, res) {
+  // CACHE: 5 minút na Edge, 60 sekúnd stale-while-revalidate
+  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=60');
+
   try {
     console.log("🔹 [/api/home] Rýchle načítanie...");
 
@@ -81,46 +84,46 @@ export default async function handler(req, res) {
       const oddsUrl = "https://api-web.nhle.com/v1/partner-game/SK/now";
       const oddsResp = await axios.get(oddsUrl, { timeout: 10000 });
       const oddsData = oddsResp.data || {};
-      
+
       if (oddsData.games && Array.isArray(oddsData.games)) {
         oddsData.games.forEach(game => {
           const gameId = game.gameId;
           const homeOdds = game.homeTeam?.odds || [];
           const awayOdds = game.awayTeam?.odds || [];
           const allOdds = [...homeOdds, ...awayOdds];
-          
+
           // Nájdi 3-way kurzy (MONEY_LINE_3_WAY - domáci, remíza, hostia)
           const home3Way = allOdds.find(o => {
-            return o.description === "MONEY_LINE_3_WAY" && 
-                   o.qualifier !== "Draw" && 
-                   (o.qualifier === "" || !o.qualifier);
+            return o.description === "MONEY_LINE_3_WAY" &&
+              o.qualifier !== "Draw" &&
+              (o.qualifier === "" || !o.qualifier);
           });
           const draw3Way = allOdds.find(o => {
-            return o.description === "MONEY_LINE_3_WAY" && 
-                   o.qualifier === "Draw";
+            return o.description === "MONEY_LINE_3_WAY" &&
+              o.qualifier === "Draw";
           });
           const away3Way = allOdds.find(o => {
-            return o.description === "MONEY_LINE_3_WAY" && 
-                   o.qualifier !== "Draw" && 
-                   (o.qualifier === "" || !o.qualifier);
+            return o.description === "MONEY_LINE_3_WAY" &&
+              o.qualifier !== "Draw" &&
+              (o.qualifier === "" || !o.qualifier);
           });
-          
+
           // Home kurz je v homeTeam, away kurz je v awayTeam
           const home3WayFromHome = homeOdds.find(o => {
-            return o.description === "MONEY_LINE_3_WAY" && 
-                   o.qualifier !== "Draw" && 
-                   (o.qualifier === "" || !o.qualifier);
+            return o.description === "MONEY_LINE_3_WAY" &&
+              o.qualifier !== "Draw" &&
+              (o.qualifier === "" || !o.qualifier);
           });
           const away3WayFromAway = awayOdds.find(o => {
-            return o.description === "MONEY_LINE_3_WAY" && 
-                   o.qualifier !== "Draw" && 
-                   (o.qualifier === "" || !o.qualifier);
+            return o.description === "MONEY_LINE_3_WAY" &&
+              o.qualifier !== "Draw" &&
+              (o.qualifier === "" || !o.qualifier);
           });
           const drawFromAny = allOdds.find(o => {
-            return o.description === "MONEY_LINE_3_WAY" && 
-                   o.qualifier === "Draw";
+            return o.description === "MONEY_LINE_3_WAY" &&
+              o.qualifier === "Draw";
           });
-          
+
           oddsMap[gameId] = {
             home: home3WayFromHome ? Number(home3WayFromHome.value) : null,
             draw: drawFromAny ? Number(drawFromAny.value) : null,
@@ -135,7 +138,7 @@ export default async function handler(req, res) {
     const games = gamesRaw.map((g) => {
       const homeOdds = pickBestDecimalOdd(g.homeTeam?.odds || []);
       const awayOdds = pickBestDecimalOdd(g.awayTeam?.odds || []);
-      
+
       // Pridaj 3-way kurzy z oddsMap
       const gameOdds = oddsMap[g.id] || {};
 
@@ -150,10 +153,10 @@ export default async function handler(req, res) {
         awayCode: g.awayTeam?.abbrev || "",
         startTime: g.startTimeUTC
           ? new Date(g.startTimeUTC).toLocaleTimeString("sk-SK", {
-              timeZone: "Europe/Bratislava",
-              hour: "2-digit",
-              minute: "2-digit",
-            })
+            timeZone: "Europe/Bratislava",
+            hour: "2-digit",
+            minute: "2-digit",
+          })
           : "??:??",
         venue: g.venue?.default || "",
         status: g.gameState || "FUT",

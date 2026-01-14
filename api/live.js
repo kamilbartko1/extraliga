@@ -9,9 +9,6 @@ const logo = (code) =>
 // SERVERLESS HANDLER – Live zápasy
 // ========================================================
 export default async function handler(req, res) {
-  // CACHE: 5 minút na Edge, 60 sekúnd stale-while-revalidate
-  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=60');
-
   try {
     console.log("🔹 [/api/live] Načítavam live zápasy...");
 
