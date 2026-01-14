@@ -139,7 +139,7 @@ async function calculateUserStats(userId) {
     totalProfit: Number(totalProfit.toFixed(2)),
     activePlayersCount: Object.keys(playersRaw).length
   };
-} The helper `safeParse` and `normalizePlayer` must be available in scope.
+}
 
 // Stripe potrebuje RAW body
 function getRawBody(req) {
