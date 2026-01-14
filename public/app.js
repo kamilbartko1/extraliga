@@ -82,6 +82,10 @@ const I18N = {
     "home.aiLoading": "Načítavam AI tip…",
     "home.aiFailed": "AI strelec sa nepodarilo vypočítať.",
     "home.aiHistory": "📅 História AI tipov",
+    "home.aiGoals": "Góly",
+    "home.aiPPGoals": "PP Góly",
+    "home.aiShots": "Strely",
+    "home.aiProbability": "Pravdepodobnosť",
     "home.noTips": "Žiadne vyhodnotené tipy",
     "home.topStats": "📊 Top štatistiky hráčov",
     "home.viewAllStats": "Zobraziť všetky",
@@ -365,6 +369,10 @@ const I18N = {
     "home.aiLoading": "Loading AI pick…",
     "home.aiFailed": "Could not compute today's AI scorer.",
     "home.aiHistory": "📅 AI picks history",
+    "home.aiGoals": "Goals",
+    "home.aiPPGoals": "PP Goals",
+    "home.aiShots": "Shots",
+    "home.aiProbability": "Probability",
     "home.noTips": "No evaluated picks yet",
     "home.topStats": "📊 Top player stats",
     "home.viewAllStats": "View all",
@@ -1440,12 +1448,12 @@ async function displayHome() {
             <div class="home-ai-player-name">${ai.player} <span class="home-ai-player-team">(${ai.team})</span></div>
             <div class="home-ai-player-match">${ai.match}</div>
             <div class="home-ai-player-stats">
-              <span>Góly: <strong>${ai.goals}</strong></span>
-              <span>PP Góly: <strong>${ai.powerPlayGoals}</strong></span>
-              <span>Strely: <strong>${ai.shots}</strong></span>
+              <span>${t("home.aiGoals")}: <strong>${ai.goals}</strong></span>
+              <span>${t("home.aiPPGoals")}: <strong>${ai.powerPlayGoals}</strong></span>
+              <span>${t("home.aiShots")}: <strong>${ai.shots}</strong></span>
             </div>
             <div class="home-ai-player-prob">
-              🧠 Pravdepodobnosť: <strong>${ai.probability}%</strong>
+              🧠 ${t("home.aiProbability")}: <strong>${ai.probability}%</strong>
             </div>
           </div>
         `;
