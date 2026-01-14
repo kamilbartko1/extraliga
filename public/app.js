@@ -4569,6 +4569,9 @@ async function loadPremiumDashboard() {
       </div>
     `;
 
+    // Load Leaderboard after dashboard
+    loadLeaderboard();
+
   } catch (err) {
     console.error("❌ Dashboard load error:", err);
     dashboardContent.innerHTML = `<p class="nhl-muted" style="color:#ff6b6b;">${t("common.failedToLoad")}: ${err.message}</p>`;
