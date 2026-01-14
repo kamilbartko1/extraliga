@@ -265,14 +265,16 @@ async function updateMantingaleForKey(playersKey, historyPrefix) {
       continue;
     }
 
+    const currentStake = state.stake; // 🔥 Capture original stake before changes
+
     const goals = Number(found.goals || 0);
 
-    
-        // ---------- HIT
+
+    // ---------- HIT
     if (goals > 0) {
       // ✅ NET PROFIT (nie return)
       const profit = Number(
-        (state.stake * (state.odds - 1)).toFixed(2)
+        (currentStake * (state.odds - 1)).toFixed(2)
       );
 
       state.balance = Number(
@@ -286,7 +288,7 @@ async function updateMantingaleForKey(playersKey, historyPrefix) {
         result: "hit",
         profitChange: profit,       // ✅ čistý zisk
         balanceAfter: state.balance,
-        stake: state.stake,         // ✅ uložíme stake pre správny výpočet ROI
+        stake: currentStake,         // ✅ USE ORIGINAL STAKE
         odds: state.odds,            // ✅ uložíme odds pre správny výpočet ROI
       };
 
@@ -309,9 +311,9 @@ async function updateMantingaleForKey(playersKey, historyPrefix) {
     }
 
     // ---------- MISS
-    const loss = -state.stake;
+    const loss = -currentStake; // ✅ Use original stake
     state.balance = Number((state.balance + loss).toFixed(2));
-    state.stake *= 2;
+    state.stake *= 2; // Doubles for NEXT round
     state.streak += 1;
 
     const entry = {
@@ -321,8 +323,8 @@ async function updateMantingaleForKey(playersKey, historyPrefix) {
       result: "miss",
       profitChange: loss,
       balanceAfter: state.balance,
-      stake: state.stake,         // ✅ uložíme stake pre správny výpočet ROI
-      odds: state.odds,            // ✅ uložíme odds pre správny výpočet ROI
+      stake: currentStake,         // ✅ SAVE ORIGINAL STAKE (e.g. 1), not doubled (2)
+      odds: state.odds,
     };
 
     if (isGlobal) {
@@ -355,39 +357,39 @@ export default async function handler(req, res) {
     let executed = null;
 
     // 1) UPDATE + MANTINGAL
-// (čas máš aktuálne nastavený na 10:20 UTC)
-if (utcHour === 7 && utcMinute < 50) {
+    // (čas máš aktuálne nastavený na 10:20 UTC)
+    if (utcHour === 7 && utcMinute < 50) {
 
-  // 🔹 1️⃣ Najprv vyhodnotíme AI tip (nemeniť)
-  await axios.get(`${base}/api/ai?task=update`);
+      // 🔹 1️⃣ Najprv vyhodnotíme AI tip (nemeniť)
+      await axios.get(`${base}/api/ai?task=update`);
 
-  // 🔹 2️⃣ GLOBAL MANTINGAL – PRIAMO cez engine
-  await updateMantingaleForKey(
-    "MANTINGAL_PLAYERS",
-    "MANTINGAL_HISTORY"
-  );
+      // 🔹 2️⃣ GLOBAL MANTINGAL – PRIAMO cez engine
+      await updateMantingaleForKey(
+        "MANTINGAL_PLAYERS",
+        "MANTINGAL_HISTORY"
+      );
 
-  executed = "update + mantingale";
+      executed = "update + mantingale";
 
-  // 🔹 3️⃣ VIP MANTINGAL – BEZPEČNE PRE KAŽDÉHO USERA
-  try {
-    const vipUsers = await redis.smembers("VIP_USERS");
+      // 🔹 3️⃣ VIP MANTINGAL – BEZPEČNE PRE KAŽDÉHO USERA
+      try {
+        const vipUsers = await redis.smembers("VIP_USERS");
 
-    if (Array.isArray(vipUsers) && vipUsers.length > 0) {
-      for (const userId of vipUsers) {
-        await updateMantingaleForKey(
-          `VIP_MTG:${userId}`,
-          `VIP_MTG_HISTORY:${userId}`
-        );
+        if (Array.isArray(vipUsers) && vipUsers.length > 0) {
+          for (const userId of vipUsers) {
+            await updateMantingaleForKey(
+              `VIP_MTG:${userId}`,
+              `VIP_MTG_HISTORY:${userId}`
+            );
+          }
+          console.log("👑 VIP Mantingal OK – users:", vipUsers.length);
+        } else {
+          console.log("👑 VIP Mantingal – no users");
+        }
+      } catch (e) {
+        console.error("❌ VIP Mantingal error:", e.message);
       }
-      console.log("👑 VIP Mantingal OK – users:", vipUsers.length);
-    } else {
-      console.log("👑 VIP Mantingal – no users");
     }
-  } catch (e) {
-    console.error("❌ VIP Mantingal error:", e.message);
-  }
-}
 
     // 2) SCORER
     else if (utcHour === 11 && utcMinute < 5) {
