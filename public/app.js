@@ -1322,10 +1322,10 @@ async function displayHome() {
   try {
     // 🔥 1️⃣ CACHED API – reduces Vercel function calls on refresh
     const [homeData, statsData, aiData, absData] = await Promise.all([
-      cachedFetch("/api/home", 5),           // 5 min cache
-      cachedFetch("/api/statistics", 10),    // 10 min cache
-      cachedFetch("/api/ai?task=get", 2),    // 2 min cache (more dynamic)
-      cachedFetch("/api/mantingal?task=all", 5)  // 5 min cache
+      cachedFetch("/api/home", 360),           // 6 hodín (360 min)
+      cachedFetch("/api/statistics", 180),    // 3 hodiny (180 min)
+      cachedFetch("/api/ai?task=get", 360),    // 6 hodín (360 min)
+      cachedFetch("/api/mantingal?task=all", 360) // 6 hodín (360 min)
     ]);
 
     // AI história (bez dnešného live výpočtu)
@@ -1869,11 +1869,8 @@ async function loadLiveGames() {
   }
 
   try {
-    const resp = await fetch("/api/live", { cache: "no-store" });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-
-    const data = await resp.json();
-    if (!data.ok) {
+    const data = await cachedFetch("/api/live", 15);
+    if (!data || !data.ok) {
       // Len ak ešte nie je prázdna správa
       if (liveList.innerHTML.indexOf("Žiadne live zápasy") === -1) {
         liveList.innerHTML = `<p class="nhl-muted">Žiadne live zápasy</p>`;
@@ -4555,11 +4552,9 @@ async function loadPremiumDashboard() {
   dashboardContent.innerHTML = `<p class="nhl-muted">${t("common.loading")}</p>`;
 
   try {
-    const res = await fetch("/api/vip?task=dashboard", {
+    const data = await cachedFetch("/api/vip?task=dashboard", 10, {
       headers: { Authorization: `Bearer ${token}` },
     });
-
-    const data = await res.json();
 
     if (!data.ok) {
       dashboardContent.innerHTML = `<p class="nhl-muted" style="color:#ff6b6b;">${data.error || t("common.failedToLoad")}</p>`;
@@ -4763,11 +4758,9 @@ async function loadLeaderboard() {
     const token = localStorage.getItem("sb-access-token");
     if (!token) return;
 
-    const res = await fetch("/api/vip?task=leaderboard", {
+    const data = await cachedFetch("/api/vip?task=leaderboard", 360, {
       headers: { Authorization: `Bearer ${token}` }
     });
-
-    const data = await res.json();
     if (!data.ok) throw new Error(data.error);
 
     // Data loaded successfully but don't show section yet
