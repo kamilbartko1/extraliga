@@ -12,8 +12,8 @@ export default async function handler(req, res) {
   try {
     console.log("🔹 [/api/live] Načítavam live zápasy...");
 
-    // CACHE: 60 sekúnd na Edge, 30 sekúnd stale-while-revalidate
-    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=30');
+    // 🔥 OPTIMALIZÁCIA: Live zápasy - 90 sekúnd cache (kompromis medzi aktuálnosťou a úsporou)
+    res.setHeader('Cache-Control', 'public, s-maxage=90, stale-while-revalidate=30');
 
     const liveUrl = "https://nhl-score-api.herokuapp.com/api/scores/latest";
     const resp = await axios.get(liveUrl, { timeout: 15000 });

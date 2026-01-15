@@ -2,6 +2,9 @@
 import axios from "axios";
 
 export default async function handler(req, res) {
+  // 🔥 OPTIMALIZÁCIA: AI scorer - cache 5 minút (denný tip sa mení raz za deň)
+  res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=120');
+  
   try {
     console.log("🎯 [/api/ai-scorer] Výpočet AI strelca...");
 

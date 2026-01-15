@@ -68,8 +68,8 @@ function toiToMinutes(toi) {
 // SERVERLESS HANDLER – Vercel compatible
 // ======================================================
 export default async function handler(req, res) {
-  // Cache-Control header pre Edge caching
-  res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=300'); // 30 min cache
+  // 🔥 OPTIMALIZÁCIA: Maximalizovaný Edge cache - 1 hodina (matches sa nemenia často)
+  res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=600');
 
   try {
     const START_DATE = "2025-10-08";

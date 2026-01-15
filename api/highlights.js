@@ -39,6 +39,9 @@ const TEAM_CODES = {
 };
 
 export default async function handler(req, res) {
+  // 🔥 OPTIMALIZÁCIA: Highlights - cache 15 minút (highlights sa nepridávajú tak často)
+  res.setHeader('Cache-Control', 'public, s-maxage=900, stale-while-revalidate=300');
+  
   try {
     const { team, id } = req.query;
     if (!team || !id) {

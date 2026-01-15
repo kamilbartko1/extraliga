@@ -8,7 +8,12 @@ export default async function handler(req, res) {
     token: process.env.UPSTASH_REDIS_REST_TOKEN,
   });
 
-   const task = req.query.task || "";
+  const task = req.query.task || "";
+  
+  // 🔥 OPTIMALIZÁCIA: Edge cache podľa tasku
+  // get - dlhšie cache (história), scorer - kratšie (dnešný tip)
+  const cacheTime = task === "get" ? 900 : 180; // 15 min alebo 3 min
+  res.setHeader('Cache-Control', `public, s-maxage=${cacheTime}, stale-while-revalidate=120`);
 
   // ============= BASE URL (lokál + vercel) =============
   const proto = req.headers["x-forwarded-proto"] || "https";

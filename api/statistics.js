@@ -1,5 +1,8 @@
 // /api/statistics.js
 export default async function handler(req, res) {
+  // 🔥 OPTIMALIZÁCIA: Edge cache 15 minút (štatistiky sa nemenia často)
+  res.setHeader('Cache-Control', 'public, s-maxage=900, stale-while-revalidate=300');
+  
   try {
     const season = "20252026";
     const teamCodes = [

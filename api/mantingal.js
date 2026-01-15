@@ -61,6 +61,13 @@ function normalizePlayer(obj) {
 export default async function handler(req, res) {
   try {
     const query = req.query || {};
+    
+    // 🔥 OPTIMALIZÁCIA: Edge cache pre statické dáta (all, history), kratšie pre user data
+    // Pre user-specific queries sa cache nerobí (player, action), ale pre 'all' áno
+    const isStatic = query.action === 'all' || !query.player;
+    if (isStatic) {
+      res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=120');
+    }
 
     // ==========================================================
     // 📌 1) DETAIL HRÁČA

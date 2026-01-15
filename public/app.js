@@ -1525,10 +1525,9 @@ async function displayHome() {
     // 🔥 3️⃣ AI STRELEC SA DOLOŽÍ EXTRA (NEBLOKUJE STRÁNKU)
     setTimeout(async () => {
       try {
-        const resp = await fetch("/api/ai?task=scorer", { cache: "no-store" });
-        if (!resp.ok) return;
-
-        const data = await resp.json();
+        // 🔥 OPTIMALIZÁCIA: Používame cachedFetch namiesto fetch s no-store (Edge cache už je nastavená)
+        const data = await cachedFetch("/api/ai?task=scorer", 5); // 5 min cache
+        if (!data || data.error) return;
         const ai = data.aiScorerTip;
 
         const box = document.getElementById("ai-today-loading");
@@ -2313,10 +2312,9 @@ async function openLiveGameDetails(gameId) {
 
   // Načítaj aktuálne dáta
   try {
-    const resp = await fetch("/api/live", { cache: "no-store" });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-
-    const data = await resp.json();
+    // 🔥 OPTIMALIZÁCIA: Používame cachedFetch namiesto fetch s no-store (Edge cache už je nastavená)
+    const data = await cachedFetch("/api/live", 2); // 2 min cache pre live dáta
+    if (!data) throw new Error("Failed to load live data");
     console.log("📦 API odpoveď:", data);
 
     if (!data.ok || !data.games || !Array.isArray(data.games)) {
@@ -2622,10 +2620,9 @@ async function openFinishedGameDetails(gameId) {
 
   // Načítaj boxscore
   try {
-    const resp = await fetch(`/api/match-details?gameId=${gameId}`, { cache: "no-store" });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-
-    const boxscoreData = await resp.json();
+    // 🔥 OPTIMALIZÁCIA: Používame cachedFetch namiesto fetch s no-store (Edge cache už je nastavená)
+    const boxscoreData = await cachedFetch(`/api/match-details?gameId=${gameId}`, 30); // 30 min cache
+    if (!boxscoreData) throw new Error("Failed to load match details");
     console.log("📦 Boxscore dáta:", boxscoreData);
     console.log("📦 Period scores:", boxscoreData.sport_event_status?.period_scores);
     console.log("📦 Home players:", boxscoreData.statistics?.totals?.competitors?.find(c => c.qualifier === "home")?.players?.length);
@@ -3099,10 +3096,9 @@ async function openPlayerStatsModal(playerName, teamName) {
 
   try {
     // Načítaj štatistiky
-    const resp = await fetch("/api/statistics", { cache: "no-store" });
-    if (!resp.ok) throw new Error("Failed to fetch statistics");
-
-    const data = await resp.json();
+    // 🔥 OPTIMALIZÁCIA: Používame cachedFetch namiesto fetch s no-store (Edge cache už je nastavená)
+    const data = await cachedFetch("/api/statistics", 30); // 30 min cache
+    if (!data) throw new Error("Failed to fetch statistics");
     if (!data.ok) throw new Error("Invalid response");
 
     // Nájdi hráča v štatistikách - skús všetky rebríčky
@@ -5245,8 +5241,8 @@ async function renderVipTips() {
 
   let matchesToday = [];
   try {
-    const homeResp = await fetch("/api/home", { cache: "no-store" });
-    const homeData = homeResp.ok ? await homeResp.json() : {};
+    // 🔥 OPTIMALIZÁCIA: Používame cachedFetch namiesto fetch s no-store (Edge cache už je nastavená)
+    const homeData = await cachedFetch("/api/home", 30) || {}; // 30 min cache
     matchesToday = Array.isArray(homeData.matchesToday) ? homeData.matchesToday : [];
   } catch {
     matchesToday = [];
@@ -5296,7 +5292,8 @@ async function renderVipTips() {
   // Pull player stats to enrich scoring model (shots, TOI, PP goals)
   let statsData = {};
   try {
-    const s = await fetch("/api/statistics", { cache: "no-store" });
+    // 🔥 OPTIMALIZÁCIA: Používame cachedFetch namiesto fetch s no-store
+    const s = await cachedFetch("/api/statistics", 30) || {};
     statsData = s.ok ? await s.json() : {};
   } catch {
     statsData = {};
@@ -5558,7 +5555,8 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   // Fetch fresh statistics
   let statsData = {};
   try {
-    const s = await fetch("/api/statistics", { cache: "no-store" });
+    // 🔥 OPTIMALIZÁCIA: Používame cachedFetch namiesto fetch s no-store
+    const s = await cachedFetch("/api/statistics", 30) || {};
     statsData = s.ok ? await s.json() : {};
   } catch (err) {
     console.warn("Failed to fetch stats:", err);
@@ -5941,7 +5939,8 @@ async function displayShootingLeaders() {
   // 🔹 OKAMŽITÉ NAČÍTANIE DÁT PRE PREVIEW
   if (!window.lastStatsCache || (Date.now() - window.lastStatsFetchTime > 60000)) {
     try {
-      const resp = await fetch("/api/statistics", { cache: "force-cache" }); // cache pre rýchlosť
+      // 🔥 OPTIMALIZÁCIA: Používame cachedFetch namiesto fetch s force-cache
+      const resp = await cachedFetch("/api/statistics", 30) || {}; // 30 min cache
       if (resp.ok) {
         window.lastStatsCache = await resp.json();
         window.lastStatsFetchTime = Date.now();

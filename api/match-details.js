@@ -9,6 +9,9 @@ const BASE_URL = "https://api-web.nhle.com/v1";
  * https://api-web.nhle.com/v1/gamecenter/{game-id}/boxscore
  */
 export default async function handler(req, res) {
+  // 🔥 OPTIMALIZÁCIA: Match details - cache 10 minút (dáta sa nemenia po skončení zápasu)
+  res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=180');
+  
   try {
     const { gameId } = req.query;
 

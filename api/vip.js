@@ -157,8 +157,15 @@ function getRawBody(req) {
 // ===============================
 
 export default async function handler(req, res) {
+  // 🔥 OPTIMALIZÁCIA: VIP endpointy - kratšie cache (obsahujú user data)
+  // Pre niektoré tasky môžeme použiť cache (leaderboard, status), pre iné nie (get_players, dashboard)
+  const cacheableTasks = ['leaderboard', 'status'];
+  const task = req.query.task || null;
+  if (task && cacheableTasks.includes(task)) {
+    res.setHeader('Cache-Control', 'private, s-maxage=180, stale-while-revalidate=60');
+  }
+  
   try {
-    const task = req.query.task || null;
 
     // =====================================================
     // STRIPE WEBHOOK – MUSÍ BYŤ PRVÝ (bez requireAuth)

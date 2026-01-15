@@ -64,8 +64,8 @@ function pickBestDecimalOdd(oddsArray = []) {
 // SERVERLESS HANDLER – rýchle načítanie HOME
 // ========================================================
 export default async function handler(req, res) {
-  // CACHE: 5 minút na Edge, 60 sekúnd stale-while-revalidate
-  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=60');
+  // 🔥 OPTIMALIZÁCIA: Zvýšený Edge cache na 15 minút (home dáta sa nemenia tak často)
+  res.setHeader('Cache-Control', 'public, s-maxage=900, stale-while-revalidate=300');
 
   try {
     console.log("🔹 [/api/home] Rýchle načítanie...");
