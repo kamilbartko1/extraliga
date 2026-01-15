@@ -1,21 +1,24 @@
-// server.js
-import express from "express";
+// /api/matches.js
 import axios from "axios";
-import cors from "cors";
-import path from "path";
-import { fileURLToPath } from "url";
+import { Redis } from "@upstash/redis";
 
-const app = express();
-const PORT = 3000;
+// Redis cache pre Vercel (ak je dostupný)
+let redis = null;
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  try {
+    redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    });
+  } catch (e) {
+    console.warn("Redis initialization failed, using in-memory cache:", e.message);
+  }
+}
 
-// === Absolútne cesty pre ES Modules ===
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// === Middleware ===
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "../public"))); // frontend = public
+// In-memory cache fallback (pre lokálny server)
+let cacheData = null;
+let cacheTime = 0;
+let cacheKey = "";
 
 // === KONŠTANTY PRE RATING ===
 const START_TEAM_RATING = 1500;
@@ -61,15 +64,13 @@ function toiToMinutes(toi) {
   return 0;
 }
 
-// === Cache (na 3 h) ===
-let cacheData = null;
-let cacheTime = 0;
-let cacheKey = "";
+// ======================================================
+// SERVERLESS HANDLER – Vercel compatible
+// ======================================================
+export default async function handler(req, res) {
+  // Cache-Control header pre Edge caching
+  res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=300'); // 30 min cache
 
-// ======================================================
-// ENDPOINT: /api/matches  (ROZŠÍRENÝ O STANDINGS)
-// ======================================================
-app.get("/api/matches", async (req, res) => {
   try {
     const START_DATE = "2025-10-08";
     const TODAY = formatDate(new Date());
@@ -79,10 +80,31 @@ app.get("/api/matches", async (req, res) => {
     const key = `${from}_${to}`;
     const now = Date.now();
 
-    // === CACHE HIT ===
-    if (!refresh && cacheData && cacheKey === key && now - cacheTime < 3 * 60 * 60 * 1000) {
-      console.log(`⚡ Cache hit (${from}–${to})`);
-      return res.json(cacheData);
+    // === CACHE HIT (Redis alebo in-memory) ===
+    if (!refresh) {
+      // Skús Redis cache
+      if (redis) {
+        try {
+          const redisKey = `matches:${key}`;
+          const cached = await redis.get(redisKey);
+          if (cached) {
+            const { data, timestamp } = cached;
+            const age = (now - timestamp) / 1000 / 60;
+            if (age < 180) { // 3 hodiny
+              console.log(`⚡ Redis cache hit (${from}–${to}, ${age.toFixed(1)}min old)`);
+              return res.json(data);
+            }
+          }
+        } catch (e) {
+          console.warn("Redis cache read error:", e.message);
+        }
+      }
+
+      // Fallback na in-memory cache
+      if (cacheData && cacheKey === key && now - cacheTime < 3 * 60 * 60 * 1000) {
+        console.log(`⚡ Memory cache hit (${from}–${to})`);
+        return res.json(cacheData);
+      }
     }
 
     const days = getDaysRange(from, to);
@@ -150,7 +172,8 @@ app.get("/api/matches", async (req, res) => {
     }
 
     // === BOXSCORE – HRÁČI ===
-    const CONCURRENCY = 6;
+    // 🔥 OPTIMALIZÁCIA: Zvýšená konkurencia z 6 na 10 pre rýchlejšie načítanie
+    const CONCURRENCY = 10;
     let index = 0;
 
     async function worker() {
@@ -215,12 +238,23 @@ app.get("/api/matches", async (req, res) => {
       matches,
       teamRatings,
       playerRatings: topPlayers,
-      standings, // 👈 JEDINÁ PRIDANÁ VEC
+      standings,
     };
 
+    // === ULOŽ DO CACHE ===
+    if (redis) {
+      try {
+        const redisKey = `matches:${key}`;
+        await redis.set(redisKey, { data: result, timestamp: now }, { ex: 10800 }); // 3 hodiny TTL
+      } catch (e) {
+        console.warn("Redis cache write error:", e.message);
+      }
+    }
+
+    // Fallback in-memory cache
     cacheData = result;
     cacheKey = key;
-    cacheTime = Date.now();
+    cacheTime = now;
 
     console.log(`🏒 Hotovo! Zápasy: ${matches.length}, Hráči: ${Object.keys(topPlayers).length}`);
     res.json(result);
@@ -228,16 +262,4 @@ app.get("/api/matches", async (req, res) => {
     console.error("❌ NHL API error:", err.message);
     res.status(500).json({ error: "Chyba pri načítaní NHL dát", detail: err.message });
   }
-});
-
-// ======================================================
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public", "index.html"));
-});
-
-// ======================================================
-app.listen(PORT, () => {
-  console.log(`🏒 NHL Server beží lokálne na http://localhost:${PORT}`);
-});
-
-export default app;
+}

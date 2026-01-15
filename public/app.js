@@ -1316,10 +1316,9 @@ function normalizeNhlGame(game, day) {
 async function preloadMatchesData() {
   try {
     console.log("🔹 Prednačítavam výsledky a ratingy...");
-    const resp = await fetch("/api/matches", { cache: "no-store" });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const data = await resp.json();
-    console.log(`✅ Prednačítané ${data.allMatches?.length || 0} zápasov.`);
+    // 🔥 OPTIMALIZÁCIA: Používame cachedFetch s dlhším cache
+    const data = await cachedFetch("/api/matches", 180);
+    console.log(`✅ Prednačítané ${data.matches?.length || 0} zápasov.`);
   } catch (err) {
     console.warn("⚠️ Prednačítanie /api/matches zlyhalo:", err.message);
   }
@@ -1599,71 +1598,104 @@ function computeTeamRatings(matches) {
 }
 
 // === Hlavné načítanie ===
-async function fetchMatches() {
+async function fetchMatches(forceRefresh = false) {
   const statusEl = document.getElementById("load-status");
   if (statusEl) {
     statusEl.textContent = t("matches.loading");
   }
 
   try {
-    const response = await fetch(`${API_BASE}/api/matches`, {
-      cache: "no-store",
+    // 🔥 OPTIMALIZÁCIA: Používame cachedFetch s dlhším cache (180 min = 3h)
+    // Ak existujú cache dáta, zobrazíme ich okamžite, potom aktualizujeme na pozadí
+    const cacheKey = `CACHE_${CACHE_VERSION}:${API_BASE}/api/matches`;
+    let cachedData = null;
+    
+    if (!forceRefresh) {
+      try {
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          const age = (Date.now() - timestamp) / 1000 / 60;
+          if (age < 180) {
+            cachedData = data;
+            console.log(`📦 Zobrazujem cache dáta (${age.toFixed(1)} min staré)`);
+          }
+        }
+      } catch (e) { /* Ignore cache read errors */ }
+    }
+
+    // Zobraz cache dáta okamžite (ak existujú)
+    if (cachedData) {
+      renderMatchesData(cachedData, statusEl, false);
+    }
+
+    // Načítaj dáta (z cache ak je nový, alebo z API)
+    const data = await cachedFetch(`${API_BASE}/api/matches`, 180, {
+      // Použijeme query parameter pre force refresh ak je potrebné
+      ...(forceRefresh ? { cache: "no-store" } : {})
     });
 
-    if (!response.ok) {
-      const txt = await response.text();
-      console.error("❌ Server vrátil chybu:", txt);
-      if (statusEl) {
-        statusEl.textContent = t("matches.serverError");
-      }
-      return;
+    if (!data) {
+      throw new Error("No data received");
     }
 
-    const data = await response.json();
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
     console.log("✅ Dáta z backendu:", data);
 
-    // === STATUS TEXT ===
-    const totalGames = Array.isArray(data.matches) ? data.matches.length : 0;
-    const totalPlayers = data.playerRatings
-      ? Object.keys(data.playerRatings).length
-      : 0;
-
-    if (statusEl) {
-      statusEl.textContent = t("matches.done", { games: totalGames, players: totalPlayers });
-    }
-
-    // === ZÁPASY ===
-    allMatches = Array.isArray(data.matches) ? data.matches : [];
-
-    if (!allMatches.length) {
-      console.warn("⚠️ Žiadne zápasy v data.matches");
-      if (statusEl) {
-        statusEl.textContent = t("matches.noGames");
-      }
-    } else {
-      displayMatches(allMatches);
-    }
-
-    // === RATINGY ===
-    teamRatings = data.teamRatings || {};
-    playerRatings = data.playerRatings || {};
-
-    displayPlayerRatings();
-    displayMantingal();
-
-    // === NHL STANDINGS (NOVÉ – LEN RENDER, ŽIADNY FETCH) ===
-    if (Array.isArray(data.standings)) {
-      LAST_STANDINGS = data.standings;
-      renderStandings(data.standings);
-    } else {
-      console.warn("⚠️ Standings nie sú v odpovedi backendu");
-    }
+    // Renderuj dáta (alebo aktualizuj ak už boli zobrazené z cache)
+    renderMatchesData(data, statusEl, !cachedData);
 
   } catch (err) {
     console.error("❌ Chyba pri načítaní zápasov:", err);
     if (statusEl) {
       statusEl.textContent = t("matches.serverError");
     }
+  }
+}
+
+// Pomocná funkcia pre render dát (aby sme mohli použiť cache + fresh data)
+function renderMatchesData(data, statusEl, isFirstRender) {
+  // === STATUS TEXT ===
+  const totalGames = Array.isArray(data.matches) ? data.matches.length : 0;
+  const totalPlayers = data.playerRatings
+    ? Object.keys(data.playerRatings).length
+    : 0;
+
+  if (statusEl) {
+    statusEl.textContent = t("matches.done", { games: totalGames, players: totalPlayers });
+  }
+
+  // === ZÁPASY ===
+  allMatches = Array.isArray(data.matches) ? data.matches : [];
+
+  if (!allMatches.length) {
+    console.warn("⚠️ Žiadne zápasy v data.matches");
+    if (statusEl) {
+      statusEl.textContent = t("matches.noGames");
+    }
+  } else {
+    displayMatches(allMatches);
+  }
+
+  // === RATINGY ===
+  teamRatings = data.teamRatings || {};
+  playerRatings = data.playerRatings || {};
+
+  if (isFirstRender) {
+    // Len pri prvom renderi, aby sme neprekresľovali pri aktualizácii
+    displayPlayerRatings();
+    displayMantingal();
+  }
+
+  // === NHL STANDINGS (NOVÉ – LEN RENDER, ŽIADNY FETCH) ===
+  if (Array.isArray(data.standings)) {
+    LAST_STANDINGS = data.standings;
+    renderStandings(data.standings);
+  } else {
+    console.warn("⚠️ Standings nie sú v odpovedi backendu");
   }
 }
 
@@ -6356,12 +6388,14 @@ window.addEventListener("DOMContentLoaded", async () => {
     home.style.opacity = 0;
     setTimeout(() => (home.style.opacity = 1), 100);
 
-    await Promise.all([
-      fetchMatches(),
-      displayHome()
-    ]);
+    // 🔥 OPTIMALIZÁCIA: fetchMatches() beží na pozadí, neblokuje UI
+    // displayHome() sa načíta hneď, fetchMatches() sa dokončí asynchrónne
+    displayHome();
+    // Spustiť na pozadí bez await - neblokuje UI
+    fetchMatches().catch(err => console.warn("⚠️ Background fetchMatches error:", err));
   } else {
-    await fetchMatches();
+    // Spustiť na pozadí aj tu
+    fetchMatches().catch(err => console.warn("⚠️ Background fetchMatches error:", err));
   }
 
   // ===============================
