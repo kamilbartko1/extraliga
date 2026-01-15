@@ -1837,8 +1837,17 @@ async function displayMatches(matches) {
   }
 }
 
+// Expose globally pre Google tlačidlo
+window.signInWithGoogle = async function () {
+  console.log("🌐 Presmerúvam na Google login...");
+  const provider = "google";
+  const redirectUrl = window.location.origin + window.location.pathname;
+  const authUrl = `${SUPABASE_URL}/auth/v1/authorize?provider=${provider}&redirect_to=${encodeURIComponent(redirectUrl)}`;
+  window.location.href = authUrl;
+};
+
 // ===============================
-// LIVE GAMES
+// HLAVNÝ ENGINE
 // ===============================
 
 // Globálna premenná pre interval automatickej aktualizácie
@@ -1850,7 +1859,7 @@ function startLiveGamesAutoUpdate() {
   // ⚠️ DISABLED TO SAVE VERCEL EDGE REQUESTS
   // User requested to pause live games to save resources.
   if (liveGamesUpdateInterval) return;
-
+ 
   console.log("⏱️ Spúšťam auto-update live zápasov (10s)...");
   liveGamesUpdateInterval = setInterval(() => {
     loadLiveGames();
@@ -4596,6 +4605,24 @@ async function loadPremiumDashboard() {
             localStorage.removeItem(`pending-username-${userEmail}`);
           }
         }
+
+        // AK NEMÁ MENO V DB ANI V CACHE (typické pre Google login) -> Vezmi meno z Google metadata
+        if (!data.username) {
+          const fullName = payload.user_metadata?.full_name || payload.full_name || "";
+          if (fullName) {
+            const sanitized = fullName.trim().substring(0, 20).replace(/[^a-zA-Z0-9_]/g, '_');
+            if (sanitized.length >= 2) {
+              console.log(`🤖 Automatické nastavenie mena z Google: ${sanitized}`);
+              const syncRes = await fetch(`/api/vip?task=set_username&username=${encodeURIComponent(sanitized)}`, {
+                headers: { Authorization: `Bearer ${token}` }
+              });
+              const syncData = await syncRes.json();
+              if (syncData.ok) {
+                data.username = syncData.username;
+              }
+            }
+          }
+        }
       } catch (e) {
         console.warn("Secure sync failed:", e);
       }
@@ -6268,6 +6295,28 @@ document.getElementById("mobileSelect")?.addEventListener("change", async (e) =>
 
 // === Štart stránky ===
 window.addEventListener("DOMContentLoaded", async () => {
+  // --- SUPABASE AUTH HASH HANDLER (Google Redirect) ---
+  if (window.location.hash) {
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const accessToken = params.get("access_token");
+    const refreshToken = params.get("refresh_token");
+
+    if (accessToken) {
+      console.log("🚀 Login cez Google zachytený! Ukladám token...");
+      localStorage.setItem("sb-access-token", accessToken);
+      if (refreshToken) localStorage.setItem("sb-refresh-token", refreshToken);
+
+      // Vyčisti URL od hash-u pre krajší vzhľad
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState(null, null, cleanUrl);
+
+      // Malý delay aby sa predišlo race conditions, potom refresh pre načítanie stavu
+      setTimeout(() => location.reload(), 200);
+      return;
+    }
+  }
+
   console.log("🚀 Spúšťam NHLPRO...");
 
   // 🔒 ZABEZPEČ, ŽE HAMBURGER BUTTON JE V HEADERI (NIE MIMO)
@@ -6627,3 +6676,5 @@ function animateNewElements(container) {
 
 
 
+
+});

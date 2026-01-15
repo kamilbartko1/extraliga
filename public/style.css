@@ -11317,3 +11317,39 @@ body {
   font-size: 0.8rem;
   min-height: 1.2rem;
 }
+/* Google Login Button */
+.google-auth-container {
+  margin: 15px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.google-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 300px;
+  padding: 10px 16px;
+  background: white;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.google-login-btn:hover {
+  background: #f1f1f1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.google-login-btn img {
+  width: 20px;
+  height: 20px;
+}
