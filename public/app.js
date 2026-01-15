@@ -4185,15 +4185,15 @@ async function handleRegister() {
 
     // Save username if provided (after successful registration)
     if (username && username.length >= 2) {
-      // Store in localStorage as fallback in case background fetch fails or email confirm is needed
-      localStorage.setItem("pending-username", username);
+      // Store in localStorage as fallback (USER-SPECIFIC KEY to prevent leakage!)
+      localStorage.setItem(`pending-username-${email.toLowerCase()}`, username);
 
       if (data.access_token) {
         try {
           await fetch(`/api/vip?task=set_username&username=${encodeURIComponent(username)}`, {
             headers: { Authorization: `Bearer ${data.access_token}` }
           });
-          localStorage.removeItem("pending-username"); // Success
+          localStorage.removeItem(`pending-username-${email.toLowerCase()}`); // Success
         } catch (e) {
           console.warn("Failed to save username:", e);
         }
@@ -4574,21 +4574,30 @@ async function loadPremiumDashboard() {
       return;
     }
 
-    // 🔥 SYNC PENDING USERNAME (if applicable)
-    // If we have a username in localStorage but NOT in DB, sync it now
-    const pendingUsername = localStorage.getItem("pending-username");
-    if (pendingUsername && !data.username) {
+    // 🔥 SYNC PENDING USERNAME (SAFE & USER-AWARE)
+    if (!data.username) {
       try {
-        const syncRes = await fetch(`/api/vip?task=set_username&username=${encodeURIComponent(pendingUsername)}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const syncData = await syncRes.json();
-        if (syncData.ok) {
-          data.username = syncData.username; // Update local data
-          localStorage.removeItem("pending-username"); // Clean up
+        // Decode email from JWT to ensure we don't sync someone else's username
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const payload = JSON.parse(atob(base64));
+        const userEmail = (payload.email || "").toLowerCase();
+
+        const pendingUsername = localStorage.getItem(`pending-username-${userEmail}`);
+
+        if (pendingUsername) {
+          console.log(`🚀 Syncing pending username for ${userEmail}: ${pendingUsername}`);
+          const syncRes = await fetch(`/api/vip?task=set_username&username=${encodeURIComponent(pendingUsername)}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const syncData = await syncRes.json();
+          if (syncData.ok) {
+            data.username = syncData.username;
+            localStorage.removeItem(`pending-username-${userEmail}`);
+          }
         }
       } catch (e) {
-        console.warn("Failed to sync pending username:", e);
+        console.warn("Secure sync failed:", e);
       }
     }
 
