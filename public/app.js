@@ -4076,6 +4076,7 @@ document.getElementById("premium-signup-btn")
 // REGISTRÁCIA – SUPABASE SIGNUP funkcia
 // ===============================
 async function handleRegister() {
+  const username = document.getElementById("reg-username")?.value.trim();
   const email = document.getElementById("reg-email")?.value.trim();
   const pass = document.getElementById("reg-pass")?.value;
   const pass2 = document.getElementById("reg-pass2")?.value;
@@ -4116,6 +4117,17 @@ async function handleRegister() {
     if (!r.ok) {
       msg.textContent = data?.error_description || data?.error || t("premium.signupFailed");
       return;
+    }
+
+    // Save username if provided (after successful registration)
+    if (username && username.length >= 2 && data.access_token) {
+      try {
+        await fetch(`/api/vip?task=set_username&username=${encodeURIComponent(username)}`, {
+          headers: { Authorization: `Bearer ${data.access_token}` }
+        });
+      } catch (e) {
+        console.warn("Failed to save username:", e);
+      }
     }
 
     // Úspešná registrácia - zobraziť správu a refreshnúť stránku

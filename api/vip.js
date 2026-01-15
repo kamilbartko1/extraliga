@@ -26,6 +26,7 @@ const vipHistoryKey = (userId, player) =>
   `VIP_MTG_HISTORY:${userId}:${player}`;
 const vipTotalProfitKey = (userId) => `VIP_TOTAL_PROFIT:${userId}`;
 const vipTotalStakedKey = (userId) => `VIP_TOTAL_STAKED:${userId}`;
+const vipUsernameKey = (userId) => `VIP_USERNAME:${userId}`;
 
 // ===============================
 // Skratky timov
@@ -257,6 +258,28 @@ export default async function handler(req, res) {
         userId,
         isVip: !!isVip,
       });
+    }
+
+    // =====================================================
+    // 1.5) SET USERNAME – uloženie prezývky
+    // =====================================================
+    if (task === "set_username") {
+      const username = req.query.username || req.body?.username;
+
+      if (!username || username.trim().length === 0) {
+        return res.json({ ok: false, error: "Username is required" });
+      }
+
+      // Sanitize username (max 20 chars, alphanumeric + underscore)
+      const sanitized = username.trim().substring(0, 20).replace(/[^a-zA-Z0-9_]/g, '');
+
+      if (sanitized.length < 2) {
+        return res.json({ ok: false, error: "Username must be at least 2 characters" });
+      }
+
+      await redis.set(vipUsernameKey(userId), sanitized);
+
+      return res.json({ ok: true, username: sanitized });
     }
 
     // =====================================================
@@ -698,13 +721,32 @@ export default async function handler(req, res) {
       const myStats = allStats[myIndex] || { totalProfit: 0, activePlayersCount: 0 };
       const myRank = myIndex + 1;
 
-      // 6. Get Top 10
-      const topList = allStats.slice(0, 10).map((s, index) => ({
-        rank: index + 1,
-        profit: s.totalProfit,
-        isCurrentUser: s.userId === userId,
-        name: s.userId === userId ? "TY (You)" : `Member #${s.userId.substring(0, 4)}...`
-      }));
+      // 6. Get Top 10 with usernames
+      const top10Stats = allStats.slice(0, 10);
+
+      // Fetch usernames for top 10 users
+      const usernamePromises = top10Stats.map(s => redis.get(vipUsernameKey(s.userId)));
+      const usernames = await Promise.all(usernamePromises);
+
+      const topList = top10Stats.map((s, index) => {
+        const username = usernames[index] || null;
+        let displayName;
+
+        if (s.userId === userId) {
+          displayName = "TY (You)";
+        } else if (username) {
+          displayName = username;
+        } else {
+          displayName = `Anonymous #${index + 1}`;
+        }
+
+        return {
+          rank: index + 1,
+          profit: s.totalProfit,
+          isCurrentUser: s.userId === userId,
+          name: displayName
+        };
+      });
 
       // 7. Calculate Diff from Average (Percentage)
       let diffPercent = 0;
