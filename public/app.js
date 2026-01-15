@@ -17,6 +17,64 @@ const ODDS = 2.5;
 const API_BASE = "";
 
 // =========================================================
+// FRONTEND CACHE - reduces Vercel API calls
+// =========================================================
+
+/**
+ * Fetch with localStorage caching
+ * @param {string} url - API endpoint URL
+ * @param {number} ttlMinutes - Cache TTL in minutes (default: 5)
+ * @param {object} options - fetch options (headers, etc.)
+ * @returns {Promise<any>} - parsed JSON response
+ */
+async function cachedFetch(url, ttlMinutes = 5, options = {}) {
+  const cacheKey = `CACHE:${url}`;
+  const now = Date.now();
+
+  // Check cache
+  try {
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      const age = (now - timestamp) / 1000 / 60; // age in minutes
+
+      if (age < ttlMinutes) {
+        console.log(`📦 Cache HIT: ${url} (${age.toFixed(1)}min old)`);
+        return data;
+      }
+    }
+  } catch (e) {
+    // Cache read failed, continue to fetch
+  }
+
+  // Cache miss or expired - fetch from API
+  console.log(`🌐 Cache MISS: ${url} - fetching...`);
+  const res = await fetch(url, options);
+  const data = await res.json();
+
+  // Save to cache
+  try {
+    localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: now }));
+  } catch (e) {
+    console.warn("Cache write failed:", e);
+  }
+
+  return data;
+}
+
+/**
+ * Clear all API cache (useful for forcing refresh)
+ */
+function clearApiCache() {
+  const keys = Object.keys(localStorage).filter(k => k.startsWith("CACHE:"));
+  keys.forEach(k => localStorage.removeItem(k));
+  console.log(`🗑️ Cleared ${keys.length} cached items`);
+}
+
+// Expose for debugging
+window.clearApiCache = clearApiCache;
+
+// =========================================================
 // i18n (SK / EN) – frontend only (backend untouched)
 // =========================================================
 
@@ -1262,28 +1320,22 @@ async function displayHome() {
   `;
 
   try {
-    // 🔥 1️⃣ RÝCHLE API – len zápasy, štatistiky, AI história, ABS zisk
-    const [homeResp, statsResp, aiGetResp, absResp] = await Promise.all([
-      fetch("/api/home", { cache: "no-store" }),
-      fetch("/api/statistics", { cache: "no-store" }),
-      fetch("/api/ai?task=get", { cache: "no-store" }),
-      fetch("/api/mantingal?task=all", { cache: "no-store" })
+    // 🔥 1️⃣ CACHED API – reduces Vercel function calls on refresh
+    const [homeData, statsData, aiData, absData] = await Promise.all([
+      cachedFetch("/api/home", 5),           // 5 min cache
+      cachedFetch("/api/statistics", 10),    // 10 min cache
+      cachedFetch("/api/ai?task=get", 2),    // 2 min cache (more dynamic)
+      cachedFetch("/api/mantingal?task=all", 5)  // 5 min cache
     ]);
 
-    const homeData = await homeResp.json();
-    const statsData = statsResp.ok ? await statsResp.json() : {};
-
     // AI história (bez dnešného live výpočtu)
-    const aiData = aiGetResp.ok
-      ? await aiGetResp.json()
-      : { history: [], hits: 0, total: 0, successRate: 0 };
+    const aiHistory = aiData || { history: [], hits: 0, total: 0, successRate: 0 };
 
     const history = (aiData.history || []).filter(h => h.result !== "pending");
 
-    // ABS zisk
-    const absData = absResp.ok ? await absResp.json() : { totalProfit: 0, players: {} };
-    const absTotalProfit = absData.totalProfit || 0;
-    const absPlayerCount = Object.keys(absData.players || {}).length;
+    // ABS zisk (already loaded via cachedFetch as absData)
+    const absTotalProfit = absData?.totalProfit || 0;
+    const absPlayerCount = Object.keys(absData?.players || {}).length;
 
     // 🔝 Štatistiky hráčov
     const topGoal = statsData?.topGoals?.[0] || {};
