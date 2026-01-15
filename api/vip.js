@@ -743,7 +743,7 @@ export default async function handler(req, res) {
         let displayName;
 
         if (s.userId === userId) {
-          displayName = "TY (You)";
+          displayName = username ? `TY (${username})` : "TY (You)";
         } else if (username) {
           displayName = username;
         } else {

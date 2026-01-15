@@ -4174,13 +4174,19 @@ async function handleRegister() {
     }
 
     // Save username if provided (after successful registration)
-    if (username && username.length >= 2 && data.access_token) {
-      try {
-        await fetch(`/api/vip?task=set_username&username=${encodeURIComponent(username)}`, {
-          headers: { Authorization: `Bearer ${data.access_token}` }
-        });
-      } catch (e) {
-        console.warn("Failed to save username:", e);
+    if (username && username.length >= 2) {
+      // Store in localStorage as fallback in case background fetch fails or email confirm is needed
+      localStorage.setItem("pending-username", username);
+
+      if (data.access_token) {
+        try {
+          await fetch(`/api/vip?task=set_username&username=${encodeURIComponent(username)}`, {
+            headers: { Authorization: `Bearer ${data.access_token}` }
+          });
+          localStorage.removeItem("pending-username"); // Success
+        } catch (e) {
+          console.warn("Failed to save username:", e);
+        }
       }
     }
 
@@ -4558,6 +4564,24 @@ async function loadPremiumDashboard() {
     if (!data.ok) {
       dashboardContent.innerHTML = `<p class="nhl-muted" style="color:#ff6b6b;">${data.error || t("common.failedToLoad")}</p>`;
       return;
+    }
+
+    // 🔥 SYNC PENDING USERNAME (if applicable)
+    // If we have a username in localStorage but NOT in DB, sync it now
+    const pendingUsername = localStorage.getItem("pending-username");
+    if (pendingUsername && !data.username) {
+      try {
+        const syncRes = await fetch(`/api/vip?task=set_username&username=${encodeURIComponent(pendingUsername)}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const syncData = await syncRes.json();
+        if (syncData.ok) {
+          data.username = syncData.username; // Update local data
+          localStorage.removeItem("pending-username"); // Clean up
+        }
+      } catch (e) {
+        console.warn("Failed to sync pending username:", e);
+      }
     }
 
     const dash = data.dashboard || {};
