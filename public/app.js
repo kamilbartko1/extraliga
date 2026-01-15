@@ -1334,12 +1334,13 @@ async function displayHome() {
 
   try {
     // 🔥 1️⃣ CACHED API – reduces Vercel function calls on refresh
-    const [homeData, statsData, aiData, absData] = await Promise.all([
-      cachedFetch("/api/home", 360),           // 6 hodín (360 min)
-      cachedFetch("/api/statistics", 180),    // 3 hodiny (180 min)
-      cachedFetch("/api/ai?task=get", 360),    // 6 hodín (360 min)
-      cachedFetch("/api/mantingal?task=all", 360) // 6 hodín (360 min)
-    ]);
+    const fetchPromises = [
+      cachedFetch("/api/home", 360).catch(e => ({ error: e.message })),
+      cachedFetch("/api/statistics", 180).catch(e => ({ error: e.message })),
+      cachedFetch("/api/ai?task=get", 360).catch(e => ({ error: e.message })),
+      cachedFetch("/api/mantingal?task=all", 360).catch(e => ({ error: e.message }))
+    ];
+    const [homeData, statsData, aiData, absData] = await Promise.all(fetchPromises);
 
     // AI história (bez dnešného live výpočtu)
     const aiHistory = aiData || { history: [], hits: 0, total: 0, successRate: 0 };
@@ -1832,7 +1833,7 @@ async function displayMatches(matches) {
         if (data.ok && data.highlight) {
           cell.innerHTML = `<a href="${data.highlight}" target="_blank" class="highlight-link">🎥</a>`;
         }
-      } catch { }
+      } catch (err) { }
     }
   }
 }
@@ -6296,7 +6297,7 @@ document.getElementById("mobileSelect")?.addEventListener("change", async (e) =>
 // === Štart stránky ===
 window.addEventListener("DOMContentLoaded", async () => {
   // --- SUPABASE AUTH HASH HANDLER (Google Redirect) ---
-  if (window.location.hash) {
+  if (window.location.hash && window.location.hash.includes("access_token")) {
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
     const accessToken = params.get("access_token");
@@ -6307,11 +6308,9 @@ window.addEventListener("DOMContentLoaded", async () => {
       localStorage.setItem("sb-access-token", accessToken);
       if (refreshToken) localStorage.setItem("sb-refresh-token", refreshToken);
 
-      // Vyčisti URL od hash-u pre krajší vzhľad
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState(null, null, cleanUrl);
 
-      // Malý delay aby sa predišlo race conditions, potom refresh pre načítanie stavu
       setTimeout(() => location.reload(), 200);
       return;
     }
@@ -6673,8 +6672,3 @@ function animateNewElements(container) {
     });
   });
 }
-
-
-
-
-});
