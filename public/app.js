@@ -20,15 +20,30 @@ const API_BASE = "";
 // FRONTEND CACHE - reduces Vercel API calls
 // =========================================================
 
+const CACHE_VERSION = "V3"; // Increment this to force-clear all users' caches
+
 /**
- * Fetch with localStorage caching
+ * Fetch with localStorage caching (User-aware)
  * @param {string} url - API endpoint URL
- * @param {number} ttlMinutes - Cache TTL in minutes (default: 5)
+ * @param {number} ttlMinutes - Cache TTL in minutes
  * @param {object} options - fetch options (headers, etc.)
- * @returns {Promise<any>} - parsed JSON response
  */
 async function cachedFetch(url, ttlMinutes = 5, options = {}) {
-  const cacheKey = `CACHE:${url}`;
+  // Create a unique key for the user if an Authorization token is present
+  let userSuffix = "";
+  const authHeader = options.headers?.Authorization || "";
+  if (authHeader.startsWith("Bearer ")) {
+    // We use a simple hash of the token to keep it anonymous but unique
+    const token = authHeader.slice(7);
+    let hash = 0;
+    for (let i = 0; i < token.length; i++) {
+      hash = ((hash << 5) - hash) + token.charCodeAt(i);
+      hash |= 0;
+    }
+    userSuffix = `:${hash}`;
+  }
+
+  const cacheKey = `CACHE_${CACHE_VERSION}:${url}${userSuffix}`;
   const now = Date.now();
 
   // Check cache
@@ -36,19 +51,17 @@ async function cachedFetch(url, ttlMinutes = 5, options = {}) {
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       const { data, timestamp } = JSON.parse(cached);
-      const age = (now - timestamp) / 1000 / 60; // age in minutes
+      const age = (now - timestamp) / 1000 / 60;
 
       if (age < ttlMinutes) {
-        console.log(`📦 Cache HIT: ${url} (${age.toFixed(1)}min old)`);
+        console.log(`📦 Cache HIT: ${url}${userSuffix ? ' (User-Specific)' : ''} (${age.toFixed(1)}min old)`);
         return data;
       }
     }
-  } catch (e) {
-    // Cache read failed, continue to fetch
-  }
+  } catch (e) { }
 
-  // Cache miss or expired - fetch from API
-  console.log(`🌐 Cache MISS: ${url} - fetching...`);
+  // Cache miss - fetch from API
+  console.log(`🌐 Cache MISS: ${url}${userSuffix ? ' (User-Specific)' : ''} - fetching...`);
   const res = await fetch(url, options);
   const data = await res.json();
 
@@ -63,10 +76,10 @@ async function cachedFetch(url, ttlMinutes = 5, options = {}) {
 }
 
 /**
- * Clear all API cache (useful for forcing refresh)
+ * Clear all API cache
  */
 function clearApiCache() {
-  const keys = Object.keys(localStorage).filter(k => k.startsWith("CACHE:"));
+  const keys = Object.keys(localStorage).filter(k => k.startsWith("CACHE_"));
   keys.forEach(k => localStorage.removeItem(k));
   console.log(`🗑️ Cleared ${keys.length} cached items`);
 }
