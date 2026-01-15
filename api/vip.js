@@ -277,6 +277,12 @@ export default async function handler(req, res) {
         return res.json({ ok: false, error: "Username must be at least 2 characters" });
       }
 
+      // Skontroluj, či už používateľ má nastavenú prezývku
+      const existing = await redis.get(vipUsernameKey(userId));
+      if (existing) {
+        return res.json({ ok: false, error: "Username is already set and cannot be changed" });
+      }
+
       await redis.set(vipUsernameKey(userId), sanitized);
 
       return res.json({ ok: true, username: sanitized });
@@ -672,9 +678,13 @@ export default async function handler(req, res) {
       // ROI = (celkový profit / celkový vklad) * 100
       const roi = totalStaked > 0 ? (totalProfit / totalStaked) * 100 : 0;
 
+      // Načítaj prezývku
+      const username = await redis.get(vipUsernameKey(userId)) || null;
+
       return res.json({
         ok: true,
         userId,
+        username, // Pridané
         dashboard: {
           asStrategy: {
             totalProfit: Number(totalProfit.toFixed(2)),

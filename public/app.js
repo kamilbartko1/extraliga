@@ -4588,7 +4588,28 @@ async function loadPremiumDashboard() {
     }
 
     // Render dashboard
+    const hasUsername = !!data.username;
+
     dashboardContent.innerHTML = `
+      <!-- Profilové nastavenia (Username) -->
+      <div class="dashboard-profile-settings">
+        <label for="dash-username">${t("premium.username")}:</label>
+        <div class="username-input-group">
+          <input id="dash-username" type="text" value="${data.username || ""}" 
+            placeholder="${t("premium.username")}" maxlength="20" 
+            ${hasUsername ? "readonly style='opacity: 0.7; cursor: not-allowed;'" : ""} />
+          
+          ${!hasUsername ? `
+          <button id="save-username-btn" class="save-username-btn" onclick="updateDashboardUsername()">
+            ${t("common.save") || "Uložiť"}
+          </button>
+          ` : ""}
+        </div>
+        <p id="username-msg" class="username-msg" style="color: #4ade80;">
+          ${hasUsername ? "✅ Prezývka je nastavená natrvalo." : ""}
+        </p>
+      </div>
+
       <div class="dashboard-grid">
         <!-- Celkový Profit -->
         <div class="dashboard-card dashboard-card-profit">
@@ -4600,8 +4621,6 @@ async function loadPremiumDashboard() {
           </div>
         </div>
 
-
-
         <!-- Aktívni hráči -->
         <div class="dashboard-card dashboard-card-players">
           <div class="dashboard-card-content">
@@ -4609,8 +4628,6 @@ async function loadPremiumDashboard() {
             <div class="dashboard-card-value">${activePlayers}</div>
           </div>
         </div>
-
-
 
         <!-- Dĺžka členstva -->
         <div class="dashboard-card dashboard-card-member">
@@ -4643,6 +4660,68 @@ async function loadPremiumDashboard() {
     dashboardContent.innerHTML = `<p class="nhl-muted" style="color:#ff6b6b;">${t("common.failedToLoad")}: ${err.message}</p>`;
   }
 }
+
+/**
+ * Update username from dashboard
+ */
+async function updateDashboardUsername() {
+  const input = document.getElementById("dash-username");
+  const msg = document.getElementById("username-msg");
+  const btn = document.getElementById("save-username-btn");
+  const token = localStorage.getItem("sb-access-token");
+
+  if (!input || !token) return;
+
+  const username = input.value.trim();
+  if (username.length < 2) {
+    if (msg) {
+      msg.textContent = "Minimálne 2 znaky.";
+      msg.style.color = "#ff6b6b";
+    }
+    return;
+  }
+
+  if (btn) btn.disabled = true;
+  if (msg) {
+    msg.textContent = "⏳ Ukladám...";
+    msg.style.color = "#00eaff";
+  }
+
+  try {
+    const res = await fetch(`/api/vip?task=set_username&username=${encodeURIComponent(username)}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    if (data.ok) {
+      if (msg) {
+        msg.textContent = "✅ Prezývka uložená!";
+        msg.style.color = "#4ade80";
+      }
+      // Reload dashboard after 1.5s to lock the field and refresh leaderboard
+      setTimeout(() => {
+        loadPremiumDashboard();
+        loadLeaderboard();
+      }, 1500);
+    } else {
+      if (msg) {
+        msg.textContent = `❌ ${data.error || "Chyba"}`;
+        msg.style.color = "#ff6b6b";
+      }
+    }
+  } catch (err) {
+    console.error(err);
+    if (msg) {
+      msg.textContent = "❌ Chyba spojenia.";
+      msg.style.color = "#ff6b6b";
+    }
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+// Expose globally
+window.updateDashboardUsername = updateDashboardUsername;
 
 // ===============================
 // LEADERBOARD
