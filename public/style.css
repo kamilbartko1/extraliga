@@ -11353,3 +11353,14 @@ body {
   width: 20px;
   height: 20px;
 }
+
+.google-login-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.google-login-btn span {
+  color: #222 !important;
+}
