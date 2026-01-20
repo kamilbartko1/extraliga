@@ -1608,7 +1608,7 @@ async function fetchMatches(forceRefresh = false) {
     // Ak existujú cache dáta, zobrazíme ich okamžite, potom aktualizujeme na pozadí
     const cacheKey = `CACHE_${CACHE_VERSION}:${API_BASE}/api/matches`;
     let cachedData = null;
-    
+
     if (!forceRefresh) {
       try {
         const cached = localStorage.getItem(cacheKey);
@@ -3319,6 +3319,16 @@ async function loadMantingal() {
   const totalProfitEl = document.getElementById("mtg-total-profit");
   const totalProfitValue = Number(data.totalProfit || 0);
   totalProfitEl.textContent = totalProfitValue.toFixed(2);
+
+  // 🔥 Zobraz/Skry profit box podľa hodnoty
+  const profitBox = document.querySelector(".abs-profit-box");
+  if (profitBox) {
+    if (totalProfitValue > 0) {
+      profitBox.style.display = ""; // Zobraziť (použiť CSS default)
+    } else {
+      profitBox.style.display = "none"; // Skryť
+    }
+  }
 
   // 🎨 Zafarbenie total profit
   totalProfitEl.classList.remove("balance-plus", "balance-minus");
