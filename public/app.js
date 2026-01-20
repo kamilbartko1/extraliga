@@ -3099,7 +3099,7 @@ async function openPlayerStatsModal(playerName, teamName) {
     // 🔥 OPTIMALIZÁCIA: Používame cachedFetch namiesto fetch s no-store (Edge cache už je nastavená)
     const data = await cachedFetch("/api/statistics", 30); // 30 min cache
     if (!data) throw new Error("Failed to fetch statistics");
-    if (!data.ok) throw new Error("Invalid response");
+    if (data.ok === false) throw new Error("Invalid response");
 
     // Nájdi hráča v štatistikách - skús všetky rebríčky
     const allPlayers = [
@@ -5304,7 +5304,7 @@ async function renderVipTips() {
   try {
     // 🔥 OPTIMALIZÁCIA: Používame cachedFetch namiesto fetch s no-store
     const s = await cachedFetch("/api/statistics", 30) || {};
-    statsData = s.ok ? await s.json() : {};
+    statsData = s;
   } catch {
     statsData = {};
   }
@@ -5567,7 +5567,7 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
   try {
     // 🔥 OPTIMALIZÁCIA: Používame cachedFetch namiesto fetch s no-store
     const s = await cachedFetch("/api/statistics", 30) || {};
-    statsData = s.ok ? await s.json() : {};
+    statsData = s;
   } catch (err) {
     console.warn("Failed to fetch stats:", err);
   }
@@ -5952,7 +5952,7 @@ async function displayShootingLeaders() {
       // 🔥 OPTIMALIZÁCIA: Používame cachedFetch namiesto fetch s force-cache
       const resp = await cachedFetch("/api/statistics", 30) || {}; // 30 min cache
       if (resp.ok) {
-        window.lastStatsCache = await resp.json();
+        window.lastStatsCache = resp;
         window.lastStatsFetchTime = Date.now();
       }
     } catch (err) {
