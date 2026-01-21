@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   });
 
   const task = req.query.task || "";
-  
+
   // 🔥 OPTIMALIZÁCIA: Edge cache podľa tasku
   // get - dlhšie cache (história), scorer - kratšie (dnešný tip)
   const cacheTime = task === "get" ? 900 : 180; // 15 min alebo 3 min
@@ -218,105 +218,105 @@ export default async function handler(req, res) {
     }
   }
 
-// =====================================================
-// 🟦 TASK 2 — SAVE (AI + MANTINGAL)
-// =====================================================
-if (task === "save") {
-  try {
-    // Získaj čerstvý AI tip
-    const scorerResp = await axios.get(`${baseUrl}/api/ai?task=scorer`);
-    const tip = scorerResp.data?.aiScorerTip;
+  // =====================================================
+  // 🟦 TASK 2 — SAVE (AI + MANTINGAL)
+  // =====================================================
+  if (task === "save") {
+    try {
+      // Získaj čerstvý AI tip
+      const scorerResp = await axios.get(`${baseUrl}/api/ai?task=scorer`);
+      const tip = scorerResp.data?.aiScorerTip;
 
-    if (!tip) return res.json({ ok: false, error: "No scorer" });
+      if (!tip) return res.json({ ok: false, error: "No scorer" });
 
-    // ---- PREMENÍME "Jason Robertson" → "J. Robertson" ----
-    function formatShortName(fullName) {
-      const parts = fullName.trim().split(" ");
-      if (parts.length < 2) return fullName;
-      const first = parts[0];
-      const last = parts.slice(1).join(" ");
-      return `${first[0].toUpperCase()}. ${last}`;
-    }
+      // ---- PREMENÍME "Jason Robertson" → "J. Robertson" ----
+      function formatShortName(fullName) {
+        const parts = fullName.trim().split(" ");
+        if (parts.length < 2) return fullName;
+        const first = parts[0];
+        const last = parts.slice(1).join(" ");
+        return `${first[0].toUpperCase()}. ${last}`;
+      }
 
-    const shortName = formatShortName(tip.player);
+      const shortName = formatShortName(tip.player);
 
-    // ============================================
-    // 1) ULOŽENIE AI_TIPS_HISTORY (bez zmien)
-    // ============================================
-    const aiEntry = {
-      ...tip,
-      player: shortName,
-      actualGoals: null,
-      result: "pending"
-    };
-
-    await redis.hset("AI_TIPS_HISTORY", {
-      [tip.date]: JSON.stringify(aiEntry)
-    });
-
-    // ============================================
-    // 2) ULOŽENIE MANTINGAL_PLAYER (BEZPEČNÉ)
-    // ============================================
-
-    // Najprv skontrolujeme, či hráč už existuje
-    const existingRaw = await redis.hget("MANTINGAL_PLAYERS", shortName);
-
-    if (!existingRaw) {
-      // ❗ VYTVORÍME HRÁČA IBA PRVÝKRÁT
-      const mantingaleEntry = {
+      // ============================================
+      // 1) ULOŽENIE AI_TIPS_HISTORY (bez zmien)
+      // ============================================
+      const aiEntry = {
         ...tip,
         player: shortName,
         actualGoals: null,
-        result: "pending",
-
-        // parametre mantingalu
-        stake: 1,
-        streak: 0,
-        balance: 0,
-        lastUpdate: null,
-        started: tip.date,
-
-        // doplníme team
-        teamAbbrev: tip.team || null
+        result: "pending"
       };
 
-      await redis.hset("MANTINGAL_PLAYERS", {
-        [shortName]: JSON.stringify(mantingaleEntry)
+      await redis.hset("AI_TIPS_HISTORY", {
+        [tip.date]: JSON.stringify(aiEntry)
       });
 
       // ============================================
-      // 3) Vytvoríme históriu IBA AK NEEXISTUJE !!!
+      // 2) ULOŽENIE MANTINGAL_PLAYER (BEZPEČNÉ)
       // ============================================
-      const histKey = `MANTINGAL_HISTORY:${shortName}`;
-      const histExists = await redis.get(histKey);
 
-      if (!histExists) {
-        await redis.set(histKey, JSON.stringify([]));
+      // Najprv skontrolujeme, či hráč už existuje
+      const existingRaw = await redis.hget("MANTINGAL_PLAYERS", shortName);
+
+      if (!existingRaw) {
+        // ❗ VYTVORÍME HRÁČA IBA PRVÝKRÁT
+        const mantingaleEntry = {
+          ...tip,
+          player: shortName,
+          actualGoals: null,
+          result: "pending",
+
+          // parametre mantingalu
+          stake: 1,
+          streak: 0,
+          balance: 0,
+          lastUpdate: null,
+          started: tip.date,
+
+          // doplníme team
+          teamAbbrev: tip.team || null
+        };
+
+        await redis.hset("MANTINGAL_PLAYERS", {
+          [shortName]: JSON.stringify(mantingaleEntry)
+        });
+
+        // ============================================
+        // 3) Vytvoríme históriu IBA AK NEEXISTUJE !!!
+        // ============================================
+        const histKey = `MANTINGAL_HISTORY:${shortName}`;
+        const histExists = await redis.get(histKey);
+
+        if (!histExists) {
+          await redis.set(histKey, JSON.stringify([]));
+        }
+
+        return res.json({
+          ok: true,
+          created: mantingaleEntry
+        });
       }
+
+      // ========================================================
+      // ❗ EXISTUJÚCI HRÁČ → NIČ NEPREPÍŠEME, NIČ NEVYMAŽEME
+      // ========================================================
+      const existingObj = JSON.parse(existingRaw);
 
       return res.json({
         ok: true,
-        created: mantingaleEntry
+        message: "Player already exists — not overwritten",
+        player: shortName,
+        state: existingObj
       });
+
+    } catch (err) {
+      console.error("❌ save:", err.message);
+      return res.json({ ok: false, error: err.message });
     }
-
-    // ========================================================
-    // ❗ EXISTUJÚCI HRÁČ → NIČ NEPREPÍŠEME, NIČ NEVYMAŽEME
-    // ========================================================
-    const existingObj = JSON.parse(existingRaw);
-
-    return res.json({
-      ok: true,
-      message: "Player already exists — not overwritten",
-      player: shortName,
-      state: existingObj
-    });
-
-  } catch (err) {
-    console.error("❌ save:", err.message);
-    return res.json({ ok: false, error: err.message });
   }
-}
 
   // =====================================================
   // 🟥 TASK 3 — UPDATE (Vyhodnotenie strelca)
