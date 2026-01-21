@@ -11,6 +11,7 @@ let PREMIUM_PLAYERS_CACHE = [];
 let PREMIUM_SELECTS_READY = false;
 let premiumPlayersLoaded = false;
 let LAST_STANDINGS = [];
+let HIGHLIGHTS_CACHE = {};
 
 const BASE_STAKE = 1;
 const ODDS = 2.5;
@@ -1854,16 +1855,23 @@ async function displayMatches(matches) {
     for (const match of grouped[day]) {
       if ((match.status || "").toLowerCase() !== "closed") continue;
 
+      // Check in-memory cache
+      if (HIGHLIGHTS_CACHE[match.id]) {
+        const cell = document.getElementById(`recap-${match.id}`);
+        if (cell) cell.innerHTML = `<a href="${HIGHLIGHTS_CACHE[match.id]}" target="_blank" class="highlight-link">🎥</a>`;
+        continue;
+      }
+
       try {
         const resp = await fetch(
-          `/api/highlights?team=${encodeURIComponent(match.home_team)}&id=${match.id}`,
-          { cache: "no-store" }
+          `/api/highlights?team=${encodeURIComponent(match.home_team)}&id=${match.id}`
         );
         const data = await resp.json();
         const cell = document.getElementById(`recap-${match.id}`);
         if (!cell) continue;
 
         if (data.ok && data.highlight) {
+          HIGHLIGHTS_CACHE[match.id] = data.highlight; // Save to cache
           cell.innerHTML = `<a href="${data.highlight}" target="_blank" class="highlight-link">🎥</a>`;
         }
       } catch (err) { }
