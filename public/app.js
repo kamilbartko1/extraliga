@@ -1876,7 +1876,7 @@ window.signInWithGoogle = async function () {
   console.log("🌐 Presmerúvam na Google login...");
   const provider = "google";
   const redirectUrl = window.location.origin + window.location.pathname;
-  const authUrl = `${SUPABASE_URL}/auth/v1/authorize?provider=${provider}&redirect_to=${encodeURIComponent(redirectUrl)}`;
+  const authUrl = `${SUPABASE_URL}/auth/v1/authorize?provider=${provider}&redirect_to=${encodeURIComponent(redirectUrl)}&prompt=consent&access_type=offline`;
   window.location.href = authUrl;
 };
 
