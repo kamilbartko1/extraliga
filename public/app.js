@@ -20,7 +20,7 @@ const API_BASE = "";
 // FRONTEND CACHE - reduces Vercel API calls
 // =========================================================
 
-const CACHE_VERSION = "V4"; // Increment this to force-clear all users' caches
+const CACHE_VERSION = "V5"; // Increment this to force-clear all users' caches
 
 /**
  * Fetch with localStorage caching (User-aware)
@@ -1848,10 +1848,21 @@ async function displayMatches(matches) {
   }
 
   // ===============================
-  // 🎥 Zostrihy – BEZ ZMENY LOGIKY
+  // 🎥 Zostrihy – LEN PRE POSLEDNÝ ODOHRANÝ DEŇ
   // ===============================
+  let targetDay = null;
+
+  // Nájdeme prvý deň (od najnovšieho), ktorý má aspoň jeden uzavretý zápas
   for (const day of days) {
-    for (const match of grouped[day]) {
+    const hasClosed = grouped[day].some(m => (m.status || "").toLowerCase() === "closed");
+    if (hasClosed) {
+      targetDay = day;
+      break;
+    }
+  }
+
+  if (targetDay) {
+    for (const match of grouped[targetDay]) {
       if ((match.status || "").toLowerCase() !== "closed") continue;
 
       try {
