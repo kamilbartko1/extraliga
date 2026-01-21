@@ -20,7 +20,7 @@ const API_BASE = "";
 // FRONTEND CACHE - reduces Vercel API calls
 // =========================================================
 
-const CACHE_VERSION = "V4"; // Increment this to force-clear all users' caches
+const CACHE_VERSION = "V3"; // Increment this to force-clear all users' caches
 
 /**
  * Fetch with localStorage caching (User-aware)
