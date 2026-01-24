@@ -139,7 +139,7 @@ const I18N = {
     "home.featureAI": "AI Analýza",
     "home.featureAIDesc": "Pokročilá AI analýza pomáha predpovedať výsledky s vyššou presnosťou",
     "home.featureStats": "Kompletné štatistiky",
-    "home.featureStatsDesc": "Dostup k detailným štatistikám hráčov a tímov v reálnom čase",
+    "home.featureStatsDesc": "Prístup k detailným štatistikám hráčov a tímov v reálnom čase",
     "home.featureStrategy": "AS Stratégia",
     "home.featureStrategyDesc": "Advanced Simulation pre maximálny zisk",
     "home.featureRealTime": "Aktuálne dáta",
