@@ -2350,6 +2350,7 @@ async function openLiveGameDetails(gameId) {
 
   // Zobraz overlay hneď, aby sa užívateľovi zdalo, že sa niečo deje
   overlay.style.setProperty("display", "flex", "important");
+  overlay.classList.add("active");
   content.innerHTML = '<p class="nhl-muted" style="text-align:center;padding:40px;">Načítavam podrobnosti zápasu...</p>';
   content.style.transform = "scale(0.9)";
   content.style.opacity = "0";
@@ -2658,6 +2659,7 @@ async function openFinishedGameDetails(gameId) {
 
   // Zobraz overlay hneď
   overlay.style.setProperty("display", "flex", "important");
+  overlay.classList.add("active");
   content.innerHTML = '<p class="nhl-muted" style="text-align:center;padding:40px;">Načítavam podrobnosti zápasu...</p>';
   content.style.transform = "scale(0.9)";
   content.style.opacity = "0";
@@ -3025,12 +3027,20 @@ async function loadPlayerTeams() {
 }
 
 function openTeamRatingModal() {
-  document.getElementById("teamRatingModal").style.display = "flex";
+  const overlay = document.getElementById("teamRatingModal");
+  if (overlay) {
+    overlay.style.display = "flex";
+    setTimeout(() => overlay.classList.add("active"), 10);
+  }
 }
 
 function closeTeamRatingModal(e) {
   if (!e || e.target.id === "teamRatingModal") {
-    document.getElementById("teamRatingModal").style.display = "none";
+    const overlay = document.getElementById("teamRatingModal");
+    if (overlay) {
+      overlay.classList.remove("active");
+      setTimeout(() => overlay.style.display = "none", 300);
+    }
   }
 }
 
@@ -3136,6 +3146,7 @@ async function openPlayerStatsModal(playerName, teamName) {
 
   // Zobraz modal s animáciou
   modal.style.display = "flex";
+  modal.classList.add("active");
   content.innerHTML = `<p style="text-align:center;padding:40px;color:#00eaff;">${t("common.loading")}</p>`;
 
   // Zastav propagáciu eventu na content
@@ -3345,12 +3356,20 @@ function closePlayerStatsModal(e) {
 }
 
 function openRatingModal() {
-  document.getElementById("ratingModal").style.display = "flex";
+  const overlay = document.getElementById("ratingModal");
+  if (overlay) {
+    overlay.style.display = "flex";
+    setTimeout(() => overlay.classList.add("active"), 10);
+  }
 }
 
 function closeRatingModal(e) {
   if (!e || e.target.id === "ratingModal" || e.target.classList.contains("rating-modal-close") || e.target.closest(".rating-modal-close")) {
-    document.getElementById("ratingModal").style.display = "none";
+    const overlay = document.getElementById("ratingModal");
+    if (overlay) {
+      overlay.classList.remove("active");
+      setTimeout(() => overlay.style.display = "none", 300);
+    }
   }
 }
 
@@ -3637,6 +3656,7 @@ function openAbsTableExplanation() {
 
   // Zobraz overlay a spusti animáciu
   overlay.style.setProperty("display", "flex", "important");
+  overlay.classList.add("active");
   content.style.transform = "scale(0.9)";
   content.style.opacity = "0";
   requestAnimationFrame(() => {
@@ -3661,6 +3681,7 @@ function closeAbsTableExplanation(event) {
   content.style.opacity = "0";
 
   setTimeout(() => {
+    overlay.classList.remove("active");
     overlay.style.display = "none";
   }, 200);
 }
@@ -5585,6 +5606,7 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
 
   // Show overlay as flex → real modal window
   overlay.style.setProperty("display", "flex", "important");
+  overlay.classList.add("active");
 
   // Reset animácie - modal sa centruje cez CSS flexbox
   modal.style.opacity = "0";
@@ -5817,6 +5839,7 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
   if (!modal || !overlay) return;
 
   overlay.style.setProperty("display", "flex", "important");
+  overlay.classList.add("active");
 
   // Reset animácie - modal sa centruje cez CSS flexbox
   modal.style.opacity = "0";
@@ -5976,6 +5999,7 @@ function closeVipTipAnalysis(e) {
       modal.style.opacity = "0";
       modal.style.transform = "scale(0.9) translateY(-20px)";
       setTimeout(() => {
+        overlay.classList.remove("active");
         overlay.style.display = "none";
         // Reset animácie
         if (modal) {
