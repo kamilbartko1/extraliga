@@ -11370,8 +11370,8 @@ body {
 .doxx-banner-container {
   width: 100%;
   /* Full width */
-  height: 250px;
-  /* Fixed height 250px */
+  height: 200px;
+  /* Fixed height 200px */
   margin: 10px 0;
   cursor: pointer;
   border-radius: 8px;
