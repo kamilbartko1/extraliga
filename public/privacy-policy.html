@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="sk">
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Orbitron:wght@500;600&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@100;300;400&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Privacy Policy - NHLPRO.sk">
+    <title>Privacy Policy - NHLPRO.sk</title>
+    <link rel="icon" type="image/png" href="/nhl_logo.png">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Page specific overrides for readability */
+        .policy-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .policy-container h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: #00eaff;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            text-align: center;
+        }
+
+        .policy-container h2 {
+            color: #fff;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .policy-container p {
+            margin-bottom: 15px;
+        }
+
+        .policy-container ul {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+
+        .policy-container li {
+            margin-bottom: 8px;
+        }
+
+        /* Simple language switch for this page */
+        .page-lang-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="header-left">
+            <a href="/" style="text-decoration:none; display:flex; align-items:center; color:inherit;">
+                <img src="/nhl_logo.png" alt="NHL logo">
+                <span>NHLPRO.sk</span>
+            </a>
+        </div>
+
+        <div class="header-center">
+            Privacy Policy
+        </div>
+
+        <div class="header-right">
+            <!-- 🌍 Jazyk (SK/EN) -->
+            <div class="lang-switch" role="group" aria-label="Language">
+                <button type="button" class="lang-btn" data-lang="sk" onclick="setPageLang('sk')">
+                    <img src="https://flagcdn.com/24x18/sk.png" width="24" height="18" alt="">
+                    <span class="lang-code">SK</span>
+                </button>
+                <button type="button" class="lang-btn" data-lang="en" onclick="setPageLang('en')">
+                    <img src="https://flagcdn.com/24x18/gb.png" width="24" height="18" alt="">
+                    <span class="lang-code">EN</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="policy-container">
+        <div id="policy-content">
+            <!-- Content injected by JS -->
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <span>© 2026 NHLPRO.sk</span>
+            <div class="footer-links">
+                <a href="/" class="footer-link">← Back to Home / Späť domov</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const CONTENT = {
+            sk: `
+        <h1>🔐 Ochrana osobných údajov – NHLPRO.sk</h1>
+        <p><strong>Posledná aktualizácia:</strong> 21. 1. 2026</p>
+
+        <h2>1. Prevádzkovateľ</h2>
+        <p>Prevádzkovateľom webovej stránky NHLPRO.sk je jej vlastník.<br>
+        Kontakt je dostupný prostredníctvom kontaktného formulára na stránke.</p>
+
+        <h2>2. Aké údaje zhromažďujeme</h2>
+        <p>Pri používaní služby môžeme zhromažďovať tieto údaje:</p>
+        <ul>
+            <li>Emailová adresa</li>
+            <li>Identifikátor používateľa</li>
+            <li>Technické údaje (IP adresa, typ zariadenia, prehliadač)</li>
+            <li>Údaje o používaní služby (prémiové funkcie, štatistiky)</li>
+        </ul>
+
+        <h2>3. Spôsob prihlásenia</h2>
+        <p>Používateľ sa môže prihlásiť:</p>
+        <ul>
+            <li>Emailom a heslom</li>
+            <li>Prostredníctvom Google účtu (Google OAuth)</li>
+        </ul>
+        <p>Pri prihlásení cez Google získavame iba:</p>
+        <ul>
+            <li>Emailovú adresu</li>
+            <li>Základný identifikátor účtu</li>
+        </ul>
+
+        <h2>4. Účel spracovania údajov</h2>
+        <p>Osobné údaje spracúvame výhradne na účely:</p>
+        <ul>
+            <li>Autentifikácie používateľa</li>
+            <li>Správy používateľských účtov</li>
+            <li>Poskytovania prémiových funkcií</li>
+            <li>Zlepšovania analytických služieb</li>
+        </ul>
+
+        <h2>5. Zdieľanie údajov s tretími stranami</h2>
+        <p>Údaje môžu byť spracúvané prostredníctvom:</p>
+        <ul>
+            <li>Google OAuth – prihlásenie používateľa</li>
+            <li>Supabase – správa používateľských účtov</li>
+            <li>Stripe – spracovanie platieb (iba platobné metadáta)</li>
+        </ul>
+        <p>Údaje nie sú predávané ani poskytované tretím stranám na marketingové účely.</p>
+
+        <h2>6. Uchovávanie údajov</h2>
+        <p>Údaje sú uchovávané po dobu aktívneho účtu používateľa alebo do jeho vymazania na žiadosť.</p>
+
+        <h2>7. Práva používateľa (GDPR)</h2>
+        <p>Používateľ má právo:</p>
+        <ul>
+            <li>Na prístup k svojim údajom</li>
+            <li>Na opravu alebo vymazanie údajov</li>
+            <li>Na obmedzenie spracovania</li>
+            <li>Na prenositeľnosť údajov</li>
+        </ul>
+        <p>Žiadosť je možné podať prostredníctvom kontaktného formulára.</p>
+
+        <h2>8. Bezpečnosť údajov</h2>
+        <p>Používame primerané technické a organizačné opatrenia na ochranu údajov pred zneužitím.</p>
+
+        <h2>9. Zmeny zásad</h2>
+        <p>Vyhradzujeme si právo tieto zásady kedykoľvek aktualizovať.</p>
+
+        <h2>10. Kontakt</h2>
+        <p>V prípade otázok týkajúcich sa ochrany osobných údajov nás kontaktujte prostredníctvom webovej stránky NHLPRO.sk.</p>
+      `,
+            en: `
+        <h1>🔐 Privacy Policy – NHLPRO.sk</h1>
+        <p><strong>Last updated:</strong> January 21, 2026</p>
+
+        <h2>1. Controller</h2>
+        <p>The operator of the website NHLPRO.sk is its owner.<br>
+        Contact is available via the contact form on the website.</p>
+
+        <h2>2. What Data We Collect</h2>
+        <p>When using the service, we may collect the following data:</p>
+        <ul>
+            <li>Email address</li>
+            <li>User Identifier</li>
+            <li>Technical data (IP address, device type, browser)</li>
+            <li>Service usage data (premium features, statistics)</li>
+        </ul>
+
+        <h2>3. Login Methods</h2>
+        <p>The user can log in via:</p>
+        <ul>
+            <li>Email and password</li>
+            <li>Google Account (Google OAuth)</li>
+        </ul>
+        <p>When logging in via Google, we only receive:</p>
+        <ul>
+            <li>Email address</li>
+            <li>Basic account identifier</li>
+        </ul>
+
+        <h2>4. Purpose of Data Processing</h2>
+        <p>We process personal data solely for the purposes of:</p>
+        <ul>
+            <li>User authentication</li>
+            <li>User account management</li>
+            <li>Providing premium features</li>
+            <li>Improving analytical services</li>
+        </ul>
+
+        <h2>5. Data Sharing with Third Parties</h2>
+        <p>Data may be processed via:</p>
+        <ul>
+            <li>Google OAuth – user login</li>
+            <li>Supabase – user account management</li>
+            <li>Stripe – payment processing (payment metadata only)</li>
+        </ul>
+        <p>Data is not sold or provided to third parties for marketing purposes.</p>
+
+        <h2>6. Data Retention</h2>
+        <p>Data is retained for the duration of the user's active account or until deletion is requested.</p>
+
+        <h2>7. User Rights (GDPR)</h2>
+        <p>The user has the right to:</p>
+        <ul>
+            <li>Access their data</li>
+            <li>Rectify or delete data</li>
+            <li>Restrict processing</li>
+            <li>Data portability</li>
+        </ul>
+        <p>Requests can be submitted via the contact form.</p>
+
+        <h2>8. Data Security</h2>
+        <p>We use appropriate technical and organizational measures to protect data against misuse.</p>
+
+        <h2>9. Changes to Policy</h2>
+        <p>We reserve the right to update this policy at any time.</p>
+
+        <h2>10. Contact</h2>
+        <p>For questions regarding personal data protection, please contact us via the NHLPRO.sk website.</p>
+      `
+        };
+
+        function setPageLang(lang) {
+            if (!CONTENT[lang]) lang = 'sk';
+            localStorage.setItem('nhlpro_lang', lang);
+
+            // Update Content
+            document.getElementById('policy-content').innerHTML = CONTENT[lang];
+            document.documentElement.lang = lang;
+
+            // Update Buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('is-active', btn.getAttribute('data-lang') === lang);
+            });
+        }
+
+        // Init
+        const saved = localStorage.getItem('nhlpro_lang') || 'sk';
+        setPageLang(saved);
+    </script>
+</body>
+
+</html>

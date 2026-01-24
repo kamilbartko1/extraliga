@@ -3,189 +3,262 @@
 
 <head>
     <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Orbitron:wght@500;600&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service | NHLPRO.sk</title>
+    <meta name="description" content="Terms of Service - NHLPRO.sk">
+    <title>Terms of Service - NHLPRO.sk</title>
+    <link rel="icon" type="image/png" href="/nhl_logo.png">
     <link rel="stylesheet" href="style.css">
+
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0f172a;
-            color: #fff;
+        /* Page specific overrides for readability */
+        .policy-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #e0e0e0;
             line-height: 1.6;
-            padding: 20px;
         }
 
-        .legal-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #1e293b;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        h1,
-        h2,
-        h3 {
+        .policy-container h1 {
+            font-family: 'Orbitron', sans-serif;
             color: #00eaff;
-            margin-top: 1.5em;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            text-align: center;
         }
 
-        h1 {
-            border-bottom: 2px solid #00eaff;
+        .policy-container h2 {
+            /* mapped from h3 in the js text */
+            color: #fff;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 10px;
-            margin-top: 0;
         }
 
-        a {
-            color: #00eaff;
-            text-decoration: none;
+        .policy-container p {
+            margin-bottom: 15px;
         }
 
-        ul {
+        .policy-container ul {
+            margin-bottom: 15px;
             padding-left: 20px;
         }
 
-        li {
-            margin-bottom: 0.5em;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #94a3b8;
-        }
-
-        .back-link:hover {
-            color: #fff;
-        }
-
-        .section-divider {
-            border-top: 1px solid #334155;
-            margin: 40px 0;
+        .policy-container li {
+            margin-bottom: 8px;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="legal-container">
-        <a href="/" class="back-link">← Späť na domovskú stránku</a>
+    <header class="site-header">
+        <div class="header-left">
+            <a href="/" style="text-decoration:none; display:flex; align-items:center; color:inherit;">
+                <img src="/nhl_logo.png" alt="NHL logo">
+                <span>NHLPRO.sk</span>
+            </a>
+        </div>
 
-        <h1>Podmienky používania</h1>
-        <p><strong>Posledná aktualizácia:</strong> 21. 1. 2026</p>
+        <div class="header-center">
+            Terms of Service
+        </div>
 
-        <h3>1️⃣ Prijatie podmienok</h3>
-        <p>Prístupom a používaním NHLPRO.sk prijímate a súhlasíte s tým, že budete viazaní týmito Podmienkami
-            používania. Ak nesúhlasíte, nepoužívajte naše služby.</p>
+        <div class="header-right">
+            <!-- 🌍 Jazyk (SK/EN) -->
+            <div class="lang-switch" role="group" aria-label="Language">
+                <button type="button" class="lang-btn" data-lang="sk" onclick="setPageLang('sk')">
+                    <img src="https://flagcdn.com/24x18/sk.png" width="24" height="18" alt="">
+                    <span class="lang-code">SK</span>
+                </button>
+                <button type="button" class="lang-btn" data-lang="en" onclick="setPageLang('en')">
+                    <img src="https://flagcdn.com/24x18/gb.png" width="24" height="18" alt="">
+                    <span class="lang-code">EN</span>
+                </button>
+            </div>
+        </div>
+    </header>
 
-        <h3>2️⃣ Popis služby</h3>
-        <p>NHLPRO.sk poskytuje informačný, analytický a vzdelávací obsah týkajúci sa NHL hokeja, vrátane:</p>
-        <ul>
-            <li>Štatistík a výsledkov zápasov</li>
-            <li>Hodnotení hráčov a tímov</li>
-            <li>Analytických modelov a stávkových stratégií</li>
-            <li>Prémiových služieb pre registrovaných používateľov</li>
-        </ul>
-
-        <h3>3️⃣ Používateľské účty</h3>
-        <p>Pre prístup k určitým funkciám musíte vytvoriť účet. Zodpovedáte za:</p>
-        <ul>
-            <li>Zachovanie dôvernosti vašich prihlasovacích údajov</li>
-            <li>Všetky aktivity, ktoré sa vyskytnú pod vaším účtom</li>
-            <li>Okamžité oznámenie o akomkoľvek neoprávnenom použití</li>
-        </ul>
-
-        <h3>4️⃣ Prípustné použitie</h3>
-        <p>Súhlasíte, že nebudete:</p>
-        <ul>
-            <li>Používať službu na nezákonné účely</li>
-            <li>Pokúšať sa získať neoprávnený prístup k systému</li>
-            <li>Narušovať alebo narúšať službu</li>
-            <li>Kopírovať, upravovať alebo distribuovať obsah bez povolenia</li>
-            <li>Používať automatizované systémy na prístup k službe</li>
-        </ul>
-
-        <h3>5️⃣ Prémiové služby</h3>
-        <p>Prémiové služby sú poskytované na základe predplatného. Podmienky zahŕňajú:</p>
-        <ul>
-            <li>Prístup k pokročilým funkciám a analýzam</li>
-            <li>Žiadnu záruku zisku alebo úspechu v stávkovaní</li>
-            <li>Politiku vrátenia peňazí podľa špecifikácie v čase nákupu</li>
-        </ul>
-
-        <h3>6️⃣ Duševné vlastníctvo</h3>
-        <p>Všetok obsah na NHLPRO.sk, vrátane textu, grafiky, loga a softvéru, je vlastníctvom NHLPRO.sk a je chránený
-            autorským právom.</p>
-
-        <h3>7️⃣ Obmedzenie zodpovednosti</h3>
-        <p>NHLPRO.sk je poskytovaný "tak, ako je" bez záruk. Nezodpovedáme za:</p>
-        <ul>
-            <li>Žiadne straty vyplývajúce z použitia našich informácií</li>
-            <li>Prerušenia služby alebo chyby</li>
-            <li>Rozhodnutia založené na našom obsahu</li>
-        </ul>
-
-        <h3>8️⃣ Vekové obmedzenie</h3>
-        <p>Naše služby sú určené pre používateľov vo veku 18 a viac rokov. Používaním našej služby potvrdzujete, že
-            spĺňate túto vekovú požiadavku.</p>
-
-        <h3>9️⃣ Úpravy služby</h3>
-        <p>Vyhradzujeme si právo kedykoľvek upraviť, pozastaviť alebo ukončiť akúkoľvek časť služby bez predchádzajúceho
-            upozornenia.</p>
-
-        <h3>🔟 Ukončenie</h3>
-        <p>Môžeme okamžite ukončiť alebo pozastaviť váš účet a prístup k službe bez predchádzajúceho upozornenia za
-            akékoľvek porušenie týchto Podmienok.</p>
-
-        <h3>1️⃣1️⃣ Právny poriadok</h3>
-        <p>Tieto Podmienky sa riadia právnymi predpismi Slovenskej republiky. Akékoľvek spory sa riešia v slovenských
-            súdoch.</p>
-
-        <h3>1️⃣2️⃣ Kontakt</h3>
-        <p>Pre otázky týkajúce sa týchto Podmienok nás kontaktujte prostredníctvom kontaktného formulára na webovej
-            stránke.</p>
-
-        <div class="section-divider"></div>
-
-        <h2>⚖️ PRÁVNY DISCLAIMER</h2>
-
-        <h3>1️⃣ Všeobecné upozornenie</h3>
-        <p>Webová stránka <strong>NHLPRO.sk</strong> slúži výhradne na informačné, analytické a vzdelávacie účely. Obsah
-            stránky nepredstavuje stávkové poradenstvo, investičné odporúčanie ani výzvu na uzatváranie stávok.</p>
-        <p>Používateľ berie na vedomie, že všetky informácie, štatistiky, modely, hodnotenia a stratégie zverejnené na
-            stránke sú poskytované bez akejkoľvek záruky úspechu alebo zisku.</p>
-
-        <h3>2️⃣ Riziko a zodpovednosť používateľa</h3>
-        <p>Predikcie a finančné rozhodnutia sú spojené s finančným rizikom a môžu viesť k strate peňazí. Používateľ
-            používa informácie zverejnené na stránke výlučne na vlastnú zodpovednosť.</p>
-        <p>Prevádzkovateľ stránky nezodpovedá za žiadne finančné straty, ktoré môžu vzniknúť v dôsledku použitia
-            informácií, stratégií alebo nástrojov dostupných na stránke.</p>
-
-        <h3>3️⃣ Advanced simulation a analytické modely</h3>
-        <p>Stratégie a modely (vrátane tzv. Pokročilej stávkovej stratégie) nepredstavujú zaručený spôsob dosahovania
-            zisku. Ide o teoretické a analytické prístupy.</p>
-        <p>Minulé výsledky nie sú zárukou budúcich výsledkov.</p>
-
-        <h3>4️⃣ Transparentnosť údajov</h3>
-        <p>NHLPRO.sk zverejňuje kompletné historické údaje vrátane výhier, prehier a vynechaných zápasov. Tieto údaje
-            slúžia výhradne na prehľad a analýzu.</p>
-
-        <h3>5️⃣ Nezávislosť od stávkových kancelárií</h3>
-        <p>NHLPRO.sk nie je stávkovou kanceláriou a neprijíma stávky ani finančné vklady.</p>
-
-        <h3>6️⃣ Vekové obmedzenie</h3>
-        <p>Používanie stránky je určené výhradne osobám starším ako 18 rokov.</p>
-
-        <h3>7️⃣ VIP / Premium služby</h3>
-        <p>Zakúpením VIP služby používateľ nezískava žiadnu záruku zisku ani osobné stávkové poradenstvo.</p>
-
-        <h3>8️⃣ Záverečné ustanovenia</h3>
-        <p>Používaním stránky NHLPRO.sk používateľ vyjadruje súhlas s týmto právnym upozornením. Ak s podmienkami
-            používania nesúhlasí, je zakázané akékoľvek používanie web portálu nhlpro.sk!</p>
-
+    <div class="policy-container">
+        <div id="policy-content">
+            <!-- Content injected by JS -->
+        </div>
     </div>
 
+    <footer class="site-footer">
+        <div class="footer-content">
+            <span>© 2026 NHLPRO.sk</span>
+            <div class="footer-links">
+                <a href="/" class="footer-link">← Back to Home / Späť domov</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Copying the text content logic from app.js to keep it consistent
+        const CONTENT = {
+            sk: `
+        <h1>📋 Podmienky používania - NHLPRO.sk</h1>
+        <p><strong>Posledná aktualizácia:</strong> 21. 1. 2026</p>
+
+        <h2>1️⃣ Prijatie podmienok</h2>
+        <p>Prístupom a používaním NHLPRO.sk prijímate a súhlasíte s tým, že budete viazaní týmito Podmienkami používania. Ak nesúhlasíte, nepoužívajte naše služby.</p>
+
+        <h2>2️⃣ Popis služby</h2>
+        <p>NHLPRO.sk poskytuje informačný, analytický a vzdelávací obsah týkajúci sa NHL hokeja, vrátane:</p>
+        <ul>
+        <li>Štatistík a výsledkov zápasov</li>
+        <li>Hodnotení hráčov a tímov</li>
+        <li>Analytických modelov a stávkových stratégií</li>
+        <li>Prémiových služieb pre registrovaných používateľov</li>
+        </ul>
+
+        <h2>3️⃣ Používateľské účty</h2>
+        <p>Pre prístup k určitým funkciám musíte vytvoriť účet. Zodpovedáte za:</p>
+        <ul>
+        <li>Zachovanie dôvernosti vašich prihlasovacích údajov</li>
+        <li>Všetky aktivity, ktoré sa vyskytnú pod vaším účtom</li>
+        <li>Okamžité oznámenie o akomkoľvek neoprávnenom použití</li>
+        </ul>
+
+        <h2>4️⃣ Prípustné použitie</h2>
+        <p>Súhlasíte, že nebudete:</p>
+        <ul>
+        <li>Používať službu na nezákonné účely</li>
+        <li>Pokúšať sa získať neoprávnený prístup k systému</li>
+        <li>Narušovať alebo narúšať službu</li>
+        <li>Kopírovať, upravovať alebo distribuovať obsah bez povolenia</li>
+        <li>Používať automatizované systémy na prístup k službe</li>
+        </ul>
+
+        <h2>5️⃣ Prémiové služby</h2>
+        <p>Prémiové služby sú poskytované na základe predplatného. Podmienky zahŕňajú:</p>
+        <ul>
+        <li>Prístup k pokročilým funkciám a analýzam</li>
+        <li>Žiadnu záruku zisku alebo úspechu v stávkovaní</li>
+        <li>Politiku vrátenia peňazí podľa špecifikácie v čase nákupu</li>
+        </ul>
+
+        <h2>6️⃣ Duševné vlastníctvo</h2>
+        <p>Všetok obsah na NHLPRO.sk, vrátane textu, grafiky, loga a softvéru, je vlastníctvom NHLPRO.sk a je chránený autorským právom.</p>
+
+        <h2>7️⃣ Obmedzenie zodpovednosti</h2>
+        <p>NHLPRO.sk je poskytovaný "tak, ako je" bez záruk. Nezodpovedáme za:</p>
+        <ul>
+        <li>Žiadne straty vyplývajúce z použitia našich informácií</li>
+        <li>Prerušenia služby alebo chyby</li>
+        <li>Rozhodnutia založené na našom obsahu</li>
+        </ul>
+
+        <h2>8️⃣ Vekové obmedzenie</h2>
+        <p>Naše služby sú určené pre používateľov vo veku 18 a viac rokov. Používaním našej služby potvrdzujete, že spĺňate túto vekovú požiadavku.</p>
+
+        <h2>9️⃣ Úpravy služby</h2>
+        <p>Vyhradzujeme si právo kedykoľvek upraviť, pozastaviť alebo ukončiť akúkoľvek časť služby bez predchádzajúceho upozornenia.</p>
+
+        <h2>🔟 Ukončenie</h2>
+        <p>Môžeme okamžite ukončiť alebo pozastaviť váš účet a prístup k službe bez predchádzajúceho upozornenia za akékoľvek porušenie týchto Podmienok.</p>
+
+        <h2>1️⃣1️⃣ Právny poriadok</h2>
+        <p>Tieto Podmienky sa riadia právnymi predpismi Slovenskej republiky. Akékoľvek spory sa riešia v slovenských súdoch.</p>
+
+        <h2>1️⃣2️⃣ Kontakt</h2>
+        <p>Pre otázky týkajúce sa týchto Podmienok nás kontaktujte prostredníctvom kontaktného formulára na webovej stránke.</p>
+      `,
+            en: `
+        <h1>📋 Terms of Service - NHLPRO.sk</h1>
+        <p><strong>Last updated:</strong> January 21, 2026</p>
+
+        <h2>1️⃣ Acceptance of Terms</h2>
+        <p>By accessing and using NHLPRO.sk, you accept and agree to be bound by these Terms of Service. If you do not agree, please do not use our services.</p>
+
+        <h2>2️⃣ Description of Service</h2>
+        <p>NHLPRO.sk provides informational, analytical, and educational content related to NHL hockey, including:</p>
+        <ul>
+            <li>Game statistics and results</li>
+            <li>Player and team ratings</li>
+            <li>Analytical models and prediction strategies</li>
+            <li>Premium services for registered users</li>
+        </ul>
+
+        <h2>3️⃣ User Accounts</h2>
+        <p>To access certain features, you must create an account. You are responsible for:</p>
+        <ul>
+            <li>Maintaining the confidentiality of your account credentials</li>
+            <li>All activities that occur under your account</li>
+            <li>Notifying us immediately of any unauthorized use</li>
+        </ul>
+
+        <h2>4️⃣ Acceptable Use</h2>
+        <p>You agree not to:</p>
+        <ul>
+            <li>Use the service for illegal purposes</li>
+            <li>Attempt to gain unauthorized access to the system</li>
+            <li>Interfere with or disrupt the service</li>
+            <li>Copy, modify, or distribute content without permission</li>
+            <li>Use automated systems to access the service</li>
+        </ul>
+
+        <h2>5️⃣ Premium Services</h2>
+        <p>Premium services are provided on a subscription basis. Terms include:</p>
+        <ul>
+            <li>Access to advanced features and analytics</li>
+            <li>No guarantee of profit or prediction success</li>
+            <li>Refund policy as specified at time of purchase</li>
+        </ul>
+
+        <h2>6️⃣ Intellectual Property</h2>
+        <p>All content on NHLPRO.sk, including text, graphics, logos, and software, is the property of NHLPRO.sk and protected by copyright laws.</p>
+
+        <h2>7️⃣ Limitation of Liability</h2>
+        <p>NHLPRO.sk is provided "as is" without warranties. We are not liable for:</p>
+        <ul>
+            <li>Any losses resulting from use of our information</li>
+            <li>Service interruptions or errors</li>
+            <li>Decisions made based on our content</li>
+        </ul>
+
+        <h2>8️⃣ Age Restriction</h2>
+        <p>Our services are intended for users aged 18 and older. By using our service, you confirm that you meet this age requirement.</p>
+
+        <h2>9️⃣ Modifications to Service</h2>
+        <p>We reserve the right to modify, suspend, or discontinue any part of the service at any time without prior notice.</p>
+
+        <h2>🔟 Termination</h2>
+        <p>We may terminate or suspend your account and access to the service immediately, without prior notice, for any breach of these Terms.</p>
+
+        <h2>1️⃣1️⃣ Governing Law</h2>
+        <p>These Terms are governed by the laws of the Slovak Republic. Any disputes shall be resolved in Slovak courts.</p>
+
+        <h2>1️⃣2️⃣ Contact</h2>
+        <p>For questions about these Terms, please contact us through the website contact form.</p>
+      `
+        };
+
+        function setPageLang(lang) {
+            if (!CONTENT[lang]) lang = 'sk';
+            localStorage.setItem('nhlpro_lang', lang);
+
+            // Update Content
+            document.getElementById('policy-content').innerHTML = CONTENT[lang];
+            document.documentElement.lang = lang;
+
+            // Update Buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('is-active', btn.getAttribute('data-lang') === lang);
+            });
+        }
+
+        // Init
+        const saved = localStorage.getItem('nhlpro_lang') || 'sk';
+        setPageLang(saved);
+    </script>
 </body>
 
 </html>
