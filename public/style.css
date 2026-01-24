@@ -11368,12 +11368,14 @@ body {
 
 /* DOXXBET PROMO */
 .doxx-banner-container {
-  width: 100%;
-  /* Full width */
-  height: 200px;
-  /* Fixed height 200px */
-  margin: 0 0 40px 0;
-  /* Remove top margin, add more bottom space */
+  width: 600px;
+  /* Fixed width as requested */
+  max-width: 100%;
+  /* Responsive */
+  height: 130px;
+  /* Fixed height 130px */
+  margin: 0 auto 40px auto;
+  /* Centered with bottom margin */
   cursor: pointer;
   border-radius: 8px;
   overflow: hidden;
@@ -11587,6 +11589,7 @@ body {
   text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
   margin: 15px 0;
 }
+
 .doxx-image {
   width: 100%;
   height: 100%;
