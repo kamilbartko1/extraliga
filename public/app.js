@@ -20,7 +20,7 @@ const API_BASE = "";
 // FRONTEND CACHE - reduces Vercel API calls
 // =========================================================
 
-const CACHE_VERSION = "V5"; // Increment this to force-clear all users' caches
+const CACHE_VERSION = "V6"; // Increment this to force-clear all users' caches
 
 /**
  * Fetch with localStorage caching (User-aware)
@@ -1317,7 +1317,7 @@ async function preloadMatchesData() {
   try {
     console.log("🔹 Prednačítavam výsledky a ratingy...");
     // 🔥 OPTIMALIZÁCIA: Používame cachedFetch s dlhším cache
-    const data = await cachedFetch("/api/matches", 180);
+    const data = await cachedFetch("/api/matches", 30);
     console.log(`✅ Prednačítané ${data.matches?.length || 0} zápasov.`);
   } catch (err) {
     console.warn("⚠️ Prednačítanie /api/matches zlyhalo:", err.message);
@@ -1336,10 +1336,10 @@ async function displayHome() {
   try {
     // 🔥 1️⃣ CACHED API – reduces Vercel function calls on refresh
     const fetchPromises = [
-      cachedFetch("/api/home", 360).catch(e => ({ error: e.message })),
-      cachedFetch("/api/statistics", 180).catch(e => ({ error: e.message })),
-      cachedFetch("/api/ai?task=get", 360).catch(e => ({ error: e.message })),
-      cachedFetch("/api/mantingal?task=all", 360).catch(e => ({ error: e.message }))
+      cachedFetch("/api/home", 15).catch(e => ({ error: e.message })),
+      cachedFetch("/api/statistics", 30).catch(e => ({ error: e.message })),
+      cachedFetch("/api/ai?task=get", 30).catch(e => ({ error: e.message })),
+      cachedFetch("/api/mantingal?task=all", 60).catch(e => ({ error: e.message }))
     ];
     const [homeData, statsData, aiData, absData] = await Promise.all(fetchPromises);
 
