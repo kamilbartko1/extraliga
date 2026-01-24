@@ -11371,7 +11371,7 @@ body {
   width: 100%;
   max-width: 1200px;
   /* Desktop max-height limit as requested */
-  max-height: 100px;
+  max-height: 150px;
   margin: 10px auto;
   cursor: pointer;
   border-radius: 8px;
