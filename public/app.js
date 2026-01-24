@@ -1399,11 +1399,9 @@ async function displayHome() {
     let html = `
 <section class="home-modern">
   
-  <!-- DOXXBET VIDEO BANNER -->
+  <!-- DOXXBET IMAGE BANNER -->
   <div class="doxx-banner-container" onclick="openDoxxbetModal()">
-    <video class="doxx-video" autoplay loop muted playsinline>
-      <source src="doxx.mp4" type="video/mp4">
-    </video>
+    <img class="doxx-image" src="doxxbet.png" alt="Doxxbet Promo">
   </div>
 
   <!-- ================= AI + HISTORIA ================= -->

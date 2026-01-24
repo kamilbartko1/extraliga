@@ -11587,3 +11587,9 @@ body {
   text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
   margin: 15px 0;
 }
+.doxx-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
