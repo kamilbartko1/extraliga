@@ -11365,16 +11365,20 @@ body {
 .google-login-btn span {
   color: #222 !important;
 }
+
 /* DOXXBET PROMO */
 .doxx-banner-container {
   width: 100%;
   max-width: 1200px;
+  /* Desktop max-height limit as requested */
+  max-height: 100px;
   margin: 10px auto;
   cursor: pointer;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 0 15px rgba(0, 234, 255, 0.3);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: #000;
 }
 
 .doxx-banner-container:hover {
@@ -11384,6 +11388,9 @@ body {
 
 .doxx-video {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Ensures video fills the rectangle even if cropped */
   display: block;
 }
 
@@ -11465,12 +11472,13 @@ body {
 
 .doxx-benefits li {
   margin-bottom: 10px;
-  list-style: none; /* remove default bullets */
+  list-style: none;
+  /* remove default bullets */
 }
 
 /* Custom bullet for Doxxbet list */
 .doxx-benefits li::before {
-  content: "?"; 
+  content: "?";
   margin-right: 10px;
 }
 
@@ -11511,8 +11519,10 @@ body {
   height: 100%;
   background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(5px);
-  z-index: 2000; /* High z-index to be on top */
-  display: none; /* Hidden by default */
+  z-index: 9999;
+  /* Increased to ensure it's on top of everything */
+  display: none;
+  /* Hidden by default */
   justify-content: center;
   align-items: center;
   opacity: 0;
@@ -11520,15 +11530,17 @@ body {
 }
 
 .modal-overlay.active {
+  display: flex !important;
+  /* Force flex when active to ensure visibility logic aligns with JS */
   opacity: 1;
 }
 
 /* Make code even bigger */
 .doxx-code {
-  font-size: 3.5rem !important; /* Force bigger size */
+  font-size: 3.5rem !important;
+  /* Force bigger size */
   font-weight: 800;
   color: #fff;
   text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
   margin: 15px 0;
 }
-
