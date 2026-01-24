@@ -11456,6 +11456,9 @@ body {
   text-transform: uppercase;
   margin-bottom: 5px;
   text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+  text-align: center;
+  /* Explicit center */
+  width: 100%;
 }
 
 .doxx-subtitle {
