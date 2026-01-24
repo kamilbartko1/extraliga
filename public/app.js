@@ -1247,6 +1247,38 @@ function openAbsRegisterCta() {
 // expose for inline onclick
 window.openAbsRegisterCta = openAbsRegisterCta;
 
+// === DOXXBET PROMO LOGIC ===
+function openDoxxbetModal() {
+  const modal = document.getElementById("doxx-modal");
+  if (modal) {
+    modal.style.display = "flex";
+    setTimeout(() => modal.classList.add("active"), 10);
+  }
+}
+
+function closeDoxxbetModal(event) {
+  // if event is present, it's a click outside or X button
+  const modal = document.getElementById("doxx-modal");
+  if (modal) {
+    modal.classList.remove("active");
+    setTimeout(() => modal.style.display = "none", 300);
+  }
+}
+
+function copyDoxxCode() {
+  const code = "KB32727";
+  navigator.clipboard.writeText(code).then(() => {
+    alert("Kód skopírovaný: " + code);
+  }).catch(err => {
+    console.error("Copy failed", err);
+  });
+}
+
+// expose
+window.openDoxxbetModal = openDoxxbetModal;
+window.closeDoxxbetModal = closeDoxxbetModal;
+window.copyDoxxCode = copyDoxxCode;
+
 // === Prihlasenie premium klientov cez supabase ===
 const SUPABASE_URL = "https://ztjyvzulbrilyzfcxogj.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_B8gvXJ59mQjIqytV8WnQqA__I3gpAat"; // ten začína sb_publishable_...
@@ -1329,9 +1361,11 @@ async function displayHome() {
   const home = document.getElementById("home-section");
   if (!home) return;
 
+  // 1. Zmaž starý obsah
   home.innerHTML = `
     <p style="text-align:center;color:#00eaff;">${t("home.loading")}</p>
   `;
+
 
   try {
     // 🔥 1️⃣ CACHED API – reduces Vercel function calls on refresh
@@ -1364,6 +1398,13 @@ async function displayHome() {
 
     let html = `
 <section class="home-modern">
+  
+  <!-- DOXXBET VIDEO BANNER -->
+  <div class="doxx-banner-container" onclick="openDoxxbetModal()">
+    <video class="doxx-video" autoplay loop muted playsinline>
+      <source src="doxx.mp4" type="video/mp4">
+    </video>
+  </div>
 
   <!-- ================= AI + HISTORIA ================= -->
   <div class="home-ai-section">

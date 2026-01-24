@@ -11365,3 +11365,139 @@ body {
 .google-login-btn span {
   color: #222 !important;
 }
+/* DOXXBET PROMO */
+.doxx-banner-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 10px auto;
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0, 234, 255, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.doxx-banner-container:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 25px rgba(0, 234, 255, 0.6);
+}
+
+.doxx-video {
+  width: 100%;
+  display: block;
+}
+
+/* Modal styles for Doxxbet */
+.doxx-modal-content {
+  background: linear-gradient(135deg, #1a0505 0%, #2e0a0a 100%);
+  border: 2px solid #ff0000;
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+  max-width: 600px;
+  width: 90%;
+}
+
+.doxx-header {
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 0, 0, 0.3);
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.doxx-title {
+  font-family: "Orbitron", sans-serif;
+  color: #ff3333;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+.doxx-subtitle {
+  color: #fff;
+  font-size: 1rem;
+}
+
+.doxx-body {
+  color: #e0e0e0;
+  text-align: center;
+}
+
+.doxx-promo-box {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px dashed #ff3333;
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 8px;
+}
+
+.doxx-code-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 5px;
+}
+
+.doxx-code {
+  font-family: "Orbitron", sans-serif;
+  font-size: 2rem;
+  color: #fff;
+  letter-spacing: 2px;
+  text-shadow: 0 0 15px #ff0000;
+  display: block;
+  margin-bottom: 10px;
+  user-select: all;
+}
+
+.doxx-copy-btn {
+  background: #333;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  border-radius: 4px;
+}
+
+.doxx-benefits {
+  text-align: left;
+  margin: 20px 0;
+  padding: 0 20px;
+}
+
+.doxx-benefits li {
+  margin-bottom: 10px;
+  list-style: none; /* remove default bullets */
+}
+
+/* Custom bullet for Doxxbet list */
+.doxx-benefits li::before {
+  content: "?"; 
+  margin-right: 10px;
+}
+
+.doxx-cta-btn {
+  display: inline-block;
+  background: #ff0000;
+  color: #fff;
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.2rem;
+  padding: 15px 40px;
+  border-radius: 50px;
+  text-decoration: none;
+  border: none;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.doxx-cta-btn:hover {
+  background: #ff3333;
+  transform: translateY(-3px);
+  box-shadow: 0 0 40px rgba(255, 0, 0, 0.8);
+}
+
+.doxx-footer {
+  margin-top: 20px;
+  font-size: 0.8rem;
+  color: #888;
+}
