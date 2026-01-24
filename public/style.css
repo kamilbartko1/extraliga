@@ -11368,19 +11368,17 @@ body {
 
 /* DOXXBET PROMO */
 .doxx-banner-container {
-  width: 300px;
-  /* Fixed width 300px */
-  height: 300px;
-  /* Fixed height 300px */
-  margin: 20px auto;
-  /* Center it */
+  width: 100%;
+  /* Full width */
+  height: 250px;
+  /* Fixed height 250px */
+  margin: 10px 0;
   cursor: pointer;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 0 20px rgba(0, 234, 255, 0.3);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   background: #000;
-  /* Black background for letterboxing */
 }
 
 .doxx-banner-container:hover {
