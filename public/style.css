@@ -11523,7 +11523,11 @@ body {
 
 /* Custom bullet for Doxxbet list */
 .doxx-benefits li::before {
-  content: "?";
+  content: "•";
+  /* Standard bullet point */
+  color: #ff3333;
+  /* Red color to match theme */
+  font-size: 1.2rem;
   margin-right: 10px;
 }
 
