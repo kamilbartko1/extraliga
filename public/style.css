@@ -11401,6 +11401,45 @@ body {
   box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
   max-width: 600px;
   width: 90%;
+  position: relative;
+  /* For absolute positioning of close btn */
+}
+
+.doxx-close-x {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: #ff3333;
+  font-size: 2.5rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.doxx-close-x:hover {
+  color: #ff0000;
+  transform: scale(1.1);
+}
+
+.doxx-close-bottom {
+  display: block;
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  background: #222;
+  color: #888;
+  border: 1px solid #444;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.doxx-close-bottom:hover {
+  background: #333;
+  color: #fff;
 }
 
 .doxx-header {
