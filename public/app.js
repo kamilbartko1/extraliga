@@ -4206,6 +4206,9 @@ async function checkPremiumStatus() {
       // VIP tips (today)
       await renderVipTips();
 
+      // Hot Tips (today)
+      await renderPremiumHotTips();
+
       // Dashboard
       await loadPremiumDashboard();
 
@@ -5586,6 +5589,116 @@ async function renderVipTips() {
       ${totalsRows || `<p class="nhl-muted">${t("common.noData")}</p>`}
     </div>
   `;
+}
+
+/**
+ * 👑 Renders "HOT TIPS FOR TODAY" premium box
+ * Logic: Filters TOP 50 rated players who play TODAY and shows best 1-3 per match.
+ */
+async function renderPremiumHotTips() {
+  const wrap = document.getElementById("premium-hot-tips");
+  if (!wrap) return;
+
+  wrap.style.display = "block";
+  wrap.innerHTML = `<p class="nhl-muted" style="text-align:center;">${t("common.loading")}</p>`;
+
+  // 1. Get today's matches
+  let matchesToday = [];
+  try {
+    const homeData = await cachedFetch("/api/home", 30) || {};
+    matchesToday = Array.isArray(homeData.matchesToday) ? homeData.matchesToday : [];
+  } catch (err) {
+    console.warn("Hot Tips: Failed to load today's matches:", err);
+  }
+
+  if (!matchesToday.length || !playerRatings || !Object.keys(playerRatings).length) {
+    wrap.style.display = "none";
+    return;
+  }
+
+  // 2. Map teams playing today
+  const todayTeams = new Set();
+  const matchMap = new Map(); // teamCode -> match info
+
+  matchesToday.forEach(m => {
+    const homeCode = String(m.homeCode || "").toUpperCase();
+    const awayCode = String(m.awayCode || "").toUpperCase();
+    if (homeCode) {
+      todayTeams.add(homeCode);
+      matchMap.set(homeCode, { opp: awayCode, logo: m.homeLogo, vs: `${homeCode} vs ${awayCode}` });
+    }
+    if (awayCode) {
+      todayTeams.add(awayCode);
+      matchMap.set(awayCode, { opp: homeCode, logo: m.awayLogo, vs: `${homeCode} vs ${awayCode}` });
+    }
+  });
+
+  // 3. Identify TOP 50 playerRatings
+  const top50 = Object.entries(playerRatings)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 50)
+    .map(([name, rating], idx) => ({ name, rating, rank: idx + 1 }));
+
+  // 4. Filter players playing today and group by match
+  const matchPicks = new Map(); // vs string -> players[]
+
+  top50.forEach(p => {
+    const lastName = p.name.split(" ").pop().replace(/\./g, "").toLowerCase();
+    const teamFull = playerTeams ? playerTeams[lastName] : null;
+    const teamCode = teamFull ? findTeamCodeByFullName(teamFull) : null;
+
+    if (teamCode && todayTeams.has(teamCode)) {
+      const info = matchMap.get(teamCode);
+      const playersInMatch = matchPicks.get(info.vs) || [];
+      if (playersInMatch.length < 3) {
+        playersInMatch.push({ ...p, teamCode, logo: info.logo, vs: info.vs });
+        matchPicks.set(info.vs, playersInMatch);
+      }
+    }
+  });
+
+  // 5. Render
+  const allPicks = Array.from(matchPicks.values()).flat();
+
+  if (allPicks.length === 0) {
+    wrap.innerHTML = `
+      <div class="section-card-header">
+        <h2>🔥 ${CURRENT_LANG === "en" ? "HOT TIPS FOR TODAY" : "HOT TIPY NA DNES"}</h2>
+        <p class="section-card-subtitle">${CURRENT_LANG === "en" ? "Top-rated players playing today" : "Najlepšie hodnotení hráči hrajúci dnes"}</p>
+      </div>
+      <p class="nhl-muted" style="text-align:center; padding: 20px;">
+        ${CURRENT_LANG === "en" ? "No TOP 50 players are playing today." : "Dnes nehrá žiadny hráč z TOP 50 rebríčka."}
+      </p>
+    `;
+    return;
+  }
+
+  const html = `
+    <div class="section-card-header">
+      <h2>🔥 ${CURRENT_LANG === "en" ? "HOT TIPS FOR TODAY" : "HOT TIPY NA DNES"}</h2>
+      <p class="section-card-subtitle">${CURRENT_LANG === "en" ? "Top-rated players playing today" : "Najlepšie hodnotení hráči hrajúci dnes"}</p>
+    </div>
+    <div class="hot-tips-grid">
+      ${allPicks.map(p => `
+        <div class="hot-tip-item">
+          <div class="hot-tip-main">
+            <div class="hot-tip-rank">#${p.rank}</div>
+            <img src="${p.logo}" class="hot-tip-logo" alt="${p.teamCode}">
+            <div class="hot-tip-info">
+              <div class="hot-tip-name"><b>${p.name}</b> <span class="hot-tip-team">(${p.teamCode})</span></div>
+              <div class="hot-tip-matchup">${p.vs}</div>
+            </div>
+          </div>
+          <div class="hot-tip-rating">
+            <div class="hot-tip-rating-value">${Math.round(p.rating)}</div>
+            <div class="hot-tip-rating-label">Rating</div>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+
+  wrap.innerHTML = html;
 }
 
 // ===============================

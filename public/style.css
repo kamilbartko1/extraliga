@@ -9463,6 +9463,109 @@ body {
 }
 
 /* ===============================
+   🔥 HOT TIPS FOR TODAY
+   =============================== */
+.hot-tips-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.hot-tip-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.hot-tip-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(0, 234, 255, 0.3);
+  transform: translateX(4px);
+}
+
+.hot-tip-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.hot-tip-rank {
+  width: 28px;
+  height: 28px;
+  background: #00eaff;
+  color: #000;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+}
+
+.hot-tip-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.hot-tip-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.hot-tip-name {
+  font-size: 14px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hot-tip-team {
+  color: #00eaff;
+  font-weight: 500;
+}
+
+.hot-tip-matchup {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 2px;
+}
+
+.hot-tip-rating {
+  text-align: center;
+  flex-shrink: 0;
+  padding-left: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hot-tip-rating-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #00eaff;
+  line-height: 1;
+}
+
+.hot-tip-rating-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 2px;
+}
+
+/* ===============================
    ABS CTA (register)
    =============================== */
 /* ===============================
