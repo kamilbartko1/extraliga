@@ -3919,6 +3919,21 @@ body {
     width: 18px;
     height: 18px;
   }
+
+  /* 📏 Úprava šírok stĺpcov pre mobil, aby sa neprekrývali mená */
+  .shooting-table th:nth-child(2),
+  .shooting-table td:nth-child(2) {
+    width: 140px;
+    /* mierne zvýšené */
+  }
+
+  .shooting-table th:nth-child(3),
+  .shooting-table td:nth-child(3) {
+    width: 65px;
+    /* zúžené */
+    padding-left: 10px;
+    /* vytvorí medzeru od mena */
+  }
 }
 
 .ai-panel {
