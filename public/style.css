@@ -3930,9 +3930,11 @@ body {
   .shooting-table th:nth-child(3),
   .shooting-table td:nth-child(3) {
     width: 65px;
-    /* zúžené */
-    padding-left: 10px;
-    /* vytvorí medzeru od mena */
+    padding-left: 20px;
+    /* posunuté viac doprava */
+    text-align: right;
+    /* bližšie ku gólovému stĺpcu */
+    padding-right: 4px;
   }
 }
 
