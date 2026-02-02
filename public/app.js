@@ -5106,6 +5106,32 @@ async function addPremiumPlayer() {
     }
 
     if (msg) msg.textContent = t("premium.added", { player, odds });
+
+    // Okamžité zobrazenie – pridaj riadok do tabuľky hneď (optimistic update)
+    const tbody = document.getElementById("premium-players-body");
+    const totalEl = document.getElementById("premium-total-profit");
+    const playerKey = data.player || player;
+    const teamAbbrev = getTeamAbbrev(team);
+    const formattedName = formatPlayerName(playerKey);
+    const playerDisplay = teamAbbrev ? `${formattedName} <span style="color:#999; font-size:0.9em;">(${teamAbbrev})</span>` : formattedName;
+
+    if (tbody) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+  <td>${playerDisplay}</td>
+  <td>1</td>
+  <td>0</td>
+  <td class="balance">0.00 €</td>
+  <td>${Number(odds).toFixed(2)}</td>
+  <td class="premium-actions">
+    <button class="btn-detail vip-mtg-detail-btn" data-player="${playerKey.replace(/"/g, "&quot;")}">${t("common.detail")}</button>
+    <button class="btn-delete" onclick="deletePremiumPlayer('${encodeURIComponent(playerKey)}')">${t("common.delete")}</button>
+  </td>
+`;
+      tbody.insertBefore(tr, tbody.firstChild);
+      // Aktualizuj celkový profit (nový hráč má balance 0, takže môžeme len refreshnúť)
+    }
+
     await loadPremiumPlayers();
 
   } catch (err) {
