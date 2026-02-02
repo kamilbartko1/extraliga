@@ -1,6 +1,7 @@
 // /api/vip.js
 import { Redis } from "@upstash/redis";
 import Stripe from "stripe";
+import axios from "axios";
 import { requireAuth } from "./_auth.js";
 
 // ===============================
@@ -159,7 +160,7 @@ function getRawBody(req) {
 export default async function handler(req, res) {
   // 🔥 VIP – žiadna cache pre user-specific dáta (get_players, add_player, delete_player, dashboard)
   const task = req.query.task || null;
-  const noCacheTasks = ['get_players', 'add_player', 'delete_player', 'dashboard', 'history', 'set_username'];
+  const noCacheTasks = ['get_players', 'add_player', 'delete_player', 'dashboard', 'history', 'set_username', 'save_tips', 'user_tips_today', 'tips_dashboard'];
   if (task && noCacheTasks.includes(task)) {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.setHeader('Pragma', 'no-cache');
@@ -249,6 +250,105 @@ export default async function handler(req, res) {
       }
 
       return res.json({ received: true });
+    }
+
+    // =====================================================
+    // === TIPS GAME: evaluate_tips_yesterday (cron, no auth) ===
+    // Called by Vercel Scheduler ~10:00 Europe/Bratislava
+    // =====================================================
+    if (req.method === "POST" && task === "evaluate_tips_yesterday") {
+      const tz = "Europe/Bratislava";
+      const now = new Date();
+      const parts = new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(now);
+      const y = parseInt(parts.find((p) => p.type === "year").value, 10);
+      const m = parseInt(parts.find((p) => p.type === "month").value, 10);
+      const d = parseInt(parts.find((p) => p.type === "day").value, 10);
+      const yesterday = new Date(Date.UTC(y, m - 1, d - 1));
+      const yesterdayDate = yesterday.toISOString().slice(0, 10);
+
+      let gamesMap = {};
+      try {
+        const scoreResp = await axios.get(
+          `https://api-web.nhle.com/v1/score/${yesterdayDate}`,
+          { timeout: 10000 }
+        );
+        const games = Array.isArray(scoreResp.data?.games) ? scoreResp.data.games : [];
+
+        for (const g of games) {
+          const state = String(g.gameState || "").toUpperCase();
+          if (!["OFF", "FINAL"].includes(state)) continue;
+
+          const hs = g.homeTeam?.score ?? 0;
+          const as = g.awayTeam?.score ?? 0;
+
+          let outcome = "1";
+          if (g.gameOutcome?.lastPeriodType === "OT" || g.gameOutcome?.lastPeriodType === "SO") {
+            outcome = "X";
+          } else if (hs > as) {
+            outcome = "1";
+          } else if (as > hs) {
+            outcome = "2";
+          }
+
+          gamesMap[g.id] = outcome;
+        }
+
+        await redis.set(`tips_results:${yesterdayDate}`, JSON.stringify(gamesMap));
+      } catch (err) {
+        console.error("❌ Tips evaluate: score API error:", err.message);
+        return res.status(500).json({ ok: false, error: err.message });
+      }
+
+      const userIds = await redis.smembers(`tips_users_by_date:${yesterdayDate}`) || [];
+      let processedUsers = 0;
+      let processedGames = 0;
+
+      for (const uid of userIds) {
+        const tipsRaw = await redis.get(`tips:${yesterdayDate}:${uid}`);
+        if (!tipsRaw) continue;
+
+        let tips = [];
+        try {
+          tips = typeof tipsRaw === "string" ? JSON.parse(tipsRaw) : tipsRaw;
+          if (!Array.isArray(tips)) continue;
+        } catch {
+          continue;
+        }
+
+        const statsRaw = await redis.get(`tips_user_stats:${uid}`);
+        let stats = { totalPredictions: 0, correctPredictions: 0, lastUpdated: null };
+        if (statsRaw) {
+          try {
+            stats = typeof statsRaw === "string" ? JSON.parse(statsRaw) : statsRaw;
+          } catch {}
+        }
+
+        for (const t of tips) {
+          const actual = gamesMap[t.gameId];
+          if (!actual) continue;
+
+          processedGames++;
+          stats.totalPredictions = (stats.totalPredictions || 0) + 1;
+          if (t.pick === actual) {
+            stats.correctPredictions = (stats.correctPredictions || 0) + 1;
+          }
+        }
+
+        stats.accuracy = stats.totalPredictions > 0
+          ? Number((stats.correctPredictions / stats.totalPredictions).toFixed(3))
+          : 0;
+        stats.lastUpdated = new Date().toISOString();
+
+        await redis.set(`tips_user_stats:${uid}`, JSON.stringify(stats));
+        processedUsers++;
+      }
+
+      return res.json({
+        ok: true,
+        date: yesterdayDate,
+        processedUsers,
+        processedGames,
+      });
     }
 
     // =====================================================
@@ -708,6 +808,157 @@ export default async function handler(req, res) {
             totalValue: Number(totalProfit.toFixed(2))
           }
         }
+      });
+    }
+
+    // =====================================================
+    // === TIPS GAME: save_tips (POST, authenticated) ===
+    // Store tips:{date}:{userId}, index tips_users_by_date:{date}
+    // =====================================================
+    if (req.method === "POST" && task === "save_tips") {
+      let body = {};
+      try {
+        body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
+      } catch {
+        return res.status(400).json({ ok: false, error: "Invalid JSON body" });
+      }
+
+      const tz = "Europe/Bratislava";
+      const now = new Date();
+      const parts = new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(now);
+      const todayStr = parts.find((p) => p.type === "year").value + "-" + parts.find((p) => p.type === "month").value + "-" + parts.find((p) => p.type === "day").value;
+      const date = body.date || todayStr;
+
+      let tips = Array.isArray(body.tips) ? body.tips : [];
+      const seen = new Set();
+      tips = tips
+        .filter(t => t && t.gameId && ["1", "X", "2"].includes(String(t.pick)))
+        .filter(t => {
+          if (seen.has(t.gameId)) return false;
+          seen.add(t.gameId);
+          return true;
+        })
+        .map(t => ({ gameId: Number(t.gameId), pick: String(t.pick) }))
+        .reverse()
+        .filter((t, i, arr) => arr.findIndex(x => x.gameId === t.gameId) === i)
+        .reverse();
+
+      try {
+        const scoreResp = await axios.get(
+          `https://api-web.nhle.com/v1/score/${date}`,
+          { timeout: 8000 }
+        );
+        const games = Array.isArray(scoreResp.data?.games) ? scoreResp.data.games : [];
+        const nowMs = Date.now();
+
+        tips = tips.filter(t => {
+          const g = games.find(x => x.id === t.gameId);
+          if (!g) return false;
+          const startUtc = g.startTimeUTC ? new Date(g.startTimeUTC).getTime() : 0;
+          const state = String(g.gameState || "").toUpperCase();
+          if (["OFF", "FINAL"].includes(state)) return false;
+          return startUtc > nowMs;
+        });
+      } catch (err) {
+        console.warn("Tips save: could not validate games, storing as-is:", err.message);
+      }
+
+      const tipsKey = `tips:${date}:${userId}`;
+      await redis.set(tipsKey, JSON.stringify(tips));
+      await redis.sadd(`tips_users_by_date:${date}`, userId);
+
+      return res.json({ ok: true, storedCount: tips.length, date });
+    }
+
+    // =====================================================
+    // === TIPS GAME: user_tips_today (GET, authenticated) ===
+    // =====================================================
+    if (req.method === "GET" && task === "user_tips_today") {
+      const tz = "Europe/Bratislava";
+      const parts = new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+      const today = parts.find((p) => p.type === "year").value + "-" + parts.find((p) => p.type === "month").value + "-" + parts.find((p) => p.type === "day").value;
+
+      const tipsRaw = await redis.get(`tips:${today}:${userId}`);
+      let tips = [];
+      if (tipsRaw) {
+        try {
+          tips = typeof tipsRaw === "string" ? JSON.parse(tipsRaw) : tipsRaw;
+          if (!Array.isArray(tips)) tips = [];
+        } catch {}
+      }
+
+      return res.json({ ok: true, date: today, tips });
+    }
+
+    // =====================================================
+    // === TIPS GAME: tips_dashboard (GET, authenticated) ===
+    // =====================================================
+    if (req.method === "GET" && task === "tips_dashboard") {
+      const statsRaw = await redis.get(`tips_user_stats:${userId}`);
+      let stats = { totalPredictions: 0, correctPredictions: 0, accuracy: 0, lastUpdated: null };
+      if (statsRaw) {
+        try {
+          stats = typeof statsRaw === "string" ? JSON.parse(statsRaw) : statsRaw;
+        } catch {}
+      }
+
+      stats.accuracy = stats.totalPredictions > 0
+        ? Number((stats.correctPredictions / stats.totalPredictions).toFixed(3))
+        : 0;
+
+      const username = await redis.get(vipUsernameKey(userId)) || null;
+      const recentDays = [];
+
+      for (let d = 0; d < 7; d++) {
+        const dt = new Date();
+        dt.setDate(dt.getDate() - d);
+        const date = dt.toISOString().slice(0, 10);
+        const tipsRaw = await redis.get(`tips:${date}:${userId}`);
+        const resultsRaw = await redis.get(`tips_results:${date}`);
+        if (!tipsRaw && !resultsRaw) continue;
+
+        let tips = [];
+        if (tipsRaw) {
+          try {
+            tips = typeof tipsRaw === "string" ? JSON.parse(tipsRaw) : tipsRaw;
+          } catch {}
+        }
+        let resultsMap = {};
+        if (resultsRaw) {
+          try {
+            resultsMap = typeof resultsRaw === "string" ? JSON.parse(resultsRaw) : resultsRaw;
+          } catch {}
+        }
+
+        const games = [];
+        for (const t of tips) {
+          const actual = resultsMap[t.gameId];
+          const aiPick = null;
+          games.push({
+            gameId: t.gameId,
+            homeCode: null,
+            awayCode: null,
+            userPick: t.pick,
+            aiPick,
+            actualOutcome: actual || null,
+            correct: actual ? t.pick === actual : null,
+          });
+        }
+
+        if (games.length > 0) {
+          recentDays.push({ date, games });
+        }
+      }
+
+      return res.json({
+        ok: true,
+        user: { id: userId, nickname: username },
+        stats: {
+          totalPredictions: stats.totalPredictions,
+          correctPredictions: stats.correctPredictions,
+          accuracy: stats.accuracy,
+        },
+        recentDays,
       });
     }
 

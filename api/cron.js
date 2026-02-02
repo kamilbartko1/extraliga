@@ -389,6 +389,14 @@ export default async function handler(req, res) {
       } catch (e) {
         console.error("❌ VIP Mantingal error:", e.message);
       }
+
+      // 🔹 4️⃣ TIPS GAME – vyhodnotenie včerajších 1X2 tipov (Europe/Bratislava)
+      try {
+        await axios.post(`${base}/api/vip?task=evaluate_tips_yesterday`);
+        console.log("📋 Tips game – yesterday evaluated");
+      } catch (e) {
+        console.error("❌ Tips evaluate error:", e.message);
+      }
     }
 
     // 2) SCORER

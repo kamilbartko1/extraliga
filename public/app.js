@@ -9,6 +9,9 @@ let fullTeamNames = {};
 let NHL_PLAYERS_BY_TEAM = {};
 let PREMIUM_PLAYERS_CACHE = [];
 let PREMIUM_SELECTS_READY = false;
+
+// === TIPS GAME: local state for 1X2 picks { gameId: "1"|"X"|"2" }
+let tipsState = {};
 let premiumPlayersLoaded = false;
 let LAST_STANDINGS = [];
 
@@ -158,6 +161,13 @@ const I18N = {
     "home.aiShots": "Strely",
     "home.aiProbability": "Pravdepodobnosť",
     "home.noTips": "Žiadne vyhodnotené tipy",
+    "tips.cta": "Odoslať tipy a súťažiť o VIP predplatné",
+    "tips.pick1": "1",
+    "tips.pickX": "X",
+    "tips.pick2": "2",
+    "tips.loginRequired": "Pre odoslanie tipov sa musíš prihlásiť.",
+    "tips.saved": "✅ Tipy boli uložené!",
+    "tips.error": "Chyba pri ukladaní tipov.",
     "home.topStats": "📊 Top štatistiky hráčov",
     "home.viewAllStats": "Zobraziť všetky",
     "home.topGoals": "Top Góly",
@@ -458,6 +468,13 @@ const I18N = {
     "home.aiShots": "Shots",
     "home.aiProbability": "Probability",
     "home.noTips": "No evaluated picks yet",
+    "tips.cta": "Submit tips and compete for VIP subscription",
+    "tips.pick1": "1",
+    "tips.pickX": "X",
+    "tips.pick2": "2",
+    "tips.loginRequired": "You must log in to submit tips.",
+    "tips.saved": "✅ Tips saved!",
+    "tips.error": "Error saving tips.",
     "home.topStats": "📊 Top player stats",
     "home.viewAllStats": "View all",
     "home.topGoals": "Top Goals",
@@ -1377,6 +1394,22 @@ async function displayHome() {
     ];
     const [homeData, statsData, aiData, absData] = await Promise.all(fetchPromises);
 
+    // === TIPS GAME: pre-fill today's tips for logged-in users
+    const token = localStorage.getItem("sb-access-token");
+    tipsState = {};
+    if (token) {
+      try {
+        const r = await fetch(`/api/vip?task=user_tips_today&_=${Date.now()}`, {
+          cache: "no-store",
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const d = await r.json();
+        if (d.ok && Array.isArray(d.tips)) {
+          d.tips.forEach(t => { tipsState[t.gameId] = t.pick; });
+        }
+      } catch {}
+    }
+
     // AI história (bez dnešného live výpočtu)
     const aiHistory = aiData || { history: [], hits: 0, total: 0, successRate: 0 };
 
@@ -1444,6 +1477,10 @@ async function displayHome() {
           const homeOdd = m.home3Way ? Number(m.home3Way).toFixed(2) : null;
           const drawOdd = m.draw3Way ? Number(m.draw3Way).toFixed(2) : null;
           const awayOdd = m.away3Way ? Number(m.away3Way).toFixed(2) : null;
+          const picked = tipsState[m.id] || null;
+          const a1 = picked === "1" ? " active" : "";
+          const aX = picked === "X" ? " active" : "";
+          const a2 = picked === "2" ? " active" : "";
 
           return `
               <div class="home-game-item" onclick="showSection('matches-section')">
@@ -1468,10 +1505,20 @@ async function displayHome() {
                   <div class="home-odd">${m.awayName}: <strong>${awayOdd || "-"}</strong></div>
                 </div>
                 ` : ""}
+                <div class="tips-1x2-selector" onclick="event.stopPropagation()">
+                  <button type="button" class="tips-1x2-btn${a1}" data-game-id="${m.id}" data-pick="1">${t("tips.pick1")}</button>
+                  <button type="button" class="tips-1x2-btn${aX}" data-game-id="${m.id}" data-pick="X">${t("tips.pickX")}</button>
+                  <button type="button" class="tips-1x2-btn${a2}" data-game-id="${m.id}" data-pick="2">${t("tips.pick2")}</button>
+                </div>
               </div>
             `;
         }).join("")
       }
+      ${homeData.matchesToday.length > 0 ? `
+      <div class="tips-cta-wrap">
+        <button type="button" id="tips-cta-btn" class="tips-cta-btn">${t("tips.cta")}</button>
+      </div>
+      ` : ""}
     </div>
   </div>
 
@@ -1555,6 +1602,53 @@ async function displayHome() {
 `;
 
     home.innerHTML = html;
+
+    // === TIPS GAME: event handlers for 1X2 selectors and CTA
+    home.querySelector(".tips-1x2-selector")?.closest(".home-games-list")?.addEventListener("click", (e) => {
+      const btn = e.target.closest(".tips-1x2-btn");
+      if (!btn) return;
+      e.stopPropagation();
+      const gameId = Number(btn.dataset.gameId);
+      const pick = btn.dataset.pick;
+      if (!gameId || !pick) return;
+      tipsState[gameId] = pick;
+      const wrap = btn.closest(".tips-1x2-selector");
+      if (wrap) wrap.querySelectorAll(".tips-1x2-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+
+    document.getElementById("tips-cta-btn")?.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const tkn = localStorage.getItem("sb-access-token");
+      if (!tkn) {
+        alert(t("tips.loginRequired"));
+        showSection("premium-section");
+        return;
+      }
+      const tips = Object.entries(tipsState).filter(([, v]) => v).map(([gameId, pick]) => ({ gameId: Number(gameId), pick }));
+      if (tips.length === 0) {
+        alert(CURRENT_LANG === "sk" ? "Vyber aspoň jeden tip (1, X alebo 2)." : "Select at least one tip (1, X or 2).");
+        return;
+      }
+      const tz = "Europe/Bratislava";
+      const parts = new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+      const today = parts.find((p) => p.type === "year").value + "-" + parts.find((p) => p.type === "month").value + "-" + parts.find((p) => p.type === "day").value;
+      try {
+        const r = await fetch("/api/vip?task=save_tips", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${tkn}` },
+          body: JSON.stringify({ date: today, tips })
+        });
+        const d = await r.json();
+        if (d.ok) {
+          alert(t("tips.saved"));
+        } else {
+          alert(t("tips.error") + (d.error ? ": " + d.error : ""));
+        }
+      } catch (err) {
+        alert(t("tips.error") + ": " + err.message);
+      }
+    });
 
     // 🎬 Aplikuj animácie na nové elementy
     setTimeout(() => {

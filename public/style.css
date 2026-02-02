@@ -5686,6 +5686,64 @@ body {
   color: #00eaff;
 }
 
+/* === TIPS GAME: 1X2 selectors === */
+.tips-1x2-selector {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 12px;
+  margin-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tips-1x2-btn {
+  min-width: 40px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.tips-1x2-btn:hover {
+  background: rgba(0, 234, 255, 0.15);
+  border-color: rgba(0, 234, 255, 0.4);
+  color: #00eaff;
+}
+
+.tips-1x2-btn.active {
+  background: linear-gradient(135deg, #00eaff, #0077ff);
+  border-color: transparent;
+  color: #001018;
+}
+
+.tips-cta-wrap {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tips-cta-btn {
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #00eaff, #0077ff);
+  border: none;
+  border-radius: 10px;
+  color: #001018;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tips-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 234, 255, 0.4);
+}
+
 /* ===============================
    AI SEKCIE
    =============================== */
