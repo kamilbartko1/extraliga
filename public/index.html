@@ -438,6 +438,21 @@
       <!-- 🔒 LOGGED BUT NOT VIP -->
       <div id="premium-locked" class="premium-state" style="display:none;">
         <div class="premium-locked-content">
+          <!-- 📊 TIPS DASHBOARD (pre všetkých registrovaných) -->
+          <section id="tips-dashboard-locked" class="tips-dashboard-locked">
+            <h3 data-i18n="tips.dashboardTitle">📊 Môj Dashboard tipov</h3>
+            <p class="tips-dashboard-hint" data-i18n="tips.dashboardHint">Tipuj výsledky zápasov (1X2) na domovskej stránke a sleduj svoju úspešnosť.</p>
+            <div id="tips-dashboard-stats" class="tips-dashboard-stats">
+              <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
+            </div>
+            <div id="tips-dashboard-recent" class="tips-dashboard-recent"></div>
+            <button type="button" id="tips-go-home-btn" class="tips-go-home-btn" onclick="showSection('home-section')" data-i18n="tips.goAddTips">
+              Choď na domov a pridaj dnešné tipy
+            </button>
+          </section>
+
+          <hr class="tips-dashboard-divider">
+
           <h3 data-i18n="premium.lockedTitle">Aktivuj NHLPRO PREMIUM</h3>
           <p class="premium-info-text" data-i18n-html="premium.lockedHint">
             Táto sekcia je dostupná len pre členov <strong>NHLPRO PREMIUM</strong>.

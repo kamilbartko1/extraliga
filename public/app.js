@@ -166,6 +166,13 @@ const I18N = {
     "tips.pick1": "1",
     "tips.pickX": "X",
     "tips.pick2": "2",
+    "tips.dashboardTitle": "📊 Môj Dashboard tipov",
+    "tips.dashboardHint": "Tipuj výsledky zápasov (1X2) na domovskej stránke a sleduj svoju úspešnosť.",
+    "tips.goAddTips": "Choď na domov a pridaj dnešné tipy",
+    "tips.statsAccuracy": "Úspešnosť",
+    "tips.statsTotal": "Celkovo tipov",
+    "tips.statsCorrect": "Správnych",
+    "tips.noStatsYet": "Zatiaľ nemáš žiadne tipy. Choď na domov a pridaj dnešné tipy!",
     "tips.loginRequired": "Pre odoslanie tipov sa musíš prihlásiť.",
     "tips.saved": "✅ Tipy boli uložené!",
     "tips.error": "Chyba pri ukladaní tipov.",
@@ -474,6 +481,13 @@ const I18N = {
     "tips.pick1": "1",
     "tips.pickX": "X",
     "tips.pick2": "2",
+    "tips.dashboardTitle": "📊 My Tips Dashboard",
+    "tips.dashboardHint": "Tip match results (1X2) on the homepage and track your success rate.",
+    "tips.goAddTips": "Go to Home and add today's tips",
+    "tips.statsAccuracy": "Accuracy",
+    "tips.statsTotal": "Total tips",
+    "tips.statsCorrect": "Correct",
+    "tips.noStatsYet": "You have no tips yet. Go to Home and add today's tips!",
     "tips.loginRequired": "You must log in to submit tips.",
     "tips.saved": "✅ Tips saved!",
     "tips.error": "Error saving tips.",
@@ -4363,6 +4377,7 @@ async function checkPremiumStatus() {
 
     // ===== PRIHLÁSENÝ, ALE NIE VIP =====
     if (lockedBox) lockedBox.style.display = "block";
+    await loadTipsDashboardLocked(token);
     // logout OSTÁVA viditeľný
   } catch (err) {
     console.error("❌ checkPremiumStatus error:", err);
@@ -4375,6 +4390,80 @@ async function checkPremiumStatus() {
     if (signupBtn) signupBtn.style.display = "inline-block";
     if (logoutBtn) logoutBtn.style.display = "none";
     if (authMsg) authMsg.textContent = t("premium.connectionError");
+  }
+}
+
+// === TIPS DASHBOARD pre registrovaných (nie VIP) ===
+async function loadTipsDashboardLocked(token) {
+  const statsEl = document.getElementById("tips-dashboard-stats");
+  const recentEl = document.getElementById("tips-dashboard-recent");
+  if (!statsEl) return;
+
+  try {
+    const r = await fetch(`/api/vip?task=tips_dashboard&_=${Date.now()}`, {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const d = await r.json();
+
+    if (!d.ok) {
+      statsEl.innerHTML = `<p class="tips-dashboard-empty">${t("tips.noStatsYet")}</p>`;
+      if (recentEl) recentEl.innerHTML = "";
+      return;
+    }
+
+    const stats = d.stats || {};
+    const total = stats.totalPredictions || 0;
+    const correct = stats.correctPredictions || 0;
+    const accuracy = stats.accuracy || 0;
+    const nickname = d.user?.nickname || "";
+
+    if (total === 0) {
+      statsEl.innerHTML = `<p class="tips-dashboard-empty">${t("tips.noStatsYet")}</p>`;
+      if (recentEl) recentEl.innerHTML = "";
+      return;
+    }
+
+    const accPct = (accuracy * 100).toFixed(1);
+    statsEl.innerHTML = `
+      <div class="tips-stats-grid">
+        <div class="tips-stat-item">
+          <span class="tips-stat-label">${t("tips.statsTotal")}</span>
+          <span class="tips-stat-value">${total}</span>
+        </div>
+        <div class="tips-stat-item">
+          <span class="tips-stat-label">${t("tips.statsCorrect")}</span>
+          <span class="tips-stat-value">${correct}</span>
+        </div>
+        <div class="tips-stat-item">
+          <span class="tips-stat-label">${t("tips.statsAccuracy")}</span>
+          <span class="tips-stat-value tips-stat-accuracy">${accPct}%</span>
+        </div>
+      </div>
+      ${nickname ? `<p class="tips-dashboard-nickname">Vitaj, ${nickname}!</p>` : ""}
+    `;
+
+    const recentDays = d.recentDays || [];
+    if (recentEl && recentDays.length > 0) {
+      let html = `<h4 class="tips-recent-title">${CURRENT_LANG === "sk" ? "Posledné dni" : "Recent days"}</h4>`;
+      for (const day of recentDays.slice(0, 5)) {
+        const games = day.games || [];
+        const correctCount = games.filter((g) => g.correct === true).length;
+        const dayTotal = games.length;
+        html += `
+          <div class="tips-recent-day">
+            <span class="tips-recent-date">${day.date}</span>
+            <span class="tips-recent-score">${correctCount}/${dayTotal}</span>
+          </div>
+        `;
+      }
+      recentEl.innerHTML = html;
+    } else if (recentEl) {
+      recentEl.innerHTML = "";
+    }
+  } catch (err) {
+    statsEl.innerHTML = `<p class="tips-dashboard-empty">${t("tips.noStatsYet")}</p>`;
+    if (recentEl) recentEl.innerHTML = "";
   }
 }
 
