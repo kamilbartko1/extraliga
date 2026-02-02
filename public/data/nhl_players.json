@@ -5651,7 +5651,7 @@
     "birthCity": "Ostrava",
     "country": "CZE",
     "team": "Montreal Canadiens",
-    "odds": "10.50"
+    "odds": "50.50"
   },
   {
     "id": 8478470,
@@ -5666,7 +5666,7 @@
     "birthCity": "Becancour",
     "country": "CAN",
     "team": "Montreal Canadiens",
-    "odds": "10.00"
+    "odds": "50.00"
   },
   {
     "id": 8478047,
@@ -5680,7 +5680,8 @@
     "birthDate": "1995-09-17",
     "birthCity": "Scarborough",
     "country": "CAN",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "4.20"
   },
   {
     "id": 8482146,
@@ -5694,7 +5695,8 @@
     "birthDate": "2002-02-21",
     "birthCity": "Toronto",
     "country": "CAN",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "3.80"
   },
   {
     "id": 8476887,
@@ -5708,7 +5710,8 @@
     "birthDate": "1994-08-13",
     "birthCity": "Ostervala",
     "country": "SWE",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "2.80"
   },
   {
     "id": 8475287,
@@ -5722,7 +5725,8 @@
     "birthDate": "1991-03-23",
     "birthCity": "Pori",
     "country": "FIN",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "4.40"
   },
   {
     "id": 8479370,
@@ -5736,7 +5740,8 @@
     "birthDate": "1998-03-14",
     "birthCity": "St. Albert",
     "country": "CAN",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "7.40"
   },
   {
     "id": 8476539,
@@ -5750,7 +5755,8 @@
     "birthDate": "1990-12-27",
     "birthCity": "Cap-Rouge",
     "country": "CAN",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "4.20"
   },
   {
     "id": 8477446,
@@ -5764,7 +5770,8 @@
     "birthDate": "1995-03-07",
     "birthCity": "Grosse Pointe",
     "country": "USA",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "6.20"
   },
   {
     "id": 8475158,
@@ -5778,7 +5785,8 @@
     "birthDate": "1991-02-07",
     "birthCity": "Clinton",
     "country": "CAN",
-    "team": "Nashville Predators"
+      "team": "Nashville Predators",
+    "odds": "3.20"
   },
   {
     "id": 8482062,
@@ -5792,7 +5800,8 @@
     "birthDate": "1995-10-28",
     "birthCity": "Brainerd",
     "country": "USA",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "6.40"
   },
   {
     "id": 8474564,
@@ -5806,7 +5815,8 @@
     "birthDate": "1990-02-07",
     "birthCity": "Markham",
     "country": "CAN",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "2.80"
   },
   {
     "id": 8482768,
@@ -5820,7 +5830,8 @@
     "birthDate": "2003-04-05",
     "birthCity": "Togliatti",
     "country": "RUS",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "12.20"
   },
   {
     "id": 8482103,
@@ -5834,7 +5845,8 @@
     "birthDate": "2002-03-09",
     "birthCity": "Calgary",
     "country": "CAN",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "12.20"
   },
   {
     "id": 8484241,
@@ -5848,7 +5860,8 @@
     "birthDate": "2005-02-06",
     "birthCity": "Nanaimo",
     "country": "CAN",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "5.80"
   },
   {
     "id": 8482111,
@@ -5862,7 +5875,8 @@
     "birthDate": "2001-11-15",
     "birthCity": "Halifax",
     "country": "CAN",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "12.20"
   },
   {
     "id": 8483565,
@@ -5876,7 +5890,8 @@
     "birthDate": "1998-05-12",
     "birthCity": "Washington",
     "country": "USA",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "12.20"
   },
   {
     "id": 8479980,
@@ -5890,7 +5905,8 @@
     "birthDate": "1998-12-05",
     "birthCity": "Kitchener",
     "country": "CAN",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "12.20"
   },
   {
     "id": 8474600,
@@ -5904,7 +5920,8 @@
     "birthDate": "1990-06-01",
     "birthCity": "Bern",
     "country": "CHE",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "4.20"
   },
   {
     "id": 8480246,
@@ -5918,7 +5935,8 @@
     "birthDate": "1998-06-15",
     "birthCity": "Elk River",
     "country": "USA",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "13.20"
   },
   {
     "id": 8476869,
@@ -5932,7 +5950,8 @@
     "birthDate": "1994-03-26",
     "birthCity": "Lakeville",
     "country": "USA",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "8.20"
   },
   {
     "id": 8481056,
@@ -5946,7 +5965,8 @@
     "birthDate": "2000-01-04",
     "birthCity": "Woodridge",
     "country": "USA",
-    "team": "Nashville Predators"
+      "team": "Nashville Predators",
+    "odds": "12.20"
   },
   {
     "id": 8482482,
@@ -5960,7 +5980,8 @@
     "birthDate": "2000-08-07",
     "birthCity": "Stockholm",
     "country": "SWE",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "10.20"
   },
   {
     "id": 8481020,
@@ -5974,7 +5995,8 @@
     "birthDate": "2000-03-11",
     "birthCity": "Kempele",
     "country": "FIN",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "50.20"
   },
   {
     "id": 8477424,
@@ -5988,7 +6010,8 @@
     "birthDate": "1995-04-19",
     "birthCity": "Forssa",
     "country": "FIN",
-    "team": "Nashville Predators"
+    "team": "Nashville Predators",
+    "odds": "50.20"
   },
   {
     "id": 8479407,
@@ -6002,7 +6025,8 @@
     "birthDate": "1998-07-30",
     "birthCity": "Stockholm",
     "country": "SWE",
-    "team": "New Jersey Devils"
+    "team": "New Jersey Devils",
+    "odds": "2.90"
   },
   {
     "id": 8477015,
@@ -6016,7 +6040,8 @@
     "birthDate": "1994-01-14",
     "birthCity": "Toronto",
     "country": "CAN",
-    "team": "New Jersey Devils"
+    "team": "New Jersey Devils",
+    "odds": "4.20"
   },
   {
     "id": 8481032,
@@ -6030,7 +6055,8 @@
     "birthDate": "1999-11-16",
     "birthCity": "Canton",
     "country": "USA",
-    "team": "New Jersey Devils"
+    "team": "New Jersey Devils",
+    "odds": "6.20"
   },
   {
     "id": 8474149,
@@ -6058,7 +6084,8 @@
     "birthDate": "1999-04-01",
     "birthCity": "Winnipeg",
     "country": "CAN",
-    "team": "New Jersey Devils"
+    "team": "New Jersey Devils",
+    "odds": "4.20"
   },
   {
     "id": 8476822,
@@ -6380,7 +6407,8 @@
     "birthDate": "1997-05-26",
     "birthCity": "Coquitlam",
     "country": "CAN",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "3.20"
   },
   {
     "id": 8475231,
@@ -6394,7 +6422,8 @@
     "birthDate": "1991-02-27",
     "birthCity": "Toronto",
     "country": "CAN",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "7.20"
   },
   {
     "id": 8477494,
@@ -6408,7 +6437,8 @@
     "birthDate": "1995-03-28",
     "birthCity": "Ste-Agathe",
     "country": "CAN",
-    "team": "New York Islanders"
+      "team": "New York Islanders",
+    "odds": "8.20"
   },
   {
     "id": 8477407,
@@ -6422,7 +6452,8 @@
     "birthDate": "1995-08-26",
     "birthCity": "Pointe-Claire",
     "country": "CAN",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "4.20"
   },
   {
     "id": 8482476,
@@ -6436,7 +6467,8 @@
     "birthDate": "2001-11-16",
     "birthCity": "Leksand",
     "country": "SWE",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "4.00"
   },
   {
     "id": 8481601,
@@ -6450,7 +6482,8 @@
     "birthDate": "2001-05-24",
     "birthCity": "Tranas",
     "country": "SWE",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "4.50"
   },
   {
     "id": 8477500,
@@ -6464,7 +6497,8 @@
     "birthDate": "1995-04-05",
     "birthCity": "London",
     "country": "CAN",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "2.70"
   },
   {
     "id": 8475314,
@@ -6478,7 +6512,8 @@
     "birthDate": "1990-07-03",
     "birthCity": "Edina",
     "country": "USA",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "4.20"
   },
   {
     "id": 8481237,
@@ -6492,7 +6527,8 @@
     "birthDate": "1999-04-29",
     "birthCity": "Livingston",
     "country": "USA",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "8.20"
   },
   {
     "id": 8476419,
@@ -6507,7 +6543,7 @@
     "birthCity": "Ottawa",
     "country": "CAN",
     "team": "New York Islanders",
-    "odds": "4.20"
+    "odds": "4.70"
   },
   {
     "id": 8475151,
@@ -6521,7 +6557,8 @@
     "birthDate": "1991-02-01",
     "birthCity": "Smithtown",
     "country": "USA",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "4.20"
   },
   {
     "id": 8484221,
@@ -6535,7 +6572,8 @@
     "birthDate": "2005-01-21",
     "birthCity": "Oakville",
     "country": "CAN",
-    "team": "New York Islanders"
+      "team": "New York Islanders",
+    "odds": "6.20"
   },
   {
     "id": 8485702,
@@ -6549,7 +6587,8 @@
     "birthDate": "2000-10-07",
     "birthCity": "Chelyabinsk",
     "country": "RUS",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "5.50"
   },
   {
     "id": 8484958,
@@ -6563,7 +6602,8 @@
     "birthDate": "1998-09-19",
     "birthCity": "Moscow",
     "country": "RUS",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "9.20"
   },
   {
     "id": 8478451,
@@ -6577,7 +6617,8 @@
     "birthDate": "1997-06-26",
     "birthCity": "Regina",
     "country": "CAN",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "12.20"
   },
   {
     "id": 8480871,
@@ -6591,7 +6632,8 @@
     "birthDate": "2000-08-15",
     "birthCity": "Falun",
     "country": "SWE",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "12.20"
   },
   {
     "id": 8477950,
@@ -6605,7 +6647,8 @@
     "birthDate": "1995-10-24",
     "birthCity": "Sewell",
     "country": "USA",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "7.50"
   },
   {
     "id": 8476429,
@@ -6619,7 +6662,8 @@
     "birthDate": "1992-10-14",
     "birthCity": "St. Louis",
     "country": "USA",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "13.00"
   },
   {
     "id": 8476917,
@@ -6633,7 +6677,8 @@
     "birthDate": "1994-08-16",
     "birthCity": "Toronto",
     "country": "CAN",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "13.20"
   },
   {
     "id": 8477506,
@@ -6647,7 +6692,8 @@
     "birthDate": "1994-10-06",
     "birthCity": "Dauphin",
     "country": "CAN",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "10.20"
   },
   {
     "id": 8481014,
@@ -6661,7 +6707,8 @@
     "birthDate": "2000-01-06",
     "birthCity": "Moscow",
     "country": "RUS",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "12.20"
   },
   {
     "id": 8485366,
@@ -6675,7 +6722,8 @@
     "birthDate": "2007-09-05",
     "birthCity": "Hamilton",
     "country": "CAN",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "4.80"
   },
   {
     "id": 8479496,
@@ -6689,7 +6737,8 @@
     "birthDate": "1992-08-19",
     "birthCity": "Jihlava",
     "country": "CZE",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "12.20"
   },
   {
     "id": 8478009,
@@ -6703,7 +6752,8 @@
     "birthDate": "1995-08-04",
     "birthCity": "Mezhdurechensk",
     "country": "RUS",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "50.20"
   },
   {
     "id": 8473575,
@@ -6717,7 +6767,8 @@
     "birthDate": "1988-04-27",
     "birthCity": "Samara",
     "country": "RUS",
-    "team": "New York Islanders"
+    "team": "New York Islanders",
+    "odds": "50.20"
   },
   {
     "id": 8477380,
