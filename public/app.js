@@ -4542,8 +4542,10 @@ async function loadPremiumPlayers() {
       const teamAbbrev = getPlayerTeamAbbrev(name, true); // Použi premium cache
       const formattedName = formatPlayerName(name);
       const playerDisplay = teamAbbrev ? `${formattedName} <span style="color:#999; font-size:0.9em;">(${teamAbbrev})</span>` : formattedName;
+      const playerKeyEnc = encodeURIComponent(name);
 
       const tr = document.createElement("tr");
+      tr.setAttribute("data-player-key", playerKeyEnc);
       tr.innerHTML = `
   <td>${playerDisplay}</td>
   <td>${p.stake}</td>
@@ -4561,7 +4563,7 @@ async function loadPremiumPlayers() {
 
     <button
       class="btn-delete"
-      onclick="deletePremiumPlayer('${encodeURIComponent(name)}')"
+      onclick="deletePremiumPlayer('${playerKeyEnc}')"
     >
       ${t("common.delete")}
     </button>
@@ -4663,16 +4665,40 @@ document
 // ===============================
 async function deletePremiumPlayer(encodedName) {
   const token = localStorage.getItem("sb-access-token");
+  const msg = document.getElementById("premium-msg");
   if (!token) return;
 
   const name = decodeURIComponent(encodedName);
   if (!confirm(t("premium.confirmDelete", { name }))) return;
 
-  await fetch(`/api/vip?task=delete_player&player=${encodeURIComponent(name)}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  // Okamžité odstránenie riadka z tabuľky (optimistic update)
+  const tbody = document.getElementById("premium-players-body");
+  if (tbody) {
+    const row = Array.from(tbody.querySelectorAll("tr[data-player-key]")).find(
+      (tr) => tr.getAttribute("data-player-key") === encodedName
+    );
+    if (row) row.remove();
+  }
 
-  await loadPremiumPlayers();
+  try {
+    const res = await fetch(`/api/vip?task=delete_player&player=${encodeURIComponent(name)}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      if (msg) msg.textContent = data.error || t("premium.serverError");
+      await loadPremiumPlayers();
+      return;
+    }
+
+    await loadPremiumPlayers();
+    if (msg) msg.textContent = "";
+  } catch (err) {
+    console.error("Delete player error:", err);
+    if (msg) msg.textContent = t("premium.serverError");
+    await loadPremiumPlayers();
+  }
 }
 
 // ===============================
@@ -5117,6 +5143,7 @@ async function addPremiumPlayer() {
 
     if (tbody) {
       const tr = document.createElement("tr");
+      tr.setAttribute("data-player-key", encodeURIComponent(playerKey));
       tr.innerHTML = `
   <td>${playerDisplay}</td>
   <td>1</td>
