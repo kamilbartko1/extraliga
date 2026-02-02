@@ -157,11 +157,14 @@ function getRawBody(req) {
 // ===============================
 
 export default async function handler(req, res) {
-  // 🔥 OPTIMALIZÁCIA: VIP endpointy - kratšie cache (obsahujú user data)
-  // Pre niektoré tasky môžeme použiť cache (leaderboard, status), pre iné nie (get_players, dashboard)
-  const cacheableTasks = ['leaderboard', 'status'];
+  // 🔥 VIP – žiadna cache pre user-specific dáta (get_players, add_player, delete_player, dashboard)
   const task = req.query.task || null;
-  if (task && cacheableTasks.includes(task)) {
+  const noCacheTasks = ['get_players', 'add_player', 'delete_player', 'dashboard', 'history', 'set_username'];
+  if (task && noCacheTasks.includes(task)) {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  } else if (task === 'leaderboard' || task === 'status') {
     res.setHeader('Cache-Control', 'private, s-maxage=180, stale-while-revalidate=60');
   }
   

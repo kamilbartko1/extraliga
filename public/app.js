@@ -4504,7 +4504,8 @@ async function loadPremiumPlayers() {
   if (msg) msg.textContent = "";
 
   try {
-    const res = await fetch("/api/vip?task=get_players", {
+    const res = await fetch(`/api/vip?task=get_players&_=${Date.now()}`, {
+      cache: "no-store",
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -4681,7 +4682,8 @@ async function deletePremiumPlayer(encodedName) {
   }
 
   try {
-    const res = await fetch(`/api/vip?task=delete_player&player=${encodeURIComponent(name)}`, {
+    const res = await fetch(`/api/vip?task=delete_player&player=${encodeURIComponent(name)}&_=${Date.now()}`, {
+      cache: "no-store",
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
@@ -5115,8 +5117,10 @@ async function addPremiumPlayer() {
       `/api/vip?task=add_player` +
       `&name=${encodeURIComponent(player)}` +
       `&team=${encodeURIComponent(team)}` +
-      `&odds=${encodeURIComponent(odds)}`,
+      `&odds=${encodeURIComponent(odds)}` +
+      `&_=${Date.now()}`,
       {
+        cache: "no-store",
         headers: {
           Authorization: `Bearer ${token}`,
         },
