@@ -1682,9 +1682,15 @@ async function displayHome() {
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${tkn}` },
           body: JSON.stringify({ date: today, tips })
         });
-        const d = await r.json();
+        const d = await r.json().catch(() => ({}));
         if (d.ok) {
           alert(t("tips.saved"));
+        } else if (r.status === 401 || (d.error && String(d.error).toLowerCase().includes("unauthorized"))) {
+          localStorage.removeItem("sb-access-token");
+          localStorage.removeItem("sb-refresh-token");
+          try { localStorage.setItem("tips_pending_" + today, JSON.stringify(tipsState)); } catch (_) {}
+          alert(CURRENT_LANG === "sk" ? "Prihlásanie vypršalo. Prihlás sa znova – tvoje tipy sa uložia." : "Login expired. Log in again – your tips will be saved.");
+          showSection("premium-section");
         } else {
           alert(t("tips.error") + (d.error ? ": " + d.error : ""));
         }
