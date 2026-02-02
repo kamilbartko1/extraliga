@@ -162,6 +162,7 @@ const I18N = {
     "home.aiProbability": "Pravdepodobnosť",
     "home.noTips": "Žiadne vyhodnotené tipy",
     "tips.cta": "Odoslať tipy a súťažiť o VIP predplatné",
+    "tips.hint": "Vyber tipy (1 = domáci výhra, X = remíza/OT, 2 = hostia) – po registrácii sa uložia a budeš súťažiť o VIP.",
     "tips.pick1": "1",
     "tips.pickX": "X",
     "tips.pick2": "2",
@@ -469,6 +470,7 @@ const I18N = {
     "home.aiProbability": "Probability",
     "home.noTips": "No evaluated picks yet",
     "tips.cta": "Submit tips and compete for VIP subscription",
+    "tips.hint": "Select tips (1 = home, X = draw/OT, 2 = away) – after registration they will be saved and you'll compete for VIP.",
     "tips.pick1": "1",
     "tips.pickX": "X",
     "tips.pick2": "2",
@@ -1394,9 +1396,13 @@ async function displayHome() {
     ];
     const [homeData, statsData, aiData, absData] = await Promise.all(fetchPromises);
 
-    // === TIPS GAME: pre-fill today's tips for logged-in users
-    const token = localStorage.getItem("sb-access-token");
+    // === TIPS GAME: pre-fill today's tips
+    const tz = "Europe/Bratislava";
+    const dateParts = new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+    const todayKey = dateParts.find((p) => p.type === "year").value + "-" + dateParts.find((p) => p.type === "month").value + "-" + dateParts.find((p) => p.type === "day").value;
+
     tipsState = {};
+    const token = localStorage.getItem("sb-access-token");
     if (token) {
       try {
         const r = await fetch(`/api/vip?task=user_tips_today&_=${Date.now()}`, {
@@ -1406,6 +1412,32 @@ async function displayHome() {
         const d = await r.json();
         if (d.ok && Array.isArray(d.tips)) {
           d.tips.forEach(t => { tipsState[t.gameId] = t.pick; });
+        }
+      } catch {}
+    }
+    if (Object.keys(tipsState).length === 0) {
+      try {
+        const pending = localStorage.getItem("tips_pending_" + todayKey);
+        if (pending) {
+          const obj = JSON.parse(pending);
+          tipsState = typeof obj === "object" && obj !== null ? obj : {};
+          // Ak je používateľ prihlásený, odošli pending tipy a vymaž localStorage
+          if (token && Object.keys(tipsState).length > 0) {
+            const tips = Object.entries(tipsState).filter(([, v]) => v).map(([gameId, pick]) => ({ gameId: Number(gameId), pick }));
+            if (tips.length > 0) {
+              try {
+                const r = await fetch("/api/vip?task=save_tips", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                  body: JSON.stringify({ date: todayKey, tips })
+                });
+                const d = await r.json();
+                if (d.ok) {
+                  localStorage.removeItem("tips_pending_" + todayKey);
+                }
+              } catch (_) {}
+            }
+          }
         }
       } catch {}
     }
@@ -1470,6 +1502,7 @@ async function displayHome() {
       <h2 class="home-section-title">${t("home.todaysGames")}</h2>
       <span class="home-section-subtitle">${gamesCountText}</span>
     </div>
+    ${homeData.matchesToday.length > 0 ? `<p class="tips-hint">${t("tips.hint")}</p>` : ""}
     <div class="home-games-list">
       ${homeData.matchesToday.length === 0
         ? `<p class="home-empty">${t("home.noGamesToday")}</p>`
@@ -1505,7 +1538,7 @@ async function displayHome() {
                   <div class="home-odd">${m.awayName}: <strong>${awayOdd || "-"}</strong></div>
                 </div>
                 ` : ""}
-                <div class="tips-1x2-selector" onclick="event.stopPropagation()">
+                <div class="tips-1x2-selector">
                   <button type="button" class="tips-1x2-btn${a1}" data-game-id="${m.id}" data-pick="1">${t("tips.pick1")}</button>
                   <button type="button" class="tips-1x2-btn${aX}" data-game-id="${m.id}" data-pick="X">${t("tips.pickX")}</button>
                   <button type="button" class="tips-1x2-btn${a2}" data-game-id="${m.id}" data-pick="2">${t("tips.pick2")}</button>
@@ -1603,36 +1636,46 @@ async function displayHome() {
 
     home.innerHTML = html;
 
-    // === TIPS GAME: event handlers for 1X2 selectors and CTA
-    home.querySelector(".tips-1x2-selector")?.closest(".home-games-list")?.addEventListener("click", (e) => {
-      const btn = e.target.closest(".tips-1x2-btn");
-      if (!btn) return;
-      e.stopPropagation();
-      const gameId = Number(btn.dataset.gameId);
-      const pick = btn.dataset.pick;
-      if (!gameId || !pick) return;
-      tipsState[gameId] = pick;
-      const wrap = btn.closest(".tips-1x2-selector");
-      if (wrap) wrap.querySelectorAll(".tips-1x2-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-    });
+    // === TIPS GAME: event handlers – capture phase so we run BEFORE game item onclick
+    const tipsList = home.querySelector(".home-games-list");
+    if (tipsList) {
+      tipsList.addEventListener("click", (e) => {
+        const btn = e.target.closest(".tips-1x2-btn");
+        if (!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const gameId = Number(btn.dataset.gameId);
+        const pick = btn.dataset.pick;
+        if (!gameId || !pick) return;
+        tipsState[gameId] = pick;
+        const wrap = btn.closest(".tips-1x2-selector");
+        if (wrap) wrap.querySelectorAll(".tips-1x2-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        // Ulož do localStorage pre neprihlásených (po registrácii sa odošlú)
+        const tz = "Europe/Bratislava";
+        const p = new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+        const today = p.find((x) => x.type === "year").value + "-" + p.find((x) => x.type === "month").value + "-" + p.find((x) => x.type === "day").value;
+        try { localStorage.setItem("tips_pending_" + today, JSON.stringify(tipsState)); } catch (_) {}
+      }, true);
+    }
 
     document.getElementById("tips-cta-btn")?.addEventListener("click", async (e) => {
       e.stopPropagation();
-      const tkn = localStorage.getItem("sb-access-token");
-      if (!tkn) {
-        alert(t("tips.loginRequired"));
-        showSection("premium-section");
-        return;
-      }
       const tips = Object.entries(tipsState).filter(([, v]) => v).map(([gameId, pick]) => ({ gameId: Number(gameId), pick }));
       if (tips.length === 0) {
-        alert(CURRENT_LANG === "sk" ? "Vyber aspoň jeden tip (1, X alebo 2)." : "Select at least one tip (1, X or 2).");
+        alert(CURRENT_LANG === "sk" ? "Vyber aspoň jeden tip (1, X alebo 2) pre súťaž o VIP." : "Select at least one tip (1, X or 2) to compete for VIP.");
         return;
       }
       const tz = "Europe/Bratislava";
       const parts = new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
       const today = parts.find((p) => p.type === "year").value + "-" + parts.find((p) => p.type === "month").value + "-" + parts.find((p) => p.type === "day").value;
+      const tkn = localStorage.getItem("sb-access-token");
+      if (!tkn) {
+        try { localStorage.setItem("tips_pending_" + today, JSON.stringify(tipsState)); } catch (_) {}
+        alert(CURRENT_LANG === "sk" ? "Prihlás sa alebo sa zaregistruj – tvoje tipy sa uložia a budeš súťažiť o VIP predplatné." : "Log in or register – your tips will be saved and you'll compete for VIP subscription.");
+        showSection("premium-section");
+        return;
+      }
       try {
         const r = await fetch("/api/vip?task=save_tips", {
           method: "POST",
@@ -4417,6 +4460,27 @@ async function handleRegister() {
       }
     }
 
+    // Odoslať pending tipy (ak mal pred registráciou vybrané tipy) – len ak má token (email potvrdenie môže byť vypnuté)
+    if (data.access_token) {
+      const tz = "Europe/Bratislava";
+      const p = new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+      const today = p.find((x) => x.type === "year").value + "-" + p.find((x) => x.type === "month").value + "-" + p.find((x) => x.type === "day").value;
+      const pending = localStorage.getItem("tips_pending_" + today);
+      if (pending) {
+        try {
+          const obj = JSON.parse(pending);
+          const tips = Object.entries(obj || {}).filter(([, v]) => v).map(([gameId, pick]) => ({ gameId: Number(gameId), pick }));
+          if (tips.length > 0) {
+            localStorage.setItem("sb-access-token", data.access_token);
+            if (data.refresh_token) localStorage.setItem("sb-refresh-token", data.refresh_token);
+            const r = await fetch("/api/vip?task=save_tips", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${data.access_token}` }, body: JSON.stringify({ date: today, tips }) });
+            const d = await r.json();
+            if (d.ok) localStorage.removeItem("tips_pending_" + today);
+          }
+        } catch (_) {}
+      }
+    }
+
     // Úspešná registrácia - zobraziť správu a refreshnúť stránku
     msg.textContent = t("premium.emailConfirmMessage");
     msg.className = "premium-msg premium-msg-success";
@@ -6782,6 +6846,23 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       localStorage.setItem("sb-access-token", data.access_token);
       localStorage.setItem("sb-refresh-token", data.refresh_token);
+
+      // Odoslať pending tipy (ak mal pred prihlásením vybrané tipy)
+      const tz = "Europe/Bratislava";
+      const p = new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+      const today = p.find((x) => x.type === "year").value + "-" + p.find((x) => x.type === "month").value + "-" + p.find((x) => x.type === "day").value;
+      const pending = localStorage.getItem("tips_pending_" + today);
+      if (pending) {
+        try {
+          const obj = JSON.parse(pending);
+          const tips = Object.entries(obj || {}).filter(([, v]) => v).map(([gameId, pick]) => ({ gameId: Number(gameId), pick }));
+          if (tips.length > 0) {
+            const r = await fetch("/api/vip?task=save_tips", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${data.access_token}` }, body: JSON.stringify({ date: today, tips }) });
+            const d = await r.json();
+            if (d.ok) localStorage.removeItem("tips_pending_" + today);
+          }
+        } catch (_) {}
+      }
 
       // refresh premium UI
       checkPremiumStatus();

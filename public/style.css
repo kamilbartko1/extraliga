@@ -5686,6 +5686,17 @@ body {
   color: #00eaff;
 }
 
+/* === TIPS GAME: hint text === */
+.tips-hint {
+  color: rgba(0, 234, 255, 0.9);
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: rgba(0, 234, 255, 0.08);
+  border-radius: 8px;
+  border-left: 4px solid #00eaff;
+}
+
 /* === TIPS GAME: 1X2 selectors === */
 .tips-1x2-selector {
   display: flex;
