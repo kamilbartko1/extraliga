@@ -5046,6 +5046,7 @@ function renderPremiumPlayersForTeam(team) {
     const opt = document.createElement("option");
     opt.value = p.name;
     opt.textContent = `${p.name} (#${p.number}, ${p.position})`;
+    opt.dataset.odds = (p.odds != null ? Number(p.odds) : 2.2);
     playerSelect.appendChild(opt);
   });
 
