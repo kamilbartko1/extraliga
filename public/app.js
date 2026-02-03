@@ -162,7 +162,7 @@ const I18N = {
     "home.aiProbability": "Pravdepodobnosť",
     "home.noTips": "Žiadne vyhodnotené tipy",
     "tips.cta": "Odoslať tipy a súťažiť o VIP predplatné",
-    "tips.hint": "Vyber tipy (1 = domáci výhra, X = remíza/OT, 2 = hostia) – po registrácii sa uložia a budeš súťažiť o VIP.",
+    "tips.hint": "Vyber svoj tip a súťaž o VIP.",
     "tips.pick1": "1",
     "tips.pickX": "X",
     "tips.pick2": "2",
@@ -173,6 +173,7 @@ const I18N = {
     "tips.statsTotal": "Celkovo tipov",
     "tips.statsCorrect": "Správnych",
     "tips.noStatsYet": "Zatiaľ nemáš žiadne tipy. Choď na domov a pridaj dnešné tipy!",
+    "tips.pendingMessage": "Zaregistruj sa / prihlás sa a Tvoje tipy budú zaradené do súťaže o najlepšieho tipera týždňa!",
     "tips.loginRequired": "Pre odoslanie tipov sa musíš prihlásiť.",
     "tips.saved": "✅ Tipy boli uložené!",
     "tips.error": "Chyba pri ukladaní tipov.",
@@ -477,7 +478,7 @@ const I18N = {
     "home.aiProbability": "Probability",
     "home.noTips": "No evaluated picks yet",
     "tips.cta": "Submit tips and compete for VIP subscription",
-    "tips.hint": "Select tips (1 = home, X = draw/OT, 2 = away) – after registration they will be saved and you'll compete for VIP.",
+    "tips.hint": "Pick your tip and compete for VIP.",
     "tips.pick1": "1",
     "tips.pickX": "X",
     "tips.pick2": "2",
@@ -488,6 +489,7 @@ const I18N = {
     "tips.statsTotal": "Total tips",
     "tips.statsCorrect": "Correct",
     "tips.noStatsYet": "You have no tips yet. Go to Home and add today's tips!",
+    "tips.pendingMessage": "Register / log in and your tips will be entered into the weekly best tiper competition!",
     "tips.loginRequired": "You must log in to submit tips.",
     "tips.saved": "✅ Tips saved!",
     "tips.error": "Error saving tips.",
@@ -1685,8 +1687,10 @@ async function displayHome() {
       const today = parts.find((p) => p.type === "year").value + "-" + parts.find((p) => p.type === "month").value + "-" + parts.find((p) => p.type === "day").value;
       const tkn = localStorage.getItem("sb-access-token");
       if (!tkn) {
-        try { localStorage.setItem("tips_pending_" + today, JSON.stringify(tipsState)); } catch (_) {}
-        alert(CURRENT_LANG === "sk" ? "Prihlás sa alebo sa zaregistruj – tvoje tipy sa uložia a budeš súťažiť o VIP predplatné." : "Log in or register – your tips will be saved and you'll compete for VIP subscription.");
+        try {
+          localStorage.setItem("tips_pending_" + today, JSON.stringify(tipsState));
+          localStorage.setItem("tips_redirect_msg", "1");
+        } catch (_) {}
         showSection("premium-section");
         return;
       }
@@ -4284,6 +4288,19 @@ async function checkPremiumStatus() {
     if (loginBox) loginBox.style.display = "block";
     if (signupBtn) signupBtn.style.display = "inline-block";
     if (logoutBtn) logoutBtn.style.display = "none";
+    const tipsPendingMsg = document.getElementById("premium-tips-pending-msg");
+    const loginHint = loginBox?.querySelector(".premium-info-text");
+    if (localStorage.getItem("tips_redirect_msg")) {
+      localStorage.removeItem("tips_redirect_msg");
+      if (tipsPendingMsg) {
+        tipsPendingMsg.textContent = t("tips.pendingMessage");
+        tipsPendingMsg.style.display = "block";
+      }
+      if (loginHint) loginHint.style.display = "none";
+    } else {
+      if (tipsPendingMsg) tipsPendingMsg.style.display = "none";
+      if (loginHint) loginHint.style.display = "block";
+    }
     return;
   }
 

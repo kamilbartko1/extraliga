@@ -4862,6 +4862,14 @@ body {
   color: #9bbbd6;
 }
 
+.premium-msg-info {
+  color: #00eaff !important;
+  background: rgba(0, 234, 255, 0.1) !important;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
 .premium-msg-success {
   color: #00ff9c !important;
   /* Zelená farba pre úspech */
