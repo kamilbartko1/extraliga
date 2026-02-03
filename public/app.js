@@ -174,6 +174,12 @@ const I18N = {
     "tips.statsCorrect": "Správnych",
     "tips.noStatsYet": "Zatiaľ nemáš žiadne tipy. Choď na domov a pridaj dnešné tipy!",
     "tips.pendingMessage": "Zaregistruj si konto úplne zadarmo a tvoje tipy sa zaznamenajú.",
+    "tips.pendingEvaluation": "Tvoje tipy sú uložené. Po skončení zápasov ich vyhodnotíme.",
+    "tips.todayTitle": "Dnešné tipy",
+    "tips.pickHomeLabel": "Tip: 1 (domáci)",
+    "tips.pickDrawLabel": "Tip: X (remíza/OT)",
+    "tips.pickAwayLabel": "Tip: 2 (hostia)",
+    "tips.gameId": "Zápas",
     "tips.loginRequired": "Pre odoslanie tipov sa musíš prihlásiť.",
     "tips.saved": "✅ Tipy boli uložené!",
     "tips.error": "Chyba pri ukladaní tipov.",
@@ -490,6 +496,12 @@ const I18N = {
     "tips.statsCorrect": "Correct",
     "tips.noStatsYet": "You have no tips yet. Go to Home and add today's tips!",
     "tips.pendingMessage": "Register your account for free and your tips will be saved.",
+    "tips.pendingEvaluation": "Your tips are saved. We'll evaluate them after the games finish.",
+    "tips.todayTitle": "Today's tips",
+    "tips.pickHomeLabel": "Pick: 1 (home)",
+    "tips.pickDrawLabel": "Pick: X (draw/OT)",
+    "tips.pickAwayLabel": "Pick: 2 (away)",
+    "tips.gameId": "Game",
     "tips.loginRequired": "You must log in to submit tips.",
     "tips.saved": "✅ Tips saved!",
     "tips.error": "Error saving tips.",
@@ -4450,6 +4462,8 @@ async function loadTipsDashboardLocked(token) {
     if (!d.ok) {
       statsEl.innerHTML = `<p class="tips-dashboard-empty">${t("tips.noStatsYet")}</p>`;
       if (recentEl) recentEl.innerHTML = "";
+      const todayEl = document.getElementById("tips-dashboard-today");
+      if (todayEl) todayEl.innerHTML = "";
       return;
     }
 
@@ -4458,31 +4472,69 @@ async function loadTipsDashboardLocked(token) {
     const correct = stats.correctPredictions || 0;
     const accuracy = stats.accuracy || 0;
     const nickname = d.user?.nickname || "";
+    const todayData = d.today || {};
+    const todayTips = Array.isArray(todayData.tips) ? todayData.tips : [];
+    const todayDate = todayData.date;
 
     if (total === 0) {
-      statsEl.innerHTML = `<p class="tips-dashboard-empty">${t("tips.noStatsYet")}</p>`;
-      if (recentEl) recentEl.innerHTML = "";
-      return;
+      if (todayTips.length > 0) {
+        statsEl.innerHTML = `<p class="tips-dashboard-info">${t("tips.pendingEvaluation")}</p>`;
+      } else {
+        statsEl.innerHTML = `<p class="tips-dashboard-empty">${t("tips.noStatsYet")}</p>`;
+      }
+    } else {
+      const accPct = (accuracy * 100).toFixed(1);
+      statsEl.innerHTML = `
+        <div class="tips-stats-grid">
+          <div class="tips-stat-item">
+            <span class="tips-stat-label">${t("tips.statsTotal")}</span>
+            <span class="tips-stat-value">${total}</span>
+          </div>
+          <div class="tips-stat-item">
+            <span class="tips-stat-label">${t("tips.statsCorrect")}</span>
+            <span class="tips-stat-value">${correct}</span>
+          </div>
+          <div class="tips-stat-item">
+            <span class="tips-stat-label">${t("tips.statsAccuracy")}</span>
+            <span class="tips-stat-value tips-stat-accuracy">${accPct}%</span>
+          </div>
+        </div>
+        ${nickname ? `<p class="tips-dashboard-nickname">Vitaj, ${nickname}!</p>` : ""}
+      `;
     }
 
-    const accPct = (accuracy * 100).toFixed(1);
-    statsEl.innerHTML = `
-      <div class="tips-stats-grid">
-        <div class="tips-stat-item">
-          <span class="tips-stat-label">${t("tips.statsTotal")}</span>
-          <span class="tips-stat-value">${total}</span>
-        </div>
-        <div class="tips-stat-item">
-          <span class="tips-stat-label">${t("tips.statsCorrect")}</span>
-          <span class="tips-stat-value">${correct}</span>
-        </div>
-        <div class="tips-stat-item">
-          <span class="tips-stat-label">${t("tips.statsAccuracy")}</span>
-          <span class="tips-stat-value tips-stat-accuracy">${accPct}%</span>
-        </div>
-      </div>
-      ${nickname ? `<p class="tips-dashboard-nickname">Vitaj, ${nickname}!</p>` : ""}
-    `;
+    const todayEl = document.getElementById("tips-dashboard-today");
+    if (todayEl) {
+      if (todayTips.length === 0) {
+        todayEl.innerHTML = "";
+      } else {
+        let matchMap = {};
+        try {
+          const homeData = await cachedFetch("/api/home", 15);
+          (homeData?.matchesToday || []).forEach((m) => {
+            matchMap[m.id] = {
+              home: m.homeName,
+              away: m.awayName
+            };
+          });
+        } catch (_) {}
+
+        const pickLabel = (pick) => {
+          if (pick === "1") return t("tips.pickHomeLabel");
+          if (pick === "X") return t("tips.pickDrawLabel");
+          return t("tips.pickAwayLabel");
+        };
+
+        let html = `<h4 class="tips-today-title">${t("tips.todayTitle")} ${todayDate ? `(${todayDate})` : ""}</h4><ul class="tips-today-list">`;
+        todayTips.forEach((tip) => {
+          const match = matchMap[tip.gameId];
+          const matchLabel = match ? `${match.home} vs ${match.away}` : `${t("tips.gameId")}: ${tip.gameId}`;
+          html += `<li><span class="tips-today-match">${matchLabel}</span><span class="tips-today-pick">${pickLabel(tip.pick)}</span></li>`;
+        });
+        html += "</ul>";
+        todayEl.innerHTML = html;
+      }
+    }
 
     const recentDays = d.recentDays || [];
     if (recentEl && recentDays.length > 0) {

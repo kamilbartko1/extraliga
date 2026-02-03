@@ -907,6 +907,29 @@ export default async function handler(req, res) {
         : 0;
 
       const username = await redis.get(vipUsernameKey(userId)) || null;
+      const tz = "Europe/Bratislava";
+      const todayParts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: tz,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(new Date());
+      const todayStr = `${todayParts.find((p) => p.type === "year").value}-${todayParts.find((p) => p.type === "month").value}-${todayParts.find((p) => p.type === "day").value}`;
+
+      let todayTips = [];
+      try {
+        const todayRaw = await redis.get(`tips:${todayStr}:${userId}`);
+        if (todayRaw) {
+          const parsed = typeof todayRaw === "string" ? JSON.parse(todayRaw) : todayRaw;
+          if (Array.isArray(parsed)) {
+            todayTips = parsed.map((t) => ({
+              gameId: t.gameId,
+              pick: t.pick
+            }));
+          }
+        }
+      } catch {}
+
       const recentDays = [];
 
       for (let d = 0; d < 7; d++) {
@@ -957,6 +980,10 @@ export default async function handler(req, res) {
           totalPredictions: stats.totalPredictions,
           correctPredictions: stats.correctPredictions,
           accuracy: stats.accuracy,
+        },
+        today: {
+          date: todayStr,
+          tips: todayTips
         },
         recentDays,
       });
