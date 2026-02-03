@@ -173,7 +173,7 @@ const I18N = {
     "tips.statsTotal": "Celkovo tipov",
     "tips.statsCorrect": "Správnych",
     "tips.noStatsYet": "Zatiaľ nemáš žiadne tipy. Choď na domov a pridaj dnešné tipy!",
-    "tips.pendingMessage": "Zaregistruj sa / prihlás sa a Tvoje tipy budú zaradené do súťaže o najlepšieho tipera týždňa!",
+    "tips.pendingMessage": "Zaregistruj si konto úplne zadarmo a tvoje tipy sa zaznamenajú.",
     "tips.loginRequired": "Pre odoslanie tipov sa musíš prihlásiť.",
     "tips.saved": "✅ Tipy boli uložené!",
     "tips.error": "Chyba pri ukladaní tipov.",
@@ -489,7 +489,7 @@ const I18N = {
     "tips.statsTotal": "Total tips",
     "tips.statsCorrect": "Correct",
     "tips.noStatsYet": "You have no tips yet. Go to Home and add today's tips!",
-    "tips.pendingMessage": "Register / log in and your tips will be entered into the weekly best tiper competition!",
+    "tips.pendingMessage": "Register your account for free and your tips will be saved.",
     "tips.loginRequired": "You must log in to submit tips.",
     "tips.saved": "✅ Tips saved!",
     "tips.error": "Error saving tips.",
@@ -1678,14 +1678,29 @@ async function displayHome() {
     document.getElementById("tips-cta-btn")?.addEventListener("click", async (e) => {
       e.stopPropagation();
       const tips = Object.entries(tipsState).filter(([, v]) => v).map(([gameId, pick]) => ({ gameId: Number(gameId), pick }));
-      if (tips.length === 0) {
-        alert(CURRENT_LANG === "sk" ? "Vyber aspoň jeden tip (1, X alebo 2) pre súťaž o VIP." : "Select at least one tip (1, X or 2) to compete for VIP.");
-        return;
-      }
       const tz = "Europe/Bratislava";
       const parts = new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
       const today = parts.find((p) => p.type === "year").value + "-" + parts.find((p) => p.type === "month").value + "-" + parts.find((p) => p.type === "day").value;
       const tkn = localStorage.getItem("sb-access-token");
+
+      if (tips.length === 0) {
+        if (!tkn) {
+          showSection("premium-section");
+          try { localStorage.setItem("tips_redirect_msg", "1"); } catch (_) {}
+        }
+        const wrap = document.querySelector(".tips-cta-wrap");
+        const hint = wrap?.querySelector(".tips-cta-hint");
+        if (wrap && !hint) {
+          const el = document.createElement("p");
+          el.className = "tips-cta-hint";
+          el.style.color = "rgba(255,255,255,0.8); font-size:0.9rem; margin-top:8px;";
+          el.textContent = CURRENT_LANG === "sk" ? "Vyber aspoň jeden tip (1, X alebo 2)." : "Select at least one tip (1, X or 2).";
+          wrap.appendChild(el);
+          setTimeout(() => el.remove(), 4000);
+        }
+        return;
+      }
+
       if (!tkn) {
         try {
           localStorage.setItem("tips_pending_" + today, JSON.stringify(tipsState));
@@ -1694,6 +1709,7 @@ async function displayHome() {
         showSection("premium-section");
         return;
       }
+
       try {
         const r = await fetch("/api/vip?task=save_tips", {
           method: "POST",
@@ -1702,18 +1718,26 @@ async function displayHome() {
         });
         const d = await r.json().catch(() => ({}));
         if (d.ok) {
-          alert(t("tips.saved"));
+          const wrap = document.querySelector(".tips-cta-wrap");
+          const old = wrap?.querySelector(".tips-cta-success");
+          if (old) old.remove();
+          if (wrap) {
+            const el = document.createElement("p");
+            el.className = "tips-cta-success";
+            el.style.color = "#4ade80"; el.style.marginTop = "8px";
+            el.textContent = t("tips.saved");
+            wrap.appendChild(el);
+            setTimeout(() => el.remove(), 3000);
+          }
         } else if (r.status === 401 || (d.error && String(d.error).toLowerCase().includes("unauthorized"))) {
           localStorage.removeItem("sb-access-token");
           localStorage.removeItem("sb-refresh-token");
-          try { localStorage.setItem("tips_pending_" + today, JSON.stringify(tipsState)); } catch (_) {}
-          alert(CURRENT_LANG === "sk" ? "Prihlásanie vypršalo. Prihlás sa znova – tvoje tipy sa uložia." : "Login expired. Log in again – your tips will be saved.");
+          try { localStorage.setItem("tips_pending_" + today, JSON.stringify(tipsState)); localStorage.setItem("tips_redirect_msg", "1"); } catch (_) {}
           showSection("premium-section");
-        } else {
-          alert(t("tips.error") + (d.error ? ": " + d.error : ""));
         }
-      } catch (err) {
-        alert(t("tips.error") + ": " + err.message);
+      } catch (_) {
+        try { localStorage.setItem("tips_pending_" + today, JSON.stringify(tipsState)); localStorage.setItem("tips_redirect_msg", "1"); } catch (_) {}
+        showSection("premium-section");
       }
     });
 

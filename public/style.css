@@ -4863,11 +4863,12 @@ body {
 }
 
 .premium-msg-info {
-  color: #00eaff !important;
-  background: rgba(0, 234, 255, 0.1) !important;
+  color: #ff4444 !important;
+  background: rgba(255, 68, 68, 0.12) !important;
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 12px;
+  font-weight: 600;
 }
 
 .premium-msg-success {
