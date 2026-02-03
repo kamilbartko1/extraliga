@@ -19,6 +19,81 @@ const BASE_STAKE = 1;
 const ODDS = 2.5;
 const API_BASE = "";
 
+function sanitizeUsername(raw) {
+  if (!raw) return null;
+  let cleaned = raw.toLowerCase().replace(/[^a-z0-9_]/g, "_");
+  cleaned = cleaned.replace(/_+/g, "_").replace(/^_+|_+$/g, "");
+  if (cleaned.length < 2) return null;
+  return cleaned.slice(0, 20);
+}
+
+function decodeEmailFromToken(token) {
+  try {
+    const payload = token.split(".")[1];
+    if (!payload) return null;
+    const decoded = atob(payload.replace(/-/g, "+").replace(/_/g, "/"));
+    const data = JSON.parse(decoded);
+    return (data.email || data.user_email || "").toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+async function ensureUsername(token, fallbackEmail) {
+  if (!token) return null;
+  try {
+    const statusRes = await fetch("/api/vip?task=status", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const statusData = await statusRes.json();
+    if (statusData?.username) {
+      localStorage.setItem("sb-username", statusData.username);
+      return statusData.username;
+    }
+  } catch {}
+
+  const email = fallbackEmail || decodeEmailFromToken(token);
+  if (!email) return null;
+  const base = email.split("@")[0];
+  const candidate = sanitizeUsername(base);
+  if (!candidate) return null;
+
+  try {
+    const res = await fetch(`/api/vip?task=set_username&username=${encodeURIComponent(candidate)}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (data?.ok && data.username) {
+      localStorage.setItem("sb-username", data.username);
+      return data.username;
+    }
+  } catch {}
+
+  try {
+    const statusRes = await fetch("/api/vip?task=status", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const statusData = await statusRes.json();
+    if (statusData?.username) {
+      localStorage.setItem("sb-username", statusData.username);
+      return statusData.username;
+    }
+  } catch {}
+  return null;
+}
+
+function updatePremiumGreeting(name) {
+  const el = document.getElementById("premium-user-greeting");
+  if (!el) return;
+  if (name) {
+    el.textContent = `Hi ${name}!`;
+    el.style.display = "block";
+  } else {
+    el.textContent = "";
+    el.style.display = "none";
+  }
+}
+
 // =========================================================
 // FRONTEND CACHE - reduces Vercel API calls
 // =========================================================
@@ -4337,6 +4412,7 @@ async function checkPremiumStatus() {
       if (tipsPendingMsg) tipsPendingMsg.style.display = "none";
       if (loginHint) loginHint.style.display = "block";
     }
+    updatePremiumGreeting(null);
     return;
   }
 
@@ -4356,15 +4432,24 @@ async function checkPremiumStatus() {
     if (res.status === 401 || res.status === 403) {
       localStorage.removeItem("sb-access-token");
       localStorage.removeItem("sb-refresh-token");
+      localStorage.removeItem("sb-username");
 
       if (loginBox) loginBox.style.display = "block";
       if (signupBtn) signupBtn.style.display = "inline-block";
       if (logoutBtn) logoutBtn.style.display = "none";
       if (authMsg) authMsg.textContent = t("premium.loginExpired");
+      updatePremiumGreeting(null);
       return;
     }
 
     const data = await res.json();
+    let currentUsername = data.username || localStorage.getItem("sb-username") || null;
+    if (!currentUsername) {
+      currentUsername = await ensureUsername(token);
+    } else {
+      localStorage.setItem("sb-username", currentUsername);
+    }
+    updatePremiumGreeting(currentUsername);
 
     // ===============================
     // PREMIUM – Stripe Checkout
@@ -4438,6 +4523,7 @@ async function checkPremiumStatus() {
     // fallback: vráť login
     localStorage.removeItem("sb-access-token");
     localStorage.removeItem("sb-refresh-token");
+    localStorage.removeItem("sb-username");
 
     if (loginBox) loginBox.style.display = "block";
     if (signupBtn) signupBtn.style.display = "inline-block";
@@ -4503,6 +4589,11 @@ async function loadTipsDashboardLocked(token) {
       `;
     }
 
+    if (nickname) {
+      localStorage.setItem("sb-username", nickname);
+      updatePremiumGreeting(nickname);
+    }
+
     const todayEl = document.getElementById("tips-dashboard-today");
     if (todayEl) {
       if (todayTips.length === 0) {
@@ -4566,6 +4657,7 @@ async function loadTipsDashboardLocked(token) {
 function premiumLogout() {
   localStorage.removeItem("sb-access-token");
   localStorage.removeItem("sb-refresh-token");
+  localStorage.removeItem("sb-username");
   location.reload();
 }
 
@@ -6940,6 +7032,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       console.log("🚀 Login cez Google zachytený! Ukladám token...");
       localStorage.setItem("sb-access-token", accessToken);
       if (refreshToken) localStorage.setItem("sb-refresh-token", refreshToken);
+      await ensureUsername(accessToken, decodeEmailFromToken(accessToken));
 
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState(null, null, cleanUrl);
@@ -7050,6 +7143,11 @@ window.addEventListener("DOMContentLoaded", async () => {
             if (d.ok) localStorage.removeItem("tips_pending_" + today);
           }
         } catch (_) {}
+      }
+
+      const ensuredName = await ensureUsername(data.access_token, email);
+      if (ensuredName) {
+        updatePremiumGreeting(ensuredName);
       }
 
       // refresh premium UI

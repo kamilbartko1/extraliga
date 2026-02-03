@@ -367,6 +367,7 @@ export default async function handler(req, res) {
         ok: true,
         userId,
         isVip: !!isVip,
+        username: await redis.get(vipUsernameKey(userId)) || null,
       });
     }
 

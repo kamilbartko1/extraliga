@@ -4512,6 +4512,13 @@ body {
   margin: 0;
 }
 
+.premium-user-greeting {
+  margin-top: 10px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #00eaff;
+}
+
 .premium-locked-content .premium-upgrade-btn {
   margin-top: 24px;
   margin-bottom: 16px;
