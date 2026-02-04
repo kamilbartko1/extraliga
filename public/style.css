@@ -6061,6 +6061,38 @@ body {
   padding-right: 14px;
 }
 
+/* Desktop: všetky stĺpce vycentrované pod nadpismi, väčšia medzera medzi # a používateľom */
+@media (min-width: 769px) {
+  .tips-leaderboard-table th,
+  .tips-leaderboard-table td {
+    text-align: center;
+  }
+  .tips-leaderboard-table th:first-child,
+  .tips-leaderboard-table td:first-child {
+    padding-right: 20px;
+    width: auto;
+    min-width: 2.5em;
+  }
+  .tips-leaderboard-table th:nth-child(2),
+  .tips-leaderboard-table td:nth-child(2) {
+    text-align: center;
+    padding-left: 24px;
+    padding-right: 20px;
+  }
+  .tips-leaderboard-table th:nth-child(3),
+  .tips-leaderboard-table th:nth-child(4),
+  .tips-leaderboard-table th:nth-child(5),
+  .tips-leaderboard-table td:nth-child(3),
+  .tips-leaderboard-table td:nth-child(4),
+  .tips-leaderboard-table td:nth-child(5) {
+    text-align: center;
+  }
+  .tips-leaderboard-table th.text-right,
+  .tips-leaderboard-table td.text-right {
+    text-align: center;
+  }
+}
+
 @media (max-width: 768px) {
   .tips-leaderboard-section {
     padding: 16px 0;
