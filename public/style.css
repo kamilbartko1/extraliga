@@ -5776,12 +5776,21 @@ body {
   font-family: "Poppins", sans-serif;
   margin-bottom: 24px;
   padding: 28px 32px;
-  max-width: 720px;
+  max-width: 864px; /* o 20 % širší na desktope (720 * 1.2) */
   width: 100%;
   box-sizing: border-box;
   background: rgba(0, 234, 255, 0.06);
   border-radius: 12px;
   border: 1px solid rgba(0, 234, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .tips-dashboard-locked {
+    max-width: 100%;
+    padding: 20px 16px;
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
 
 .tips-dashboard-greeting {
