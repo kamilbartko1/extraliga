@@ -7045,8 +7045,6 @@ document.querySelectorAll("nav button").forEach(btn => {
         break;
 
       case "matches-section":
-        // Načítaj live zápasy pri otvorení sekcie a spustí automatickú aktualizáciu
-        startLiveGamesAutoUpdate();
         fetchMatches();
         break;
 
@@ -7116,8 +7114,6 @@ document.getElementById("mobileSelect")?.addEventListener("change", async (e) =>
 
   switch (targetId) {
     case "matches-section":
-      // Načítaj live zápasy pri otvorení sekcie a spustí automatickú aktualizáciu
-      startLiveGamesAutoUpdate();
       await fetchMatches();
       break;
 
