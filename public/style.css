@@ -5874,7 +5874,8 @@ body {
   font-family: "Poppins", sans-serif;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 12px;
   background: rgba(0, 234, 255, 0.06);
   border: 1px solid rgba(0, 234, 255, 0.15);
   border-radius: 8px;
@@ -5883,12 +5884,18 @@ body {
 }
 
 .tips-today-match {
+  flex: 1 1 auto;
+  min-width: 0;
   color: rgba(255, 255, 255, 0.88);
+  line-height: 1.35;
 }
 
 .tips-today-pick {
+  flex-shrink: 0;
+  text-align: right;
   color: #00eaff;
   font-weight: 600;
+  line-height: 1.35;
 }
 
 .tips-stats-grid {
