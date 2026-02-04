@@ -5986,6 +5986,18 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+/* Poradie a username hneď vedľa seba, potom mierna medzera pred ostatnými stĺpcami */
+.tips-leaderboard-table th:first-child,
+.tips-leaderboard-table td:first-child {
+  padding-right: 6px;
+}
+
+.tips-leaderboard-table th:nth-child(2),
+.tips-leaderboard-table td:nth-child(2) {
+  padding-left: 6px;
+  padding-right: 20px;
+}
+
 @media (max-width: 768px) {
   .tips-leaderboard-section {
     padding: 16px 0;
@@ -6017,6 +6029,13 @@ body {
   .tips-leaderboard-table th:first-child,
   .tips-leaderboard-table td:first-child {
     padding-left: 16px;
+    padding-right: 6px;
+  }
+
+  .tips-leaderboard-table th:nth-child(2),
+  .tips-leaderboard-table td:nth-child(2) {
+    padding-left: 6px;
+    padding-right: 18px;
   }
 
   .tips-leaderboard-table th:last-child,
