@@ -255,6 +255,8 @@ const I18N = {
     "tips.pickDrawLabel": "Tip: X (remíza/OT)",
     "tips.pickAwayLabel": "Tip: 2 (hostia)",
     "tips.gameId": "Zápas",
+    "tips.tipLabel": "tip",
+    "tips.resultLabel": "výsledok",
     "tips.loginRequired": "Pre odoslanie tipov sa musíš prihlásiť.",
     "tips.saved": "✅ Tipy boli uložené!",
     "tips.error": "Chyba pri ukladaní tipov.",
@@ -577,6 +579,8 @@ const I18N = {
     "tips.pickDrawLabel": "Pick: X (draw/OT)",
     "tips.pickAwayLabel": "Pick: 2 (away)",
     "tips.gameId": "Game",
+    "tips.tipLabel": "tip",
+    "tips.resultLabel": "result",
     "tips.loginRequired": "You must log in to submit tips.",
     "tips.saved": "✅ Tips saved!",
     "tips.error": "Error saving tips.",
@@ -4649,7 +4653,9 @@ async function loadTipsDashboardLocked(token) {
             const userLabel = g.userPick;
             const isCorrect = g.correct === true;
             const rowClass = isCorrect ? "tip-row tip-correct" : "tip-row tip-incorrect";
-            return `<li class="${rowClass}"><span class="tip-match">${matchLabel}</span><span class="tip-user">${userLabel}</span><span class="tip-actual">${outcomeLabel}</span></li>`;
+            const tipText = `${t("tips.tipLabel")}: ${userLabel}`;
+            const resultText = `${t("tips.resultLabel")}: ${outcomeLabel}`;
+            return `<li class="${rowClass}"><span class="tip-match">${matchLabel}</span><span class="tip-user">${tipText}</span><span class="tip-actual">${resultText}</span></li>`;
           })
           .join("");
         html += `
