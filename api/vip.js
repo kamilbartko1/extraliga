@@ -960,8 +960,8 @@ export default async function handler(req, res) {
           const aiPick = null;
           games.push({
             gameId: t.gameId,
-            homeCode: null,
-            awayCode: null,
+            homeName: null,
+            awayName: null,
             userPick: t.pick,
             aiPick,
             actualOutcome: actual || null,
@@ -973,6 +973,36 @@ export default async function handler(req, res) {
           recentDays.push({ date, games });
         }
       }
+
+      // Naplň homeName/awayName z NHL API pre každý deň (paralelne)
+      const datesToEnrich = recentDays.map((rd) => rd.date);
+      const scorePromises = datesToEnrich.map((date) =>
+        axios.get(`https://api-web.nhle.com/v1/score/${date}`, { timeout: 6000 }).catch(() => null)
+      );
+      const scoreResponses = await Promise.all(scorePromises);
+      const gameByIdByDate = {};
+      scoreResponses.forEach((resp, idx) => {
+        const date = datesToEnrich[idx];
+        if (!resp?.data?.games) return;
+        gameByIdByDate[date] = {};
+        resp.data.games.forEach((g) => {
+          gameByIdByDate[date][g.id] = {
+            homeName: g.homeTeam?.name?.default || g.homeTeam?.abbrev || "",
+            awayName: g.awayTeam?.name?.default || g.awayTeam?.abbrev || "",
+          };
+        });
+      });
+      recentDays.forEach((rd) => {
+        const names = gameByIdByDate[rd.date];
+        if (!names) return;
+        rd.games.forEach((g) => {
+          const info = names[g.gameId];
+          if (info) {
+            g.homeName = info.homeName;
+            g.awayName = info.awayName;
+          }
+        });
+      });
 
       return res.json({
         ok: true,

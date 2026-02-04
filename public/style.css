@@ -5774,10 +5774,21 @@ body {
 /* === TIPS DASHBOARD v Premium (pre registrovaných nie VIP) === */
 .tips-dashboard-locked {
   margin-bottom: 24px;
-  padding: 20px;
+  padding: 24px 28px;
+  max-width: 720px;
+  width: 100%;
+  box-sizing: border-box;
   background: rgba(0, 234, 255, 0.06);
   border-radius: 12px;
   border: 1px solid rgba(0, 234, 255, 0.2);
+}
+
+.tips-dashboard-greeting {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #00eaff;
+  margin-bottom: 12px;
+  display: none;
 }
 
 .tips-dashboard-locked h3 {
@@ -5906,10 +5917,88 @@ body {
 
 .tips-recent-day {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 6px 0;
+  padding: 10px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.tips-recent-day:hover {
+  background: rgba(0, 234, 255, 0.08);
+}
+
+.tips-recent-day .tips-recent-toggle {
+  margin-left: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+}
+
+.tips-recent-day.tips-recent-day--expanded .tips-recent-toggle {
+  transform: rotate(-180deg);
+}
+
+.tips-recent-day-detail {
+  padding: 8px 12px 14px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.tips-recent-matches {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tips-recent-matches .tip-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.tip-row.tip-correct {
+  background: rgba(34, 197, 94, 0.18);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.tip-row.tip-incorrect {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tip-match {
+  color: inherit;
+}
+
+.tip-user {
+  font-weight: 600;
+  color: #00eaff;
+}
+
+.tip-row.tip-correct .tip-user {
+  color: #4ade80;
+}
+
+.tip-row.tip-incorrect .tip-user {
+  color: #f87171;
+}
+
+.tip-actual {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.82rem;
 }
 
 .tips-recent-date {

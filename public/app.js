@@ -4546,6 +4546,8 @@ async function loadTipsDashboardLocked(token) {
     const d = await r.json();
 
     if (!d.ok) {
+      const greetingEl = document.getElementById("tips-dashboard-greeting");
+      if (greetingEl) { greetingEl.textContent = ""; greetingEl.style.display = "none"; }
       statsEl.innerHTML = `<p class="tips-dashboard-empty">${t("tips.noStatsYet")}</p>`;
       if (recentEl) recentEl.innerHTML = "";
       const todayEl = document.getElementById("tips-dashboard-today");
@@ -4561,6 +4563,12 @@ async function loadTipsDashboardLocked(token) {
     const todayData = d.today || {};
     const todayTips = Array.isArray(todayData.tips) ? todayData.tips : [];
     const todayDate = todayData.date;
+
+    const greetingEl = document.getElementById("tips-dashboard-greeting");
+    if (greetingEl) {
+      greetingEl.textContent = nickname ? `${CURRENT_LANG === "sk" ? "Vitaj" : "Welcome"}, ${nickname}!` : "";
+      greetingEl.style.display = nickname ? "block" : "none";
+    }
 
     if (total === 0) {
       if (todayTips.length > 0) {
@@ -4585,7 +4593,6 @@ async function loadTipsDashboardLocked(token) {
             <span class="tips-stat-value tips-stat-accuracy">${accPct}%</span>
           </div>
         </div>
-        ${nickname ? `<p class="tips-dashboard-nickname">Vitaj, ${nickname}!</p>` : ""}
       `;
     }
 
@@ -4610,7 +4617,7 @@ async function loadTipsDashboardLocked(token) {
           });
         } catch (_) {}
 
-        const pickLabel = (pick) => {
+        const pickLabelToday = (pick) => {
           if (pick === "1") return t("tips.pickHomeLabel");
           if (pick === "X") return t("tips.pickDrawLabel");
           return t("tips.pickAwayLabel");
@@ -4620,12 +4627,18 @@ async function loadTipsDashboardLocked(token) {
         todayTips.forEach((tip) => {
           const match = matchMap[tip.gameId];
           const matchLabel = match ? `${match.home} vs ${match.away}` : `${t("tips.gameId")}: ${tip.gameId}`;
-          html += `<li><span class="tips-today-match">${matchLabel}</span><span class="tips-today-pick">${pickLabel(tip.pick)}</span></li>`;
+          html += `<li><span class="tips-today-match">${matchLabel}</span><span class="tips-today-pick">${pickLabelToday(tip.pick)}</span></li>`;
         });
         html += "</ul>";
         todayEl.innerHTML = html;
       }
     }
+
+    const pickLabel = (pick) => {
+      if (pick === "1") return t("tips.pickHomeLabel");
+      if (pick === "X") return t("tips.pickDrawLabel");
+      return t("tips.pickAwayLabel");
+    };
 
     const recentDays = d.recentDays || [];
     if (recentEl && recentDays.length > 0) {
@@ -4634,14 +4647,41 @@ async function loadTipsDashboardLocked(token) {
         const games = day.games || [];
         const correctCount = games.filter((g) => g.correct === true).length;
         const dayTotal = games.length;
+        const dayId = "tips-day-" + day.date.replace(/-/g, "");
+        const matchRows = games
+          .map((g) => {
+            const matchLabel = (g.homeName && g.awayName) ? `${g.homeName} vs ${g.awayName}` : `${t("tips.gameId")}: ${g.gameId}`;
+            const outcomeLabel = g.actualOutcome ? pickLabel(g.actualOutcome) : "–";
+            const userLabel = pickLabel(g.userPick);
+            const isCorrect = g.correct === true;
+            const rowClass = isCorrect ? "tip-row tip-correct" : "tip-row tip-incorrect";
+            return `<li class="${rowClass}"><span class="tip-match">${matchLabel}</span><span class="tip-user">${userLabel}</span><span class="tip-actual">${outcomeLabel}</span></li>`;
+          })
+          .join("");
         html += `
-          <div class="tips-recent-day">
+          <div class="tips-recent-day" data-date="${day.date}" role="button" tabindex="0">
             <span class="tips-recent-date">${day.date}</span>
             <span class="tips-recent-score">${correctCount}/${dayTotal}</span>
+            <span class="tips-recent-toggle" aria-hidden="true">▼</span>
+          </div>
+          <div id="${dayId}" class="tips-recent-day-detail" hidden>
+            <ul class="tips-recent-matches">${matchRows}</ul>
           </div>
         `;
       }
       recentEl.innerHTML = html;
+      recentEl.querySelectorAll(".tips-recent-day").forEach((row) => {
+        row.addEventListener("click", () => {
+          const date = row.getAttribute("data-date");
+          const id = "tips-day-" + date.replace(/-/g, "");
+          const detail = document.getElementById(id);
+          if (!detail) return;
+          const isHidden = detail.hidden;
+          detail.hidden = !isHidden;
+          row.classList.toggle("tips-recent-day--expanded", !isHidden);
+          row.querySelector(".tips-recent-toggle")?.setAttribute("aria-hidden", "true");
+        });
+      });
     } else if (recentEl) {
       recentEl.innerHTML = "";
     }
