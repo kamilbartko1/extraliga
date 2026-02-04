@@ -5714,13 +5714,16 @@ body {
 
 /* === TIPS GAME: hint text === */
 .tips-hint {
-  color: rgba(0, 234, 255, 0.9);
-  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1rem;
+  font-weight: 600;
   margin-bottom: 16px;
-  padding: 10px 14px;
-  background: rgba(0, 234, 255, 0.08);
-  border-radius: 8px;
-  border-left: 4px solid #00eaff;
+  padding: 14px 18px;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(0, 234, 255, 0.15), rgba(0, 119, 255, 0.12));
+  border-radius: 10px;
+  border: 1px solid rgba(0, 234, 255, 0.35);
+  box-shadow: 0 2px 12px rgba(0, 234, 255, 0.12);
 }
 
 /* === TIPS GAME: 1X2 selectors === */
