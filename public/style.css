@@ -5776,7 +5776,7 @@ body {
   font-family: "Poppins", sans-serif;
   margin-bottom: 24px;
   padding: 28px 32px;
-  max-width: 864px; /* o 20 % širší na desktope (720 * 1.2) */
+  max-width: 864px; /* desktop: o 20 % širší než pôvodných 720px */
   width: 100%;
   box-sizing: border-box;
   background: rgba(0, 234, 255, 0.06);
@@ -5787,7 +5787,7 @@ body {
 @media (max-width: 768px) {
   .tips-dashboard-locked {
     max-width: 100%;
-    padding: 20px 16px;
+    padding: 20px 12px;
     margin-left: 0;
     margin-right: 0;
   }
@@ -5967,10 +5967,14 @@ body {
 .tips-leaderboard-table-wrapper {
   overflow-x: auto;
   margin-bottom: 16px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .tips-leaderboard-table {
   width: 100%;
+  min-width: 320px;
   border-collapse: collapse;
   font-size: 0.9rem;
 }
@@ -5980,6 +5984,40 @@ body {
   padding: 10px 12px;
   text-align: left;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 768px) {
+  .tips-leaderboard-section {
+    padding: 16px 0;
+    margin-top: 20px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .tips-leaderboard-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-left: -4px;
+    margin-right: -4px;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .tips-leaderboard-table {
+    font-size: 0.8rem;
+    min-width: 280px;
+  }
+
+  .tips-leaderboard-table th,
+  .tips-leaderboard-table td {
+    padding: 8px 6px;
+    white-space: nowrap;
+  }
+
+  .tips-leaderboard-title {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
 }
 
 .tips-leaderboard-table th {
