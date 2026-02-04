@@ -4761,10 +4761,19 @@ async function handleRegister() {
       }
     }
 
-    // Úspešná registrácia - zobraziť správu a refreshnúť stránku
+    // Úspešná registrácia - zobraziť správu; ak máme token, prejsť na dashboard (bez reloadu)
     msg.textContent = t("premium.emailConfirmMessage");
     msg.className = "premium-msg premium-msg-success";
-    setTimeout(() => window.location.reload(), 3000);
+    if (data.access_token) {
+      setTimeout(() => {
+        if (typeof window.showSection === "function") {
+          window.showSection("premium-section");
+        }
+        checkPremiumStatus();
+      }, 1500);
+    } else {
+      setTimeout(() => window.location.reload(), 3000);
+    }
 
   } catch (err) {
     console.error(err);
@@ -7037,6 +7046,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState(null, null, cleanUrl);
 
+      try { sessionStorage.setItem("auth_redirect_dashboard", "1"); } catch (_) {}
       setTimeout(() => location.reload(), 200);
       return;
     }
@@ -7073,7 +7083,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     sec.style.display = "none";
   });
 
-  // 3️⃣ Zobraz DOMOV
+  // 3️⃣ Zobraz DOMOV (alebo dashboard, ak používateľ práve prišiel z prihlásenia)
   const home = document.getElementById("home-section");
   if (home) {
     home.style.display = "block";
@@ -7089,6 +7099,16 @@ window.addEventListener("DOMContentLoaded", async () => {
     // Spustiť na pozadí aj tu
     fetchMatches().catch(err => console.warn("⚠️ Background fetchMatches error:", err));
   }
+
+  // Po prihlásení cez Google: presmeruj na dashboard namiesto domovskej stránky
+  try {
+    if (sessionStorage.getItem("auth_redirect_dashboard")) {
+      sessionStorage.removeItem("auth_redirect_dashboard");
+      if (typeof window.showSection === "function") {
+        window.showSection("premium-section");
+      }
+    }
+  } catch (_) {}
 
   // ===============================
   // PREMIUM – LOGIN
@@ -7150,9 +7170,11 @@ window.addEventListener("DOMContentLoaded", async () => {
         updatePremiumGreeting(ensuredName);
       }
 
-      // refresh premium UI
+      // refresh premium UI a zobraz dashboard prihláseného
       checkPremiumStatus();
-
+      if (typeof window.showSection === "function") {
+        window.showSection("premium-section");
+      }
     } catch (e) {
       alert(t("premium.loginFailed"));
       console.error(e);
