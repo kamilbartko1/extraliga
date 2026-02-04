@@ -6013,6 +6013,74 @@ body {
   background: rgba(255, 255, 255, 0.08);
 }
 
+.tips-contest-rules-link-wrap {
+  margin-bottom: 16px;
+}
+
+.tips-contest-rules-link {
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  background: none;
+  border: none;
+  padding: 0;
+  color: rgba(0, 234, 255, 0.95);
+  text-decoration: underline;
+  cursor: pointer;
+  text-underline-offset: 3px;
+}
+
+.tips-contest-rules-link:hover {
+  color: #00eaff;
+}
+
+.tips-contest-rules-modal-content {
+  max-width: 520px;
+}
+
+.tips-contest-rules-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.tips-contest-rules-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.tips-contest-rules-title {
+  font-size: 1.35rem;
+  color: #00eaff;
+  margin-bottom: 16px;
+  padding-right: 40px;
+}
+
+.tips-contest-rules-body {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tips-contest-rules-body p {
+  margin-bottom: 14px;
+}
+
+.tips-contest-rules-body p:last-child {
+  margin-bottom: 0;
+}
+
+.tips-contest-rules-body strong {
+  color: rgba(255, 255, 255, 0.95);
+}
+
 .tips-dashboard-divider {
   border: none;
   border-top: 1px solid rgba(255, 255, 255, 0.15);

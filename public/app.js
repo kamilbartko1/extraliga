@@ -261,6 +261,9 @@ const I18N = {
     "tips.leaderboardTitle": "🏆 Rebríček tiperov",
     "tips.leaderboardRank": "#",
     "tips.leaderboardUser": "Používateľ",
+    "tips.contestRulesLink": "Podmienky súťaže o VIP",
+    "tips.contestRulesTitle": "Podmienky súťaže o VIP",
+    "tips.contestRulesBody": "<p><strong>1. Účel súťaže</strong><br>Súťaž tipov 1X2 umožňuje registrovaným používateľom NHLPRO.sk súťažiť o <strong>1 mesiac NHLPRO PREMIUM úplne zadarmo</strong>.</p><p><strong>2. Výherca</strong><br>Výhercom sa stane ten tipujúci, ktorý je <strong>k poslednému dňu daného mesiaca na 1. mieste v rebríčku Leaderboard tipov</strong> (podľa platných pravidiel poradia – najviac správnych tipov, pri rovnosti vyššia úspešnosť).</p><p><strong>3. Výhra a aktivácia</strong><br>Výhru – plný prístup PREMIUM na 1 mesiac – zabezpečí prevádzkovateľ <strong>manuálne</strong>. Aktivácia prebehne <strong>najskôr v prvý deň nasledujúceho mesiaca</strong> po vyhodnotení rebríčka.</p><p><strong>4. Ďalšie</strong><br>Prevádzkovateľ si vyhradzuje právo súťaž upresniť alebo ukončiť. Účastou v súťaži súťažiaci súhlasia s týmito podmienkami.</p>",
     "tips.loginRequired": "Pre odoslanie tipov sa musíš prihlásiť.",
     "tips.saved": "✅ Tipy boli uložené!",
     "tips.error": "Chyba pri ukladaní tipov.",
@@ -589,6 +592,9 @@ const I18N = {
     "tips.leaderboardTitle": "🏆 Tips Leaderboard",
     "tips.leaderboardRank": "#",
     "tips.leaderboardUser": "User",
+    "tips.contestRulesLink": "Tips contest rules (VIP)",
+    "tips.contestRulesTitle": "Tips contest rules – VIP prize",
+    "tips.contestRulesBody": "<p><strong>1. Purpose</strong><br>The 1X2 tips contest allows registered users of NHLPRO.sk to compete for <strong>1 month of NHLPRO PREMIUM free of charge</strong>.</p><p><strong>2. Winner</strong><br>The winner is the tiper who is <strong>ranked 1st in the Tips Leaderboard at the end of the calendar month</strong> (according to the current ranking rules: most correct tips, then higher accuracy in case of a tie).</p><p><strong>3. Prize and activation</strong><br>The prize – full PREMIUM access for 1 month – is granted by the operator <strong>manually</strong>. Activation will take place <strong>no earlier than on the first day of the following month</strong> after the leaderboard has been evaluated.</p><p><strong>4. Other</strong><br>The operator reserves the right to clarify or discontinue the contest. By participating, contestants agree to these rules.</p>",
     "tips.loginRequired": "You must log in to submit tips.",
     "tips.saved": "✅ Tips saved!",
     "tips.error": "Error saving tips.",
@@ -4740,6 +4746,35 @@ function hideTipsLeaderboard() {
 
 window.showTipsLeaderboard = showTipsLeaderboard;
 window.hideTipsLeaderboard = hideTipsLeaderboard;
+
+// ===============================
+// MODAL: Podmienky súťaže o VIP
+// ===============================
+function openTipsContestRulesModal() {
+  const overlay = document.getElementById("tips-contest-rules-overlay");
+  const content = document.getElementById("tips-contest-rules-modal");
+  if (!overlay || !content) return;
+  content.innerHTML = `
+    <button type="button" class="tips-contest-rules-close" onclick="closeTipsContestRulesModal()" aria-label="${t("common.close")}">×</button>
+    <h2 class="tips-contest-rules-title">${t("tips.contestRulesTitle")}</h2>
+    <div class="tips-contest-rules-body">${t("tips.contestRulesBody")}</div>
+    <button type="button" class="close-modal-btn" onclick="closeTipsContestRulesModal()">${t("common.close")}</button>
+  `;
+  overlay.style.display = "flex";
+  setTimeout(() => overlay.classList.add("active"), 10);
+}
+
+function closeTipsContestRulesModal(event) {
+  if (event && event.target.id !== "tips-contest-rules-overlay") return;
+  const overlay = document.getElementById("tips-contest-rules-overlay");
+  if (overlay) {
+    overlay.classList.remove("active");
+    setTimeout(() => { overlay.style.display = "none"; }, 300);
+  }
+}
+
+window.openTipsContestRulesModal = openTipsContestRulesModal;
+window.closeTipsContestRulesModal = closeTipsContestRulesModal;
 
 // ===============================
 // Odhlásenie
