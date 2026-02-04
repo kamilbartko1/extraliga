@@ -5986,15 +5986,19 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Poradie a username hneď vedľa seba, potom mierna medzera pred ostatnými stĺpcami */
+/* Poradie – úzky stĺpec len pre číslo, username hneď vedľa */
 .tips-leaderboard-table th:first-child,
 .tips-leaderboard-table td:first-child {
-  padding-right: 6px;
+  width: 1%;
+  max-width: 2.5em;
+  padding-right: 4px;
+  padding-left: 10px;
+  white-space: nowrap;
 }
 
 .tips-leaderboard-table th:nth-child(2),
 .tips-leaderboard-table td:nth-child(2) {
-  padding-left: 6px;
+  padding-left: 4px;
   padding-right: 20px;
 }
 
@@ -6028,13 +6032,16 @@ body {
 
   .tips-leaderboard-table th:first-child,
   .tips-leaderboard-table td:first-child {
-    padding-left: 16px;
-    padding-right: 6px;
+    width: 1%;
+    max-width: 2.5em;
+    padding-left: 12px;
+    padding-right: 2px;
+    white-space: nowrap;
   }
 
   .tips-leaderboard-table th:nth-child(2),
   .tips-leaderboard-table td:nth-child(2) {
-    padding-left: 6px;
+    padding-left: 2px;
     padding-right: 18px;
   }
 
