@@ -5812,6 +5812,8 @@ body {
 
 .tips-dashboard-stats {
   margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
 }
 
 .tips-dashboard-info {
