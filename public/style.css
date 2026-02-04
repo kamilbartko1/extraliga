@@ -5989,8 +5989,8 @@ body {
 /* Poradie a username blízko seba, ale vždy oddelene – žiadne prekrývanie */
 .tips-leaderboard-table th:first-child,
 .tips-leaderboard-table td:first-child {
-  padding-right: 10px;
-  padding-left: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
   white-space: nowrap;
 }
 
@@ -6030,8 +6030,8 @@ body {
 
   .tips-leaderboard-table th:first-child,
   .tips-leaderboard-table td:first-child {
-    padding-left: 12px;
-    padding-right: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
     white-space: nowrap;
   }
 
