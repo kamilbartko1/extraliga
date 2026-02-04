@@ -2,7 +2,7 @@
 import { Redis } from "@upstash/redis";
 import Stripe from "stripe";
 import axios from "axios";
-import { requireAuth } from "./_auth.js";
+import { requireAuth, getUserIdFromRequest } from "./_auth.js";
 
 // ===============================
 // Inicializácie
@@ -160,7 +160,7 @@ function getRawBody(req) {
 export default async function handler(req, res) {
   // 🔥 VIP – žiadna cache pre user-specific dáta (get_players, add_player, delete_player, dashboard)
   const task = req.query.task || null;
-  const noCacheTasks = ['get_players', 'add_player', 'delete_player', 'dashboard', 'history', 'set_username', 'save_tips', 'user_tips_today', 'tips_dashboard'];
+  const noCacheTasks = ['get_players', 'add_player', 'delete_player', 'dashboard', 'history', 'set_username', 'save_tips', 'user_tips_today', 'tips_dashboard', 'tips_leaderboard'];
   if (task && noCacheTasks.includes(task)) {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.setHeader('Pragma', 'no-cache');
@@ -340,6 +340,7 @@ export default async function handler(req, res) {
         stats.lastUpdated = new Date().toISOString();
 
         await redis.set(`tips_user_stats:${uid}`, JSON.stringify(stats));
+        await redis.sadd("tips_leaderboard_users", uid);
         processedUsers++;
       }
 
@@ -349,6 +350,55 @@ export default async function handler(req, res) {
         processedUsers,
         processedGames,
       });
+    }
+
+    // =====================================================
+    // TIPS LEADERBOARD (GET, verejné – voliteľný token pre "TY")
+    // =====================================================
+    if (req.method === "GET" && task === "tips_leaderboard") {
+      const currentUserId = getUserIdFromRequest(req) || null;
+      const leaderboardUserIds = await redis.smembers("tips_leaderboard_users") || [];
+      const list = [];
+
+      for (const uid of leaderboardUserIds) {
+        const statsRaw = await redis.get(`tips_user_stats:${uid}`);
+        let stats = { totalPredictions: 0, correctPredictions: 0, accuracy: 0 };
+        if (statsRaw) {
+          try {
+            stats = typeof statsRaw === "string" ? JSON.parse(statsRaw) : statsRaw;
+          } catch {}
+        }
+        if (stats.totalPredictions == null) stats.totalPredictions = 0;
+        if (stats.correctPredictions == null) stats.correctPredictions = 0;
+        stats.accuracy = stats.totalPredictions > 0
+          ? Number((stats.correctPredictions / stats.totalPredictions).toFixed(3))
+          : 0;
+
+        const nickname = await redis.get(vipUsernameKey(uid)) || null;
+        list.push({
+          userId: uid,
+          nickname: nickname || null,
+          totalPredictions: stats.totalPredictions,
+          correctPredictions: stats.correctPredictions,
+          accuracy: stats.accuracy,
+        });
+      }
+
+      list.sort((a, b) => {
+        if (b.correctPredictions !== a.correctPredictions) return b.correctPredictions - a.correctPredictions;
+        return (b.accuracy || 0) - (a.accuracy || 0);
+      });
+
+      const leaderboard = list.map((row, index) => ({
+        rank: index + 1,
+        name: row.nickname || `#${index + 1}`,
+        totalPredictions: row.totalPredictions,
+        correctPredictions: row.correctPredictions,
+        accuracy: row.accuracy,
+        isCurrentUser: !!currentUserId && row.userId === currentUserId,
+      }));
+
+      return res.json({ ok: true, leaderboard });
     }
 
     // =====================================================
@@ -867,6 +917,7 @@ export default async function handler(req, res) {
       const tipsKey = `tips:${date}:${userId}`;
       await redis.set(tipsKey, JSON.stringify(tips));
       await redis.sadd(`tips_users_by_date:${date}`, userId);
+      await redis.sadd("tips_leaderboard_users", userId);
 
       return res.json({ ok: true, storedCount: tips.length, date });
     }

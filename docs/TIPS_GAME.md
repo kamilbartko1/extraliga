@@ -23,6 +23,20 @@ All dates use **Europe/Bratislava** timezone.
 | `user_tips_today` | GET | Yes | Return today's tips for current user |
 | `evaluate_tips_yesterday` | POST | No (cron) | Evaluate yesterday's tips, update stats |
 | `tips_dashboard` | GET | Yes | Return user stats + recent days |
+| `tips_leaderboard` | GET | No (public) | Return ranked list of all tiper users |
+
+| Redis | Description |
+|-------|--------------|
+| `tips_leaderboard_users` | Set of userId who ever submitted tips (SADD on save_tips and in evaluate_tips_yesterday) |
+
+## Tips Leaderboard – logika poradia
+
+Rebríček **nie je** zoradený podľa percentuálnej úspešnosti, pretože by to bolo neférové: niekto môže tipovať len jeden deň s 2 zápasmi, oba uhádnuť (100 %) a potom sa neúčastniť – tak by bol „najlepší“. Preto:
+
+1. **Primárne kritérium:** **Počet správnych tipov** (correctPredictions) – zostupne. Kto má viac správnych tipov, je vyššie.
+2. **Rozhodovacie kritérium:** **Úspešnosť v %** (accuracy) – zostupne. Pri rovnakom počte správnych tipov vyhráva ten s vyššou percentuálnou úspešnosťou.
+
+Takže „najlepší tiper“ je ten, kto má **najviac správnych tipov**; pri rovnosti rozhoduje **vyššia úspešnosť**. Napr. 35 správnych z 50 (70 %) je pred 2 správnymi z 2 (100 %), lebo 35 > 2. Súťaž tak odráža aj objem (počet tipov) aj kvalitu (úspešnosť).
 
 ## Evaluation Rules (1X2)
 
@@ -44,3 +58,4 @@ POST /api/vip?task=evaluate_tips_yesterday
 2. **Logged-out** – Click CTA → redirect to login (Premium section)
 3. **Logged-in** – Submit tips via `POST /api/vip?task=save_tips`
 4. **Pre-fill** – On load, `GET /api/vip?task=user_tips_today` pre-fills saved picks
+5. **Leaderboard** – V dashboarde tipov tlačidlo „Leaderboard tipov“ scrollne na tabuľku rebríčka; dáta z `GET /api/vip?task=tips_leaderboard` (verejné, voliteľný token pre zvýraznenie „TY“).

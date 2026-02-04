@@ -453,6 +453,33 @@
             <button type="button" id="tips-go-home-btn" class="tips-go-home-btn" onclick="showSection('home-section')" data-i18n="tips.goAddTips">
               Choď na domov a pridaj dnešné tipy
             </button>
+
+            <div class="tips-leaderboard-cta">
+              <button type="button" id="tips-leaderboard-btn" class="tips-leaderboard-btn" onclick="showTipsLeaderboard()" data-i18n="tips.leaderboardBtn">
+                🏆 Leaderboard tipov
+              </button>
+            </div>
+
+            <div id="tips-leaderboard-section" class="tips-leaderboard-section" style="display: none;">
+              <h4 class="tips-leaderboard-title" data-i18n="tips.leaderboardTitle">🏆 Rebríček tiperov</h4>
+              <div class="tips-leaderboard-table-wrapper">
+                <table class="tips-leaderboard-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="tips.leaderboardRank">#</th>
+                      <th data-i18n="tips.leaderboardUser">Používateľ</th>
+                      <th class="text-right" data-i18n="tips.statsTotal">Celkovo tipov</th>
+                      <th class="text-right" data-i18n="tips.statsCorrect">Správnych</th>
+                      <th class="text-right" data-i18n="tips.statsAccuracy">Úspešnosť</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tips-leaderboard-list">
+                    <!-- JS -->
+                  </tbody>
+                </table>
+              </div>
+              <button type="button" class="tips-leaderboard-back-btn" onclick="hideTipsLeaderboard()" data-i18n="common.back">← Späť</button>
+            </div>
           </section>
 
           <hr class="tips-dashboard-divider">

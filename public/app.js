@@ -257,6 +257,10 @@ const I18N = {
     "tips.gameId": "Zápas",
     "tips.tipLabel": "tip",
     "tips.resultLabel": "výsledok",
+    "tips.leaderboardBtn": "🏆 Leaderboard tipov",
+    "tips.leaderboardTitle": "🏆 Rebríček tiperov",
+    "tips.leaderboardRank": "#",
+    "tips.leaderboardUser": "Používateľ",
     "tips.loginRequired": "Pre odoslanie tipov sa musíš prihlásiť.",
     "tips.saved": "✅ Tipy boli uložené!",
     "tips.error": "Chyba pri ukladaní tipov.",
@@ -581,6 +585,10 @@ const I18N = {
     "tips.gameId": "Game",
     "tips.tipLabel": "tip",
     "tips.resultLabel": "result",
+    "tips.leaderboardBtn": "🏆 Tips Leaderboard",
+    "tips.leaderboardTitle": "🏆 Tips Leaderboard",
+    "tips.leaderboardRank": "#",
+    "tips.leaderboardUser": "User",
     "tips.loginRequired": "You must log in to submit tips.",
     "tips.saved": "✅ Tips saved!",
     "tips.error": "Error saving tips.",
@@ -4690,6 +4698,48 @@ async function loadTipsDashboardLocked(token) {
     if (recentEl) recentEl.innerHTML = "";
   }
 }
+
+// ===============================
+// TIPS LEADERBOARD
+// ===============================
+async function loadTipsLeaderboard() {
+  const listEl = document.getElementById("tips-leaderboard-list");
+  if (!listEl) return;
+  listEl.innerHTML = "<tr><td colspan=\"5\" class=\"nhl-muted\">" + (t("common.loading") || "Načítavam…") + "</td></tr>";
+  try {
+    const token = localStorage.getItem("sb-access-token");
+    const opts = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    const r = await fetch(`/api/vip?task=tips_leaderboard&_=${Date.now()}`, { cache: "no-store", ...opts });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || "Failed");
+    const rows = (d.leaderboard || []).map((item) => {
+      const rankClass = item.rank <= 3 ? `tips-lb-rank-${item.rank}` : "";
+      const rowClass = item.isCurrentUser ? "tips-lb-current-user" : "";
+      const accPct = (item.accuracy * 100).toFixed(1);
+      const name = item.isCurrentUser && item.name ? `TY (${item.name})` : (item.name || `#${item.rank}`);
+      return `<tr class="${rowClass} ${rankClass}"><td class="rank-cell">#${item.rank}</td><td>${String(name).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</td><td class="text-right">${item.totalPredictions}</td><td class="text-right">${item.correctPredictions}</td><td class="text-right tips-lb-accuracy">${accPct}%</td></tr>`;
+    });
+    listEl.innerHTML = rows.length ? rows.join("") : "<tr><td colspan=\"5\" class=\"nhl-muted\">" + (CURRENT_LANG === "sk" ? "Zatiaľ žiadni tiperi." : "No tippers yet.") + "</td></tr>";
+  } catch (err) {
+    listEl.innerHTML = "<tr><td colspan=\"5\" class=\"nhl-muted\" style=\"color:#f87171;\">" + (err.message || "Chyba") + "</td></tr>";
+  }
+}
+
+function showTipsLeaderboard() {
+  const section = document.getElementById("tips-leaderboard-section");
+  if (!section) return;
+  section.style.display = "block";
+  loadTipsLeaderboard();
+  section.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function hideTipsLeaderboard() {
+  const section = document.getElementById("tips-leaderboard-section");
+  if (section) section.style.display = "none";
+}
+
+window.showTipsLeaderboard = showTipsLeaderboard;
+window.hideTipsLeaderboard = hideTipsLeaderboard;
 
 // ===============================
 // Odhlásenie

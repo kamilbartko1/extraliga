@@ -5920,6 +5920,99 @@ body {
   box-shadow: 0 4px 16px rgba(0, 234, 255, 0.4);
 }
 
+.tips-leaderboard-cta {
+  margin-top: 28px;
+  margin-bottom: 16px;
+}
+
+.tips-leaderboard-btn {
+  font-family: "Poppins", sans-serif;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 234, 255, 0.35);
+  border-radius: 8px;
+  color: #00eaff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.tips-leaderboard-btn:hover {
+  background: rgba(0, 234, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.tips-leaderboard-section {
+  font-family: "Poppins", sans-serif;
+  margin-top: 24px;
+  padding: 20px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tips-leaderboard-title {
+  font-size: 1.1rem;
+  color: #00eaff;
+  margin-bottom: 16px;
+}
+
+.tips-leaderboard-table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+.tips-leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tips-leaderboard-table th,
+.tips-leaderboard-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tips-leaderboard-table th {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+}
+
+.tips-leaderboard-table td {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tips-leaderboard-table .text-right {
+  text-align: right;
+}
+
+.tips-leaderboard-table .tips-lb-accuracy {
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.tips-leaderboard-table .tips-lb-current-user {
+  background: rgba(0, 234, 255, 0.12);
+}
+
+.tips-leaderboard-table tr.tips-lb-rank-1 .rank-cell { color: #fbbf24; font-weight: 700; }
+.tips-leaderboard-table tr.tips-lb-rank-2 .rank-cell { color: #94a3b8; font-weight: 700; }
+.tips-leaderboard-table tr.tips-lb-rank-3 .rank-cell { color: #b45309; font-weight: 700; }
+
+.tips-leaderboard-back-btn {
+  font-family: "Poppins", sans-serif;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+}
+
+.tips-leaderboard-back-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .tips-dashboard-divider {
   border: none;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
