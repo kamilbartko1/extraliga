@@ -4634,12 +4634,6 @@ async function loadTipsDashboardLocked(token) {
       }
     }
 
-    const pickLabel = (pick) => {
-      if (pick === "1") return t("tips.pickHomeLabel");
-      if (pick === "X") return t("tips.pickDrawLabel");
-      return t("tips.pickAwayLabel");
-    };
-
     const recentDays = d.recentDays || [];
     if (recentEl && recentDays.length > 0) {
       let html = `<h4 class="tips-recent-title">${CURRENT_LANG === "sk" ? "Posledné dni" : "Recent days"}</h4>`;
@@ -4651,8 +4645,8 @@ async function loadTipsDashboardLocked(token) {
         const matchRows = games
           .map((g) => {
             const matchLabel = (g.homeName && g.awayName) ? `${g.homeName} vs ${g.awayName}` : `${t("tips.gameId")}: ${g.gameId}`;
-            const outcomeLabel = g.actualOutcome ? pickLabel(g.actualOutcome) : "–";
-            const userLabel = pickLabel(g.userPick);
+            const outcomeLabel = g.actualOutcome || "–";
+            const userLabel = g.userPick;
             const isCorrect = g.correct === true;
             const rowClass = isCorrect ? "tip-row tip-correct" : "tip-row tip-incorrect";
             return `<li class="${rowClass}"><span class="tip-match">${matchLabel}</span><span class="tip-user">${userLabel}</span><span class="tip-actual">${outcomeLabel}</span></li>`;

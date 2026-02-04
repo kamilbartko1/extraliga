@@ -5773,8 +5773,9 @@ body {
 
 /* === TIPS DASHBOARD v Premium (pre registrovaných nie VIP) === */
 .tips-dashboard-locked {
+  font-family: "Poppins", sans-serif;
   margin-bottom: 24px;
-  padding: 24px 28px;
+  padding: 28px 32px;
   max-width: 720px;
   width: 100%;
   box-sizing: border-box;
@@ -5784,45 +5785,54 @@ body {
 }
 
 .tips-dashboard-greeting {
-  font-size: 1.35rem;
-  font-weight: 600;
-  color: #00eaff;
-  margin-bottom: 12px;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgba(74, 222, 128, 0.9);
+  margin-bottom: 20px;
   display: none;
+  text-align: left;
 }
 
 .tips-dashboard-locked h3 {
+  font-family: "Poppins", sans-serif;
   color: #00eaff;
-  margin-bottom: 8px;
+  margin-bottom: 14px;
+  margin-top: 4px;
   font-size: 1.2rem;
 }
 
 .tips-dashboard-hint {
+  font-family: "Poppins", sans-serif;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
-  margin-bottom: 16px;
+  margin-bottom: 22px;
+  line-height: 1.45;
 }
 
 .tips-dashboard-stats {
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .tips-dashboard-info {
+  font-family: "Poppins", sans-serif;
   color: rgba(255, 255, 255, 0.75);
   background: rgba(255, 255, 255, 0.05);
-  padding: 12px;
+  padding: 14px 16px;
   border-radius: 8px;
   font-size: 0.9rem;
+  margin-bottom: 20px;
 }
 
 .tips-dashboard-today {
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .tips-today-title {
+  font-family: "Poppins", sans-serif;
   font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .tips-today-list {
@@ -5835,13 +5845,14 @@ body {
 }
 
 .tips-today-list li {
+  font-family: "Poppins", sans-serif;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: rgba(0, 234, 255, 0.06);
   border: 1px solid rgba(0, 234, 255, 0.15);
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 10px 14px;
   font-size: 0.88rem;
 }
 
@@ -5856,22 +5867,24 @@ body {
 
 .tips-stats-grid {
   display: flex;
-  gap: 24px;
+  gap: 28px;
   flex-wrap: wrap;
 }
 
 .tips-stat-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .tips-stat-label {
+  font-family: "Poppins", sans-serif;
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.85rem;
 }
 
 .tips-stat-value {
+  font-family: "Poppins", sans-serif;
   font-size: 1.4rem;
   font-weight: 600;
   color: #00eaff;
@@ -5882,13 +5895,15 @@ body {
 }
 
 .tips-dashboard-empty {
+  font-family: "Poppins", sans-serif;
   color: rgba(255, 255, 255, 0.6);
   font-style: italic;
 }
 
 .tips-go-home-btn {
-  margin-top: 12px;
-  padding: 12px 24px;
+  font-family: "Poppins", sans-serif;
+  margin-top: 20px;
+  padding: 14px 26px;
   background: linear-gradient(135deg, #00eaff, #0077ff);
   border: none;
   border-radius: 8px;
@@ -5910,16 +5925,20 @@ body {
 }
 
 .tips-recent-title {
+  font-family: "Poppins", sans-serif;
   font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  margin-top: 8px;
 }
 
 .tips-recent-day {
+  font-family: "Poppins", sans-serif;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: 12px 14px;
+  margin-bottom: 4px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 0.9rem;
   cursor: pointer;
@@ -5943,7 +5962,9 @@ body {
 }
 
 .tips-recent-day-detail {
-  padding: 8px 12px 14px 20px;
+  font-family: "Poppins", sans-serif;
+  padding: 12px 16px 18px 24px;
+  margin-bottom: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(0, 0, 0, 0.15);
 }
@@ -5954,15 +5975,16 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .tips-recent-matches .tip-row {
+  font-family: "Poppins", sans-serif;
   display: grid;
   grid-template-columns: 1fr auto auto;
   gap: 12px;
   align-items: center;
-  padding: 8px 10px;
+  padding: 10px 12px;
   border-radius: 6px;
   font-size: 0.85rem;
 }
@@ -6002,10 +6024,12 @@ body {
 }
 
 .tips-recent-date {
+  font-family: "Poppins", sans-serif;
   color: rgba(255, 255, 255, 0.8);
 }
 
 .tips-recent-score {
+  font-family: "Poppins", sans-serif;
   color: #00eaff;
   font-weight: 500;
 }
