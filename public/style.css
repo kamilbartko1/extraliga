@@ -5776,7 +5776,7 @@ body {
   font-family: "Poppins", sans-serif;
   margin-bottom: 24px;
   padding: 28px 32px;
-  max-width: 864px; /* desktop: o 20 % širší než pôvodných 720px */
+  max-width: 1100px; /* širší dashboard na desktope – všetko sa vojde */
   width: 100%;
   box-sizing: border-box;
   background: rgba(0, 234, 255, 0.06);
@@ -5977,7 +5977,7 @@ body {
   min-width: 320px;
   border-collapse: collapse;
   font-size: 0.9rem;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
 .tips-leaderboard-table th,
@@ -5985,42 +5985,51 @@ body {
   padding: 10px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   vertical-align: middle;
-}
-
-/* Stĺpec # – vycentrovaný */
-.tips-leaderboard-table th:first-child,
-.tips-leaderboard-table td:first-child {
-  width: 3em;
-  min-width: 3em;
-  text-align: center;
-  padding-left: 5px;
-  padding-right: 5px;
   white-space: nowrap;
 }
 
-/* Stĺpec Používateľ – vľavo */
+/* Stĺpec # – vycentrovaný, úzky */
+.tips-leaderboard-table th:first-child,
+.tips-leaderboard-table td:first-child {
+  text-align: center;
+  padding-left: 5px;
+  padding-right: 5px;
+  width: 1%;
+}
+
+/* Stĺpec Používateľ – vľavo, zvyšok priestoru */
 .tips-leaderboard-table th:nth-child(2),
 .tips-leaderboard-table td:nth-child(2) {
   text-align: left;
   padding-left: 8px;
   padding-right: 20px;
+  white-space: nowrap;
 }
 
-/* Stĺpce Celkovo tipov, Správnych, Úspešnosť – vpravo, rovnaká šírka */
+/* Celkovo tipov – vpravo, min šírka aby sa názov neorezal */
 .tips-leaderboard-table th:nth-child(3),
-.tips-leaderboard-table td:nth-child(3),
+.tips-leaderboard-table td:nth-child(3) {
+  text-align: right;
+  min-width: 7em;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+/* Správnych – vpravo */
 .tips-leaderboard-table th:nth-child(4),
 .tips-leaderboard-table td:nth-child(4) {
   text-align: right;
-  width: 6em;
-  min-width: 6em;
+  min-width: 6.5em;
+  padding-left: 14px;
+  padding-right: 14px;
 }
 
+/* Úspešnosť – vpravo, min šírka pre celý názov */
 .tips-leaderboard-table th:nth-child(5),
 .tips-leaderboard-table td:nth-child(5) {
   text-align: right;
-  width: 5.5em;
-  min-width: 5.5em;
+  min-width: 7.5em;
+  padding-left: 14px;
   padding-right: 14px;
 }
 
