@@ -84,16 +84,19 @@ async function ensureUsername(token, fallbackEmail) {
 
 function updatePremiumGreeting(name) {
   const el = document.getElementById("premium-user-greeting");
+  const wrap = document.getElementById("premium-greeting-below-banner");
   if (!el) return;
   if (name) {
     const safeName = String(name).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     const template = typeof t === "function" ? t("premium.greetingWithName") : "Ahoj {name}, vitaj v NHLPRO PREMIUM 👑";
     el.innerHTML = template.replace("{name}", `<strong>${safeName}</strong>`);
     el.style.display = "block";
+    if (wrap) wrap.style.display = "block";
   } else {
     el.textContent = "";
     el.innerHTML = "";
     el.style.display = "none";
+    if (wrap) wrap.style.display = "none";
   }
 }
 

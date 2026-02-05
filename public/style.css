@@ -4538,16 +4538,21 @@ body {
   margin: 0;
 }
 
+/* Blok pozdravu hneď pod bannerom (mimo bannera) */
+.premium-greeting-below-banner {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
 .premium-user-greeting {
-  margin-top: 12px;
-  margin-bottom: 8px;
+  margin: 0;
   font-size: 1.2rem;
   font-weight: 600;
   color: #00eaff;
   text-align: center;
 }
 
-/* Keď je pozdrav v hlavičke, topbar nezaberá miesto */
+/* Keď je pozdrav pod bannerom, topbar nezaberá miesto */
 .premium-topbar.premium-greeting-at-top {
   display: none;
 }
