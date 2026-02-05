@@ -4539,10 +4539,17 @@ body {
 }
 
 .premium-user-greeting {
-  margin-top: 10px;
-  font-size: 1.15rem;
+  margin-top: 12px;
+  margin-bottom: 8px;
+  font-size: 1.2rem;
   font-weight: 600;
   color: #00eaff;
+  text-align: center;
+}
+
+/* Keď je pozdrav v hlavičke, topbar nezaberá miesto */
+.premium-topbar.premium-greeting-at-top {
+  display: none;
 }
 
 .premium-locked-content .premium-upgrade-btn {

@@ -86,10 +86,13 @@ function updatePremiumGreeting(name) {
   const el = document.getElementById("premium-user-greeting");
   if (!el) return;
   if (name) {
-    el.textContent = `Hi ${name}!`;
+    const safeName = String(name).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const template = typeof t === "function" ? t("premium.greetingWithName") : "Ahoj {name}, vitaj v NHLPRO PREMIUM 👑";
+    el.innerHTML = template.replace("{name}", `<strong>${safeName}</strong>`);
     el.style.display = "block";
   } else {
     el.textContent = "";
+    el.innerHTML = "";
     el.style.display = "none";
   }
 }
@@ -333,6 +336,7 @@ const I18N = {
     "premium.lockedFeaturesTitle": "Čo získavaš ako VIP klient?",
     "premium.upgrade": "Staň sa NHLPRO PREMIUM",
     "premium.welcome": "Vitaj v NHLPRO PREMIUM 👑",
+    "premium.greetingWithName": "Ahoj {name}, vitaj v NHLPRO PREMIUM 👑",
     "premium.pickTeam": "Vyber klub",
     "premium.pickPlayer": "Vyber hráča",
     "premium.addPlayer": "Pridať hráča",
@@ -664,6 +668,7 @@ const I18N = {
     "premium.lockedFeaturesTitle": "What do you get as a VIP client?",
     "premium.upgrade": "Become NHLPRO PREMIUM",
     "premium.welcome": "Welcome to NHLPRO PREMIUM 👑",
+    "premium.greetingWithName": "Hi {name}, welcome to NHLPRO PREMIUM 👑",
     "premium.pickTeam": "Select team",
     "premium.pickPlayer": "Select player",
     "premium.addPlayer": "Add player",
@@ -5374,13 +5379,9 @@ async function loadPremiumDashboard() {
       }
     }
 
-    // Personalized Welcome Greeting
-    const welcomeEl = document.querySelector(".premium-welcome");
-    if (welcomeEl) {
-      welcomeEl.innerHTML = data.username
-        ? `Ahoj <strong>${data.username}</strong>, vitaj v NHLPRO PREMIUM 👑`
-        : `Vitaj v NHLPRO PREMIUM 👑`;
-    }
+    // Pozdrav je v hlavičke (premium-user-greeting) nad boxmi – topbar skrytý
+    const topbar = document.querySelector(".premium-topbar");
+    if (topbar) topbar.classList.add("premium-greeting-at-top");
 
     dashboardContent.innerHTML = `
       <div class="dashboard-grid">
