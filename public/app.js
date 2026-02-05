@@ -1397,6 +1397,13 @@ function openAbsRegisterCta() {
     const box = document.getElementById("premium-register-box");
     if (box) {
       box.style.display = "block";
+      const tipsHint = document.getElementById("premium-register-tips-hint");
+      if (tipsHint && localStorage.getItem("tips_redirect_msg")) {
+        tipsHint.textContent = typeof t === "function" ? t("tips.pendingMessage") : "Zaregistruj si konto a tvoje tipy sa zaznamenajú.";
+        tipsHint.style.display = "block";
+      } else if (tipsHint) {
+        tipsHint.style.display = "none";
+      }
       box.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   } catch (e) {
@@ -1810,8 +1817,12 @@ async function displayHome() {
 
       if (tips.length === 0) {
         if (!tkn) {
-          showSection("premium-section");
           try { localStorage.setItem("tips_redirect_msg", "1"); } catch (_) {}
+          if (typeof window.openAbsRegisterCta === "function") {
+            openAbsRegisterCta();
+          } else {
+            showSection("premium-section");
+          }
         }
         const wrap = document.querySelector(".tips-cta-wrap");
         const hint = wrap?.querySelector(".tips-cta-hint");
@@ -1826,12 +1837,17 @@ async function displayHome() {
         return;
       }
 
+      /* Neprihlásený: uložiť tipy do localStorage a rovno prepnúť na REGISTRÁCIU (nie len „tipy uložené“) */
       if (!tkn) {
         try {
           localStorage.setItem("tips_pending_" + today, JSON.stringify(tipsState));
           localStorage.setItem("tips_redirect_msg", "1");
         } catch (_) {}
-        showSection("premium-section");
+        if (typeof window.openAbsRegisterCta === "function") {
+          openAbsRegisterCta();
+        } else {
+          showSection("premium-section");
+        }
         return;
       }
 
