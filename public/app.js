@@ -6362,6 +6362,7 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
 
   // Loading state
   modal.innerHTML = `
+    <button type="button" class="vip-analysis-modal-close" onclick="closeVipTipAnalysis()" aria-label="${t("common.close")}">×</button>
     <p style="text-align:center;color:#00eaff;padding:40px;">
       ${t("common.loading")}
     </p>
@@ -6505,6 +6506,7 @@ async function showVipTipAnalysis(playerName, teamCode, oppCode, event) {
 
   // Update modal content
   modal.innerHTML = `
+    <button type="button" class="vip-analysis-modal-close" onclick="closeVipTipAnalysis()" aria-label="${t("common.close")}">×</button>
     <h2>${t("vipTips.analysisTitle")}</h2>
     
     <div style="text-align: center; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
@@ -6589,7 +6591,10 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
   modal.style.transform = "scale(0.9) translateY(-20px)";
   modal.style.transition = "none";
 
-  modal.innerHTML = `<p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>`;
+  modal.innerHTML = `
+    <button type="button" class="vip-analysis-modal-close" onclick="closeVipTipAnalysis()" aria-label="${t("common.close")}">×</button>
+    <p style="text-align:center;color:#00eaff;padding:40px;">${t("common.loading")}</p>
+  `;
 
   // Trigger animáciu - modal je už v strede cez flex
   requestAnimationFrame(() => {
@@ -6655,6 +6660,7 @@ async function showVipTotalAnalysis(homeCode, awayCode, predictedTotal, reco, li
 
   // Update modal content
   modal.innerHTML = `
+    <button type="button" class="vip-analysis-modal-close" onclick="closeVipTipAnalysis()" aria-label="${t("common.close")}">×</button>
     <h2>${CURRENT_LANG === "en" ? "Game Total Goals Analysis" : "Analýza celkového počtu gólov"}</h2>
     
     <div style="text-align: center; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
