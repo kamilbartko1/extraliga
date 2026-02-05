@@ -180,6 +180,7 @@ const I18N = {
     "header.tagline": "National Hockey League 2025-2026",
     "header.powered": "Powered by <span>AI-Logic</span>",
 
+    "nav.menu": "Menu",
     "nav.home": "Domov",
     "nav.results": "Výsledky",
     "nav.teamRating": "Rating tímov",
@@ -203,6 +204,8 @@ const I18N = {
     "common.hide": "Skryť ↑",
     "common.back": "← Späť",
     "common.close": "Zavrieť",
+    "common.openMenu": "Otvoriť menu",
+    "common.closeMenu": "Zatvoriť menu",
     "common.detail": "Detail",
     "common.delete": "Vymazať",
 
@@ -514,6 +517,7 @@ const I18N = {
     "header.tagline": "National Hockey League 2025-2026",
     "header.powered": "Powered by <span>AI-Logic</span>",
 
+    "nav.menu": "Menu",
     "nav.home": "Home",
     "nav.results": "Results",
     "nav.teamRating": "Team rating",
@@ -537,6 +541,8 @@ const I18N = {
     "common.hide": "Hide ↑",
     "common.back": "← Back",
     "common.close": "Close",
+    "common.openMenu": "Open menu",
+    "common.closeMenu": "Close menu",
     "common.detail": "Detail",
     "common.delete": "Delete",
 
@@ -871,6 +877,12 @@ function applyStaticI18n() {
     const key = el.getAttribute("data-i18n-placeholder");
     if (!key) return;
     el.setAttribute("placeholder", t(key));
+  });
+  document.querySelectorAll("[data-i18n-attr]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-attr");
+    const attr = el.getAttribute("data-i18n-attr-target") || "aria-label";
+    if (!key) return;
+    el.setAttribute(attr, t(key));
   });
 }
 
