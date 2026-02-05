@@ -473,54 +473,56 @@
         </div>
       </div>
 
+      <!-- 📊 TIPS DASHBOARD (pre všetkých prihlásených – VIP aj ne-VIP) -->
+      <div id="premium-tips-dashboard-wrap" class="premium-state" style="display:none;">
+        <section id="tips-dashboard-locked" class="tips-dashboard-locked">
+          <div id="tips-dashboard-greeting" class="tips-dashboard-greeting"></div>
+          <h3 data-i18n="tips.dashboardTitle">📊 Môj Dashboard tipov</h3>
+          <p class="tips-dashboard-hint" data-i18n="tips.dashboardHint">Tipuj výsledky zápasov (1X2) na domovskej stránke a sleduj svoju úspešnosť.</p>
+          <p class="tips-contest-rules-link-wrap">
+            <button type="button" class="tips-contest-rules-link" id="tips-contest-rules-link" onclick="openTipsContestRulesModal()" data-i18n="tips.contestRulesLink">Podmienky súťaže o VIP</button>
+          </p>
+          <div id="tips-dashboard-stats" class="tips-dashboard-stats">
+            <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
+          </div>
+          <div id="tips-dashboard-today" class="tips-dashboard-today"></div>
+          <div id="tips-dashboard-recent" class="tips-dashboard-recent"></div>
+          <button type="button" id="tips-go-home-btn" class="tips-go-home-btn" onclick="showSection('home-section')" data-i18n="tips.goAddTips">
+            Choď na domov a pridaj dnešné tipy
+          </button>
+
+          <div class="tips-leaderboard-cta">
+            <button type="button" id="tips-leaderboard-btn" class="tips-leaderboard-btn" onclick="showTipsLeaderboard()" data-i18n="tips.leaderboardBtn">
+              🏆 Leaderboard tipov
+            </button>
+          </div>
+
+          <div id="tips-leaderboard-section" class="tips-leaderboard-section" style="display: none;">
+            <h4 class="tips-leaderboard-title" data-i18n="tips.leaderboardTitle">🏆 Rebríček tiperov</h4>
+            <div class="tips-leaderboard-table-wrapper">
+              <table class="tips-leaderboard-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="tips.leaderboardRank">#</th>
+                    <th data-i18n="tips.leaderboardUser">Používateľ</th>
+                    <th class="text-right" data-i18n="tips.statsTotal">Celkovo tipov</th>
+                    <th class="text-right" data-i18n="tips.statsCorrect">Správnych</th>
+                    <th class="text-right" data-i18n="tips.statsAccuracy">Úspešnosť</th>
+                  </tr>
+                </thead>
+                <tbody id="tips-leaderboard-list">
+                  <!-- JS -->
+                </tbody>
+              </table>
+            </div>
+            <button type="button" class="tips-leaderboard-back-btn" onclick="hideTipsLeaderboard()" data-i18n="common.back">← Späť</button>
+          </div>
+        </section>
+      </div>
+
       <!-- 🔒 LOGGED BUT NOT VIP -->
       <div id="premium-locked" class="premium-state" style="display:none;">
         <div class="premium-locked-content">
-          <!-- 📊 TIPS DASHBOARD (pre všetkých registrovaných) -->
-          <section id="tips-dashboard-locked" class="tips-dashboard-locked">
-            <div id="tips-dashboard-greeting" class="tips-dashboard-greeting"></div>
-            <h3 data-i18n="tips.dashboardTitle">📊 Môj Dashboard tipov</h3>
-            <p class="tips-dashboard-hint" data-i18n="tips.dashboardHint">Tipuj výsledky zápasov (1X2) na domovskej stránke a sleduj svoju úspešnosť.</p>
-            <p class="tips-contest-rules-link-wrap">
-              <button type="button" class="tips-contest-rules-link" id="tips-contest-rules-link" onclick="openTipsContestRulesModal()" data-i18n="tips.contestRulesLink">Podmienky súťaže o VIP</button>
-            </p>
-            <div id="tips-dashboard-stats" class="tips-dashboard-stats">
-              <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
-            </div>
-            <div id="tips-dashboard-today" class="tips-dashboard-today"></div>
-            <div id="tips-dashboard-recent" class="tips-dashboard-recent"></div>
-            <button type="button" id="tips-go-home-btn" class="tips-go-home-btn" onclick="showSection('home-section')" data-i18n="tips.goAddTips">
-              Choď na domov a pridaj dnešné tipy
-            </button>
-
-            <div class="tips-leaderboard-cta">
-              <button type="button" id="tips-leaderboard-btn" class="tips-leaderboard-btn" onclick="showTipsLeaderboard()" data-i18n="tips.leaderboardBtn">
-                🏆 Leaderboard tipov
-              </button>
-            </div>
-
-            <div id="tips-leaderboard-section" class="tips-leaderboard-section" style="display: none;">
-              <h4 class="tips-leaderboard-title" data-i18n="tips.leaderboardTitle">🏆 Rebríček tiperov</h4>
-              <div class="tips-leaderboard-table-wrapper">
-                <table class="tips-leaderboard-table">
-                  <thead>
-                    <tr>
-                      <th data-i18n="tips.leaderboardRank">#</th>
-                      <th data-i18n="tips.leaderboardUser">Používateľ</th>
-                      <th class="text-right" data-i18n="tips.statsTotal">Celkovo tipov</th>
-                      <th class="text-right" data-i18n="tips.statsCorrect">Správnych</th>
-                      <th class="text-right" data-i18n="tips.statsAccuracy">Úspešnosť</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tips-leaderboard-list">
-                    <!-- JS -->
-                  </tbody>
-                </table>
-              </div>
-              <button type="button" class="tips-leaderboard-back-btn" onclick="hideTipsLeaderboard()" data-i18n="common.back">← Späť</button>
-            </div>
-          </section>
-
           <hr class="tips-dashboard-divider">
 
           <h3 data-i18n="premium.lockedTitle">Aktivuj NHLPRO PREMIUM</h3>

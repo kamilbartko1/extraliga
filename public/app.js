@@ -1368,7 +1368,7 @@ function openAbsRegisterCta() {
     if (typeof window.hideAllPremiumUI === "function") {
       window.hideAllPremiumUI();
     } else {
-      ["premium-not-logged", "premium-register-box", "premium-locked", "premium-content"].forEach((id) => {
+      ["premium-not-logged", "premium-register-box", "premium-tips-dashboard-wrap", "premium-locked", "premium-content"].forEach((id) => {
         const el = document.getElementById(id);
         if (el) el.style.display = "none";
       });
@@ -4379,6 +4379,7 @@ function hideAllPremiumUI() {
   [
     "premium-not-logged",
     "premium-register-box",
+    "premium-tips-dashboard-wrap",
     "premium-locked",
     "premium-content"
   ].forEach(id => {
@@ -4397,13 +4398,14 @@ async function checkPremiumStatus() {
   // ===== ZÁKLAD: skry všetko =====
   const loginBox = document.getElementById("premium-not-logged");
   const registerBox = document.getElementById("premium-register-box");
+  const tipsDashboardWrap = document.getElementById("premium-tips-dashboard-wrap");
   const lockedBox = document.getElementById("premium-locked");
   const contentBox = document.getElementById("premium-content");
   const signupBtn = document.getElementById("premium-signup-btn");
   const logoutBtn = document.getElementById("premium-logout-btn");
   const authMsg = document.getElementById("premium-auth-msg");
 
-  [loginBox, registerBox, lockedBox, contentBox].forEach(el => {
+  [loginBox, registerBox, tipsDashboardWrap, lockedBox, contentBox].forEach(el => {
     if (el) el.style.display = "none";
   });
 
@@ -4506,6 +4508,10 @@ async function checkPremiumStatus() {
         }
       });
 
+    // ===== PRIHLÁSENÝ: vždy zobraziť dashboard tipov (VIP aj ne-VIP) =====
+    if (tipsDashboardWrap) tipsDashboardWrap.style.display = "block";
+    await loadTipsDashboardLocked(token);
+
     // ===== VIP USER =====
     if (data.ok && data.isVip === true) {
       if (contentBox) contentBox.style.display = "block";
@@ -4533,7 +4539,6 @@ async function checkPremiumStatus() {
 
     // ===== PRIHLÁSENÝ, ALE NIE VIP =====
     if (lockedBox) lockedBox.style.display = "block";
-    await loadTipsDashboardLocked(token);
     // logout OSTÁVA viditeľný
   } catch (err) {
     console.error("❌ checkPremiumStatus error:", err);
