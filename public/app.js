@@ -4595,10 +4595,11 @@ async function loadTipsDashboardLocked(token) {
     const todayTips = Array.isArray(todayData.tips) ? todayData.tips : [];
     const todayDate = todayData.date;
 
+    /* Oslovenie je už pod bannerom (premium-user-greeting) – tu žiadny duplicitný pozdrav */
     const greetingEl = document.getElementById("tips-dashboard-greeting");
     if (greetingEl) {
-      greetingEl.textContent = nickname ? `${CURRENT_LANG === "sk" ? "Vitaj" : "Welcome"}, ${nickname}!` : "";
-      greetingEl.style.display = nickname ? "block" : "none";
+      greetingEl.textContent = "";
+      greetingEl.style.display = "none";
     }
 
     if (total === 0) {
