@@ -456,6 +456,16 @@
       <!-- 📝 REGISTRATION -->
       <div id="premium-register-box" class="premium-register-box premium-state" style="display:none;">
         <p id="premium-register-tips-hint" class="premium-msg premium-msg-info" style="display:none; margin-bottom: 16px;"></p>
+
+        <p class="premium-register-google-intro" data-i18n="premium.registerWithGoogle">Registruj sa alebo prihlás cez Google</p>
+        <div class="google-auth-container">
+          <button type="button" class="google-login-btn" onclick="signInWithGoogle()">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+            <span data-i18n="premium.googleButton">Prihlásiť sa cez Google</span>
+          </button>
+        </div>
+        <p class="premium-register-or" data-i18n="premium.orWithEmail">alebo vyplň formulár</p>
+
         <h3 data-i18n="premium.registerTitle">Registrácia do NHLPRO</h3>
 
         <input id="reg-username" type="text" placeholder="Používateľské meno" maxlength="20"

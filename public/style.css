@@ -4336,6 +4336,24 @@ body {
   text-align: center;
 }
 
+.premium-register-google-intro {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.premium-register-box .google-auth-container {
+  margin-bottom: 20px;
+}
+
+.premium-register-or {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  margin: 18px 0 20px 0;
+}
+
 .premium-register-box h3 {
   font-family: 'Poppins', 'Segoe UI', sans-serif;
   font-weight: 300;
