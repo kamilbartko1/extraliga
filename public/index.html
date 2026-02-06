@@ -598,32 +598,7 @@
           </span>
         </div>
 
-        <!-- ===============================
-           📊 OSOBNÝ DASHBOARD
-           =============================== -->
-        <section id="premium-dashboard" class="premium-section-card premium-dashboard">
-          <div class="section-card-header">
-            <h2 data-i18n="premium.dashboardTitle">📊 Môj Dashboard</h2>
-            <p class="section-card-subtitle" data-i18n="premium.dashboardSubtitle">
-              Prehľad tvojho výkonu a profit tracking
-            </p>
-          </div>
-
-          <div id="dashboard-content" class="dashboard-content">
-            <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
-          </div>
-
-          <!-- View Leaderboard Button -->
-          <div class="dashboard-leaderboard-cta">
-            <button id="view-leaderboard-btn" class="view-leaderboard-btn" onclick="showLeaderboard()">
-              LEADERBOARD
-            </button>
-          </div>
-        </section>
-
-        <!-- ===============================
-           📋 INFORMÁCIE O VIP PREMIUM
-           =============================== -->
+        <!-- 1. Čo získavaš ako VIP klient? -->
         <section class="premium-info-banner">
           <div class="premium-info-content">
             <h2 data-i18n="premium.infoTitle">Čo získavaš ako VIP klient?</h2>
@@ -656,9 +631,7 @@
           </div>
         </section>
 
-        <!-- ===============================
-           🔥 VIP TIPY NA DNES
-           =============================== -->
+        <!-- 2. VIP tipy na dnes -->
         <section id="vip-tips" class="premium-section-card">
           <div class="section-card-header">
             <h2 data-i18n="vipTips.title">🔥 VIP tipy na dnes</h2>
@@ -673,14 +646,29 @@
           </div>
         </section>
 
-        <!-- ===============================
-           🔥 HOT TIPS FOR TODAY
-           =============================== -->
+        <!-- 3. Môj Dashboard (AS úspešnosti) -->
+        <section id="premium-dashboard" class="premium-section-card premium-dashboard">
+          <div class="section-card-header">
+            <h2 data-i18n="premium.dashboardTitle">📊 Môj Dashboard</h2>
+            <p class="section-card-subtitle" data-i18n="premium.dashboardSubtitleAs">
+              Dashboard AS úspešnosti a profit tracking
+            </p>
+          </div>
+
+          <div id="dashboard-content" class="dashboard-content">
+            <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
+          </div>
+
+          <div class="dashboard-leaderboard-cta">
+            <button id="view-leaderboard-btn" class="view-leaderboard-btn" onclick="showLeaderboard()">
+              LEADERBOARD
+            </button>
+          </div>
+        </section>
+
         <section id="premium-hot-tips" class="premium-section-card" style="display: none;"></section>
 
-        <!-- ===============================
-           🎯 MOJA AS STRATÉGIA
-           =============================== -->
+        <!-- 4. Moja AS Stratégia -->
         <section class="premium-section-card">
           <div class="section-card-header">
             <h2 data-i18n="premium.absStrategyTitle">🎯 Moja AS Stratégia</h2>
@@ -741,6 +729,46 @@
           <div id="premium-msg" class="premium-msg"></div>
         </section>
 
+        <!-- 5. Dashboard tipov + Rebríček tiperov (VIP) -->
+        <section id="tips-dashboard-locked-vip" class="tips-dashboard-locked premium-section-card">
+          <h3 data-i18n="tips.dashboardTitle">📊 Môj Dashboard tipov</h3>
+          <p class="tips-dashboard-hint" data-i18n="tips.dashboardHint">Tipuj výsledky zápasov (1X2) na domovskej stránke a sleduj svoju úspešnosť.</p>
+          <p class="tips-contest-rules-link-wrap">
+            <button type="button" class="tips-contest-rules-link" onclick="openTipsContestRulesModal()" data-i18n="tips.contestRulesLink">Podmienky súťaže o VIP</button>
+          </p>
+          <div id="tips-dashboard-stats-vip" class="tips-dashboard-stats">
+            <p class="nhl-muted" data-i18n="common.loading">Načítavam…</p>
+          </div>
+          <div id="tips-dashboard-today-vip" class="tips-dashboard-today"></div>
+          <div id="tips-dashboard-recent-vip" class="tips-dashboard-recent"></div>
+          <button type="button" class="tips-go-home-btn" onclick="showSection('home-section')" data-i18n="tips.goAddTips">
+            Choď na domov a pridaj dnešné tipy
+          </button>
+          <div class="tips-leaderboard-cta">
+            <button type="button" class="tips-leaderboard-btn" onclick="showTipsLeaderboard()" data-i18n="tips.leaderboardBtn">
+              🏆 Leaderboard tipov
+            </button>
+          </div>
+          <div id="tips-leaderboard-section-vip" class="tips-leaderboard-section" style="display: none;">
+            <h4 class="tips-leaderboard-title" data-i18n="tips.leaderboardTitle">🏆 Rebríček tiperov</h4>
+            <div class="tips-leaderboard-table-wrapper">
+              <table class="tips-leaderboard-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="tips.leaderboardRank">#</th>
+                    <th data-i18n="tips.leaderboardUser">Používateľ</th>
+                    <th class="text-right" data-i18n="tips.statsTotal">Celkovo tipov</th>
+                    <th class="text-right" data-i18n="tips.statsCorrect">Správnych</th>
+                    <th class="text-right" data-i18n="tips.statsAccuracy">Úspešnosť</th>
+                  </tr>
+                </thead>
+                <tbody id="tips-leaderboard-list-vip"></tbody>
+              </table>
+            </div>
+            <button type="button" class="tips-leaderboard-back-btn" onclick="hideTipsLeaderboard()" data-i18n="common.back">← Späť</button>
+          </div>
+        </section>
+
         <!-- ===============================
      👑 VIP MANTINGAL DETAIL
      =============================== -->
@@ -767,9 +795,7 @@
           <button id="vip-mtg-back-btn" data-i18n="common.back">← Späť</button>
         </div>
 
-        <!-- ===============================
-     📊 PREMIUM ANALYTICS
-     =============================== -->
+        <!-- 6. Tabuľky Last 10 zápasov -->
         <section id="premium-analytics" class="premium-section-card premium-analytics">
 
           <div class="section-card-header">

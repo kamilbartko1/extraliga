@@ -506,6 +506,7 @@ const I18N = {
     "premium.cancelCancel": "Nie, ponechať",
     "premium.dashboardTitle": "📊 Môj Dashboard",
     "premium.dashboardSubtitle": "Prehľad tvojho výkonu a profit tracking",
+    "premium.dashboardSubtitleAs": "Dashboard AS úspešnosti a profit tracking",
     "premium.dashboard.totalProfit": "Celkový profit",
     "premium.dashboard.roi": "ROI",
     "premium.dashboard.activePlayers": "Aktívni hráči",
@@ -844,6 +845,7 @@ const I18N = {
     "premium.cancelCancel": "No, keep",
     "premium.dashboardTitle": "📊 My Dashboard",
     "premium.dashboardSubtitle": "Overview of your performance and profit tracking",
+    "premium.dashboardSubtitleAs": "AS success dashboard and profit tracking",
     "premium.dashboard.totalProfit": "Total Profit",
     "premium.dashboard.roi": "ROI",
     "premium.dashboard.activePlayers": "Active Players",
@@ -4550,8 +4552,8 @@ async function checkPremiumStatus() {
         }
       });
 
-    // ===== PRIHLÁSENÝ: vždy zobraziť dashboard tipov (VIP aj ne-VIP) =====
-    if (tipsDashboardWrap) tipsDashboardWrap.style.display = "block";
+    // ===== PRIHLÁSENÝ: dashboard tipov len pre ne-VIP (VIP má kópiu v #premium-content) =====
+    if (tipsDashboardWrap) tipsDashboardWrap.style.display = (data.ok && data.isVip === true) ? "none" : "block";
     await loadTipsDashboardLocked(token);
 
     // ===== VIP USER =====
@@ -4597,10 +4599,17 @@ async function checkPremiumStatus() {
   }
 }
 
-// === TIPS DASHBOARD pre registrovaných (nie VIP) ===
+// === TIPS DASHBOARD pre registrovaných (VIP má kópiu -vip v #premium-content) ===
+function setTipsDashboardEl(el, vipEl, html) {
+  if (el) el.innerHTML = html;
+  if (vipEl) vipEl.innerHTML = html;
+}
+
 async function loadTipsDashboardLocked(token) {
   const statsEl = document.getElementById("tips-dashboard-stats");
+  const statsElVip = document.getElementById("tips-dashboard-stats-vip");
   const recentEl = document.getElementById("tips-dashboard-recent");
+  const recentElVip = document.getElementById("tips-dashboard-recent-vip");
   if (!statsEl) return;
 
   try {
@@ -4613,10 +4622,14 @@ async function loadTipsDashboardLocked(token) {
     if (!d.ok) {
       const greetingEl = document.getElementById("tips-dashboard-greeting");
       if (greetingEl) { greetingEl.textContent = ""; greetingEl.style.display = "none"; }
-      statsEl.innerHTML = `<p class="tips-dashboard-empty">${t("tips.noStatsYet")}</p>`;
+      const emptyHtml = `<p class="tips-dashboard-empty">${t("tips.noStatsYet")}</p>`;
+      setTipsDashboardEl(statsEl, statsElVip, emptyHtml);
       if (recentEl) recentEl.innerHTML = "";
+      if (recentElVip) recentElVip.innerHTML = "";
       const todayEl = document.getElementById("tips-dashboard-today");
+      const todayElVip = document.getElementById("tips-dashboard-today-vip");
       if (todayEl) todayEl.innerHTML = "";
+      if (todayElVip) todayElVip.innerHTML = "";
       return;
     }
 
@@ -4637,14 +4650,13 @@ async function loadTipsDashboardLocked(token) {
     }
 
     if (total === 0) {
-      if (todayTips.length > 0) {
-        statsEl.innerHTML = `<p class="tips-dashboard-info">${t("tips.pendingEvaluation")}</p>`;
-      } else {
-        statsEl.innerHTML = `<p class="tips-dashboard-empty">${t("tips.noStatsYet")}</p>`;
-      }
+      const infoHtml = todayTips.length > 0
+        ? `<p class="tips-dashboard-info">${t("tips.pendingEvaluation")}</p>`
+        : `<p class="tips-dashboard-empty">${t("tips.noStatsYet")}</p>`;
+      setTipsDashboardEl(statsEl, statsElVip, infoHtml);
     } else {
       const accPct = (accuracy * 100).toFixed(1);
-      statsEl.innerHTML = `
+      const statsHtml = `
         <div class="tips-stats-grid">
           <div class="tips-stat-item">
             <span class="tips-stat-label">${t("tips.statsTotal")}</span>
@@ -4660,6 +4672,7 @@ async function loadTipsDashboardLocked(token) {
           </div>
         </div>
       `;
+      setTipsDashboardEl(statsEl, statsElVip, statsHtml);
     }
 
     if (nickname) {
@@ -4668,9 +4681,11 @@ async function loadTipsDashboardLocked(token) {
     }
 
     const todayEl = document.getElementById("tips-dashboard-today");
-    if (todayEl) {
+    const todayElVip = document.getElementById("tips-dashboard-today-vip");
+    if (todayEl || todayElVip) {
       if (todayTips.length === 0) {
-        todayEl.innerHTML = "";
+        if (todayEl) todayEl.innerHTML = "";
+        if (todayElVip) todayElVip.innerHTML = "";
       } else {
         let matchMap = {};
         try {
@@ -4696,12 +4711,14 @@ async function loadTipsDashboardLocked(token) {
           html += `<li><span class="tips-today-match">${matchLabel}</span><span class="tips-today-pick">${pickLabelToday(tip.pick)}</span></li>`;
         });
         html += "</ul>";
-        todayEl.innerHTML = html;
+        if (todayEl) todayEl.innerHTML = html;
+        if (todayElVip) todayElVip.innerHTML = html;
       }
     }
 
     const recentDays = d.recentDays || [];
-    if (recentEl && recentDays.length > 0) {
+    const recentHtml = (() => {
+      if (recentDays.length === 0) return "";
       let html = `<h4 class="tips-recent-title">${CURRENT_LANG === "sk" ? "Posledné dni" : "Recent days"}</h4>`;
       for (const day of recentDays.slice(0, 5)) {
         const games = day.games || [];
@@ -4731,25 +4748,28 @@ async function loadTipsDashboardLocked(token) {
           </div>
         `;
       }
-      recentEl.innerHTML = html;
-      recentEl.querySelectorAll(".tips-recent-day").forEach((row) => {
+      return html;
+    })();
+    if (recentEl) recentEl.innerHTML = recentHtml;
+    if (recentElVip) recentElVip.innerHTML = recentHtml;
+    [recentEl, recentElVip].forEach((container) => {
+      if (!container) return;
+      container.querySelectorAll(".tips-recent-day").forEach((row) => {
         row.addEventListener("click", () => {
-          const date = row.getAttribute("data-date");
-          const id = "tips-day-" + date.replace(/-/g, "");
-          const detail = document.getElementById(id);
-          if (!detail) return;
+          const detail = row.nextElementSibling;
+          if (!detail || !detail.classList.contains("tips-recent-day-detail")) return;
           const isHidden = detail.hidden;
           detail.hidden = !isHidden;
           row.classList.toggle("tips-recent-day--expanded", !isHidden);
           row.querySelector(".tips-recent-toggle")?.setAttribute("aria-hidden", "true");
         });
       });
-    } else if (recentEl) {
-      recentEl.innerHTML = "";
-    }
+    });
   } catch (err) {
-    statsEl.innerHTML = `<p class="tips-dashboard-empty">${t("tips.noStatsYet")}</p>`;
+    const errHtml = `<p class="tips-dashboard-empty">${t("tips.noStatsYet")}</p>`;
+    setTipsDashboardEl(statsEl, statsElVip, errHtml);
     if (recentEl) recentEl.innerHTML = "";
+    if (recentElVip) recentElVip.innerHTML = "";
   }
 }
 
@@ -4758,8 +4778,11 @@ async function loadTipsDashboardLocked(token) {
 // ===============================
 async function loadTipsLeaderboard() {
   const listEl = document.getElementById("tips-leaderboard-list");
-  if (!listEl) return;
-  listEl.innerHTML = "<tr><td colspan=\"5\" class=\"nhl-muted\">" + (t("common.loading") || "Načítavam…") + "</td></tr>";
+  const listElVip = document.getElementById("tips-leaderboard-list-vip");
+  if (!listEl && !listElVip) return;
+  const loadingRow = "<tr><td colspan=\"5\" class=\"nhl-muted\">" + (t("common.loading") || "Načítavam…") + "</td></tr>";
+  if (listEl) listEl.innerHTML = loadingRow;
+  if (listElVip) listElVip.innerHTML = loadingRow;
   try {
     const token = localStorage.getItem("sb-access-token");
     const opts = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
@@ -4773,23 +4796,32 @@ async function loadTipsLeaderboard() {
       const name = item.isCurrentUser && item.name ? `TY (${item.name})` : (item.name || `#${item.rank}`);
       return `<tr class="${rowClass} ${rankClass}"><td class="rank-cell">#${item.rank}</td><td>${String(name).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</td><td class="text-right">${item.totalPredictions}</td><td class="text-right">${item.correctPredictions}</td><td class="text-right tips-lb-accuracy">${accPct}%</td></tr>`;
     });
-    listEl.innerHTML = rows.length ? rows.join("") : "<tr><td colspan=\"5\" class=\"nhl-muted\">" + (CURRENT_LANG === "sk" ? "Zatiaľ žiadni tiperi." : "No tippers yet.") + "</td></tr>";
+    const tableBody = rows.length ? rows.join("") : "<tr><td colspan=\"5\" class=\"nhl-muted\">" + (CURRENT_LANG === "sk" ? "Zatiaľ žiadni tiperi." : "No tippers yet.") + "</td></tr>";
+    if (listEl) listEl.innerHTML = tableBody;
+    if (listElVip) listElVip.innerHTML = tableBody;
   } catch (err) {
-    listEl.innerHTML = "<tr><td colspan=\"5\" class=\"nhl-muted\" style=\"color:#f87171;\">" + (err.message || "Chyba") + "</td></tr>";
+    const errRow = "<tr><td colspan=\"5\" class=\"nhl-muted\" style=\"color:#f87171;\">" + (err.message || "Chyba") + "</td></tr>";
+    if (listEl) listEl.innerHTML = errRow;
+    if (listElVip) listElVip.innerHTML = errRow;
   }
 }
 
 function showTipsLeaderboard() {
   const section = document.getElementById("tips-leaderboard-section");
-  if (!section) return;
-  section.style.display = "block";
+  const sectionVip = document.getElementById("tips-leaderboard-section-vip");
+  if (section) section.style.display = "block";
+  if (sectionVip) sectionVip.style.display = "block";
   loadTipsLeaderboard();
-  section.scrollIntoView({ behavior: "smooth", block: "start" });
+  const premiumContent = document.getElementById("premium-content");
+  const scrollTarget = (premiumContent && premiumContent.style.display === "block") ? sectionVip : section;
+  if (scrollTarget) scrollTarget.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function hideTipsLeaderboard() {
   const section = document.getElementById("tips-leaderboard-section");
+  const sectionVip = document.getElementById("tips-leaderboard-section-vip");
   if (section) section.style.display = "none";
+  if (sectionVip) sectionVip.style.display = "none";
 }
 
 window.showTipsLeaderboard = showTipsLeaderboard;
